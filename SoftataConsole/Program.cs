@@ -235,7 +235,7 @@ namespace FirmataBasic
                 Digital.SetPinMode(12, PinMode.DigitalOutput);
                 Digital.SetPinState(12, PinState.HIGH);
 
-                //Digital.SetPinMode(50, PinMode.DigitalInput);
+                Digital.SetPinMode(50, PinMode.DigitalInput);
 
                 SendMessage(Commands.analogWrite, (byte)26, (byte)PinMode.DigitalInput);
                 Thread.Sleep(500);

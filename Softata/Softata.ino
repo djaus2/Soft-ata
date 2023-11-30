@@ -127,7 +127,7 @@ void loop() {
               {
                 Serial.print("Pin is not digital");
                 client.print("NOK");
-                return;
+                continue;
               }
               switch (cmd)
               {
@@ -178,7 +178,7 @@ void loop() {
               {
                 Serial.print("Pin not Analog");
                 client.print("NOK");
-                return;
+                continue;
               }
               Serial.println("Analog 2D cmds");
               client.print("Analog 2D cmds"); 
@@ -190,7 +190,7 @@ void loop() {
               {
                 Serial.print("Pin not PWM");
                 client.print("NOK");
-                return;
+                continue;
               }
               Serial.println("PWD 2D cmds");
               client.print("PWD 2D cmds"); 
@@ -202,7 +202,7 @@ void loop() {
               {
                 Serial.print("Pin not Servo");
                 client.print("NOK");
-                return;
+                continue;
               }
               Serial.println("SERVO 2D cmds");
               client.print("SERVO 2D cmds"); 
@@ -214,7 +214,7 @@ void loop() {
               {
                 Serial.print("Pin not Serial");
                 client.print("NOK");
-                return;
+                continue;
               }
               Serial.println("Serial 2D cmds");
               client.print("Serial 2D cmds"); 
@@ -226,23 +226,23 @@ void loop() {
               {
                 Serial.print("Pin not I2C");
                 client.print("NOK");
-                return;
+                continue;
               }
               Serial.println("I2C 2D cmds");
               client.print("I2C 2D cmds"); 
-              break;/*
+              break;
             case 0xF3:
             case 0xF4:
             case 0xF5: // SPI place holder
-              if(!IS_PIN_SPI(pin)))
+              if(!IS_PIN_SPI(pin))
               {
                 Serial.print("Pin not SPI");
                 client.print("NOK");
-                return;
+                continue;
               }
               Serial.println("SPI 2D cmds");
               client.print("SPI 2D cmds"); 
-              break;*/
+              break;
             default:
               Serial.println("Unknown cmd");
               client.print("Unknown cmd"); 
