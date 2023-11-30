@@ -71,6 +71,11 @@ void loop() {
           client.print("Done"); 
           return;
           break;
+        case 'N': //Null
+          Serial.println("Null.");
+          client.print("OK"); 
+          return;
+          break;
         default:
           // Get Softata command and parameters
           byte cmd = req[0];

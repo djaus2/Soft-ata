@@ -24,6 +24,7 @@ namespace FirmataBasic
             digitalWrite= 0xD1,
             digitalRead= 0xD2,
             digitalToggle=0xD3,
+            analogWrite=0xA0,
 
             Undefined = 0xFF
         }
@@ -151,6 +152,8 @@ namespace FirmataBasic
             {
                 case "Begin":
                     break;
+                case "Null":
+                    break;
                 case "End":
                     client.Shutdown(SocketShutdown.Both);
                     client.Close();
@@ -232,9 +235,9 @@ namespace FirmataBasic
                 Digital.SetPinMode(12, PinMode.DigitalOutput);
                 Digital.SetPinState(12, PinState.HIGH);
 
-                Digital.SetPinMode(50, PinMode.DigitalInput);
+                //Digital.SetPinMode(50, PinMode.DigitalInput);
 
-                //SendMessage(0xF4, (byte)13, (byte)PinMode.DigitalInput);
+                SendMessage(Commands.analogWrite, (byte)26, (byte)PinMode.DigitalInput);
                 Thread.Sleep(500);
 
                 int n;
