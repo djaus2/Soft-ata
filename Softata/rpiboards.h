@@ -1,3 +1,5 @@
+#define WATCHDOG_SECS 10
+
 #ifndef digitalPinHasPWM
 #define digitalPinHasPWM(p)     IS_PIN_DIGITAL(p)
 #endif

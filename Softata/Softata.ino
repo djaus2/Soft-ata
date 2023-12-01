@@ -1,6 +1,7 @@
 // Placed in the public domain by Earle F. Philhower, III, 2022
 #include "rpiboards.h"
 #include <WiFi.h>
+#include "rpiwatchdog.h"
 
 #ifndef STASSID
 #define STASSID "APQLZM"
@@ -27,9 +28,12 @@ void setup() {
   Serial.printf("\nConnected to WiFi\n\nConnect to server at %s:%d\n", WiFi.localIP().toString().c_str(), port);
 
   server.begin();
+  watchdog_enable(WATCHDOG_SECS*1000, false);
+
 }
 
 void loop() {
+  watchdog_update();
   static int i;
   delay(100);
   //Serial.printf("--loop %d\n", ++i);
@@ -41,13 +45,16 @@ void loop() {
   Serial.println("WiFi Up");
   while(true)
   {
+    watchdog_update();
     Serial.print("Get next command.");
     while (!client.available()) {
       delay(100);
+      watchdog_update();
     }
 
     Serial.println("Connected.");
     while (client.available()) {
+      watchdog_update();
       String req = client.readStringUntil('\n');
       if(req.length()==0)
       {
