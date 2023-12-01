@@ -32,6 +32,8 @@ void setup() {
 
 }
 
+void(* resetFunc) (void) = 0;
+
 void loop() {
   watchdog_update();
   static int i;
@@ -61,8 +63,6 @@ void loop() {
         Serial.println("Null cmd.");
         return;
       }
-      Serial.print("Command:");
-      Serial.println(req[0],HEX);
       switch(req[0])
       {
         // Escape simple string commands here. 
@@ -76,7 +76,8 @@ void loop() {
         case 'E': //End
           Serial.println("Done.");
           client.print("Done"); 
-          return;
+          // Force reset
+          resetFunc();
           break;
         case 'N': //Null
           Serial.println("Null.");
@@ -86,7 +87,8 @@ void loop() {
         case 'R': //Reset
           Serial.println("Resetting.");
           client.print("Reset"); 
-          while(true);
+          // Force reset
+          resetFunc();
         default:
           // Get Softata command and parameters
           byte cmd = req[0];
@@ -104,7 +106,7 @@ void loop() {
                 other=req[3];
           } } }
 
-          //Print commd and paramaters
+          //Print command and paramaters
           String str;
           byte vaue;
           Serial.print("cmd:");
@@ -137,7 +139,7 @@ void loop() {
               if(!IS_PIN_DIGITAL(pin))
               {
                 Serial.print("Pin is not digital");
-                client.print("NOK");
+                client.print("FAIL");
                 continue;
               }
               switch (cmd)
@@ -148,8 +150,7 @@ void loop() {
                   pinMode(pin, (PinMode)param);
                   client.print("OK");
                   break;
-                case 0xD1:
-                  if(!IS_PIN_DIGITAL(pin))
+                case 0xD2:
                   Serial.println("digitalRead");
                   value = digitalRead(pin);
                   if(value)
@@ -157,7 +158,7 @@ void loop() {
                   else
                     client.print("OFF");
                   break;
-                case 0xD2:
+                case 0xD1:
                   Serial.print("digitalWrite:");
                   Serial.println(param);
                   if(param)
@@ -188,11 +189,11 @@ void loop() {
               if(!IS_PIN_ANALOG(pin))
               {
                 Serial.print("Pin not Analog");
-                client.print("NOK");
+                client.print("FAIL");
                 continue;
               }
-              Serial.println("Analog 2D cmds");
-              client.print("Analog 2D cmds"); 
+              Serial.println("OK-Analog 2D cmds");
+              client.print("OK-Analog 2D cmds"); 
               break;
             case 0xB0:
             case 0xB1:
@@ -200,11 +201,11 @@ void loop() {
               if(!IS_PIN_PWM(pin))
               {
                 Serial.print("Pin not PWM");
-                client.print("NOK");
+                client.print("FAIL");
                 continue;
               }
-              Serial.println("PWD 2D cmds");
-              client.print("PWD 2D cmds"); 
+              Serial.println("OK-PWD 2D cmds");
+              client.print("OK-PWD 2D cmds"); 
               break;
             case 0xC0:
             case 0xC1:
@@ -212,11 +213,11 @@ void loop() {
               if(!IS_PIN_SERVO(pin))
               {
                 Serial.print("Pin not Servo");
-                client.print("NOK");
+                client.print("FAIL");
                 continue;
               }
-              Serial.println("SERVO 2D cmds");
-              client.print("SERVO 2D cmds"); 
+              Serial.println("OK-SERVO 2D cmds");
+              client.print("OK-SERVO 2D cmds"); 
               break;
             case 0xE0:
             case 0xE1:
@@ -224,11 +225,11 @@ void loop() {
               if(!IS_PIN_SERIAL(pin))
               {
                 Serial.print("Pin not Serial");
-                client.print("NOK");
+                client.print("FAIL");
                 continue;
               }
-              Serial.println("Serial 2D cmds");
-              client.print("Serial 2D cmds"); 
+              Serial.println("OK-Serial 2D cmds");
+              client.print("OK-Serial 2D cmds"); 
               break;
             case 0xF0:
             case 0xF1:
@@ -236,11 +237,11 @@ void loop() {
               if(!IS_PIN_I2C(pin))
               {
                 Serial.print("Pin not I2C");
-                client.print("NOK");
+                client.print("FAIL");
                 continue;
               }
-              Serial.println("I2C 2D cmds");
-              client.print("I2C 2D cmds"); 
+              Serial.println("OK-I2C 2D cmds");
+              client.print("OK-I2C 2D cmds"); 
               break;
             case 0xF3:
             case 0xF4:
@@ -248,11 +249,11 @@ void loop() {
               if(!IS_PIN_SPI(pin))
               {
                 Serial.print("Pin not SPI");
-                client.print("NOK");
+                client.print("FAIL");
                 continue;
               }
-              Serial.println("SPI 2D cmds");
-              client.print("SPI 2D cmds"); 
+              Serial.println("OK-SPI 2D cmds");
+              client.print("OK-SPI 2D cmds"); 
               break;
             default:
               Serial.println("Unknown cmd");

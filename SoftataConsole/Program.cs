@@ -15,6 +15,7 @@ namespace FirmataBasic
     {
         const int port = 4242;//27016;
         const string ipaddressStr = "192.168.0.13";
+        const byte nullData = 0xff;
 
         private static Socket client;
 
@@ -145,8 +146,8 @@ namespace FirmataBasic
             byte[] data = new byte[100];
             int recvd = client.Receive(data);
 
-            string res = Encoding.ASCII.GetString(data);
-            Console.WriteLine($"Received {res} [{recvd}] bytes\n");
+            string result = Encoding.ASCII.GetString(data).Substring(0,recvd).Trim();
+            Console.WriteLine($"Received {result} [{recvd}] bytes\n");
 
             switch (cmd)
             {
@@ -164,11 +165,11 @@ namespace FirmataBasic
             }
 
         }
-        static string SendMessage(Commands MsgType, byte pin=0xff, byte state=0xff, byte other=0xff)
+        static string SendMessage(Commands MsgType, byte pin = 0xff, byte state = 0xff, string expect = "OK", byte other = 0xff)
         {
             string result = "";
             // Construct command and parameters as list of bytes
-            List<byte> sendmsg = new List<byte> {(byte)MsgType};
+            List<byte> sendmsg = new List<byte> { (byte)MsgType };
             if (pin != 0xff)
             {
                 sendmsg.Add(pin);
@@ -185,24 +186,34 @@ namespace FirmataBasic
             // Get bytes as string for display here.
             byte[] sendBytes = sendmsg.ToArray<byte>();
             string sendmsgStr = BitConverter.ToString(sendBytes).Replace(",", string.Empty);
-            Console.WriteLine("Sending: " +sendmsgStr);
+            Console.WriteLine("Sending: " + sendmsgStr);
 
             // Add \n to end of message and send.
             // The command terminator at other end
             sendmsg.Add((byte)'\n');
             sendBytes = sendmsg.ToArray<byte>();
-            int sent = client.Send(sendBytes);;
-            
-            Console.WriteLine($"Sent {sent-1} bytes");
+            int sent = client.Send(sendBytes); ;
+
+            Console.WriteLine($"Sent {sent - 1} bytes");
 
             //Wait for response
-            while (client.Available == 0);
+            while (client.Available == 0) ;
             byte[] data = new byte[100];
             int recvd = client.Receive(data);
 
-            result = Encoding.ASCII.GetString(data);
-            Console.WriteLine($"Received {result} [{recvd}] bytes\n");
+            result = Encoding.ASCII.GetString(data).Substring(0, recvd).Trim();
 
+            // Make the check work in both ways.
+            if((!expect.Contains(result)) && (!result.Contains(expect)))
+            {
+                Console.WriteLine($"Expected {expect} got {result}... rebooting");
+                SendMessageCmd("Reset");
+                recvd = client.Receive(data);
+                result = Encoding.ASCII.GetString(data).Substring(0,recvd).Trim();
+                Console.WriteLine($"Received {result} [{recvd}] bytes\n");
+                return "Reset";
+            }
+            Console.WriteLine($"Received {result} [{recvd}] bytes\n");
             return result;
         }
         static void Main(string[] args)
@@ -238,9 +249,8 @@ namespace FirmataBasic
                 Digital.SetPinMode(12, PinMode.DigitalOutput);
                 Digital.SetPinState(12, PinState.HIGH);
 
-                Digital.SetPinMode(50, PinMode.DigitalInput);
-
-                SendMessageCmd("Reset");
+                // Next is errant
+                //Digital.SetPinMode(50, PinMode.DigitalInput);
 
                 SendMessage(Commands.analogWrite, (byte)26, (byte)PinMode.DigitalInput);
                 Thread.Sleep(500);
@@ -270,28 +280,6 @@ namespace FirmataBasic
                     client.Close();
                 }
             }
-        }
-
-
-
-        public void SetDigitalPort(int portNumber, int pins)
-        {
-            if (portNumber < 0 || portNumber > 15)
-                throw new ArgumentOutOfRangeException(nameof(portNumber), "Messages.ArgumentEx_PortRange0_15");
-
-            if (pins < 0 || pins > 0xFF)
-                throw new ArgumentOutOfRangeException(nameof(pins), "Messages.ArgumentEx_ValueRange0_255");
-
-            client.Send(new[] { (byte)(DigitalMessage | portNumber), (byte)(pins & 0x7F), (byte)((pins >> 7) & 0x03), (byte)0 }); //, 0, 3);
-        }
-
-        /// <inheritdoc cref="IFirmataProtocol.SetDigitalReportMode"/>
-        public void SetDigitalReportMode(int portNumber, bool enable)
-        {
-            if (portNumber < 0 || portNumber > 15)
-                throw new ArgumentOutOfRangeException(nameof(portNumber), "Messages.ArgumentEx_PortRange0_15");
-
-            client.Send(new[] { (byte)(0xD0 | portNumber), (byte)(enable ? 1 : 0), (byte)0 }); //, 0, 2);
         }
 
         public static class Digital
@@ -325,7 +313,7 @@ namespace FirmataBasic
                 if (pinNumber < 0 || pinNumber > 127)
                     throw new ArgumentOutOfRangeException(nameof(pinNumber), "Messages.ArgumentEx_PinRange0_127");
 
-                string state = SendMessage(Commands.digitalRead, (byte)pinNumber);
+                string state = SendMessage(Commands.digitalRead, (byte)pinNumber, nullData , "ON,OFF");
 
                 if (state.ToUpper() == "ON")
                     return true;
