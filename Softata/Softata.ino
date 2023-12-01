@@ -83,6 +83,10 @@ void loop() {
           client.print("OK"); 
           return;
           break;
+        case 'R': //Reset
+          Serial.println("Resetting.");
+          client.print("Reset"); 
+          while(true);
         default:
           // Get Softata command and parameters
           byte cmd = req[0];

@@ -131,7 +131,7 @@ namespace FirmataBasic
         private readonly byte[] _messageBuffer = new byte[Buffersize];
         private readonly char[] _stringBuffer = new char[Buffersize];
 
-        static void SendMessagCmd(string cmd)
+        static void SendMessageCmd(string cmd)
         {
             string sendmsg = cmd;
             Console.WriteLine("Sending: " + sendmsg);
@@ -157,7 +157,10 @@ namespace FirmataBasic
                 case "End":
                     client.Shutdown(SocketShutdown.Both);
                     client.Close();
-                    break;  
+                    break; 
+                case "Reset":
+                    //return;
+                    break;
             }
 
         }
@@ -228,7 +231,7 @@ namespace FirmataBasic
                 Console.WriteLine("Socket created to {0}", client.RemoteEndPoint?.ToString());
                 byte[] sendmsg = new byte[] { Pin_Mode, (byte)32, (byte)PinMode.DigitalOutput};
 
-                SendMessagCmd("Begin");
+                SendMessageCmd("Begin");
                 Thread.Sleep(500);
 
                 Digital.SetPinMode(13, PinMode.DigitalInput);
@@ -236,6 +239,8 @@ namespace FirmataBasic
                 Digital.SetPinState(12, PinState.HIGH);
 
                 Digital.SetPinMode(50, PinMode.DigitalInput);
+
+                SendMessageCmd("Reset");
 
                 SendMessage(Commands.analogWrite, (byte)26, (byte)PinMode.DigitalInput);
                 Thread.Sleep(500);
@@ -252,7 +257,7 @@ namespace FirmataBasic
                     Thread.Sleep(1000);
                 }
 
-                SendMessagCmd("End");
+                SendMessageCmd("End");
                 Thread.Sleep(500);
                 return;
             }
