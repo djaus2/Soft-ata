@@ -18,7 +18,7 @@ static inline void attachInterrupt(pin_size_t interruptNumber, voidFuncPtr callb
 }
 
 #define TOTAL_ANALOG_PINS       3 //4
-#define TOTAL_PINS              28 //30
+#define PIN_MAX                 28 //30
 #define VERSION_BLINK_PIN       LED_BUILTIN
 #define IS_PIN_DIGITAL(p)       (((p) >= 0 && (p) < 23) || (p) == LED_BUILTIN)
 #define IS_PIN_ANALOG(p)        ((p) >= 26 && (p) < 26 + TOTAL_ANALOG_PINS)

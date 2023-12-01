@@ -29,9 +29,9 @@ void setup() {
 
   server.begin();
   watchdog_enable(WATCHDOG_SECS*1000, false);
-
 }
 
+//Ref: https://www.thegeekpub.com/276838/how-to-reset-an-arduino-using-code/
 void(* resetFunc) (void) = 0;
 
 void loop() {
@@ -54,7 +54,7 @@ void loop() {
       watchdog_update();
     }
 
-    Serial.println("Connected.");
+    Serial.println("...Is connected.");
     while (client.available()) {
       watchdog_update();
       String req = client.readStringUntil('\n');
@@ -168,7 +168,7 @@ void loop() {
                   client.print("OK");
                   break; 
                 case 0xD3:
-                  Serial.print("digitalToggle:");
+                  Serial.println("digitalToggle");
                   value = digitalRead(pin);
                   if(value)
                     digitalWrite(pin, LOW); 
