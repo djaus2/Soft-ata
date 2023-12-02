@@ -84,7 +84,7 @@ This requires a setup as per previous repositories here as well as in some blog 
 
 ## Usage
 
-See the Console app but the IpAddress as determined when the Pico W runs must match that in the library. The ports must also match.
+See the [Console app](/SoftataConsole) but the IpAddress as determined when the Pico W runs must match that in the library. The ports must also match.
 
 ------
 
