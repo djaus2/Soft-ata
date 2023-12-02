@@ -10,8 +10,8 @@ _Soft-ata rather than firm-ata!_
 ## Background
 I wanted to use a RPI Pico W with Arduino installed controlled by .NET apps. Drilling deeper, I  wanted to use the Pico with a Blockly UI as per [CodeCraft](https://ide.tinkergen.com/). There is also [BlocklyDuino)(https://blocklyduino.github.io/BlocklyDuino/). But I found that with both, whilst the Arduino Uno is supported there, there is no support for the Pico. I then found [NETCoreBlockly](https://github.com/ignatandrei/netcoreblockly) on GitHub (as discussed by [Scott Hanselman](https://www.hanselman.com/blog/using-the-blockly-visual-programming-editor-to-call-a-net-core-webapi))  for general .NET Blockly programming and looked a way to extend it for the Pico. So the idea here is to create a .NET package that interfaces to the Pico over WiFi or Bluetooth that then can be integrated into a Blazor app running the .NET Blockly. 
 
- ![BlockduinoExample](blockduino1.png) | ![BlockduinoExample](blockduino1.png) | ![NetCoreBlocklyExample](netcoreblockly1.png)  
-**_Some Blockly coding examples_**
+ ![BlockduinoExample](codecraft1.png) | ![BlockduinoExample](blockduino1.png) | ![NetCoreBlocklyExample](netcoreblockly1.png)  
+**Some Blockly coding examples:_ CodeCraft,BlocklyDuino and NoteCoreBlocky_**
 
 After some consideration I had a back-to-the-future moment. What about Firmata? Alas ...
 
