@@ -23,12 +23,12 @@ namespace FirmataBasic
         {
             SoftataLib.Init(ipaddressStr, port);
 
-            Console.WriteLine("Hello from Softata!");
+            Console.WriteLine("Hello from Soft-ata!");
             try
             {
 
-
                 SoftataLib.SendMessageCmd("Begin");
+                
                 Thread.Sleep(500);
 
                 SoftataLib.Digital.SetPinMode(13, SoftataLib.PinMode.DigitalInput);
@@ -42,7 +42,7 @@ namespace FirmataBasic
                 //SoftataLib.SendMessage(SoftataLib.Commands.Undefined, (byte)26, (byte)PinMode.DigitalInput);
 
 
-                // Next is current not implemented but is not errant
+                // Next is currently not implemented but is not errant
                 SoftataLib.SendMessage(SoftataLib.Commands.analogWrite, (byte)26, (byte)PinMode.DigitalInput);
                 Thread.Sleep(500);
 

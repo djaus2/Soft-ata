@@ -71,7 +71,7 @@ namespace Softata
             digitalWrite = 0xD1,
             digitalRead = 0xD2,
             digitalToggle = 0xD3,
-            analogWrite = 0xA0,
+            analogWrite = 0xA0, //Not iumplemented
 
             Undefined = 0xFF
         }
@@ -84,6 +84,7 @@ namespace Softata
             Servo = 3,
             I2C = 4,
             SPI = 5,
+            OneWire = 6,
             Undefined = 0xFF,
         }
         public enum PinMode
