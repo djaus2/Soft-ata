@@ -47,7 +47,7 @@ namespace FirmataBasic
                 Thread.Sleep(500);
 
                 int n;
-                for (int i = 0; i < 12; i++)
+                for (int i = 0; i < 2; i++)
                 {
                     SoftataLib.Digital.GetPinState(13);
                     SoftataLib.Digital.TogglePinState(12);
