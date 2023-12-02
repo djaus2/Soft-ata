@@ -29,6 +29,61 @@ So if there a Firmata app running on a device, a host computrer can interact dir
 
 There are also [Firmata Client libraries](https://github.com/firmata/arduino#firmata-client-libraries) for use on the host end.
 
-Whilst I could get the [ConfigurableFirmata](https://github.com/firmata/ConfigurableFirmata) running on a RPi Pico W over WiFi, with a .NET TCPIP Client, I found that thge functionality I could working interactively was limited. So I decided to build my own "Firmata", hence Soft-ata.
+I could get the [ConfigurableFirmata](https://github.com/firmata/ConfigurableFirmata) running on a RPi Pico W over WiFi. The.NET client libraries were quite old and used a Serial connection. Using a .NET Tcpip Client, I found that the functionality I couldget working with interactively was limited. So I decided to build my own "Firmata", hence Soft-ata.
+
+## Soft-ata Projects
+
+- Softata: The Arduino RPI Pico app
+- SoftataLib: The. NET Library
+- SoftataConsole: A simple .NET Console demo app
+
+## RPi Pico W Arduino
+
+This requires a setup as per previous repositories here as well as in some blog posts:
+
+- [RPI Pico W GPS Bluetooth and Azure IoT Hub](https://github.com/djaus2/RpiPicoWGPSandBT)
+- [Azure IoT Hub Arduino Raspberry Pi Pico with Telemetry](https://github.com/djaus2/Azure_IoT_Hub_Arduino_RPI_Pico_Telemetry)
+- [RPI-Pico-Arduino-AzSDK: Context](https://davidjones.sportronics.com.au/ardpico/RPI-Pico-Arduino-AzSDK-Context-pic-ard.html)
+
+------
+
+## Repository Status
+- Version 1.00
+  - All three project work
+  - Digital IO implemented, place holders for other functionality in the Arduino app
+  - There are two top level commands:
+    - SoftataLib.SendMessageCmd("A simple one word command")
+    - SoftataLib.SendMessage(SoftataLib.Commands.XXX,pin, (byte)data)
+  - SetDigitalMode
+    - SoftataLib.SendMessageCmd("A simple one word command")
+    - SoftataLib.Digital.GetPinState(pin);
+    - SoftataLib.Digital.TogglePinState(pin)Thre is also the general commands:
+  - Interaction starts with:
+    - SoftataLib.SendMessageCmd("Begin")
+  - And ends with:
+    - SoftataLib.SendMessageCmd("End")
+  - A board header file specifies, like in Firmata, valid pins for each interaction type (Digital, Analog, PWM etc)
+    -An invalid pin does not crash the Arduino app but cause an exception with the library
+    - A call to a not yet implemented functionality (eg Analog, PWM etc) does not cause any exceptions
+  - There is a Watchdog timer as well as a command to force a sofware reset of the Arduino device.
+
+------
+
+## Usage
+
+See the Console app but the IpAddress as determined when the Pico W runs must match that in the library. The ports must also match.
+
+------
+
+## Roadmap
+
+- Implment the othercapailities in the Arduino app
+- Implement same in the library
+- Add a Blazor and a maui sample app.
+- Integrate the library with a NetCoreBlockly app.
+
+Enjoy! :)
+
+
 
 
