@@ -80,7 +80,7 @@ This requires a setup as per previous repositories here as well as in some blog 
     - A call to a not yet implemented functionality (eg Analog, PWM etc) does not cause any exceptions,
   - There is a Watchdog timer as well as a command to force a sofware reset of the Arduino device.
   - Each message to the device expects a response to be sent to the library and used to check if there was an issue, or contains requetsed data.
-    - 2DDo: Implementga timeout mechanism.
+    - 2DDo: Implement a timeout mechanism.
 
 ------
 
