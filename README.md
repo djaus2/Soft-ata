@@ -49,13 +49,26 @@ This requires a setup as per previous repositories here as well as in some blog 
 
 ## Repository Status
 - Version 1.00
-  - All three project work
+  - All three projects work
   - Digital IO implemented, place holders for other functionality in the Arduino app
   - There are two top level commands:
     - SoftataLib.SendMessageCmd("A simple one word command")
-    - SoftataLib.SendMessage(SoftataLib.Commands.XXX,pin, (byte)data)
-  - SetDigitalMode
-    - SoftataLib.SendMessageCmd("A simple one word command")
+    - SoftataLib.SendMessage(SoftataLib.Commands.XXX,pin, (byte)data)  
+```cs
+        public enum Commands
+        {
+            pinMode = 0xD0,
+            digitalWrite = 0xD1,
+            digitalRead = 0xD2,
+            digitalToggle = 0xD3,
+            analogWrite = 0xA0, //Not iumplemented
+
+            Undefined = 0xFF
+        }
+```
+  - Digital IO
+    - SoftataLib.Digital.SetPinMode(pin, SoftataLib.PinMode.DigitalInput/Output)
+    - SoftataLib.Digital.SetPinState(pin, SoftataLib.PinState.HIGH/LOW)
     - SoftataLib.Digital.GetPinState(pin);
     - SoftataLib.Digital.TogglePinState(pin)Thre is also the general commands:
   - Interaction starts with:
@@ -63,8 +76,8 @@ This requires a setup as per previous repositories here as well as in some blog 
   - And ends with:
     - SoftataLib.SendMessageCmd("End")
   - A board header file specifies, like in Firmata, valid pins for each interaction type (Digital, Analog, PWM etc)
-    -An invalid pin does not crash the Arduino app but cause an exception with the library
-    - A call to a not yet implemented functionality (eg Analog, PWM etc) does not cause any exceptions
+    -An invalid pin does not crash the Arduino app but cause an exception with the library.
+    - A call to a not yet implemented functionality (eg Analog, PWM etc) does not cause any exceptions,
   - There is a Watchdog timer as well as a command to force a sofware reset of the Arduino device.
 
 ------
@@ -77,7 +90,20 @@ See the Console app but the IpAddress as determined when the Pico W runs must ma
 
 ## Roadmap
 
-- Implment the othercapailities in the Arduino app
+- Implment the other capailities in the Arduino app:  
+```cs
+        public enum CommandType : byte
+        {
+            Digital = 0,
+            Analog = 1,
+            PWM = 2,
+            Servo = 3,
+            I2C = 4,
+            SPI = 5,
+            OneWire = 6,
+            Undefined = 0xFF,
+        }
+```
 - Implement same in the library
 - Add a Blazor and a maui sample app.
 - Integrate the library with a NetCoreBlockly app.
