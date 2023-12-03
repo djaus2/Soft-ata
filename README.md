@@ -52,9 +52,9 @@ This requires a setup as per previous repositories here as well as in some blog 
 ------
 
 ## Repository Status
-- Version 1.00
+- Version 1.10
   - All three projects work
-  - Digital IO implemented, place holders for other functionality in the Arduino app
+  - Digital IO and **Analog/PWM** IO implemented, place holders for other functionality in the Arduino app
   - There are two top level commands:
     - SoftataLib.SendMessageCmd("A simple one word command")
     - SoftataLib.SendMessage(SoftataLib.Commands.XXX,pin, (byte)data)  
@@ -64,24 +64,29 @@ This requires a setup as per previous repositories here as well as in some blog 
             pinMode = 0xD0,
             digitalWrite = 0xD1,
             digitalRead = 0xD2,
-            digitalToggle = 0xD3,
-            analogWrite = 0xA0, //Not iumplemented
+            digitalToggle = 0xD3,         
+            analogRead = 0xA2,
+            pwmWrite = 0xB1,
 
             Undefined = 0xFF
-        }
+        }   
 ```
+
   - Digital IO
     - SoftataLib.Digital.SetPinMode(pin, SoftataLib.PinMode.DigitalInput/Output)
     - SoftataLib.Digital.SetPinState(pin, SoftataLib.PinState.HIGH/LOW)
     - SoftataLib.Digital.GetPinState(pin);
     - SoftataLib.Digital.TogglePinState(pin)Thre is also the general commands:
+  - Analog/PWM
+    - SoftataLib.Analog.AnalogRead(pin)
+    - SoftataLib.PWN.SetPWM(pin,value)
   - Interaction starts with:
     - SoftataLib.SendMessageCmd("Begin")
   - And ends with:
     - SoftataLib.SendMessageCmd("End")
   - A board header file specifies, like in Firmata, valid pins for each interaction type (Digital, Analog, PWM etc)
     -An invalid pin does not crash the Arduino app but cause an exception with the library.
-    - A call to a not yet implemented functionality (eg Analog, PWM etc) does not cause any exceptions,
+    - A call to a not yet implemented functionality (eg Serial, OneWire etc) does not cause any exceptions,
   - There is a Watchdog timer as well as a command to force a sofware reset of the Arduino device.
   - Each message to the device expects a response to be sent to the library and used to check if there was an issue, or contains requetsed data.
     - 2DDo: Implement a timeout mechanism.
@@ -91,6 +96,9 @@ This requires a setup as per previous repositories here as well as in some blog 
 ## Usage
 
 See the [Console app](/SoftataConsole) but the IpAddress as determined when the Pico W runs must match that in the library. The ports must also match.
+The test app has two options:
+- Digital IO: Button to LED
+- Analog/PWM: Potentiometer sets LED brightness.
 
 ------
 
@@ -100,8 +108,8 @@ See the [Console app](/SoftataConsole) but the IpAddress as determined when the 
 ```cs
         public enum CommandType : byte
         {
-            Digital = 0,
-            Analog = 1,
+            Digital = 0, //Done
+            Analog = 1,  //Done
             PWM = 2,
             Servo = 3,
             I2C = 4,
