@@ -71,7 +71,9 @@ namespace Softata
             digitalWrite = 0xD1,
             digitalRead = 0xD2,
             digitalToggle = 0xD3,
-            analogWrite = 0xA0, //Not iumplemented
+
+            analogWrite = 0xA1, //Not iumplemented
+            analogRead = 0xA2,
 
             Undefined = 0xFF
         }
@@ -271,7 +273,24 @@ namespace Softata
 
         public static class Analog
         {
+            public static int AnalogRead(int pinNumber)
+            {
+                if (pinNumber <= 0 || pinNumber >= PinMax)
+                    throw new ArgumentOutOfRangeException(nameof(pinNumber), "Messages.ArgumentEx_PinRange0_127");
 
+                string state = SendMessage(Commands.analogRead , (byte)pinNumber, nullData, "AD:");
+
+                int result = int.MaxValue;
+                if(state.ToUpper().StartsWith("AD:"))
+                { 
+                    state = state.Substring(3);
+                    if(int.TryParse(state, out int val))
+                    {
+                        result = val;
+                    }
+                }   
+                return result;
+            }
         }
 
         public static class PWM

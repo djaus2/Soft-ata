@@ -47,10 +47,18 @@ namespace FirmataBasic
                 Thread.Sleep(500);
 
                 int n;
-                for (int i = 0; i < 2; i++)
+                int ADPin = 26;
+                for (int i = 0; i < 10; i++)
                 {
-                    SoftataLib.Digital.GetPinState(13);
-                    SoftataLib.Digital.TogglePinState(12);
+                    //SoftataLib.Digital.GetPinState(13);
+                    //SoftataLib.Digital.TogglePinState(12);
+                    //SoftataLib.Digital.TogglePinState(12);
+                    int val  =SoftataLib.Analog.AnalogRead(ADPin);
+                    if (val != int.MaxValue)
+                        Console.WriteLine($"AnalogRead({ADPin}) = {val}");
+                    else
+                        Console.WriteLine($"AnalogRead({ADPin}) failed");
+                    Console.WriteLine();
                     Thread.Sleep(2000);
                 }
 

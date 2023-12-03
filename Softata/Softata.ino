@@ -192,8 +192,25 @@ void loop() {
                 client.print("FAIL");
                 continue;
               }
-              Serial.println("OK-Analog 2D cmds");
-              client.print("OK-Analog 2D cmds"); 
+              if (cmd==0xA2)
+              {
+                //case 0xA2:
+                  Serial.print("analogRead:");
+                  value = analogRead(pin);
+                  String valueADStr = String(value);
+                  String msgAD = "AD:";
+                  msgAD.concat(valueADStr);
+                  Serial.println(valueADStr);
+                  client.print(msgAD);
+                  //break;
+              }
+              else
+              {
+                //default:
+                  Serial.println("OK-Analog 2D cmds");
+                  client.print("OK-Analog 2D cmds"); 
+                  break;
+              }
               break;
             case 0xB0:
             case 0xB1:
