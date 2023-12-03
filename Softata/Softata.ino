@@ -183,8 +183,8 @@ void loop() {
               }
               break;           
             }
-            case 0xA0:
-            case 0xA1:
+            //case 0xA0:
+            //case 0xA1:
             case 0xA2: // Analog place holder
               if(!IS_PIN_ANALOG(pin))
               {
@@ -212,17 +212,29 @@ void loop() {
                   break;
               }
               break;
-            case 0xB0:
+            //case 0xB0:
             case 0xB1:
-            case 0xB2: // PWM place holder
+            //case 0xB2: // PWM place holder
               if(!IS_PIN_PWM(pin))
               {
                 Serial.print("Pin not PWM");
                 client.print("FAIL");
                 continue;
               }
-              Serial.println("OK-PWD 2D cmds");
-              client.print("OK-PWD 2D cmds"); 
+              if (cmd==0xB1)
+              {
+                //case 0xB1:
+                  Serial.print("PWM");
+                  analogWrite(pin,param);
+                  Serial.println("PWM:analogWrite()");
+                  client.print("OK");
+                  //break;
+              }
+              else 
+              {
+                Serial.println("OK-PWD 2D cmds");
+                client.print("OK-PWD 2D cmds"); 
+              }
               break;
             case 0xC0:
             case 0xC1:

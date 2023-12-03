@@ -31,9 +31,9 @@ namespace FirmataBasic
                 
                 Thread.Sleep(500);
 
-                SoftataLib.Digital.SetPinMode(13, SoftataLib.PinMode.DigitalInput);
+                //SoftataLib.Digital.SetPinMode(13, SoftataLib.PinMode.DigitalInput);
                 SoftataLib.Digital.SetPinMode(12, SoftataLib.PinMode.DigitalOutput);
-                SoftataLib.Digital.SetPinState(12, SoftataLib.PinState.HIGH);
+                //SoftataLib.Digital.SetPinState(12, SoftataLib.PinState.HIGH);
 
                 // Next is errant as no pin 50 on Pico
                 //Digital.SetPinMode(50, PinMode.DigitalInput);
@@ -42,8 +42,8 @@ namespace FirmataBasic
                 //SoftataLib.SendMessage(SoftataLib.Commands.Undefined, (byte)26, (byte)PinMode.DigitalInput);
 
 
-                // Next is currently not implemented but is not errant
-                SoftataLib.SendMessage(SoftataLib.Commands.analogWrite, (byte)26, (byte)PinMode.DigitalInput);
+                // Next is now errant
+                //SoftataLib.SendMessage(SoftataLib.Commands.analogWrite, (byte)26, (byte)PinMode.DigitalInput);
                 Thread.Sleep(500);
 
                 int n;
@@ -55,7 +55,10 @@ namespace FirmataBasic
                     //SoftataLib.Digital.TogglePinState(12);
                     int val  =SoftataLib.Analog.AnalogRead(ADPin);
                     if (val != int.MaxValue)
+                    {
                         Console.WriteLine($"AnalogRead({ADPin}) = {val}");
+                        SoftataLib.PWM.SetPWM(12, (byte) (val/4));
+                    }
                     else
                         Console.WriteLine($"AnalogRead({ADPin}) failed");
                     Console.WriteLine();

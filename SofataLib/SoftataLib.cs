@@ -72,8 +72,10 @@ namespace Softata
             digitalRead = 0xD2,
             digitalToggle = 0xD3,
 
-            analogWrite = 0xA1, //Not iumplemented
+            
             analogRead = 0xA2,
+
+            pwmWrite = 0xB1,
 
             Undefined = 0xFF
         }
@@ -295,6 +297,13 @@ namespace Softata
 
         public static class PWM
         {
+            public static void SetPWM(int pinNumber, byte value)
+            {
+                if (pinNumber <= 0 || pinNumber >= PinMax)
+                    throw new ArgumentOutOfRangeException(nameof(pinNumber), "Messages.ArgumentEx_PinRange0_127");
+
+                SendMessage(Commands.pwmWrite, (byte)pinNumber, value);
+            }
 
         }
 
