@@ -48,7 +48,7 @@ namespace FirmataBasic
 
                 int n;
                 int ADPin = 26;
-                for (int i = 0; i < 10; i++)
+                for (int i = 0; i < 50; i++)
                 {
                     //SoftataLib.Digital.GetPinState(13);
                     //SoftataLib.Digital.TogglePinState(12);
@@ -56,13 +56,18 @@ namespace FirmataBasic
                     int val  =SoftataLib.Analog.AnalogRead(ADPin);
                     if (val != int.MaxValue)
                     {
+ 
                         Console.WriteLine($"AnalogRead({ADPin}) = {val}");
-                        SoftataLib.PWM.SetPWM(12, (byte) (val/4));
+                        byte pwmVal = (byte)(val >>2);
+                        /*int pwmVal = (byte)(val / 4);*/
+                        if (val > 1023)
+                            pwmVal = 255;
+                        SoftataLib.PWM.SetPWM(12, (byte) (pwmVal));
                     }
                     else
                         Console.WriteLine($"AnalogRead({ADPin}) failed");
                     Console.WriteLine();
-                    Thread.Sleep(2000);
+                    Thread.Sleep(500);
                 }
 
                 SoftataLib.SendMessageCmd("End");

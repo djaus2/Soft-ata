@@ -151,7 +151,7 @@ namespace Softata
             if (pin != 0xff)
             {
                 sendmsg.Add(pin);
-                if (state != 0xff)
+                if ((state != 0xff) || (MsgType == Commands.pwmWrite))
                 {
                     sendmsg.Add(state);
                     if (other != 0xff)
