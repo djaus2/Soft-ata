@@ -183,8 +183,6 @@ void loop() {
               }
               break;           
             }
-            //case 0xA0:
-            //case 0xA1:
             case 0xA2: // Analog place holder
               if(!IS_PIN_ANALOG(pin))
               {
@@ -192,29 +190,22 @@ void loop() {
                 client.print("FAIL");
                 continue;
               }
-              if (cmd==0xA2)
-              {
-                //case 0xA2:
-                  Serial.print("analogRead:");
-                  value = analogRead(pin);
-                  String valueADStr = String(value);
-                  String msgAD = "AD:";
-                  msgAD.concat(valueADStr);
-                  Serial.println(valueADStr);
-                  client.print(msgAD);
-                  //break;
-              }
               else
               {
-                //default:
-                  Serial.println("OK-Analog 2D cmds");
-                  client.print("OK-Analog 2D cmds"); 
-                  break;
+                if(cmd==0xA2)
+                {
+                    Serial.print("analogRead:");
+                    value = analogRead(pin);
+                    String valueADStr = String(value);
+                    String msgAD = "AD:";
+                    msgAD.concat(valueADStr);
+                    Serial.println(valueADStr);
+                    client.print(msgAD);
+                    //break;
+                }
               }
               break;
-            //case 0xB0:
             case 0xB1:
-            //case 0xB2: // PWM place holder
               if(!IS_PIN_PWM(pin))
               {
                 Serial.print("Pin not PWM");
@@ -223,17 +214,10 @@ void loop() {
               }
               if (cmd==0xB1)
               {
-                //case 0xB1:
                   Serial.print("PWM");
                   analogWrite(pin,param);
                   Serial.println("PWM:analogWrite()");
                   client.print("OK");
-                  //break;
-              }
-              else 
-              {
-                Serial.println("OK-PWD 2D cmds");
-                client.print("OK-PWD 2D cmds"); 
               }
               break;
             case 0xC0:
@@ -248,17 +232,140 @@ void loop() {
               Serial.println("OK-SERVO 2D cmds");
               client.print("OK-SERVO 2D cmds"); 
               break;
-            case 0xE0:
-            case 0xE1:
-            case 0xE2: // Serial place holder
+            case 0xE0: // Setup Serial1/2
+            case 0xE1: // Get a char
+            case 0xE2: // Get a string
+            case 0xE3: // Write a char
+            case 0xE4: // Get float
               if(!IS_PIN_SERIAL(pin))
               {
                 Serial.print("Pin not Serial");
                 client.print("FAIL");
                 continue;
               }
-              Serial.println("OK-Serial 2D cmds");
-              client.print("OK-Serial 2D cmds"); 
+              else
+              {
+                char ch;
+                String str;
+                String msgSerial;
+                float num;
+                switch(cmd)
+                {
+                  case 0xE0: // Set Pins (Provide Tx, Determine Rx) and set Baudrate from list
+                    {
+                      if(IS_PIN_SERIAL_TX(pin))
+                      {
+                        byte Tx = pin;
+                        byte Rx = pin + 1;
+                        int baudrate = Baudrates[param];
+                        if(other==1)
+                        {
+                          Serial1.setTX(Tx);
+                          Serial1.setRX(Rx);
+                          Serial.println("Serial1.setup");
+                          client.print("OK");
+                        }
+                        else if(other==2)
+                        {
+                          Serial2.setTX(Tx);
+                          Serial2.setRX(Rx);
+                          Serial.println("Serial2.setup");
+                          client.print("OK");
+                        }
+                      }
+                      else
+                      {
+                        Serial.println("Serial.setup Fail");
+                        client.print("Fail");
+                      }
+                    }
+                    break;
+                  case 0xE1:
+                    if(other==1)
+                    {
+                      while(!Serial1.available()){ delay(100);}
+                      ch = Serial1.read();
+                      Serial.print("Serial1.readChar:");
+                      Serial.println(ch);
+                      msgSerial = "SER1:";
+                      msgSerial.concat(ch);
+                      client.print(msgSerial);
+                    }
+                    else if(other==2)
+                    {
+                      while(!Serial2.available()){ delay(100);}
+                      ch = Serial2.read();
+                      Serial.print("Serial2.readChar:");
+                      Serial.println(ch);
+                      msgSerial = "SER2:";
+                      msgSerial.concat(ch);
+                      client.print(msgSerial);
+                    }
+                    break;
+                  case 0xE2:
+                    if(other==1)
+                    {
+                      while (Serial1.available() == 0) {delay(100);} 
+                      str = Serial.readString();
+                      Serial.print("Serial2.readString:");
+                      Serial.println(str);
+                      msgSerial = "SER1:";
+                      msgSerial.concat(str);
+                      client.print(msgSerial);
+                    }
+                    else  if(other==2)
+                    {
+                      while (Serial2.available() == 0) {delay(100);} 
+                      str = Serial.readString();
+                      Serial.print("Serial2.readString:");
+                      Serial.println(str);
+                      msgSerial = "SER2:";
+                      msgSerial.concat(str);
+                      client.print(msgSerial);
+                    }
+                    break;
+                  case 0xE3:
+                    if(other==1)
+                    {
+                      ch = (char) param;
+                      Serial1.write(ch);
+                      Serial.println("Serial1.write");
+                      client.print("OK");
+                    }
+                    else if(other==2)
+                    {
+                      ch = (char) param;
+                      Serial2.write(ch);
+                      Serial.println("Serial2.write");
+                      client.print("OK");
+                    }
+                    break;
+                  case 0xE4:
+                    if(other==1)
+                    {
+                      while(!Serial1.available()){ delay(100);}
+                      num  = Serial1.parseFloat();
+                      Serial.print("Serial1.readFloat:");
+                      Serial.println(num);
+                      str = String(num);
+                      msgSerial = "FLT1:";
+                      msgSerial.concat(str);
+                      client.print(msgSerial);
+                    }
+                    else if(other==2)
+                    {
+                      while(!Serial2.available()){ delay(100);}
+                      num  = Serial2.parseFloat();
+                      Serial.print("Serial2.readFloat:");
+                      Serial.println(num);
+                      str = String(num);
+                      msgSerial = "FLT2:";
+                      msgSerial.concat(str);
+                      client.print(msgSerial);
+                    }
+                    break;                                  
+                }
+              }
               break;
             case 0xF0:
             case 0xF1:

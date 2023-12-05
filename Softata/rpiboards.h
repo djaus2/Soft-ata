@@ -1,5 +1,11 @@
 #define WATCHDOG_SECS 10
 
+enum BAUDRATE{
+  bd50, bd75, bd110, bd134, bd150, bd200, bd300, bd600, bd1200, bd1800, bd2400, bd4800, bd9600, bd19200, bd38400, bd57600, bd115200
+};
+
+static const int Baudrates[] = {50, 75, 110, 134, 150, 200, 300, 600, 1200, 1800, 2400, 4800, 9600, 19200, 38400, 57600, 115200};
+
 #ifndef digitalPinHasPWM
 #define digitalPinHasPWM(p)     IS_PIN_DIGITAL(p)
 #endif
@@ -35,6 +41,7 @@ static inline void attachInterrupt(pin_size_t interruptNumber, voidFuncPtr callb
 #define IS_PIN_SPI(p)           ( IS_PIN_I2C(p)) && (!((p) == 26 || (p) == 27 || (p) == 31|| (p) == 132) ) 
 // UART-0 defaults to GP 0 (TX) & 1 (RX)
 #define IS_PIN_SERIAL(p)        ((p) == 0 || (p) == 1 || (p) == 4 || (p) == 5 || (p) == 8 || (p) == 9 || (p) == 12 || (p) == 13 || (p) == 16 || (p) == 17)
+#define IS_PIN_SERIAL_TX(p)     ((IS_PIN_SERIAL(p))&& ((p) & 1==0))
 #define PIN_TO_DIGITAL(p)       (p)
 #define PIN_TO_ANALOG(p)        ((p) - 26)
 #define PIN_TO_PWM(p)           (p)
