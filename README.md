@@ -56,7 +56,6 @@ This requires a setup as per previous repositories here as well as in some blog 
     - SoftataLib.Serial.serialWriteChar(byte serialportNo, char value)
     - SoftataLib.Serial.serialGetByte(byte serialportNo)
     - SoftataLib.Serial.erialWriteByte(byte serialportNo, byte value)
-    - _
   - Communication between client and Pico made more robust:
     - Length of byte array included as first byte rather than read until \n
 - Version 1.10
