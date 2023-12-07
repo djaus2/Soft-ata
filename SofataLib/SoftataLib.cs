@@ -8,15 +8,16 @@ using System.Net;
 using System.Net.Sockets;
 using System.IO;
 using System.Threading;
+using System.Net.NetworkInformation;
 
 namespace Softata
 {
-    public class SoftataLib
+    public partial class SoftataLib
     {
         //Ref: https://datasheets.raspberrypi.com/pico/Pico-R3-A4-Pinout.pdf
-        private const int PinMax = 28;
+        public const int PinMax = 28;
 
-        const byte nullData = 0xff;
+        public const byte nullData = 0xfe;
 
         public static  int port { get; set; } = 4242;
         public static string ipAddresStr { get; set; } = "192.168.0.13";
@@ -42,7 +43,6 @@ namespace Softata
                 }
 
                 Console.WriteLine("Socket created to {0}", client.RemoteEndPoint?.ToString());
-                SendMessageCmd("Begin");
                 Thread.Sleep(500);
             }
             catch (Exception ex)
@@ -64,18 +64,31 @@ namespace Softata
 
         }
 
+        // Add commands here that use param = 0xff
+        // For others 0xff is not sent
+        private static List<Commands> WritingCmds = new List<Commands> { Commands.pwmWrite, Commands.serialWriteChar};
+
 
         public enum Commands
         {
+            //Digital IO
             pinMode = 0xD0,
             digitalWrite = 0xD1,
             digitalRead = 0xD2,
             digitalToggle = 0xD3,
-
-            
+        
+            //Analog/PWM
             analogRead = 0xA2,
-
             pwmWrite = 0xB1,
+
+            //Serial
+            serialSetup = 0xE0, // Setup Serial1/2
+            serialGetChar = 0xE1, // Get a char
+            serialGetString = 0xE2, // Get a string
+            serialGetStringUntil = 0xE3, // Get a string until char
+            serialWriteChar = 0xE4, // Write a char
+            serialGetFloat = 0xE5, // Get Flost
+            serialGetInt = 0xE6, // Get Int
 
             Undefined = 0xFF
         }
@@ -89,6 +102,7 @@ namespace Softata
             I2C = 4,
             SPI = 5,
             OneWire = 6,
+            Serial = 7,
             Undefined = 0xFF,
         }
         public enum PinMode
@@ -114,14 +128,22 @@ namespace Softata
         }
         public static void SendMessageCmd(string cmd)
         {
-            string sendmsg = cmd;
-            Console.WriteLine("Sending: " + sendmsg);
-            sendmsg += "\n";
-            byte[] msg = Encoding.ASCII.GetBytes(sendmsg);
-            int sent = client.Send(msg); ;
+            if (client == null)
+                throw new Exception("SendMessageCmd: Not connected");
 
-            Console.WriteLine($"Sent {sent - 1} bytes");
+            // Construct command and parameters as list of bytes
+            List<byte> sendmsg = new List<byte> { 1, (byte)cmd[0] };
 
+            byte[] sendBytes = sendmsg.ToArray<byte>();
+            Console.WriteLine($"Sending {sendBytes.Length} data bytes");
+            ;
+            int sent = client.Send(sendBytes, 0, sendBytes.Length, SocketFlags.None);
+            if (sent != sendBytes.Length)
+                throw new Exception($"SendMessage: Sent {sent} bytes, expected {sendBytes.Length} bytes");
+
+            Console.WriteLine($"Sent {sent} bytes");
+
+            //Wait for response
             while (client.Available == 0) ;
             byte[] data = new byte[100];
             int recvd = client.Receive(data);
@@ -136,6 +158,7 @@ namespace Softata
                 case "Null":
                     break;
                 case "End":
+                    Thread.Sleep(2000);
                     client.Shutdown(SocketShutdown.Both);
                     client.Close();
                     break;
@@ -145,13 +168,15 @@ namespace Softata
         }
         public static string SendMessage(Commands MsgType, byte pin = 0xff, byte state = 0xff, string expect = "OK", byte other = 0xff)
         {
-            string result = "";
+            if (client == null)
+                throw new Exception("SendMessageCmd: Not connected");
+
             // Construct command and parameters as list of bytes
-            List<byte> sendmsg = new List<byte> { (byte)MsgType };
+            List<byte> sendmsg = new List<byte> { 0,(byte)MsgType };
             if (pin != 0xff)
             {
                 sendmsg.Add(pin);
-                if ((state != 0xff) || (MsgType == Commands.pwmWrite))
+                if ((state != 0xff) || (WritingCmds.Contains(MsgType)))
                 {
                     sendmsg.Add(state);
                     if (other != 0xff)
@@ -160,26 +185,23 @@ namespace Softata
                     }
                 }
             }
-
-            // Get bytes as string for display here.
+            sendmsg[0] = (byte)(sendmsg.Count-1);
+            // Get bytes from list.
             byte[] sendBytes = sendmsg.ToArray<byte>();
-            string sendmsgStr = BitConverter.ToString(sendBytes).Replace(",", string.Empty);
-            Console.WriteLine("Sending: " + sendmsgStr);
+            Console.WriteLine($"Sending {sendBytes.Length} data bytes");
 
-            // Add \n to end of message and send.
-            // The command terminator at other end
-            sendmsg.Add((byte)'\n');
-            sendBytes = sendmsg.ToArray<byte>();
-            int sent = client.Send(sendBytes); ;
+            int sent = client.Send(sendBytes, 0, sendBytes.Length, SocketFlags.None);
+            if (sent != sendBytes.Length)
+                throw new Exception($"SendMessage: Sent {sent} bytes, expected {sendBytes.Length} bytes");
 
-            Console.WriteLine($"Sent {sent - 1} bytes");
+            Console.WriteLine($"Sent {sent} bytes");
 
             //Wait for response
             while (client.Available == 0) ;
             byte[] data = new byte[100];
             int recvd = client.Receive(data);
 
-            result = Encoding.ASCII.GetString(data).Substring(0, recvd).Trim();
+            string result = Encoding.UTF8.GetString(data).Substring(0, recvd);
 
             // Make the check work in both ways.
             if ((!expect.Contains(result)) && (!result.Contains(expect)))
@@ -318,11 +340,6 @@ namespace Softata
         }
 
         public static class SPI
-        {
-
-        }
-
-        public static class Serial
         {
 
         }

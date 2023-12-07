@@ -41,7 +41,7 @@ static inline void attachInterrupt(pin_size_t interruptNumber, voidFuncPtr callb
 #define IS_PIN_SPI(p)           ( IS_PIN_I2C(p)) && (!((p) == 26 || (p) == 27 || (p) == 31|| (p) == 132) ) 
 // UART-0 defaults to GP 0 (TX) & 1 (RX)
 #define IS_PIN_SERIAL(p)        ((p) == 0 || (p) == 1 || (p) == 4 || (p) == 5 || (p) == 8 || (p) == 9 || (p) == 12 || (p) == 13 || (p) == 16 || (p) == 17)
-#define IS_PIN_SERIAL_TX(p)     ((IS_PIN_SERIAL(p))&& ((p) & 1==0))
+#define IS_PIN_SERIAL_TX(p)     ((IS_PIN_SERIAL(p))&& (((p) & 1)==0))
 #define PIN_TO_DIGITAL(p)       (p)
 #define PIN_TO_ANALOG(p)        ((p) - 26)
 #define PIN_TO_PWM(p)           (p)
