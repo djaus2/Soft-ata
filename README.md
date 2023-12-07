@@ -7,6 +7,9 @@ Console app included with Blazor and MAUI apps coming soon.
   
 _Soft-ata rather than firm-ata!_ 
 
+## Coming
+- Serial1 and Serial2
+
 ## Blog Post
 
 Discusion and more details in the blog post: [Soft-ata: A Simple Firmata with .NET](https://davidjones.sportronics.com.au/web/Soft-ata-A_Simple_Firmata_with_.NET-web.html)
