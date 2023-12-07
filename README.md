@@ -47,7 +47,7 @@ This requires a setup as per previous repositories here as well as in some blog 
 
 ------
 
-<h2 id="repository-status">Repository Status</h2>
+<h2 id="user-content-repository-status">Repository Status</h2>
 - Version 1.20
   - Serial1 and Serial2 implemented for byte and char read/writes
     - SoftataLib.Serial.serialSetup.erialSetup(byte pin, int baud, byte serialportNo)
