@@ -8,7 +8,7 @@ Console app included with Blazor and MAUI apps coming soon.
 _Soft-ata rather than firm-ata!_ 
 
 ## Coming
-- Serial1 and Serial2: Done See [Repository Status](user-content-repository-status)
+- Serial1 and Serial2: Done See **Repository Status**
 
 ## Blog Post
 
