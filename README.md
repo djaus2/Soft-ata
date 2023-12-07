@@ -51,12 +51,12 @@ This requires a setup as per previous repositories here as well as in some blog 
 
 - Version 1.20
   - Serial1 and Serial2 implemented for byte and char read/writes
-    - SoftataLib.Serial.serialSetup.erialSetup(byte pin, int baud, byte serialportNo)
+    - SoftataLib.Serial.serialSetup(byte pin, int baud, byte serialportNo)
       - _pin is the Tx pin (Rx = Tx+1), serialportNo = 1 or 2_
     - SoftataLib.Serial.serialGetChar(byte serialportNo)
     - SoftataLib.Serial.serialWriteChar(byte serialportNo, char value)
     - SoftataLib.Serial.serialGetByte(byte serialportNo)
-    - SoftataLib.Serial.erialWriteByte(byte serialportNo, byte value)
+    - SoftataLib.Serial.serialWriteByte(byte serialportNo, byte value)
   - Communication between client and Pico made more robust:
     - Length of byte array included as first byte rather than read until \n
 - Version 1.10
