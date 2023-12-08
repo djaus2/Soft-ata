@@ -10,7 +10,7 @@ _Soft-ata rather than firm-ata!_
 ## Latest
 - See **Repository Status** below.
   - Added Blazor App that uses the class library
-  - Serial1 and Serial2: 
+  - Serial1 and Serial2 char and byte read/write. 
 
 ## Blog Post
 
