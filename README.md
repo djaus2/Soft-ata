@@ -7,8 +7,10 @@ Console app included with Blazor and MAUI apps coming soon.
   
 _Soft-ata rather than firm-ata!_ 
 
-## Coming
-- Serial1 and Serial2: Done See **Repository Status** below.
+## Latest
+- See **Repository Status** below.
+  - Add Blazor App that uses the class library
+  - Serial1 and Serial2: 
 
 ## Blog Post
 
@@ -48,7 +50,9 @@ This requires a setup as per previous repositories here as well as in some blog 
 ------
 
 ## Repository Status
-
+- Version 1.50
+  - Added Blazor Server app that runs the Digital LED-Button test (as per Console app), _other tests to come._
+    - Wishlist: A reconfigurable Blazor UI to action Softata functionality.
 - Version 1.20
   - Serial1 and Serial2 implemented for byte and char read/writes
     - SoftataLib.Serial.serialSetup(byte pin, int baud, byte serialportNo)
