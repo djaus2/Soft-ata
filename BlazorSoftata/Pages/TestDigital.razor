@@ -101,6 +101,7 @@ else
 
     protected override void OnInitialized()
     {
+        queue = new Queue<LEDandButtonStates>();
         Trigger = new System.Threading.ManualResetEvent(false);
         var thread = new System.Threading.Thread(_ =>
         {
@@ -113,9 +114,10 @@ else
 
     private async Task Start()
     {
+        queue = new Queue<LEDandButtonStates>();
         running = true;
         StateHasChanged();
-        await Task.Delay(500);
+        await Task.Delay(100);
         ((ManualResetEvent)Trigger).Set();
         while(running)
         {
@@ -126,7 +128,7 @@ else
                 LEDstate = states.LEDstate;
                 StateHasChanged();  
             }
-            Thread.Sleep(500);    
+            await Task.Delay(333);
         }
     }
 
@@ -135,7 +137,7 @@ else
         running = false;
         StateHasChanged();
         SoftataLib.SendMessageCmd("End");
-        Thread.Sleep(500);
+        await Task.Delay(333);
     }
 
 
@@ -143,12 +145,10 @@ else
     {
         LEDandButtonStates states = new LEDandButtonStates();
 
-        Thread.Sleep(500);
-        SoftataLib.Init(ipaddressStr, port);
-        Thread.Sleep(500);
 
+        SoftataLib.Init(ipaddressStr, port);
         SoftataLib.SendMessageCmd("Begin");
-        Thread.Sleep(500);
+        Thread.Sleep(333);
 
         SoftataLib.Digital.SetPinMode((byte)BUTTON, SoftataLib.PinMode.DigitalInput);
         SoftataLib.Digital.SetPinMode((byte)LED, SoftataLib.PinMode.DigitalOutput);
@@ -165,7 +165,7 @@ else
             if (!running) return;
             while (!SoftataLib.Digital.GetPinState(BUTTON))
             {
-                Thread.Sleep(1000);
+                Thread.Sleep(333);
                 if (!running) return;
             };
 
@@ -177,7 +177,7 @@ else
 
             while (SoftataLib.Digital.GetPinState(BUTTON))
             {
-                Thread.Sleep(1000);
+                Thread.Sleep(333);
                 if (!running) return;
             }
             states.Buttonstate = SoftataLib.PinState.LOW;
@@ -185,7 +185,7 @@ else
         }
 
         SoftataLib.SendMessageCmd("End");
-        Thread.Sleep(500);
+        Thread.Sleep(333);
 
         running= false;
         //StateHasChanged();
