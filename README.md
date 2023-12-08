@@ -9,7 +9,7 @@ _Soft-ata rather than firm-ata!_
 
 ## Latest
 - See **Repository Status** below.
-  - Add Blazor App that uses the class library
+  - Added Blazor App that uses the class library
   - Serial1 and Serial2: 
 
 ## Blog Post
