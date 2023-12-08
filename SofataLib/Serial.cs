@@ -12,19 +12,15 @@ namespace Softata
         /*
         public enum Commands
         {
-            ...
-
             //Serial
             serialSetup = 0xE0, // Setup Serial1/2
             serialGetChar = 0xE1, // Get a char
-            serialGetString = 0xE2, // Get a string
-            serialGetStringUntil = 0xE3, // Get a string until char
+            * serialGetString = 0xE2, // Get a string
+            * serialGetStringUntil = 0xE3, // Get a string until char
             serialWriteChar = 0xE4, // Write a char
-            serialGetFloat = 0xE5, // Get Flost
-            serialGetInt = 0xE6, // Get Int
-
-            ...
-        }
+            * serialGetFloat = 0xE5, // Get Flost
+            * serialGetInt = 0xE6, // Get Int
+        }   * Not yet fully implmeneted
         */
 
         enum BAUDRATE
