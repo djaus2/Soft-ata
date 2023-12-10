@@ -9,8 +9,8 @@ _Soft-ata rather than firm-ata!_
 
 ## Latest
 - See **Repository Status** below.
-  - Added Blazor App that uses the class library
-    - Traffic Light to show states.
+  - Added Blazor App that uses the class library _(updated)_
+    - Traffic Light to shows states.
   - Serial1 and Serial2 char and byte read/write. 
 
 ## Blog Post
@@ -51,8 +51,9 @@ This requires a setup as per previous repositories here as well as in some blog 
 ------
 
 ## Repository Status
-- Version 1.50
-  - Added Blazor Server app that runs the Digital LED-Button test (as per Console app), _other tests to come._
+- Version 1.60
+  - Added Blazor Server app that runs the Digital LED-Button test (as per Console app).
+    - Analog Test added (as per Console App). _Serial Test to come._
     - Wishlist: A reconfigurable Blazor UI to action Softata functionality.
 - Version 1.20
   - Serial1 and Serial2 implemented for byte and char read/writes
