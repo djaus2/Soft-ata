@@ -39,7 +39,7 @@ namespace Softata
             public static void serialSetup(byte pin, int baud, byte serialportNo)
             {
                 string expect = "OK";
-                if (pin <= 0 || pin >= PinMax)
+                if (pin < 0 || pin >= PinMax)
                     throw new ArgumentOutOfRangeException(nameof(pin), "Messages.ArgumentEx_PinRange0_127");
                 if (serialportNo < 1 || serialportNo > 2)
                     throw new ArgumentOutOfRangeException(nameof(serialportNo), "Messages.ArgumentEx_SerialPortRange1or2");

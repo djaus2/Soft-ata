@@ -1,0 +1,389 @@
+﻿@page "/TestSerial"
+
+
+@using Softata;
+
+<PageTitle>Softata Test Serial</PageTitle>
+
+<h1>Softata Test Serial</h1>
+
+<i><b>Softata:</b> A Firmata like C# library connecting to a RPi Pico W running Arduino.</i>
+
+<p>This page tests the Serial1 and Serial2 functionality..
+Runs the test as per the Console app without user web page interaction.
+</p>
+
+@if (!@running)
+{
+<table>
+    <tr>
+        <td align="right" width="180" >IP Address:</td>
+            <td colspan="2"><input type="text" value="@ipaddressStr" /></td>
+    </tr>
+    <tr>
+            <td align="right">Port:</td>
+            <td colspan="2"><input type="text" value="@port" /></td>
+    </tr>
+    <tr>
+            <td align="right">BAUD Rate:</td>
+            <td colspan="2"><input type="number" value="@Baud" /></td>
+    </tr>
+    <tr>
+        <td align="right">
+                Serial1 Tx Pin:&nbsp;
+        </td>
+        <td align="left">
+            <select @bind="TxPin1">
+            @foreach (var item in Uart0Txs)
+            {
+                <option value="@item">@item</option>
+            }
+            </select>
+            </td>
+        <td align="right">Serial1 Rx Pin:@RxPin1</td>
+    </tr>
+    <tr>
+        <td align="right">
+                Serial2 Tx Pin:&nbsp;
+        </td>
+        <td align="left">
+            <select @bind="TxPin2">
+                @foreach (var item in Uart1Txs)
+                {
+                    <option value="@item">@item</option>
+                }
+            </select>
+        </td>
+        <td align="right">Serial2 Rx Pin:@RxPin2</td>
+    </tr>
+    <tr>
+        <td align="right">Transmit from:&nbsp;</td>
+        <td align="left">
+            <select @bind="Transmit">
+                <option value="@SerialPort.Serial1">Serial1</option>
+                <option value="@SerialPort.Serial2">Serial2</option>
+            </select>
+        </td>
+     </tr>
+     <tr>
+        <td align="right">Receive at:&nbsp;</td>
+        <td align="left">
+            <select @bind="Receive">
+                <option value="@SerialPort.Serial1">Serial1</option>
+                <option value="@SerialPort.Serial2">Serial2</option>
+            </select>
+        </td>
+    </tr>
+    <tr>
+        <td align="right">Serial Mode:&nbsp;</td>
+        <td align="left">
+            <select @bind="serialMode">
+                @foreach (var item in Enum.GetValues<SerialMode>())
+                {
+                    <option value="@item">@item</option>
+                }
+            </select>
+        </td>
+    </tr>
+    <tr>
+        <td align="right">Running:</td>
+        <td>@running</td>
+    </tr>
+</table>
+
+
+
+    <h2>Setup</h2>
+
+    <ul>
+        <li>Select Serial1 and Serial2 Tx pins.
+            <ul>
+                <li>Rxs auto generated (Tx+1)</li>
+            </ul>
+        </li>
+        <li>Select Send/receive as Serial1 or 2
+            <ul>
+                Can be same = Loopback.
+            </ul>
+        </li>
+    </ul>
+
+    <button class="btn btn-primary" @onclick="Start">Run test</button>
+}
+else
+{
+    <h2>XX</h2>
+    <ul>
+        <li>Pot glows when &lt;512/1023</li>
+        <li>LED glows when &gt;127/255</li>
+    </ul>
+
+    <table>
+        <tr>
+            <td align="right" width="150">Transmit to:</td>
+            <td align="left" colspan="3">@Transmit</td>
+        </tr>
+        <tr>
+            <td align="right">Receive at:</td>
+            <td align="left" colspan="3">@Receive</td>
+        </tr>
+        <tr>
+            <td align="right">Serial1 Tx Pin:</td>
+            <td>@TxPin1</td>
+            <td align="right">Serial1 Rx Pin:</td>
+            <td>@RxPin1</td>
+        </tr>
+        <tr>
+            <td align="right">Serial2 Tx Pin:</td>
+            <td>@TxPin2 </td>
+            <td align="right">Serial2 Rx Pin:</td>
+            <td>@RxPin2</td>
+        </tr>
+        <tr>
+            <td align="right">Serial Mode:&nbsp;</td>
+            <td align="left">@serialMode</td>
+        </tr>
+    </table>
+
+    <table>
+        <tr>
+            @if (serialMode == SerialMode.ascii)
+            {
+                <td align="right" width="100">Sent</td>
+                <td align="center" width="50">@serialValues.SendCh</td>
+                <td align="center" width="50">@serialValues.RecvCh</td>
+                <td align="left" width="100">:Received</td>
+            }
+            else
+            {
+                <td align="right" width="100">Sent:</td>
+                <td align="center" width="50">@serialValues.Send</td>
+                <td align="center" width="50">@serialValues.Recv</td>
+                <td align="left" width="100">:Received</td>
+
+            }
+        </tr>
+    </table>
+
+
+
+    <button class="btn btn-primary" @onclick="Stop">Cancel</button>
+}
+
+
+
+
+
+@code {
+
+    public class SerialValues
+    {
+        public byte Send { get; set; } = 0;
+        public byte Recv { get; set; } = 0;
+        public char SendCh { get; set; } = ' ';
+        public char RecvCh { get; set; } = ' ';
+    }
+
+    public SerialValues serialValues { get; set; } = new SerialValues();
+
+    public List<byte> Uart0Txs = new List<byte> {0,12,16 };
+    public List<byte> Uart1Txs = new List<byte> { 4,8 };
+
+    enum SerialPort
+    {
+        Serial1,
+        Serial2
+    }
+
+    enum SerialMode
+    {
+        ascii,
+        hex
+    }
+
+    SerialMode serialMode = SerialMode.ascii;
+
+    SerialPort Transmit = SerialPort.Serial1;
+    SerialPort Receive = SerialPort.Serial2;
+
+    // Set the same as Arduino:
+    int port { get; set; } = 4242;
+    string ipaddressStr { get; set; } = "192.168.0.13";
+    int Baud { get; set; } = 9600;
+
+    bool running { get; set; } = false;
+
+    Queue<SerialValues> queue = new Queue<SerialValues>();
+
+    // Configure hardware pin connections thus:
+    byte RxPin1 { get; set; } = 5;
+    byte txPin1 = 4;
+    byte TxPin1
+    { 
+        get { return txPin1; }
+        set { txPin1 = value; RxPin1 = (byte)(txPin1 + 1); }
+    }
+
+    byte RxPin2 { get; set; } = 5;
+    byte txPin2 =12;
+    byte TxPin2
+    {
+        get { return txPin2; }
+        set { txPin2 = value; RxPin2 = (byte)(txPin2 + 1); }
+    }
+
+
+    byte LEDValue = 0;
+    int PotValue { get; set; } = 0;
+
+    public System.Threading.WaitHandle Trigger { get; set; }
+
+
+    protected override void OnInitialized()
+    {
+        queue = new Queue<SerialValues>();
+        Trigger = new System.Threading.ManualResetEvent(false);
+        var thread = new System.Threading.Thread(_ =>
+        {
+            Trigger.WaitOne();
+            Run();
+        });
+
+        thread.Start();
+    }
+
+    private async Task Start()
+    {
+        queue = new Queue<SerialValues>();
+        running = true;
+        StateHasChanged();
+        await Task.Delay(100);
+        ((ManualResetEvent)Trigger).Set();
+        while(running)
+        {
+            try{
+                if (queue.TryDequeue(out SerialValues? _serialValues))
+                {
+                    if (_serialValues!=null)
+                    {
+                        serialValues = _serialValues;
+                        StateHasChanged();  
+                    } 
+                }
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            await Task.Delay(333);
+        }
+        await Task.Delay(333);
+        SoftataLib.SendMessageCmd("End");
+        await Task.Delay(333);
+    }
+
+    private void Stop()
+    {
+        running = false;
+        StateHasChanged();
+    }
+
+    public void Run()
+    {
+        SerialValues a2DandPwmValues = new SerialValues();
+
+        SoftataLib.Init(ipaddressStr, port);
+        SoftataLib.SendMessageCmd("Begin");
+        Thread.Sleep(333);
+
+        SoftataLib.Serial.serialSetup(TxPin1, Baud, 1);
+        SoftataLib.Serial.serialSetup(TxPin2, Baud, 2);
+
+        if (serialMode == SerialMode.ascii) // ASCII test
+        {
+            for (char sendCh = ' '; sendCh <= '~'; sendCh++)
+            {
+                if(!running)
+                {
+                    break;
+                }
+
+                int comTx = 1;
+                if (Transmit == SerialPort.Serial2)
+                    comTx = 2;
+                int comRx = 1;
+                if (Receive == SerialPort.Serial2)
+                    comRx = 2;
+                char recvCh;
+                if (Transmit == SerialPort.Serial1)
+                    SoftataLib.Serial.serialWriteChar(1, sendCh);
+                else
+                    SoftataLib.Serial.serialWriteChar(2, sendCh);
+                if (Receive == SerialPort.Serial1)
+                    recvCh = SoftataLib.Serial.serialGetChar(1);
+                else
+                    recvCh = SoftataLib.Serial.serialGetChar(2);
+                if (recvCh == sendCh)
+                    Console.WriteLine($"Serial{comTx} Sent {sendCh} Got {recvCh} on Serial{comRx},OK");
+                else
+                    Console.WriteLine($"Serial{comTx} Sent {sendCh} Got {recvCh} on Serial{comRx},NOK!");
+                if (!running)
+                {
+                    break;
+                }
+                a2DandPwmValues.SendCh = sendCh;
+                a2DandPwmValues.RecvCh = recvCh;
+                queue.Enqueue(a2DandPwmValues);
+                if (!running)
+                {
+                    break;
+                }
+                Thread.Sleep(500);
+            }
+        }
+        else // Byte test
+        {
+            for (byte sendByte = 0x00; sendByte <= 0xff; sendByte++)
+            {
+                if (!running)
+                {
+                    break;
+                }
+                byte recvByte;
+                if (Transmit == SerialPort.Serial1)
+                    SoftataLib.Serial.serialWriteByte(1, sendByte);
+                else
+                    SoftataLib.Serial.serialWriteByte(2, sendByte);
+                if (Receive == SerialPort.Serial1)
+                    recvByte = SoftataLib.Serial.serialGetByte(1);
+                else
+                    recvByte = SoftataLib.Serial.serialGetByte(2);
+                if (recvByte == sendByte)
+                    Console.WriteLine($"Serial1 Sent {sendByte} Got {recvByte} on Serial1,OK");
+                else
+                    Console.WriteLine($"Serial1 Sent {sendByte} Got {recvByte} on Serial1,NOK!");
+                if (!running)
+                {
+                    break;
+                }
+                a2DandPwmValues.Send = sendByte;
+                a2DandPwmValues.Recv = recvByte;
+                queue.Enqueue(a2DandPwmValues);
+                if (!running)
+                {
+                    break;
+                }
+                Thread.Sleep(500);
+                if (sendByte == 0xff)
+                    break;
+            }
+
+
+        }
+
+        running = false;
+        Thread.Sleep(333);
+    }
+
+}
+

@@ -288,6 +288,7 @@ void loop() {
               String msgSerial;
               float fNum;
               int iNum;
+              Serial.println("#291");
               switch(cmd)
               {
                 case 0xE0: // Set Pins (Provide Tx, Determine Rx) and set Baudrate from list
@@ -353,8 +354,12 @@ void loop() {
                   }
                   break;
                 case 0xE1:
+                  Serial.println("#357");
                   while(!Comport.available()){ delay(100);}
+                  //delay(500);
+                  Serial.println("#359");
                   ch = Comport.read();
+                  Serial.println("#361");
                   Serial.print("Serialn.readChar:");
                   Serial.println(((byte)ch),HEX);
                   msgSerial = "SER";
