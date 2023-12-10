@@ -11,7 +11,7 @@
 <i><b>Softata:</b> A Firmata like C# library connecting to a RPi Pico W running Arduino.</i>
 
 <p>This page tests the digital input and output pins of the RPi Pico W with a Button and LED.
-Runs the digital test as per teh Console app without user web page interaction but requires a button press to toggle the LED.
+Runs the digital test as per the Console app without user web page interaction but requires a button press to toggle the LED.
 </p>
 
 @if (!@running)
@@ -160,8 +160,6 @@ else
     {
         running = false;
         StateHasChanged();
-        SoftataLib.SendMessageCmd("End");
-        await Task.Delay(333);
     }
 
 
