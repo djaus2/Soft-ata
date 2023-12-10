@@ -72,6 +72,7 @@ namespace FirmataBasic
                     // Potentiometer-LED Test
                     case CommandType.Analog:
                     case CommandType.PWM:
+                        // Note no pin setup needed for analog
                         SoftataLib.Digital.SetPinMode(LED, SoftataLib.PinMode.DigitalOutput);
                         for (int i = 0; i < 50; i++)
                         {
@@ -82,7 +83,7 @@ namespace FirmataBasic
                                 byte pwmVal = (byte)(val >> 2);
                                 if (val > 1023)
                                     pwmVal = 255;
-                                SoftataLib.PWM.SetPWM(12, (byte)(pwmVal));
+                                SoftataLib.PWM.SetPWM(LED, (byte)(pwmVal));
                             }
                             else
                                 Console.WriteLine($"AnalogRead({POTENTIOMETER}) failed");

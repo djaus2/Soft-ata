@@ -57,9 +57,7 @@ else
 
     <table>
         <tr>
-            <td>Button:</td>
-            <td>@Buttonstate</td>
-            <td>&nbsp;&nbsp;</td>
+            <td width="150">Button:</td>
             <td rowspan="2">
                 <div class="row">
                     <div class="lights">
@@ -68,11 +66,13 @@ else
                     </div>
                 </div>
             </td>
+            <td>&nbsp;&nbsp;</td>
+            <td>@Buttonstate</td>
         </tr>
         <tr>
             <td>LED:</td>
-            <td>@LEDstate</td>
             <td>&nbsp;&nbsp;</td>
+            <td>@LEDstate</td>
         </tr>
     </table>
 
@@ -103,7 +103,7 @@ else
     // Configure hardware pin connections thus:
     static int LED = 12;
     static int BUTTON = 13;
-    static byte POTENTIOMETER = 26;
+    //static byte POTENTIOMETER = 26;
 
     SoftataLib.PinState LEDstate = SoftataLib.PinState.LOW;
     SoftataLib.PinState Buttonstate { get; set; } = SoftataLib.PinState.LOW;
@@ -133,15 +133,27 @@ else
         ((ManualResetEvent)Trigger).Set();
         while(running)
         {
-            if (queue.TryDequeue(out LEDandButtonStates states))
+            try
             {
-
-                Buttonstate = states.Buttonstate;
-                LEDstate = states.LEDstate;
-                StateHasChanged();  
+                if (queue.TryDequeue(out LEDandButtonStates? states))
+                {
+                    if (states != null)
+                    {
+                        Buttonstate = states.Buttonstate;
+                        LEDstate = states.LEDstate;
+                        StateHasChanged();
+                    }
+                }
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
             }
             await Task.Delay(333);
         }
+        await Task.Delay(333);
+        SoftataLib.SendMessageCmd("End");
+        await Task.Delay(333);
     }
 
     private async Task Stop()
@@ -195,12 +207,8 @@ else
             states.Buttonstate = SoftataLib.PinState.LOW;
             queue.Enqueue(states);
         }
-
-        SoftataLib.SendMessageCmd("End");
+        running = false;
         Thread.Sleep(333);
-
-        running= false;
-        //StateHasChanged();
     }
 
 }
