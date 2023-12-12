@@ -30,8 +30,8 @@ namespace FirmataBasic
         static SoftataLib.CommandType Testtype = CommandType.Serial;
         //Set Serial1 or Serial2 for send and receive.
         //Nb: If both true or both false then loopback on same serial port.
-        static bool Send1 = false;
-        static bool Recv1 = false;
+        static bool Send1 = true;
+        static bool Recv1 = true;
         // Next two are the same test
         //static SoftataLib.CommandType Testtype = CommandType.Analog;
         //static SoftataLib.CommandType Testtype = CommandType.PWM;
@@ -92,30 +92,25 @@ namespace FirmataBasic
                         }
                         break;
                     case CommandType.Serial:
-                        byte[] txPins = new byte[] { 0,12,4 }; //Nb: Recv are Tx+1
+                        byte[] txPins = new byte[] { 0,0,4 }; //Nb: Recv are Tx+1
                         SoftataLib.Serial.serialSetup(txPins[1], 9600, 1);
                         SoftataLib.Serial.serialSetup(txPins[2], 9600, 2);
 
-                        int comTx = 1;
+                        byte comTx = 1;
                         if(!Send1)
                             comTx = 2;
-                        int comRx = 1;
+                        byte comRx = 1;
                         if(!Recv1)
                             comRx = 2;
 
-                        if (false) // ASCII test
+                        if (true) // ASCII test
                         {
                             for (char sendCh = ' '; sendCh <= '~'; sendCh++)
                             {
                                 char recvCh;
-                                if (Send1)
-                                    SoftataLib.Serial.serialWriteChar(1, sendCh);
-                                else
-                                    SoftataLib.Serial.serialWriteChar(2, sendCh);
-                                if (Recv1)
-                                    recvCh = SoftataLib.Serial.serialGetChar(1);
-                                else
-                                    recvCh = SoftataLib.Serial.serialGetChar(2);
+                                SoftataLib.Serial.serialWriteChar(comTx, sendCh);
+                                Thread.Sleep(100);
+                                recvCh = SoftataLib.Serial.serialGetChar(comRx);
                                 if (recvCh == sendCh)
                                     Console.WriteLine($"Serial{comTx} Sent {sendCh} Got {recvCh} on Serial{comRx},OK");
                                 else
@@ -128,14 +123,8 @@ namespace FirmataBasic
                             for (byte sendByte = 0x00; sendByte <= 0xff; sendByte++)
                             {
                                 byte recvByte;
-                                if (Send1)
-                                    SoftataLib.Serial.serialWriteByte(1, sendByte);
-                                else
-                                    SoftataLib.Serial.serialWriteByte(2, sendByte);
-                                if (Recv1)
-                                    recvByte = SoftataLib.Serial.serialGetByte(1);
-                                else
-                                    recvByte = SoftataLib.Serial.serialGetByte(2);
+                                SoftataLib.Serial.serialWriteByte(comTx, sendByte);
+                                recvByte = SoftataLib.Serial.serialGetByte(comRx);
                                 if (recvByte == sendByte)
                                     Console.WriteLine($"Serial{comTx} Sent {sendByte} Got {recvByte} on Serial{comRx},OK");
                                 else
