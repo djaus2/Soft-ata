@@ -51,9 +51,10 @@ This requires a setup as per previous repositories here as well as in some blog 
 ------
 
 ## Repository Status
-- Version 1.60
+- Version 1.65
   - Added Blazor Server app that runs the Digital LED-Button test (as per Console app).
-    - Analog Test added (as per Console App). _Serial Test to come._
+    - Analog Test added (as per Console App).
+    - Serial1 and Serial2 Test added (as per Console App). _(NB: Bug fixed in that with Serial2)_
     - Wishlist: A reconfigurable Blazor UI to action Softata functionality.
 - Version 1.20
   - Serial1 and Serial2 implemented for byte and char read/writes
