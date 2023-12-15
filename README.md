@@ -7,6 +7,10 @@ Console app included with Blazor and MAUI apps coming soon.
   
 _Soft-ata rather than firm-ata!_ 
 
+## Coming
+
+- Some Grove Sensors such as DHT11
+
 ## Latest
 - See **Repository Status** below.
   - Added Blazor App that uses the class library _(updated)_
