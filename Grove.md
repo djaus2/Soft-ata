@@ -1,6 +1,6 @@
 # Grove sensors
 
-> Assumes use of Grove RPo Pico Shield with the RPiPico with the Earle setup
+> Assumes use of Grove RPi Pico Shield with the RPi Pico with the Earle setup.
 
 ## Coming
 
