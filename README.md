@@ -10,6 +10,11 @@ _Soft-ata rather than firm-ata!_
 ## Coming
 
 - Some Grove Sensors such as DHT11
+- Proposed Grove Sensir API:
+  - String GetPins()/Pin Options
+  - Setup(int[] settings)
+  - ReadAll(double[] values)
+  - double Read(enum property)
 
 ## Latest
 - See **Repository Status** below.
