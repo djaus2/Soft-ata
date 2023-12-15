@@ -1,6 +1,6 @@
 # Grove sensors
 
-> Assumes use of Grove RPi Pico Shield with the RPi Pico with the [earlephilhower-arduino-pico() on Github setup.
+> Assumes use of Grove RPi Pico Shield with the RPi Pico with the [earlephilhower-arduino-pico](https://github.com/earlephilhower/arduino-pico) setup on GitHub.
 
 ## Coming
 
