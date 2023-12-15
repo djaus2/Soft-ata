@@ -9,7 +9,7 @@
   - String GetPins()/Pin Options
     - List of pins that can be used, such as 16,18,20 with DHT11, or required pins
   - bool Setup(int[] settings)
-    - Returns true if setup worked with the supplied settings, the first of ehich will be the pin/s to be used
+    - Returns true if setup worked with the supplied settings, the first of which will be the pin/s to be used
     - If no settings, default settings used, which is/are noted in returned GetPins() string.
   - bool ReadAll(double[] values)
     - Returns all available properties in the supplied double array.
