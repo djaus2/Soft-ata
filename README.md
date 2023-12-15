@@ -16,6 +16,8 @@ _Soft-ata rather than firm-ata!_
   - bool ReadAll(double[] values)
   - double Read(enum property)
 
+ > See https://github.com/djaus2/Soft-ata/blob/master/Grove.md
+
 ## Latest
 - See **Repository Status** below.
   - Added Blazor App that uses the class library _(updated)_
