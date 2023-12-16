@@ -99,9 +99,10 @@ This requires a setup as per previous repositories here as well as in some blog 
 ## Usage
 
 See the [Console app](/SoftataConsole) but the IpAddress as determined when the Pico W runs must match that in the library. The ports must also match.
-The test app has two options:
+The test app has three options:
 - Digital IO: Button to LED
 - Analog/PWM: Potentiometer sets LED brightness.
+- Serial1 and Serial2 loopback tests.
 
 ------
 
