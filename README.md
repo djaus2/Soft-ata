@@ -107,7 +107,8 @@ The test app has two options:
 
 ## Roadmap
 
-- Implment the other capabilities in the Arduino app, etc
+- Implement the other capabilities in the Arduino app, etc
+- Azure IoT Hubconnectivity
 - _More:_ See the Blog post 
 
 ------
