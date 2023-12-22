@@ -3,6 +3,9 @@
 #include "rpiboards.h"
 #include <WiFi.h>
 #include "rpiwatchdog.h"
+#include "grove.h"
+#include "grove_sensor.h"
+#include "grove_dht11.h"
 
 #ifndef STASSID
 #define STASSID "APQLZM"
@@ -14,6 +17,8 @@
 // Commment out both normally.
 //#define SERIAL1LOOPBACK
 //#define SERIAL2LOOPBACK
+
+//Grove_Sensor *grove_Sensor;
 
 const char* ssid = STASSID;
 const char* password = STAPSK;
@@ -39,6 +44,7 @@ void setup() {
 
   server.begin();
   watchdog_enable(WATCHDOG_SECS * 1000, false);
+    
 }
 
 //Ref: https://www.thegeekpub.com/276838/how-to-reset-an-arduino-using-code/
@@ -47,7 +53,14 @@ void (*resetFunc)(void) = 0;
 void loop() {
   watchdog_update();
   static int i;
-  delay(100);
+                Serial.println(Grove_Sensor::GetGroveSensorIndex("DHT11")); 
+                delay(1000);   
+                          Serial.println(Grove_Sensor::GetGroveSensorIndex("BME280"));   
+                delay(1000); 
+                          Serial.println(Grove_Sensor::GetGroveSensorIndex("JONES"));   
+                delay(1000); 
+                              
+  delay(500);
   //Serial.printf("--loop %d\n", ++i);
   //delay(10);
   // WiFiClient available(uint8_t* status = nullptr) __attribute__((deprecated("Use accept().")));
@@ -403,6 +416,51 @@ void loop() {
               }
             }
             break;
+          case 0xEA: 
+            Grove_Sensor * grove_Sensor;      
+            switch (other)
+            {
+              case 0:
+                grove_Sensor  = new Grove_DHT11();
+                break;
+            }
+            switch (param)
+            {
+              case 0:
+                client.print(Grove_DHT11::GetPins());
+                break;
+              case 1:
+                if(grove_Sensor->Setup())
+                  client.print("DHT11");
+                else
+                  client.print("Fail");
+                break;
+              case 2:
+                int settings[1];
+                settings[0] = pin;
+                if(grove_Sensor->Setup(settings,1))
+                  client.print("DHT11");
+                else
+                  client.print("Fail");
+                break;
+              case 3:
+                double values[2];
+                if(grove_Sensor->ReadAll(values))
+                {
+                  String msgDHT11 = "DHT11";
+                  msgDHT11.concat(',');
+                  msgDHT11.concat(values[0]);
+                  msgDHT11.concat(',');
+                  msgDHT11.concat(values[1]);
+                  client.print(msgDHT11);
+                }
+                else
+                {
+                  client.print("Fail");
+                }
+                break;
+            }
+            break;
           case 0xF0:
           case 0xF1:
           case 0xF2:  // I2C place holder
@@ -439,6 +497,7 @@ void loop() {
   client.printf("Done from Pico-W\r\n");
   client.flush();
 }
+
 
 
 void setup1() {
