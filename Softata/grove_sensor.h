@@ -3,24 +3,33 @@
 #include <Arduino.h>
 #include "grove.h"
 
-//Add other sensors hereC bracketed, on end eg C(POTENTIOMETER)
-#define SENSORS C(DHT11)C(BME280)
+
 #define C(x) x,
-enum GroveSensor { SENSORS NONE};
+enum GroveSensor { SENSORS SENSOR_NONE};
 #undef C
 #define C(x) #x,    
 const char * const sensor_name[] = { SENSORS };
-
-
-int GetGroveSensorIndex(String sensorName);
+#undef C
 
 class Grove_Sensor: public Grove
 {
     public:
+      static String GetListofGroveSensors()
+      {
+        String list ="SENSORS:";
+        int numSensors = (int) SENSOR_NONE;
+        for (int n=0;n<numSensors;n++)
+        {
+          list.concat(sensor_name[n]);
+          if (n != (numSensors-1))
+            list.concat(',');
+        }
+        return list;
+      }
 
       static int GetGroveSensorIndex(String sensorName)
       {
-        int numSensors = (int) NONE;
+        int numSensors = (int) SENSOR_NONE;
         for (int n=0;n<numSensors;n++)
         {
           GroveSensor s = (GroveSensor)n;
@@ -32,7 +41,8 @@ class Grove_Sensor: public Grove
         }
         return INT_MAX;
       }
-      //static virtual arduino::String GetPins();
+
+      virtual arduino::String GetPins();
       virtual bool Setup();
       virtual bool Setup(int * settings, int numSettings);
       virtual bool ReadAll(double * values);

@@ -5,12 +5,16 @@
 #include "rpiwatchdog.h"
 #include "grove.h"
 #include "grove_sensor.h"
+#include "grove_actuator.h"
 #include "grove_dht11.h"
 
 #ifndef STASSID
 #define STASSID "APQLZM"
 #define STAPSK "silly1371"
 #endif
+
+#include "devicesLists.h"
+
 
 // Use one or other in testing
 // Only used when Serial1/2 Setup is called from client.
@@ -44,6 +48,7 @@ void setup() {
 
   server.begin();
   watchdog_enable(WATCHDOG_SECS * 1000, false);
+  InitSensorList();
     
 }
 
@@ -53,10 +58,10 @@ void (*resetFunc)(void) = 0;
 void loop() {
   watchdog_update();
   static int i;
-                Serial.println(Grove_Sensor::GetGroveSensorIndex("DHT11")); 
-                delay(1000);   
+                Serial.println(Grove_Sensor::GetListofGroveSensors());
+                Serial.println(Grove_Actuator::GetListofGroveActuators());
+                Serial.println(Grove_Sensor::GetGroveSensorIndex("DHT11"));   
                           Serial.println(Grove_Sensor::GetGroveSensorIndex("BME280"));   
-                delay(1000); 
                           Serial.println(Grove_Sensor::GetGroveSensorIndex("JONES"));   
                 delay(1000); 
                               
@@ -416,72 +421,155 @@ void loop() {
               }
             }
             break;
-          case 0xEA: 
-            Grove_Sensor * grove_Sensor;      
-            switch (other)
-            {
-              case 0:
-                grove_Sensor  = new Grove_DHT11();
-                break;
-            }
-            switch (param)
-            {
-              case 0:
-                client.print(Grove_DHT11::GetPins());
-                break;
-              case 1:
-                if(grove_Sensor->Setup())
-                  client.print("DHT11");
-                else
-                  client.print("Fail");
-                break;
-              case 2:
-                int settings[1];
-                settings[0] = pin;
-                if(grove_Sensor->Setup(settings,1))
-                  client.print("DHT11");
-                else
-                  client.print("Fail");
-                break;
-              case 3:
-                double values[2];
-                if(grove_Sensor->ReadAll(values))
-                {
-                  String msgDHT11 = "DHT11";
-                  msgDHT11.concat(',');
-                  msgDHT11.concat(values[0]);
-                  msgDHT11.concat(',');
-                  msgDHT11.concat(values[1]);
-                  client.print(msgDHT11);
-                }
-                else
-                {
-                  client.print("Fail");
-                }
-                break;
-            }
-            break;
           case 0xF0:
-          case 0xF1:
-          case 0xF2:  // I2C place holder
-            if (!IS_PIN_I2C(pin)) {
-              Serial.print("Pin not I2C");
-              client.print("FAIL");
-              continue;
+            { 
+              // Cmd = 0xF0,pin=Index of cmd in list,param=SubCmd,Other=
+              switch (param)
+              {
+                case 0: 
+                  {            
+                    switch ((GroveSensor)other)
+                    {
+                      //#define SENSORS C(DHT11)C(SWITCH)C(SOUND)C(BME280)
+                      case DHT11:
+                        {
+                          Grove_DHT11 _dht11;
+                          client.print(_dht11.GetPins());
+                        }
+                        break;
+                      case LIGHT:
+                        {
+                          //Grove_Light _light
+                          client.print("Fail:Not implemented");
+                        }
+                        break;
+                      case SOUND:
+                        {
+                          //Grove_Sound _sound
+                          client.print("Fail:Not implemented");
+                        }
+                        break;
+                      case BME280:
+                        {
+                          // BME280 _bme280
+                          client.print("Fail:Not implemented");
+                        }
+                        break;
+                      // Add more here
+                      default:
+                        client.print("Fail");
+                        break;
+                    }
+                  }
+                  break;
+                case 1:
+                case 2:
+                  {
+                    Grove_Sensor * grove_Sensor;
+                    bool _done=false;
+                    switch ((GroveSensor)other)
+                    {
+                      case DHT11:
+                        {
+                          grove_Sensor  = new Grove_DHT11();
+                          _done = true;
+                        }
+                        break;
+                      case LIGHT:
+                        {
+                          //Grove_Light _light
+                          client.print("Fail:Not implemented");
+                        }
+                        break;
+                      case SOUND:
+                        {
+                          //Grove_Sound _sound
+                          client.print("Fail:Not implemented");
+                        }
+                        break;
+                      case BME280:
+                        {
+                          // BME280 _bme280
+                          client.print("Fail:Not implemented");
+                        }
+                        break;
+                      // Add more here
+                      default:
+                        client.print("Fail:Not a sensor");
+                        break;
+                    }
+                    if(_done)
+                    {
+                      if(param==1)
+                      {
+                        if(grove_Sensor->Setup())
+                        {
+                          int index = AddSensorToList(grove_Sensor);
+                          String msgSettings1 = "OK";
+                          msgSettings1.concat(':');
+                          msgSettings1.concat(index);
+                          client.print(msgSettings1);
+                        }
+                        else
+                          client.print("Fail:Setup");
+                        }
+                      else
+                      {
+                        int settings[1];
+                        settings[0] = pin;
+                        if(grove_Sensor->Setup(settings,1))
+                        {
+                          int index = AddSensorToList(grove_Sensor);
+                          String msgSettings2 = "OK";
+                          msgSettings2.concat(':');
+                          msgSettings2.concat(index);
+                          client.print(msgSettings2);
+                        }
+                        else
+                          client.print("Fail:Setup");
+                      }
+                    }
+                  }
+                  break;
+                case 3:
+                  {
+                    int index = other;
+                    Grove_Sensor * grove_Sensor = GetSensorFromList(index);
+                    double values[2];
+                    if(grove_Sensor->ReadAll(values))
+                    {
+                      String msgGetAll = "OK";
+                      msgGetAll.concat(':');
+                      msgGetAll.concat(values[0]);
+                      msgGetAll.concat(',');
+                      msgGetAll.concat(values[1]);
+                      client.print(msgGetAll);
+                    }
+                    else
+                    {
+                      client.print("Fail");
+                    }
+                  }
+                  break;
+                case 4:
+                  {
+                    Grove_Sensor * grove_Sensor = GetSensorFromList(other);
+                    double value = grove_Sensor->Read(param);
+                    if (value <100000)
+                    {
+                      String msgGetOne = "OK";
+                      msgGetOne.concat(':');
+                      msgGetOne.concat(value);
+                      client.print(msgGetOne);
+                    }
+                    else
+                    {
+                      client.print("Fail:Read");
+                    }
+                  }
+                  break;
+              }
             }
-            Serial.println("OK-I2C 2D cmds");
-            client.print("OK-I2C 2D cmds");
-            break;
-          case 0xF3:
-          case 0xF4:
-          case 0xF5:  // SPI place holder
-            if (!IS_PIN_SPI(pin)) {
-              Serial.print("Pin not SPI");
-              client.print("FAIL");
-              continue;
-            }
-            Serial.println("OK-SPI 2D cmds");
-            client.print("OK-SPI 2D cmds");
             break;
           default:
             Serial.println("Unknown cmd");
@@ -511,3 +599,7 @@ void loop1() {
   digitalWrite(LED_BUILTIN, LOW);   // turn the LED off by making the voltage LOW
   delay(1000);                      // wait for a second
 }
+
+
+
+

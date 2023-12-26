@@ -1,38 +1,38 @@
-#ifndef GROVE_ACTUATORH
-#define GROVE_ACTUATORH
+#ifndef GROVE_DISPLAYH
+#define GROVE_DISPLAYH
 #include "grove.h"
 
 #define C(x) x,
-enum GroveActuator { ACTUATORS ACTUATOR_NONE};
+enum GroveDisplay { DISPLAYS DISPLAYS_NONE};
 #undef C
 #define C(x) #x,    
-const char * const actuator_name[] = { ACTUATORS };
+const char * const display_name[] = { DISPLAYS };
 #undef C
 
-class Grove_Actuator: public Grove
+class Grove_Display: public Grove
 {
     public:
-      static String GetListofGroveActuators()
+      static String GetListofGroveDisplays()
       {
-        String list ="ACTUATORS:";
-        int numActuators = (int) ACTUATOR_NONE;
-        for (int n=0;n<numActuators;n++)
+        String list ="DISPLAYS:";
+        int numDisplays = (int) DISPLAYS_NONE;
+        for (int n=0;n<numDisplays;n++)
         {
-          list.concat(actuator_name[n]);
+          list.concat(display_name[n]);
           if (n != (numActuators-1))
             list.concat(',');
         }
         return list;
       }
 
-      static int GetGroveActuatorIndex(String actuatorName)
+      static int GetGroveActuatorIndex(String displayName)
       {
-        int numActuators = (int) ACTUATOR_NONE;
-        for (int n=0;n<numActuators;n++)
+        int numDisplays = (int) DISPLAY_NONE;
+        for (int n=0;n<numDisplays;n++)
         {
-          GroveActuator s = (GroveActuator)n;
-          String name = String(actuator_name[s]);
-          if (actuatorName.compareTo(name)==0)
+          GroveDisplay s = (GroveDisplay)n;
+          String name = String(display_name[s]);
+          if (displayName.compareTo(name)==0)
           {
             return (int)s;
           }

@@ -5,7 +5,7 @@
 class Grove_DHT11: public Grove_Sensor
 {
     public:
-      static arduino::String GetPins();
+      virtual String GetPins();
       virtual bool Setup();
       virtual bool Setup(int * settings, int numSettings);
       virtual bool ReadAll(double * values);
