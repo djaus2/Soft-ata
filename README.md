@@ -7,6 +7,8 @@ Console app included with Blazor and MAUI apps coming soon.
   
 _Soft-ata rather than firm-ata!_ 
 
+> Big dump for Grove RPi Pico Shield coming in a couple of days!
+
 ## Coming
 
 - Some Grove Sensors such as DHT11, BME280
