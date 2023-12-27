@@ -1,12 +1,14 @@
 
-// Placed in the public domain by Earle F. Philhower, III, 2022
+// RPi Pico BSP placed in the public domain by Earle F. Philhower, III, 2022
 #include "rpiboards.h"
 #include <WiFi.h>
 #include "rpiwatchdog.h"
 #include "grove.h"
-#include "grove_sensor.h"
-#include "grove_actuator.h"
-#include "grove_dht11.h"
+#include "src/grove_sensor.h"
+#include "src/grove_dht11.h"
+#include "src/grove_actuator.h"
+#include "src/grove_displays.h"
+
 
 #ifndef STASSID
 #define STASSID "APQLZM"

@@ -4,6 +4,7 @@
 
 #define MAX_SENSORS 20
 #define MAX_ACTUATORS 20
+#define MAX_DISPLAYS 20
 
 
 //Library Manager, and search for LinkedList.
@@ -13,6 +14,14 @@ class SensorListNode
 public:
     GroveSensor Type;
     Grove_Sensor * Sensor=NULL;
+protected:
+};
+
+class DisplayListNode
+{
+public:
+    GroveDisplay Type;
+    Grove_Display * Display=NULL;
 protected:
 };
 
@@ -33,7 +42,7 @@ int AddSensorToList(Grove_Sensor * sensor)
 {
   if(count < (MAX_SENSORS-1))
   {
-    SensorList[count++]->Sensor= sensor;
+    SensorList[count++]->Sensor = sensor;
     return (count-1);
   }
   else
@@ -77,6 +86,61 @@ int InitSensorList()
   }
   count=0;
   return MAX_SENSORS;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+
+DisplayListNode * DisplayList[MAX_DISPLAYS];
+int displaycount = 0;
+
+int AddDisplayToList(Grove_Display * display)
+{
+  if(displaycount < (MAX_DISPLAYS-1))
+  {
+    DisplayList[displaycount++]->Display= display;
+    return (count-1);
+  }
+  else
+  {
+    for(int i=0; i<MAX_DISPLAYS; i++)
+    {
+      if(DisplayList[i]->Display == NULL)
+      {
+        DisplayList[i]->Display = display;
+        return i;
+      }
+    }
+  }
+  return -1;
+}
+
+bool RemoveDisplayFromList(int index)
+{
+  if(index < MAX_DISPLAYS)
+  {
+    DisplayList[index]->Display= NULL;
+    return true;
+  }
+  else
+    return false;
+}
+
+Grove_Display * GetDisplayFromList(int index)
+{
+  if(DisplayList[index]->Display!= NULL)
+    return DisplayList[index]->Display;
+  else
+    return NULL;
+}
+
+int InitDisplayList()
+{
+  for(int i=0; i<MAX_DISPLAYS; i++)
+  {
+    DisplayList[i]= new DisplayListNode() ;
+  }
+  count=0;
+  return MAX_DISPLAYS;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////

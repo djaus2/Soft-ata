@@ -1,7 +1,7 @@
 #ifndef GROVE_SENSORH
 #define GROVE_SENSORH
 #include <Arduino.h>
-#include "grove.h"
+#include "../grove.h"
 
 
 #define C(x) x,

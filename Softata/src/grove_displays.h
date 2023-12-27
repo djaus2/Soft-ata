@@ -1,6 +1,6 @@
 #ifndef GROVE_DISPLAYHI2CDISPLAYS
 #define GROVE_DISPLAYH
-#include "grove.h"
+#include "../grove.h"
 
 #define C(x) x,
 enum GroveDisplay { I2CDISPLAYS I2CDISPLAY_NONE};
@@ -59,13 +59,6 @@ class Grove_Display: public Grove
 #ifndef OLED096
 #define OLED096
 
-#define line1VerticalStartPixel 10
-#define lineHeight 10
-#define charWidth 8
-
-// Add Misc commands to list here. 
-// Implement in Grove_OLED096::Misc(int cmd
-enum OLEDMiscCmds {drawCircle,drawFrame};
 
 class Grove_OLED096: public Grove_Display
 {
@@ -80,9 +73,19 @@ class Grove_OLED096: public Grove_Display
 
 #ifndef LCD1602
 #define LCD1602
+
+
+
 class Grove_LCD1602: public Grove_Display
 {
-
+      virtual bool Setup();
+      virtual bool Setup(int * settings, int numSettings);
+      // Index for if there are an array of actuators here.
+      virtual bool Clear();
+      virtual bool SetCursor(int x, int y);
+      virtual bool WriteString(String msg);
+      virtual bool WriteString(int x, int y, String msg);
+      virtual bool Misc(int cmd, int * data);
 };
 
 #endif
