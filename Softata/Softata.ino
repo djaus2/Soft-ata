@@ -5,7 +5,7 @@
 #include "rpiwatchdog.h"
 #include "grove.h"
 #include "src/grove_sensor.h"
-#include "src/grove_dht11.h"
+#include "src/grove_environsensors.h"
 #include "src/grove_actuator.h"
 #include "src/grove_displays.h"
 

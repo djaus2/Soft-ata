@@ -1,4 +1,4 @@
-#include "grove_dht11.h"
+#include "grove_environsensors.h"
 #include <arduino.h>
 #include <dht.h>
 
@@ -9,8 +9,7 @@
 #define pins "16,18,20"
 
 
-#include <float.h>
-double ErrorDbl = DBL_MAX;
+
 
 
 int Pins[] = {PINS};
@@ -109,15 +108,15 @@ int Pins[] = {PINS};
         break;
         case DHTLIB_ERROR_CHECKSUM: 
         Serial.println("Checksum error"); 
-        return ErrorDbl;
+        return ERRORDBL;
         break;
         case DHTLIB_ERROR_TIMEOUT: 
         Serial.println("Time out error"); 
-        return ErrorDbl;
+        return ERRORDBL;
         break;
         default: 
         Serial.println("Unknown error"); 
-        return ErrorDbl;
+        return ERRORDBL;
         break;
       }
       // DISPLAY DATA
@@ -130,7 +129,7 @@ int Pins[] = {PINS};
           return DHT.humidity;
           break; 
         default:
-          return ErrorDbl;
+          return ERRORDBL;
           break;
       }
     }
