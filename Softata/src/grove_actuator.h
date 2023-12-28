@@ -1,6 +1,6 @@
 #ifndef GROVE_ACTUATORH
 #define GROVE_ACTUATORH
-#include "../grove.h"
+#include "grove.h"
 
 #define C(x) x,
 enum GroveActuator { ACTUATORS ACTUATOR_NONE};
@@ -12,7 +12,7 @@ const char * const actuator_name[] = { ACTUATORS };
 class Grove_Actuator: public Grove
 {
     public:
-      static String GetListofGroveActuators()
+      static String GetListof()
       {
         String list ="ACTUATORS:";
         int numActuators = (int) ACTUATOR_NONE;
@@ -25,7 +25,7 @@ class Grove_Actuator: public Grove
         return list;
       }
 
-      static int GetGroveActuatorIndex(String actuatorName)
+      static int GetIndexOf(String actuatorName)
       {
         int numActuators = (int) ACTUATOR_NONE;
         for (int n=0;n<numActuators;n++)
@@ -39,6 +39,11 @@ class Grove_Actuator: public Grove
         }
         return INT_MAX;
       }      
+
+      virtual String GetListofx()
+      {
+        return Grove_Actuator::GetListof();
+      }
 
       //static virtual arduino::String GetPins();
       virtual bool Setup();

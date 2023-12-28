@@ -16,11 +16,17 @@ int Pins[] = {PINS};
 
     String Grove_DHT11::GetPins()
     {
-      String _pins = String(pins);
+      String _pins = String("OK:Grove RPi Pico Shield: ");
+      _pins.concat(pins);
       _pins.concat(" Default:");
       _pins.concat(DEFAULT_PIN);
       Serial.println(_pins);
       return String(_pins); //pins;
+    }
+
+    String Grove_DHT11::GetListofProperties()
+    {
+      return String("OK:Temperature,Humidity");
     }
 
     bool Grove_DHT11::Setup(int * settings, int numSettings)
@@ -69,26 +75,37 @@ int Pins[] = {PINS};
     {
       dht DHT;
       // READ DATA
-      Serial.print("DHT11 ");
-      int chk = DHT.read11(Pin);
-      switch (chk)
+      Serial.print("DHT11:");
+
+      // Allow 3 retries
+      bool OK = false;
+      for (int i=0;i<4;i++)
       {
-        case DHTLIB_OK:  
-        Serial.print("OK,"); 
-        break;
-        case DHTLIB_ERROR_CHECKSUM: 
-        Serial.println("Checksum error"); 
-        return false;
-        break;
-        case DHTLIB_ERROR_TIMEOUT: 
-        Serial.println("Time out error"); 
-        return false;
-        break;
-        default: 
-        Serial.println("Unknown error"); 
-        return false;
-        break;
+        int chk = DHT.read11(Pin);
+        switch (chk)
+        {
+          case DHTLIB_OK:  
+          Serial.println("OK"); 
+          OK = true;
+          break;
+          case DHTLIB_ERROR_CHECKSUM: 
+          Serial.println("Checksum error"); 
+          break;
+          case DHTLIB_ERROR_TIMEOUT: 
+          Serial.println("Time out error"); 
+          break;
+          default: 
+          Serial.println("Unknown error"); 
+          break;
+        }
+        if(OK)
+          break;
+        delay(100);
+        if(OK)
+          break;
       }
+      if(!OK)
+        return ERRORDBL;
       // DISPLAY DATA
       values[0] = DHT.temperature;
       values[1]= DHT.humidity;
@@ -99,26 +116,35 @@ int Pins[] = {PINS};
     {
       dht DHT;
       // READ DATA
-      Serial.print("DHT11");
-      int chk = DHT.read11(Pin);
-      switch (chk)
+      Serial.print("DHT11:");
+      
+      // Allow 3 retries
+      bool OK = false;
+      for (int i=0;i<4;i++)
       {
-        case DHTLIB_OK:  
-        Serial.print("OK,"); 
-        break;
-        case DHTLIB_ERROR_CHECKSUM: 
-        Serial.println("Checksum error"); 
-        return ERRORDBL;
-        break;
-        case DHTLIB_ERROR_TIMEOUT: 
-        Serial.println("Time out error"); 
-        return ERRORDBL;
-        break;
-        default: 
-        Serial.println("Unknown error"); 
-        return ERRORDBL;
-        break;
+        int chk = DHT.read11(Pin);
+        switch (chk)
+        {
+          case DHTLIB_OK:  
+          Serial.println("OK,"); 
+          OK = true;
+          break;
+          case DHTLIB_ERROR_CHECKSUM: 
+          Serial.println("Checksum error"); 
+          break;
+          case DHTLIB_ERROR_TIMEOUT: 
+          Serial.println("Time out error"); 
+          break;
+          default: 
+          Serial.println("Unknown error"); 
+          break;
+        }
+        if(OK)
+          break;
+        delay(100);
       }
+      if(!OK)
+        return ERRORDBL;
       // DISPLAY DATA
       switch(property)
       {

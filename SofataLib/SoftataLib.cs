@@ -90,6 +90,10 @@ namespace Softata
             serialGetFloat = 0xE5, // Get Flost
             serialGetInt = 0xE6, // Get Int
 
+            groveSensor = 0xF0, 
+            groveActuator = 0xF1, 
+            groveDisplay = 0xF2, 
+
             Undefined = 0xFF
         }
 
@@ -214,7 +218,7 @@ namespace Softata
                 return "Reset";
             }
             Console.WriteLine($"Received {result} [{recvd}] bytes\n");
-            return result;
+            return result.Replace(expect,"");
         }
         static void Main(string[] args)
         {

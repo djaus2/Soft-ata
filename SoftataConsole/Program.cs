@@ -18,7 +18,7 @@ namespace FirmataBasic
     {
         // Set the same as Arduino:
         const int port = 4242;
-        const string ipaddressStr = "192.168.0.13";
+        const string ipaddressStr = "192.168.0.15";
 
         // Configure hardware pin connections thus:
         static byte LED = 12;
@@ -26,8 +26,9 @@ namespace FirmataBasic
         static byte POTENTIOMETER = 26;
 
         // Choose test type
+        static SoftataLib.CommandType Testtype = CommandType.I2C;
         //static SoftataLib.CommandType Testtype = CommandType.Digital;
-        static SoftataLib.CommandType Testtype = CommandType.Serial;
+        //static SoftataLib.CommandType Testtype = CommandType.Serial;
         //Set Serial1 or Serial2 for send and receive.
         //Nb: If both true or both false then loopback on same serial port.
         static bool Send1 = true;
@@ -136,6 +137,45 @@ namespace FirmataBasic
                             }
 
 
+                        }
+                        break;
+                    case CommandType.I2C:
+                        SoftataLib.Sensor.GetPins(0);
+                        SoftataLib.Sensor.GetPins(1);
+                        int dht11 = SoftataLib.Sensor.SetupDefault(0);
+                        if (dht11 < 0)
+                            Console.WriteLine("Instatiated DHT11 not found");
+                        else
+                        {
+                            Console.WriteLine($"Instantiated DHT11 found at {dht11}");
+                            string[] properties = SoftataLib.Sensor.GetProperties(0);
+                            if (properties.Length == 0)
+                                Console.WriteLine($"DHT11 getProperties() failed");
+                            else
+                            {
+                                Console.WriteLine($"DHT11 getProperties OK");
+                                foreach (string property in properties)
+                                    Console.WriteLine($"DHT11 property = {property}");
+                            }
+
+                            double[]? values = SoftataLib.Sensor.ReadAll((byte)dht11);
+                            if(values == null)
+                                Console.WriteLine($"DHT11 readAll() failed");
+                            else
+                            {
+                                Console.WriteLine($"DHT11 readAll OK");
+                                for (int i=0; i< properties.Length; i++)
+                                    Console.WriteLine($"DHT11 {properties[i]} = {values[i]}");
+                            }
+                            for (byte i = 0; i < properties.Length; i++)
+                            {
+                                double? value = SoftataLib.Sensor.Read((byte)dht11, i);
+                                if (value == null)
+                                    Console.WriteLine($"DHT11 read() failed");
+                                else
+                                    Console.WriteLine($"DHT11 {properties[i]} = {value}");
+                                Thread.Sleep(1000);
+                            }
                         }
                         break;
                 }

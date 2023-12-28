@@ -51,10 +51,11 @@ namespace SofataLib
                 if (settings.Count() < (int)c)
                 {
                     S prop = (S)c;
-                    var value = settings[(int)prop];
+                    int value = settings[(int)c];
                     // Do whatever
                 }
             }
+            return true;
         }
 
         public virtual bool Restart()
@@ -114,7 +115,7 @@ namespace SofataLib
     {
         public override bool Setup (List<int> settings)
         {
-            base:Setup(settings);
+            //base:Setup(settings);
 
             return true;
         }

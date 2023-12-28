@@ -1,7 +1,7 @@
 #ifndef GROVE_SENSORH
 #define GROVE_SENSORH
 #include <Arduino.h>
-#include "../grove.h"
+#include "grove.h"
 
 
 #define C(x) x,
@@ -14,7 +14,7 @@ const char * const sensor_name[] = { SENSORS };
 class Grove_Sensor: public Grove
 {
     public:
-      static String GetListofGroveSensors()
+      static String GetListof()
       {
         String list ="SENSORS:";
         int numSensors = (int) SENSOR_NONE;
@@ -27,7 +27,7 @@ class Grove_Sensor: public Grove
         return list;
       }
 
-      static int GetGroveSensorIndex(String sensorName)
+      static int GetIndexOf(String sensorName)
       {
         int numSensors = (int) SENSOR_NONE;
         for (int n=0;n<numSensors;n++)
@@ -42,7 +42,13 @@ class Grove_Sensor: public Grove
         return INT_MAX;
       }
 
+      static String GetListofx()
+      {
+        return Grove_Sensor::GetListof();
+      }
+
       virtual arduino::String GetPins();
+      virtual arduino::String GetListofProperties();
       virtual bool Setup();
       virtual bool Setup(int * settings, int numSettings);
       virtual bool ReadAll(double * values);

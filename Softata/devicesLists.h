@@ -1,13 +1,13 @@
 #ifndef DEVICESLISTH
 #define DEVICESLISTH
-#include "grove.h"
+#include "src/grove.h"
 
-#define MAX_SENSORS 20
-#define MAX_ACTUATORS 20
-#define MAX_DISPLAYS 20
+#define MAX_SENSORS 10
+#define MAX_ACTUATORS 10
+#define MAX_DISPLAYS 10
 
 
-//Library Manager, and search for LinkedList.
+//Library Manager: Search for LinkedList.
 // Select the Ivan Siedel version
 class SensorListNode
 {

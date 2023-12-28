@@ -41,7 +41,12 @@ double Round2Places(float value)
 
 String Grove_BME280::GetPins()
 {
-    return String("Grove IC0: SDA=8,SCL=9 IC1: SDA=6, SCL=7");
+    return String("OK:Grove RPi Pico Shield: IC0 SDA=8,SCL=9");
+}
+
+String Grove_BME280::GetListofProperties()
+{
+    return String("OK:Temperature,Humidity,Pressure");
 }
 
 bool Grove_BME280::Setup(int * settings, int numSettings)

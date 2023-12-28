@@ -30,10 +30,10 @@ class Grove
       }
       return false;
     }
-      //static virtual arduino::String GetPins();
-      virtual bool Setup();
-      virtual bool Setup(int * settings, int numSettings);
-      DeviceType deviceType;
+
+    virtual bool Setup();
+    virtual bool Setup(int * settings, int numSettings);
+    DeviceType deviceType;
       
     protected:
       

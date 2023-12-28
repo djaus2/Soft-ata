@@ -1,6 +1,6 @@
 #ifndef GROVE_DISPLAYHI2CDISPLAYS
 #define GROVE_DISPLAYH
-#include "../grove.h"
+#include "grove.h"
 
 #define C(x) x,
 enum GroveDisplay { I2CDISPLAYS I2CDISPLAY_NONE};
@@ -12,7 +12,7 @@ const char * const display_name[] = { I2CDISPLAYS };
 class Grove_Display: public Grove
 {
     public:
-      static String GetListofGroveI2CDisplays()
+      static String GetListof()
       {
         String list ="I2CDisplays:";
         int numDISPLAYS = (int) I2CDISPLAY_NONE;
@@ -25,7 +25,7 @@ class Grove_Display: public Grove
         return list;
       }
 
-      static int GetGroveActuatorIndex(String displayName)
+      static int GetIndexOf(String displayName)
       {
         int numDisplays = (int) I2CDISPLAY_NONE;
         for (int n=0;n<numDisplays;n++)
@@ -40,7 +40,12 @@ class Grove_Display: public Grove
         return INT_MAX;
       }      
 
-      //static virtual arduino::String GetPins();
+      virtual String GetListofx()
+      {
+        return Grove_Display::GetListof();
+      }
+
+  
       virtual bool Setup();
       virtual bool Setup(int * settings, int numSettings);
       // Index for if there are an array of actuators here.

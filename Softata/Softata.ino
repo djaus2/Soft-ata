@@ -3,7 +3,7 @@
 #include "rpiboards.h"
 #include <WiFi.h>
 #include "rpiwatchdog.h"
-#include "grove.h"
+#include "src/grove.h"
 #include "src/grove_sensor.h"
 #include "src/grove_environsensors.h"
 #include "src/grove_actuator.h"
@@ -36,8 +36,10 @@ int port = 4242;
 
 WiFiServer server(port);
 
+bool first = true;
 void setup() {
   Serial.begin(115200);
+  while (!Serial);
   WiFi.mode(WIFI_STA);
   WiFi.setHostname("PicoW2");
   Serial.printf("Connecting to '%s' with '%s'\n", ssid, password);
@@ -51,7 +53,9 @@ void setup() {
   server.begin();
   watchdog_enable(WATCHDOG_SECS * 1000, false);
   InitSensorList();
-    
+  InitDisplayList();
+  InitActuatorList();  
+  first = true;
 }
 
 //Ref: https://www.thegeekpub.com/276838/how-to-reset-an-arduino-using-code/
@@ -60,23 +64,24 @@ void (*resetFunc)(void) = 0;
 void loop() {
   watchdog_update();
   static int i;
-                Serial.println(Grove_Sensor::GetListofGroveSensors());
-                Serial.println(Grove_Actuator::GetListofGroveActuators());
-                Serial.println(Grove_Sensor::GetGroveSensorIndex("DHT11"));   
-                          Serial.println(Grove_Sensor::GetGroveSensorIndex("BME280"));   
-                          Serial.println(Grove_Sensor::GetGroveSensorIndex("JONES"));   
-                delay(1000); 
+  if(first){
+                Serial.println(Grove_Sensor::GetListof());
+                Serial.println(Grove_Actuator::GetListof());
+                Serial.println(Grove_Display::GetListof());
+                    Serial.println(Grove_Sensor::GetIndexOf("DHT11"));   
+                    Serial.println(Grove_Sensor::GetIndexOf("BME280"));   
+                    Serial.println(Grove_Sensor::GetIndexOf("JONES")); 
+                    Serial.println(Grove_Display::GetIndexOf("OLED096"));
+                    Serial.println(Grove_Display::GetIndexOf("LCD1602")); 
+                first = false;
+  }
                               
   delay(500);
-  //Serial.printf("--loop %d\n", ++i);
-  //delay(10);
-  // WiFiClient available(uint8_t* status = nullptr) __attribute__((deprecated("Use accept().")));
-  //WiFiClient client = server.available();
-  WiFiClient client = server.accept();
+  WiFiClient client = server.available();
   if (!client) {
     return;
   }
-  Serial.println("WiFi Up");
+  Serial.println("WiFi-Server Up.");
   while (true) {
     watchdog_update();
     Serial.print("Get next command.");
@@ -453,8 +458,8 @@ void loop() {
                         break;
                       case BME280:
                         {
-                          // BME280 _bme280
-                          client.print("Fail:Not implemented");
+                          Grove_BME280 _bme280;
+                          client.print(_bme280.GetPins());
                         }
                         break;
                       // Add more here
@@ -465,7 +470,44 @@ void loop() {
                   }
                   break;
                 case 1:
+                  {
+                    switch ((GroveSensor)other)
+                    {
+                      //#define SENSORS C(DHT11)C(SWITCH)C(SOUND)C(BME280)
+                      case DHT11:
+                        {
+                          Grove_DHT11 _dht11;
+                          client.print(_dht11.GetListofProperties());
+                        }
+                        break;
+                      case LIGHT:
+                        {
+                          //Grove_Light _light
+                          client.print("Fail:Not implemented");
+                        }
+                        break;
+                      case SOUND:
+                        {
+                          //Grove_Sound _sound
+                          client.print("Fail:Not implemented");
+                        }
+                        break;
+                      case BME280:
+                        {
+                          Grove_BME280 _bme280;
+                          client.print(_bme280.GetListofProperties());
+                        }
+                        break;
+                      // Add more here
+                      default:
+                        client.print("Fail");
+                        break;
+                    }
+
+                  }
+                  break;
                 case 2:
+                case 3:
                   {
                     Grove_Sensor * grove_Sensor;
                     bool _done=false;
@@ -491,8 +533,8 @@ void loop() {
                         break;
                       case BME280:
                         {
-                          // BME280 _bme280
-                          client.print("Fail:Not implemented");
+                          grove_Sensor  = new Grove_BME280();
+                          _done = true;
                         }
                         break;
                       // Add more here
@@ -502,7 +544,7 @@ void loop() {
                     }
                     if(_done)
                     {
-                      if(param==1)
+                      if(param==2)
                       {
                         if(grove_Sensor->Setup())
                         {
@@ -533,15 +575,14 @@ void loop() {
                     }
                   }
                   break;
-                case 3:
+                case 4:
                   {
                     int index = other;
                     Grove_Sensor * grove_Sensor = GetSensorFromList(index);
                     double values[2];
                     if(grove_Sensor->ReadAll(values))
                     {
-                      String msgGetAll = "OK";
-                      msgGetAll.concat(':');
+                      String msgGetAll = "OK:";
                       msgGetAll.concat(values[0]);
                       msgGetAll.concat(',');
                       msgGetAll.concat(values[1]);
@@ -553,14 +594,15 @@ void loop() {
                     }
                   }
                   break;
-                case 4:
+                case 5:
                   {
                     Grove_Sensor * grove_Sensor = GetSensorFromList(other);
-                    double value = grove_Sensor->Read(param);
+                    // A bit of reuse of real-estate here:
+                    byte property = pin;
+                    double value = grove_Sensor->Read(property);
                     if (value <100000)
                     {
-                      String msgGetOne = "OK";
-                      msgGetOne.concat(':');
+                      String msgGetOne = "OK:";
                       msgGetOne.concat(value);
                       client.print(msgGetOne);
                     }
