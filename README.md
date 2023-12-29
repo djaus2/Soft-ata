@@ -7,6 +7,19 @@ Console app included with Blazor and MAUI apps coming soon.
   
 _Soft-ata rather than firm-ata!_ 
 
+> Big dump for Grove RPi Pico Shield coming in a couple of days!
+
+## Coming
+
+- Some Grove Sensors such as DHT11, BME280
+- Proposed Grove Sensor API:
+  - String GetPins()/Pin Options
+  - bool Setup(int[] settings)
+  - bool ReadAll(double[] values)
+  - double Read(enum property)
+
+ > See https://github.com/djaus2/Soft-ata/blob/master/Grove.md
+
 ## Latest
 - See **Repository Status** below.
   - Added Blazor App that uses the class library _(updated)_
@@ -39,6 +52,7 @@ So if there a Firmata app running on a device, a host computrer can interact dir
 - Softata: The Arduino RPI Pico app
 - SoftataLib: The. NET Library
 - SoftataConsole: A simple .NET Console demo app
+- BlazorSoftata: Blazor Web Server App, some tests as Console app.
 
 ## RPi Pico W Arduino
 
@@ -51,9 +65,10 @@ This requires a setup as per previous repositories here as well as in some blog 
 ------
 
 ## Repository Status
-- Version 1.60
+- Version 1.65
   - Added Blazor Server app that runs the Digital LED-Button test (as per Console app).
-    - Analog Test added (as per Console App). _Serial Test to come._
+    - Analog Test added (as per Console App).
+    - Serial1 and Serial2 Test added (as per Console App). _(NB: Bug fixed in that with Serial2)_
     - Wishlist: A reconfigurable Blazor UI to action Softata functionality.
 - Version 1.20
   - Serial1 and Serial2 implemented for byte and char read/writes
@@ -86,15 +101,17 @@ This requires a setup as per previous repositories here as well as in some blog 
 ## Usage
 
 See the [Console app](/SoftataConsole) but the IpAddress as determined when the Pico W runs must match that in the library. The ports must also match.
-The test app has two options:
+The test app has three options:
 - Digital IO: Button to LED
 - Analog/PWM: Potentiometer sets LED brightness.
+- Serial1 and Serial2 loopback tests.
 
 ------
 
 ## Roadmap
 
-- Implment the other capabilities in the Arduino app, etc
+- Implement the other capabilities in the Arduino app, etc
+- Azure IoT Hub connectivity
 - _More:_ See the Blog post 
 
 ------
