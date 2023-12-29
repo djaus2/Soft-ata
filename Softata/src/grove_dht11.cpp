@@ -45,7 +45,7 @@ int Pins[] = {PINS};
       else
         return false;
     }
-
+ 
     bool Grove_DHT11::Setup()
     {
       return SetupPin(DEFAULT_PIN);
