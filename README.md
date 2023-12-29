@@ -25,6 +25,7 @@ _Soft-ata rather than firm-ata!_
 
 ## Latest
 - See **Repository Status** below.
+  - Main defines moved to softata.h
   - Grove API as above 
 
 ## Blog Post
@@ -66,8 +67,12 @@ This requires a setup as per previous repositories here as well as in some blog 
 ------
 
 ## Repository Status
+- Version 2.01
+  - Main app defines collected in softata.h
+  - Also add get version and get list of device types.
 - Version 2.00
   - Grove Sensors API as above
+  - Console Test app tests Grove sensors. Not in Blazor app yet. 2Do.
 - Version 1.65
   - Added Blazor Server app that runs the Digital LED-Button test (as per Console app).
     - Analog Test added (as per Console App).
