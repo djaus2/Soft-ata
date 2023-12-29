@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Softata
 {
-    public enum GroveSensorCmds{getpins, getProperties, setupdefault, setup, readall, read }
+    public enum GroveSensorCmds{getpins, getProperties, setupdefault, setup, readall, read, getSensors=255 }
     public partial class SoftataLib
     {
         /*
@@ -25,6 +25,19 @@ namespace Softata
 
         public static class Sensor
         {
+
+            public static string[] GetSensors()
+            {
+
+                //if (pinNumber <= 0 || pinNumber >= PinMax)
+                //    throw new ArgumentOutOfRangeException(nameof(pinNumber), "Messages.ArgumentEx_PinRange0_127");
+
+                string result = SendMessage(Commands.groveSensor, 0, (byte)GroveSensorCmds.getSensors, "OK:", 0);
+                if (!string.IsNullOrEmpty(result))
+                    return result.Split(',');
+                else
+                    return new string[0];
+            }
 
             public static void GetPins(byte sensorType)
             {

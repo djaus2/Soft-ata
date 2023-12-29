@@ -9,6 +9,8 @@
 #include "src/grove_actuator.h"
 #include "src/grove_displays.h"
 
+#include <float.h>
+
 
 #ifndef STASSID
 #define STASSID "APQLZM"
@@ -510,6 +512,7 @@ void loop() {
                 case 3:
                   {
                     Grove_Sensor * grove_Sensor;
+                    GroveSensor groveSensor;
                     bool _done=false;
                     switch ((GroveSensor)other)
                     {
@@ -533,7 +536,7 @@ void loop() {
                         break;
                       case BME280:
                         {
-                          grove_Sensor  = new Grove_BME280();
+                          grove_Sensor  = new Grove_BME280();;
                           _done = true;
                         }
                         break;
@@ -579,13 +582,17 @@ void loop() {
                   {
                     int index = other;
                     Grove_Sensor * grove_Sensor = GetSensorFromList(index);
-                    double values[2];
+                    double values[MAX_SENSOR_PROPERTIES];
                     if(grove_Sensor->ReadAll(values))
                     {
                       String msgGetAll = "OK:";
-                      msgGetAll.concat(values[0]);
-                      msgGetAll.concat(',');
-                      msgGetAll.concat(values[1]);
+                      int numProps = grove_Sensor->num_properties;
+                      for (int i=0;i< numProps;i++)
+                      {
+                        msgGetAll.concat(values[i]);
+                        if(i!= (numProps-1))
+                          msgGetAll.concat(',');
+                      }
                       client.print(msgGetAll);
                     }
                     else
@@ -596,11 +603,16 @@ void loop() {
                   break;
                 case 5:
                   {
+
                     Grove_Sensor * grove_Sensor = GetSensorFromList(other);
                     // A bit of reuse of real-estate here:
-                    byte property = pin;
+                    byte property = pin;;
+                    if(property>(grove_Sensor->num_properties-1))
+                    {
+                      client.print("Fail:Read Property no. > no. properties");
+                    }
                     double value = grove_Sensor->Read(property);
-                    if (value <100000)
+                    if (value != DBL_MAX)
                     {
                       String msgGetOne = "OK:";
                       msgGetOne.concat(value);
@@ -610,6 +622,13 @@ void loop() {
                     {
                       client.print("Fail:Read");
                     }
+                  }
+                  break;
+                case 0xff:
+                  {
+                    String msg = String("OK:");
+                    msg.concat(Grove_Sensor::GetListof());
+                    client.print(msg);
                   }
                   break;
               }

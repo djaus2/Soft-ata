@@ -3,6 +3,8 @@
 #include <Arduino.h>
 #include "grove.h"
 
+#define MAX_SENSOR_PROPERTIES 10
+
 
 #define C(x) x,
 enum GroveSensor { SENSORS SENSOR_NONE};
@@ -14,6 +16,7 @@ const char * const sensor_name[] = { SENSORS };
 class Grove_Sensor: public Grove
 {
     public:
+
       static String GetListof()
       {
         String list ="SENSORS:";
@@ -54,8 +57,10 @@ class Grove_Sensor: public Grove
       virtual bool ReadAll(double * values);
       virtual double Read(int property);
       DeviceType deviceType = sensor;
-    protected:
+      GroveSensor sensorType = SENSOR_NONE;
       int num_properties=0;
+    protected:
+      
 
 };
 #endif

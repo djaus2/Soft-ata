@@ -38,7 +38,7 @@ protected:
 SensorListNode * SensorList[MAX_SENSORS];
 int count =0;
 
-int AddSensorToList(Grove_Sensor * sensor)
+int AddSensorToList(Grove_Sensor * sensor )
 {
   if(count < (MAX_SENSORS-1))
   {

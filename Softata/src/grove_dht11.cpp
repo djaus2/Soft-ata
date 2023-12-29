@@ -14,6 +14,12 @@
 
 int Pins[] = {PINS};
 
+    Grove_DHT11::Grove_DHT11()
+    {
+      num_properties = NUM_PROPERTIES;
+      sensorType = DHT11;
+    }
+
     String Grove_DHT11::GetPins()
     {
       String _pins = String("OK:Grove RPi Pico Shield: ");

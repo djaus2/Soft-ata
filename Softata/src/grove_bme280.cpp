@@ -8,6 +8,7 @@
 //#define I2C_ADDRESS76 0x76
 #define I2C_ADDRESS77 0x77
 
+#define NUM_PROPERTIES 3
 
 BME280I2C::Settings settings(
    BME280::OSR_X1,
@@ -33,6 +34,11 @@ double Round2Places(float value)
     return ret;
 }
 
+Grove_BME280::Grove_BME280()
+{
+    num_properties = NUM_PROPERTIES;
+    sensorType = BME280;
+}
 
 
 //#include <float.h>
@@ -46,7 +52,7 @@ String Grove_BME280::GetPins()
 
 String Grove_BME280::GetListofProperties()
 {
-    return String("OK:Temperature,Humidity,Pressure");
+    return String("OK:Temperature,Pressure,Humidity");
 }
 
 bool Grove_BME280::Setup(int * settings, int numSettings)

@@ -8,6 +8,7 @@
 class Grove_DHT11: public Grove_Sensor
 {
     public:
+      Grove_DHT11();
       virtual String GetPins();
       virtual String GetListofProperties();
       virtual bool Setup();
@@ -28,6 +29,7 @@ class Grove_DHT11: public Grove_Sensor
 class Grove_BME280: public Grove_Sensor
 {
     public:
+      Grove_BME280();
       virtual String GetPins();
       virtual String GetListofProperties();
       virtual bool Setup();

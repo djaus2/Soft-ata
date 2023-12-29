@@ -45,7 +45,7 @@ namespace FirmataBasic
             try
             {
 
-                SoftataLib.SendMessageCmd("Begin");               
+                SoftataLib.SendMessageCmd("Begin");
                 Thread.Sleep(500);
 
                 switch (Testtype)
@@ -64,7 +64,7 @@ namespace FirmataBasic
 
                         for (int i = 0; i < 0x10; i++)
                         {
-                            while( SoftataLib.Digital.GetPinState(BUTTON))
+                            while (SoftataLib.Digital.GetPinState(BUTTON))
                                 Thread.Sleep(100);
                             SoftataLib.Digital.TogglePinState(LED);
                         }
@@ -93,15 +93,15 @@ namespace FirmataBasic
                         }
                         break;
                     case CommandType.Serial:
-                        byte[] txPins = new byte[] { 0,0,4 }; //Nb: Recv are Tx+1
+                        byte[] txPins = new byte[] { 0, 0, 4 }; //Nb: Recv are Tx+1
                         SoftataLib.Serial.serialSetup(txPins[1], 9600, 1);
                         SoftataLib.Serial.serialSetup(txPins[2], 9600, 2);
 
                         byte comTx = 1;
-                        if(!Send1)
+                        if (!Send1)
                             comTx = 2;
                         byte comRx = 1;
-                        if(!Recv1)
+                        if (!Recv1)
                             comRx = 2;
 
                         if (true) // ASCII test
@@ -140,41 +140,56 @@ namespace FirmataBasic
                         }
                         break;
                     case CommandType.I2C:
-                        SoftataLib.Sensor.GetPins(0);
-                        SoftataLib.Sensor.GetPins(1);
-                        int dht11 = SoftataLib.Sensor.SetupDefault(0);
-                        if (dht11 < 0)
-                            Console.WriteLine("Instatiated DHT11 not found");
+                        string[] Sensors = SoftataLib.Sensor.GetSensors();
+                        if (Sensors.Length == 0)
+                            Console.WriteLine($"No sensors found");
                         else
                         {
-                            Console.WriteLine($"Instantiated DHT11 found at {dht11}");
-                            string[] properties = SoftataLib.Sensor.GetProperties(0);
-                            if (properties.Length == 0)
-                                Console.WriteLine($"DHT11 getProperties() failed");
-                            else
+                            Console.WriteLine($"Sensors found:");
+                            for (byte i = 0; i < 2; i++) // Sensors.Length; i++)
                             {
-                                Console.WriteLine($"DHT11 getProperties OK");
-                                foreach (string property in properties)
-                                    Console.WriteLine($"DHT11 property = {property}");
-                            }
+                                string sensor = Sensors[i];
+                                Console.WriteLine($"Sensor = {sensor}");
 
-                            double[]? values = SoftataLib.Sensor.ReadAll((byte)dht11);
-                            if(values == null)
-                                Console.WriteLine($"DHT11 readAll() failed");
-                            else
-                            {
-                                Console.WriteLine($"DHT11 readAll OK");
-                                for (int i=0; i< properties.Length; i++)
-                                    Console.WriteLine($"DHT11 {properties[i]} = {values[i]}");
-                            }
-                            for (byte i = 0; i < properties.Length; i++)
-                            {
-                                double? value = SoftataLib.Sensor.Read((byte)dht11, i);
-                                if (value == null)
-                                    Console.WriteLine($"DHT11 read() failed");
+                                SoftataLib.Sensor.GetPins(i);
+                                byte sensorLinkedListIndex = (byte) SoftataLib.Sensor.SetupDefault(i);
+                                if (sensorLinkedListIndex < 0)
+                                    Console.WriteLine($"Instantiated sensor {sensor} not found");
                                 else
-                                    Console.WriteLine($"DHT11 {properties[i]} = {value}");
-                                Thread.Sleep(1000);
+                                {
+                                    Console.WriteLine($"Instantiated {sensor} found at {sensorLinkedListIndex}");
+                                    string[] properties = SoftataLib.Sensor.GetProperties(sensorLinkedListIndex);
+                                    if (properties.Length == 0)
+                                        Console.WriteLine($"{sensor} getProperties() failed");
+                                    else
+                                    {
+                                        Console.WriteLine($"{sensor} getProperties OK");
+                                        foreach (string property in properties)
+                                            Console.WriteLine($"{sensor} property = {property}");
+                                    }
+                                    Console.WriteLine();
+
+                                    double[]? values = SoftataLib.Sensor.ReadAll((byte)sensorLinkedListIndex);
+                                    if (values == null)
+                                        Console.WriteLine($"{sensor} readAll() failed");
+                                    else
+                                    {
+                                        Console.WriteLine($"{sensor} readAll OK");
+                                        for (int p = 0; p < properties.Length; p++)
+                                            Console.WriteLine($"{sensor} {properties[p]} = {values[p]}");
+                                    }
+                                    Console.WriteLine();
+                                    for (byte p = 0; p < properties.Length; p++)
+                                    {
+                                        double? value = SoftataLib.Sensor.Read((byte)sensorLinkedListIndex, p);
+                                        if (value == null)
+                                            Console.WriteLine($"{sensor} read() failed");
+                                        else
+                                            Console.WriteLine($"{sensor} {properties[p]} = {value}");
+                                        Thread.Sleep(200);
+                                        Console.WriteLine();
+                                    }
+                                }
                             }
                         }
                         break;
