@@ -130,7 +130,7 @@ namespace Softata
             LOW = 0x00,
             HIGH = 0x01
         }
-        public static void SendMessageCmd(string cmd)
+        public static string SendMessageCmd(string cmd)
         {
             if (client == null)
                 throw new Exception("SendMessageCmd: Not connected");
@@ -159,6 +159,12 @@ namespace Softata
             {
                 case "Begin":
                     break;
+                case "Version":
+                    return result;
+                    //break
+                case "Devices":
+                    return result;
+                    //break
                 case "Null":
                     break;
                 case "End":
@@ -169,6 +175,7 @@ namespace Softata
                 case "Reset":
                     break;
             }
+            return "";
         }
         public static string SendMessage(Commands MsgType, byte pin = 0xff, byte state = 0xff, string expect = "OK", byte other = 0xff)
         {

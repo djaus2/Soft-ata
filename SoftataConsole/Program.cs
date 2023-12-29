@@ -47,6 +47,12 @@ namespace FirmataBasic
 
                 SoftataLib.SendMessageCmd("Begin");
                 Thread.Sleep(500);
+                string Version = SoftataLib.SendMessageCmd("Version");
+                Console.WriteLine($"Softata Version: {Version}");
+                Thread.Sleep(500);
+                string devicesCSV = SoftataLib.SendMessageCmd("Devices");
+                Console.WriteLine($"{devicesCSV}");
+                Thread.Sleep(500);
 
                 switch (Testtype)
                 {

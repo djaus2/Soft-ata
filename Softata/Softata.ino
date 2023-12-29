@@ -1,5 +1,6 @@
 
 // RPi Pico BSP placed in the public domain by Earle F. Philhower, III, 2022
+#include "softata.h"
 #include "rpiboards.h"
 #include <WiFi.h>
 #include "rpiwatchdog.h"
@@ -11,11 +12,6 @@
 
 #include <float.h>
 
-
-#ifndef STASSID
-#define STASSID "APQLZM"
-#define STAPSK "silly1371"
-#endif
 
 #include "devicesLists.h"
 
@@ -34,7 +30,7 @@ const char* password = STAPSK;
 #define BUFFSIZE 128
 byte Buffer[BUFFSIZE];
 
-int port = 4242;
+int port = PORT;
 
 WiFiServer server(port);
 
@@ -57,7 +53,7 @@ void setup() {
   InitSensorList();
   InitDisplayList();
   InitActuatorList();  
-  first = true;
+  first = false;
 }
 
 //Ref: https://www.thegeekpub.com/276838/how-to-reset-an-arduino-using-code/
@@ -114,9 +110,10 @@ void loop() {
     }
     switch (msg[0]) {
       // Escape simple string commands here.
-      // These commands sto start in uppercase
+      // These commands to start in uppercase
       // Need first letter of these ASCII values to not match commands
       // ie Softata commands not to be between 65 to 90, 0x41 to 0x5A
+      // 'A' to 'Z'
       case (byte)'B':  // Begin
         Serial.println("Ready.");
         client.print("Ready");  // Sent at first connection.
@@ -137,7 +134,18 @@ void loop() {
         client.print("Reset");
         // Force reset
         resetFunc();
-      default:
+       case (byte)'V':  //Get Version
+        Serial.println(APP_VERSION);
+        client.print(APP_VERSION);
+        break;
+       case (byte)'D':  //Get Device Types
+       {
+        String devicesCSV = Grove::GetListofDevices();
+        Serial.println(devicesCSV);
+        client.print(devicesCSV);
+       }
+        break;
+       default:
         // Get Softata command and parameters
         byte cmd = msg[0];
         byte pin = 0xff;

@@ -3,7 +3,7 @@
 #include <Arduino.h>
 #include "grove.h"
 
-#define MAX_SENSOR_PROPERTIES 10
+
 
 
 #define C(x) x,

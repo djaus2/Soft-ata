@@ -1,10 +1,7 @@
 #ifndef DEVICESLISTH
 #define DEVICESLISTH
+#include "Softata.h"
 #include "src/grove.h"
-
-#define MAX_SENSORS 10
-#define MAX_ACTUATORS 10
-#define MAX_DISPLAYS 10
 
 
 //Library Manager: Search for LinkedList.
@@ -12,7 +9,6 @@
 class SensorListNode
 {
 public:
-    GroveSensor Type;
     Grove_Sensor * Sensor=NULL;
 protected:
 };
@@ -20,7 +16,6 @@ protected:
 class DisplayListNode
 {
 public:
-    GroveDisplay Type;
     Grove_Display * Display=NULL;
 protected:
 };
@@ -28,7 +23,6 @@ protected:
 class ActuatorListNode
 {
 public:
-    GroveActuator Type;
     Grove_Actuator * Actuator = NULL;
 protected:
 };
