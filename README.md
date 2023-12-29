@@ -7,16 +7,19 @@ Console app included with Blazor and MAUI apps coming soon.
   
 _Soft-ata rather than firm-ata!_ 
 
-> Big dump for Grove RPi Pico Shield coming in a couple of days!
+# Grove API
 
-## Coming
-
-- Some Grove Sensors such as DHT11, BME280
-- Proposed Grove Sensor API:
+- Grove Sensors DHT11 and BME280 implemented
+- Grove Sensor API:
+  - String GetSensors()
   - String GetPins()/Pin Options
+  - String GetListofProperties()
+  - bool Setup() //Default settings
   - bool Setup(int[] settings)
   - bool ReadAll(double[] values)
   - double Read(enum property)
+
+  > Grove Diplay API coming
 
  > See https://github.com/djaus2/Soft-ata/blob/master/Grove.md
 
