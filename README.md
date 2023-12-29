@@ -25,9 +25,7 @@ _Soft-ata rather than firm-ata!_
 
 ## Latest
 - See **Repository Status** below.
-  - Added Blazor App that uses the class library _(updated)_
-    - Traffic Light to shows states.
-  - Serial1 and Serial2 char and byte read/write. 
+  - Grove API as above 
 
 ## Blog Post
 
@@ -68,6 +66,8 @@ This requires a setup as per previous repositories here as well as in some blog 
 ------
 
 ## Repository Status
+- Version 2.00
+  - Grove Sensors API as above
 - Version 1.65
   - Added Blazor Server app that runs the Digital LED-Button test (as per Console app).
     - Analog Test added (as per Console App).
