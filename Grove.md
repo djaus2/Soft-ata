@@ -2,9 +2,9 @@
 
 > Assumes use of Grove RPi Pico Shield with the RPi Pico with the [earlephilhower-arduino-pico](https://github.com/earlephilhower/arduino-pico) setup on GitHub.
 
-## Coming
+## API
 
-- Some Grove Sensors such as DHT11, BME280
+- Implemented for DHT11, BME280
 - Proposed Grove Sensor API:
   - String GetPins()/Pin Options
     - List of pins that can be used, such as 16,18,20 with DHT11, or required pins
@@ -19,4 +19,6 @@
   - double Read(enum property)
     - Return just the one nominated property value.
     - If failed return double max
-  - Restart() or Shutdown()
+  - Restart() , App Done,or Shutdown()
+ 
+  > Coming: Grove API for Displays OLED 0.96"and LCD1602
