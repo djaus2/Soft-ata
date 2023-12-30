@@ -44,6 +44,7 @@ bool Grove_OLED096::Setup(int * settings, int numSettings)
     int i2c = settings[0];
     if((i2c==0) || (i2c==1))
     {
+      // Note u8g2 code fixes to I2C0!
       Grove::SetI2CPins(i2c);
       u8g2.begin();
       return true;

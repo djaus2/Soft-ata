@@ -26,21 +26,18 @@ class Grove
     {
       if (i2c==0)
       {
-#ifdef G_USE_GROVE_RPIPICO_SHIELD
-        Wire.setSDA(GROVE_I2C0_SDA_SDA);
-        Wire.setSCL(GROVE_I2C0_SDA_SCL);
-#endif
-        //Default to 4 and 5 respectively on RPi Pico
+        Wire.setSDA(I2C0_SDA);
+        Wire.setSCL(I2C0_SCL);
         return true;
       }
       else if (i2c==1)
       {
-#ifdef G_USE_GROVE_RPIPICO_SHIELD
-        Wire1.setSDA(GROVE_I2C1_SDA_SDA);
-        Wire1.setSCL(GROVE_I2C1_SDA_SCL); 
+#ifndef UNO
+        Wire1.setSDA(I2C1_SDA);
+        Wire1.setSCL(I2C1_SCL); 
+        return true;    
 #endif
-        // Default to ?? TBD
-        return true;     
+        return false;
       }
       return false;
     }

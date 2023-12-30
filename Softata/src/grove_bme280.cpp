@@ -5,8 +5,6 @@
 
 #include <BME280I2C.h> 
 
-//#define I2C_ADDRESS76 0x76
-#define I2C_ADDRESS77 0x77
 
 #define NUM_PROPERTIES 3
 
@@ -18,9 +16,9 @@ BME280I2C::Settings settings(
    BME280::StandbyTime_1000ms,
    BME280::Filter_Off,
    BME280::SpiEnable_False,
-#ifdef I2C_ADDRESS76
+#ifdef BME280_I2C_ADDRESS76
    BME280I2C::I2CAddr_0x76 
-#else
+#elif defined(BME280_I2C_ADDRESS77)
    BME280I2C::I2CAddr_0x77
 #endif
 );
@@ -47,7 +45,13 @@ Grove_BME280::Grove_BME280()
 
 String Grove_BME280::GetPins()
 {
+#ifdef GROVE_RPI_PICO_SHIELD
     return String("OK:Grove RPi Pico Shield: IC0 SDA=8,SCL=9");
+#elif defined(RPI_PICO_DEFAULT)
+    return String("OK:Raspberry Pi Pico: IC0 SDA=4,SCL=5");
+#else
+    return String("OK:Raspberry Pi: IC0 SDA=Z,SCL=Y");
+#endif
 }
 
 String Grove_BME280::GetListofProperties()
@@ -62,12 +66,8 @@ bool Grove_BME280::Setup(int * settings, int numSettings)
     int i2c = settings[0];
     if((i2c==0) || (i2c==1))
     {
+        // Nb: Code uses Wire/IC0
         Grove::SetI2CPins(i2c);
-        return SetupBME280();
-    }
-    else if(i2c==-1)
-    {
-        // Use RPI Pico Shield IC defaults (pins3 and 4);
         return SetupBME280();
     }
     else

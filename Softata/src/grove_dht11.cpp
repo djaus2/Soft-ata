@@ -3,16 +3,24 @@
 #include <dht.h>
 
 #define NUM_PROPERTIES 2
+
+#ifdef GROVE_RPI_PICO_SHIELD
 #define NUM_PINS 3
-#define DEFAULT_PIN 16
+#define DEFAULT_PIN DHT11Pin_D
 #define PINS 16,18,20
 #define pins "16,18,20"
-
-
-
-
-
 int Pins[] = {PINS};
+#elif defined(RPI_PICO_DEFAULT)
+#define DEFAULT_PIN DHT11Pin_D
+#define PIN_START 0
+#define PIN_END 26
+#define pins "Any of GPIO 0 to 26"
+#endif
+
+
+
+
+
 
     Grove_DHT11::Grove_DHT11()
     {
@@ -55,6 +63,7 @@ int Pins[] = {PINS};
     {
       // Check that the nominated pin is valid
       bool found = false;
+#ifdef GROVE_RPI_PICO_SHIELD
       for (int i=0;i<NUM_PINS;i++)
       {
         if(pin == Pins[i])
@@ -63,6 +72,10 @@ int Pins[] = {PINS};
           break;
         }
       }
+#elif defined(RPI_PICO_DEFAULT)
+      if ((pin>=PIN_START) && (pin<=PIN_END))
+        found = true;
+#endif
       if(!found)
         return false;
 
@@ -114,7 +127,7 @@ int Pins[] = {PINS};
         return ERRORDBL;
       // DISPLAY DATA
       values[0] = DHT.temperature;
-      values[1]= DHT.humidity;
+      values[1] = DHT.humidity;
       return true;
     }
 
