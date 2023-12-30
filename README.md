@@ -71,6 +71,7 @@ This requires a setup as per previous repositories here as well as in some blog 
 ## Repository Status
 - Version 2.02
   - Can easiliy switch btw RPI Pico W defaults and Grove Pico Shield in header
+  - V2.03 Fixuo for USART defines
 - Version 2.01
   - Main app defines collected in softata.h
   - Also add get version and get list of device types.
