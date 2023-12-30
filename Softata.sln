@@ -7,7 +7,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SoftataConsole", "SoftataCo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SofataLib", "SofataLib\SofataLib.csproj", "{7886C231-9382-4D25-8B95-4F2C53CE37A7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorSoftata", "BlazorSoftata\BlazorSoftata.csproj", "{F938F9FD-B8B0-47D3-BEE8-5BACF0BCB9DA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorSoftata", "BlazorSoftata\BlazorSoftata.csproj", "{F938F9FD-B8B0-47D3-BEE8-5BACF0BCB9DA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{5C9D7B95-EAC4-4C11-A784-C0B0F706E099}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

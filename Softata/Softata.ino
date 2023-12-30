@@ -309,9 +309,15 @@ void loop() {
               switch (cmd) {
                 case 0xE0:  // Set Pins (Provide Tx, Determine Rx) and set Baudrate from list
                   {
-                    if (IS_PIN_SERIAL_TX(pin)) {
-                      byte Tx = pin;
-                      byte Rx = pin + 1;
+
+#ifdef GROVE_RPI_PICO_SHIELD
+                    byte Tx = UART1TX;
+                    byte Rx = UART1RX;
+#elif defined(RPI_PICO_DEFAULT)
+                    byte Tx = pin;
+                    byte Rx = pin + 1;
+#endif
+                    if (IS_PIN_SERIAL_TX(Tx)) {
                       int baudrate = Baudrates[param];
                       if (other == 1) {
                         Serial1.setTX(Tx);

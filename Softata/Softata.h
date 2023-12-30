@@ -1,7 +1,7 @@
 #ifndef SOFTATAH
 #define SOFTATAH
 
-#define APP_VERSION "2.02"
+#define APP_VERSION "2.03"
 
 #define RPI_PICO_DEFAULT
 //#define GROVE_RPI_PICO_SHIELD
@@ -18,10 +18,10 @@
 
 #ifdef RPI_PICO_DEFAULT
 #define DHT11Pin_D  13 // Whatever 0 to 26
-#define UART1RX   0  // GPIO0, GPIO16, GPIO22
-#define UART1TX   (UART1RX+1)
-#define UART2RX   4  // GPIO4, GPIO8, GPIO12
-#define UART2TX   (UART2RX+1)
+#define UART9TX   0  // GPIO0, GPIO16, GPIO22
+#define UART9RX   (UART0TX+1)
+#define UART1TX   4  // GPIO4, GPIO8, GPIO12
+#define UART1RX   (UART1TX+1)
 // Default I2C is first listed pin
 #define I2C0_SDA  4 // GPIO0, GPIO4, GPIO8, GPIO12, GPIO16, GPIO20
 #define I2C0_SCL  (I2C0_SDA +1)
@@ -31,10 +31,10 @@
 #elif defined(GROVE_RPI_PICO_SHIELD)
 // Note following are fixed for the Shield
 #define DHT11Pin_D  16 // or 18,20
-#define UART1RX   0
-#define UART1TX   (UART1RX+1)
-#define UART2RX   4
-#define UART2TX   (UART2RX+1)
+#define UART0TX   0
+#define UART0RX   (UART0TX+1)
+#define UART1TX   4
+#define UART1RX   (UART1TX+1)
 #define I2C0_SDA  8
 #define I2C0_SCL  (I2C0_SDA +1)
 #define I2C1_SDA  6
