@@ -28,7 +28,7 @@ int Pins[] = {PINS};
       sensorType = DHT11;
     }
 
-    String Grove_DHT11::GetPins()
+    /*String Grove_DHT11::GetPins()
     {
       String _pins = String("OK:Grove RPi Pico Shield: ");
       _pins.concat(pins);
@@ -36,12 +36,9 @@ int Pins[] = {PINS};
       _pins.concat(DEFAULT_PIN);
       Serial.println(_pins);
       return String(_pins); //pins;
-    }
+    }*/
 
-    String Grove_DHT11::GetListofProperties()
-    {
-      return String("OK:Temperature,Humidity");
-    }
+  
 
     bool Grove_DHT11::Setup(int * settings, int numSettings)
     {

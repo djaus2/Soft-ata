@@ -25,11 +25,12 @@
 
 // Add Misc commands to list here, before last one.
 // Implement in Grove_OLED096::Misc(int cmd
-enum OLEDMiscCmds {drawCircle,drawFrame,OLEDMiscCmds_MAX};
+
 
 U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, /* clock=*/ SCL, /* data=*/ SDA, /* reset=*/ U8X8_PIN_NONE);  // High speed I2C
 
 // U8G2_SSD1306_128X64_NONAME_F_SW_I2C u8g2(U8G2_R0, /* clock=*/ SCL, /* data=*/ SDA, /* reset=*/ U8X8_PIN_NONE);    //Low spped I2C
+
 
 bool Grove_OLED096::Setup() {
   Grove::SetI2CPins(0);
@@ -70,7 +71,7 @@ bool Grove_OLED096::WriteString (int col, int line, String msg)
 }
 
 
-bool Grove_OLED096::Misc(int cmd, int * data)
+bool Grove_OLED096::Misc(int cmd, int * data, int length)
 {
   if (cmd<0)
     return false;
@@ -97,6 +98,24 @@ bool Grove_OLED096::Misc(int cmd, int * data)
   return true;
 }
 
+
+// Not relevant for Grove_OLED096
+bool Grove_OLED096::Backlight()
+{
+    return false;
+}
+bool Grove_OLED096::SetCursor(int x, int y)
+{
+    return false;
+}
+bool Grove_OLED096::WriteString(String msg)
+{
+    return false;
+}
+
+
+
+
 /////////////////////////////////////////////////////////////////////
 // Grove-LCD RGB Backlight  V2.00
 // https://wiki.seeedstudio.com/Grove-LCD_RGB_Backlight/
@@ -114,9 +133,7 @@ rgb_lcd lcd;
 #define COLORGREEN  0
 #define COLORBLUE  0
 
-// Add Misc commands to list here, before last one.
-// Implement in Grove_LCD1602::Misc(int cmd)
-enum LCD1602MiscCmds {home,autoscroll,noautoscroll,blink,noblink,LCD1602MiscCmds_MAX};
+
 
 bool Grove_LCD1602::Setup()
 {
@@ -166,7 +183,7 @@ bool Grove_LCD1602::Clear()
 }
 
 
-bool Grove_LCD1602SetCursor(int x, int y)
+bool Grove_LCD1602::SetCursor(int x, int y)
 {
   // Note: line 1 is the second row, since counting begins with 0:
   lcd.setCursor(x,y+1);
@@ -187,7 +204,7 @@ bool Grove_LCD1602::WriteString(int x, int y, String msg)
   return true;
 }
 
-bool Grove_LCD1602::Misc(int cmd, int * data)
+bool Grove_LCD1602::Misc(int cmd, int * data, int length)
 {
   if (cmd<0)
     return false;
@@ -220,6 +237,16 @@ bool Grove_LCD1602::Misc(int cmd, int * data)
   }
   return true;
 }
+
+
+// Not relevant for Grove_LCD1602
+bool Grove_LCD1602::Backlight()
+{
+    return false;
+}
+
+
+
 
 
 

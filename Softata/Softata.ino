@@ -444,7 +444,7 @@ void loop() {
               }
             }
             break;
-          case 0xF0:
+          case 0xF0: //Grove Sensors
             { 
               // Cmd = 0xF0,pin=Index of cmd in list,param=SubCmd,Other=
               switch (param)
@@ -456,26 +456,24 @@ void loop() {
                       //#define SENSORS C(DHT11)C(SWITCH)C(SOUND)C(BME280)
                       case DHT11:
                         {
-                          Grove_DHT11 _dht11;
-                          client.print(_dht11.GetPins());
+                          client.print(Grove_DHT11::GetPins());
                         }
                         break;
                       case LIGHT:
                         {
-                          //Grove_Light _light
+                          //client.print(Grove_Lioght::GetPins());
                           client.print("Fail:Not implemented");
                         }
                         break;
                       case SOUND:
                         {
-                          //Grove_Sound _sound
+                          //client.print(Grove_Sound::GetPins());
                           client.print("Fail:Not implemented");
                         }
                         break;
                       case BME280:
                         {
-                          Grove_BME280 _bme280;
-                          client.print(_bme280.GetPins());
+                          client.print(Grove_BME280::GetPins());
                         }
                         break;
                       // Add more here
@@ -492,26 +490,24 @@ void loop() {
                       //#define SENSORS C(DHT11)C(SWITCH)C(SOUND)C(BME280)
                       case DHT11:
                         {
-                          Grove_DHT11 _dht11;
-                          client.print(_dht11.GetListofProperties());
+                          client.print(Grove_DHT11::GetListofProperties());
                         }
                         break;
                       case LIGHT:
                         {
-                          //Grove_Light _light
+                          //client.print(Grove_Light::GetListofProperties());
                           client.print("Fail:Not implemented");
                         }
                         break;
                       case SOUND:
                         {
-                          //Grove_Sound _sound
+                          //client.print(Grove_Sound::GetListofProperties());
                           client.print("Fail:Not implemented");
                         }
                         break;
                       case BME280:
                         {
-                          Grove_BME280 _bme280;
-                          client.print(_bme280.GetListofProperties());
+                          client.print(Grove_BME280::GetListofProperties());
                         }
                         break;
                       // Add more here
@@ -645,6 +641,119 @@ void loop() {
                     client.print(msg);
                   }
                   break;
+              }
+            }
+            break;
+          case 0xF1: //Grove Displays
+            {
+              //#define G_DISPLAYS C(OLED096)C(LCD1602)C(NEOPIXEL)
+              GroveDisplay display = (GroveDisplay)other;
+              switch (param)
+              {
+                case 0:
+                {
+                  switch (display)
+                  {
+                    case OLED096:
+                      client.print(Grove_OLED096::GetPins());
+                      break;
+                    case LCD1602:
+                      client.print(Grove_LCD1602::GetPins());
+                      break;
+                    case NEOPIXEL:
+                      client.print(Adafruit_NeoPixel8::GetPins());
+                      break;
+                  }
+                }
+                  break;
+                case 1:
+                {
+                  switch (display)
+                  {
+                    case OLED096:
+                      //Grove_OLED096 aa;
+                      break;
+                    case LCD1602:
+                      //Grove_LCD1602 bb;
+                      break;
+                    case NEOPIXEL:
+                      //Adafruit_NeoPixel8 cc;
+                      break;
+                  }
+                }
+                  break;
+                case 2:
+                case 3:
+                  {
+                    Grove_Display * grove_Display;
+                    GroveDisplay groveDisplay;
+                    bool _done=false;
+                    switch ((GroveDisplay)other)
+                    {
+                      case OLED096:
+                        {
+                          grove_Display  = new Grove_OLED096();
+                          _done = true;
+                        }
+                        break;
+                      case LCD1602:
+                        {
+                          grove_Display  = new Grove_LCD1602();
+                          _done = true;
+                        }
+                        break;
+                      case NEOPIXEL:
+                        {
+                          grove_Display  = new Adafruit_NeoPixel8();
+                          _done = true;
+                        }
+                        break;;
+                      // Add more here
+                      default:
+                        client.print("Fail:Not a display");
+                        break;
+                    }
+                    if(_done)
+                    {
+                      if(param==2)
+                      {
+                        if(grove_Display->Setup())
+                        {
+                          int index = AddDisplayToList(grove_Display);
+                          String msgSettingsD1 = "OK";
+                          msgSettingsD1.concat(':');
+                          msgSettingsD1.concat(index);
+                          client.print(msgSettingsD1);
+                        }
+                        else
+                          client.print("Fail:Setup");
+                        }
+                      else
+                      {
+                        int settings[1];
+                        settings[0] = pin;
+                        if(grove_Display->Setup(settings,1))
+                        {
+                          int index = AddDisplayToList(grove_Display);
+                          String msgSettingsD2 = "OK";
+                          msgSettingsD2.concat(':');
+                          msgSettingsD2.concat(index);
+                          client.print(msgSettingsD2);
+                        }
+                        else
+                          client.print("Fail:Setup");
+                      }
+                    }
+                  }
+                  break;
+                case 0xff:
+                  {
+                    String msg = String("OK:");
+                    msg.concat(Grove_Display::GetListof());
+                    client.print(msg);
+                  }
+                  break;
+                
               }
             }
             break;

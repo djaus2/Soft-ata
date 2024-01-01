@@ -9,7 +9,7 @@
 #define DEVICETYPES G_DEVICETYPES
 #define SENSORS     G_SENSORS
 #define ACTUATORS   G_ACTUATORS
-#define I2CDISPLAYS G_I2CDISPLAYS
+#define DISPLAYS G_DISPLAYS
 
 #define C(x) x,
 enum DeviceType { DEVICETYPES DEVICETYPE_NONE};
@@ -56,7 +56,7 @@ class Grove
     }
 
     virtual bool Setup();
-    virtual bool Setup(int * settings, int numSettings);
+    virtual bool Setup(int * settings, int numSettings=1);
     DeviceType deviceType;
       
     protected:

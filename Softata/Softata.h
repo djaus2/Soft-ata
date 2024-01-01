@@ -51,10 +51,15 @@
 #define BME280_I2C_ADDRESS77
 #define BME280_ADDR        0x77  // or 0x76
 
+//Sensor connections
 
-
-
-
+#ifdef RPI_PICO_DEFAULT
+#define BME280_PINNOUT  "I2C0 (Pins4/5 (SDA/SCL) default): Address 0x77 (Alt 0x76). Embedded in driver though."
+#define DHT11_PINNOUT "OneWire: Pin 11 or whatever 0 to 26"
+#elif defined(GROVE_RPI_PICO_SHIELD)
+#define BME280_PINNOUT  "I2C0 (Pins8/9 (SDA/SCL) fixed): Address 0x77 (Alt 0x76). Embedded in driver though."
+#define DHT11_PINNOUT  "OneWire: Pin 16,18 or 20"
+#endif
 
 
 //Maximum number of each that can be instatianted...added to list in deviceLists.h
@@ -68,6 +73,29 @@
 //Add other sensors/actuators here C bracketed, on end.
 #define G_SENSORS C(DHT11)C(BME280)C(LIGHT)C(SOUND)
 #define G_ACTUATORS C(BUZZER)
-#define G_I2CDISPLAYS C(OLED096)C(LCD1602)
+#define G_DISPLAYS C(OLED096)C(LCD1602)C(NEOPIXEL)
+
+#define NEOPIXEL_NUMPIXELS 8
+#ifdef RPI_PICO_DEFAULT
+#define NEOPIXEL_PIN 12 // Whatever 0 to 26
+#elif defined(GROVE_RPI_PICO_SHIELD)
+#define NEOPIXEL_PIN 16 //18,20 (Grove yellow cable).. 17,19,21 (Grove white cable)
+#endif
+
+//Display connections
+
+#ifdef RPI_PICO_DEFAULT
+#define OLED096_PINNOUT  "I2C0 (Pins4/5 (SDA/SCL) default): Address 0x78. Embedded in driver though."
+#define LCD1602_PINNOUT  "I2C0 (Pins4/5 (SDA/SCL) default): Addresses (LCD)0X3E and (RGB)0X62. Embedded in driver though."
+#define NEOPIXEL_PINNOUT "OneWrire: Pin 12 // Whatever 0 to 26"
+#elif defined(GROVE_RPI_PICO_SHIELD)
+#define OLED096_PINNOUT  "I2C0 (Pins8/9 (SDA/SCL)fixed): Address 0x78. Embedded in driver though."
+#define LCD1602_PINNOUT  "I2C0 (Pins8/9 (SDA/SCL) fixed): Addresses (LCD)0X3E and (RGB)0X62. Embedded in driver though."
+#define NEOPIXEL_PINNOUT "OneWire: Pin 16 Alt 18 or 20 (Grove yellow cable).. 17,19,21 (Grove white cable)"
+#endif
+
+
+
+
 
 #endif

@@ -50,8 +50,6 @@ class Grove_Sensor: public Grove
         return Grove_Sensor::GetListof();
       }
 
-      virtual arduino::String GetPins();
-      virtual arduino::String GetListofProperties();
       virtual bool Setup();
       virtual bool Setup(int * settings, int numSettings);
       virtual bool ReadAll(double * values);

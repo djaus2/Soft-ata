@@ -43,22 +43,6 @@ Grove_BME280::Grove_BME280()
 
 
 
-String Grove_BME280::GetPins()
-{
-#ifdef GROVE_RPI_PICO_SHIELD
-    return String("OK:Grove RPi Pico Shield: IC0 SDA=8,SCL=9");
-#elif defined(RPI_PICO_DEFAULT)
-    return String("OK:Raspberry Pi Pico: IC0 SDA=4,SCL=5");
-#else
-    return String("OK:Raspberry Pi: IC0 SDA=Z,SCL=Y");
-#endif
-}
-
-String Grove_BME280::GetListofProperties()
-{
-    return String("OK:Temperature,Pressure,Humidity");
-}
-
 bool Grove_BME280::Setup(int * settings, int numSettings)
 {
     if(numSettings>0)
