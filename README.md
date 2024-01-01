@@ -27,6 +27,7 @@ _Soft-ata rather than firm-ata!_
 - See **Repository Status** below.
   - Main defines moved to softata.h
     - Can easiliy switch btw RPI Pico W defaults and Grove Pico Shield in header
+    - More refactoring of this. softata.h has more overall properties.
   
   - Grove API as above 
 
