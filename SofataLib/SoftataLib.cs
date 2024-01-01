@@ -103,11 +103,12 @@ namespace Softata
             Analog = 1,
             PWM = 2,
             Servo = 3,
-            I2C = 4,
+            Sensors = 4,
             SPI = 5,
             OneWire = 6,
             Serial = 7,
-            Undefined = 0xFF,
+            Displays = 0x8,
+            Undefined = 0xFF
         }
         public enum PinMode
         {

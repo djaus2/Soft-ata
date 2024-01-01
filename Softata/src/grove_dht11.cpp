@@ -92,7 +92,6 @@ int Pins[] = {PINS};
       dht DHT;
       // READ DATA
       Serial.print("DHT11:");
-
       // Allow 3 retries
       bool OK = false;
       for (int i=0;i<4;i++)

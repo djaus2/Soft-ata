@@ -10,6 +10,9 @@ const char * const display_name[] = { DISPLAYS };
 #undef C
 
 
+
+
+
 // Add Misc commands to list here, before last one.
 // Implement in Grove_XXXX::Misc(int cmd, int * data, int length)
 enum LCD1602MiscCmds {home,autoscroll,noautoscroll,blink,noblink,LCD1602MiscCmds_MAX};
@@ -77,7 +80,9 @@ class Grove_OLED096: public Grove_Display
   public:
       static String GetPins()
       {
-        return OLED096_PINNOUT;
+        String msg="OK:";
+        msg.concat(OLED096_PINNOUT);
+        return msg;
       }
       virtual bool Setup();
       virtual bool Setup(int * settings, int numSettings);
@@ -104,7 +109,9 @@ class Grove_LCD1602: public Grove_Display
   public:
       static String GetPins()
       {
-        return LCD1602_PINNOUT;
+        String msg="OK:";
+        msg.concat(LCD1602_PINNOUT);
+        return msg;
       }
       virtual bool Setup();
       virtual bool Setup(int * settings, int numSettings);
@@ -132,7 +139,9 @@ class Adafruit_NeoPixel8: public Grove_Display
   public:
       static String GetPins()
       {
-        return NEOPIXEL_PINNOUT;
+        String msg="OK:";
+        msg.concat(NEOPIXEL_PINNOUT);
+        return msg;
       }
       virtual bool Setup();
       virtual bool Setup(int * settings, int numSettings);

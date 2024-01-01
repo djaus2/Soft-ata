@@ -47,6 +47,10 @@
 #define LCD1602LCD_V2_ADDR 0X3E
 #define LCD1602RGB_V2_ADDR 0X62
 
+
+#define DHT11_PROPERTIES "Temperature,Humidity"
+#define BME280_PROPERTIES "Temperature,Pressure,Humidity"
+
 //#define BME280_I2C_ADDRESS76
 #define BME280_I2C_ADDRESS77
 #define BME280_ADDR        0x77  // or 0x76
@@ -93,6 +97,8 @@
 #define LCD1602_PINNOUT  "I2C0 (Pins8/9 (SDA/SCL) fixed): Addresses (LCD)0X3E and (RGB)0X62. Embedded in driver though."
 #define NEOPIXEL_PINNOUT "OneWire: Pin 16 Alt 18 or 20 (Grove yellow cable).. 17,19,21 (Grove white cable)"
 #endif
+
+
 
 
 

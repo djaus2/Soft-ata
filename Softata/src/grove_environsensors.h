@@ -11,11 +11,15 @@ class Grove_DHT11: public Grove_Sensor
       Grove_DHT11();
       static String GetPins()
       {
-        return DHT11_PINNOUT;
+        String msg="OK:";
+        msg.concat(DHT11_PINNOUT);
+        return msg;        
       }
       static String GetListofProperties()
       {
-        return String("OK:Temperature,Humidity");
+        String msg="OK:";
+        msg.concat(DHT11_PROPERTIES);
+        return msg; 
       }
       virtual bool Setup();
       virtual bool Setup(int * settings, int numSettings);
@@ -38,11 +42,15 @@ class Grove_BME280: public Grove_Sensor
       Grove_BME280();
       static String GetPins()
       {
-        return BME280_PINNOUT;
+        String msg="OK:";
+        msg.concat(BME280_PINNOUT);
+        return msg;       
       }
       static String GetListofProperties()
       {
-          return String("OK:Temperature,Pressure,Humidity");
+        String msg="OK:";
+        msg.concat(DHT11_PROPERTIES);
+        return msg; 
       }
       virtual bool Setup();
       virtual bool Setup(int * settings, int numSettings);

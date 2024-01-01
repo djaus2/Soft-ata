@@ -26,7 +26,7 @@ namespace FirmataBasic
         static byte POTENTIOMETER = 26;
 
         // Choose test type
-        static SoftataLib.CommandType Testtype = CommandType.I2C;
+        static SoftataLib.CommandType Testtype = CommandType.Sensors;
         //static SoftataLib.CommandType Testtype = CommandType.Digital;
         //static SoftataLib.CommandType Testtype = CommandType.Serial;
         //Set Serial1 or Serial2 for send and receive.
@@ -145,7 +145,7 @@ namespace FirmataBasic
 
                         }
                         break;
-                    case CommandType.I2C:
+                    case CommandType.Sensors:
                         string[] Sensors = SoftataLib.Sensor.GetSensors();
                         if (Sensors.Length == 0)
                             Console.WriteLine($"No sensors found");
@@ -198,6 +198,8 @@ namespace FirmataBasic
                                 }
                             }
                         }
+                        break;
+                    case CommandType.Displays:
                         break;
                 }
             }
