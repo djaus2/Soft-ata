@@ -26,7 +26,7 @@ namespace FirmataBasic
         static byte POTENTIOMETER = 26;
 
         // Choose test type
-        static SoftataLib.CommandType Testtype = CommandType.Sensors;
+        static SoftataLib.CommandType Testtype = CommandType.Displays;
         //static SoftataLib.CommandType Testtype = CommandType.Digital;
         //static SoftataLib.CommandType Testtype = CommandType.Serial;
         //Set Serial1 or Serial2 for send and receive.
@@ -200,16 +200,28 @@ namespace FirmataBasic
                         }
                         break;
                     case CommandType.Displays:
-                        /*string[] Displays = SoftataLib.Display.GetDisplays();
+                        string[] Displays = SoftataLib.Display.GetDisplays();
                         if (Displays.Length == 0)
                             Console.WriteLine($"No displays found");
                         else
                         {
                             Console.WriteLine($"Displays found:");
-                            for (byte i = 0; i < Displays.Length; i++)
+                            for (byte i = 2; i < Displays.Length; i++)
                             {
+                                string display = Displays[i];
+                                Console.WriteLine($"Display = {display}");
+                                SoftataLib.Display.GetPins(i);
+                                byte displayLinkedListIndex = (byte)SoftataLib.Display.SetupDefault(i);
+                                Console.WriteLine($"displayLinkedListIndex: {displayLinkedListIndex}");
+                                if (displayLinkedListIndex < 0)
+                                    Console.WriteLine($"Instantiated sensor {display} not found");
+                                else
+                                {
+                                    SoftataLib.Display.Misc_TestNeo(displayLinkedListIndex);
+                                    Console.WriteLine("OK");
+                                }
                             }
-                        }*/
+                        }
                         break;
                 }
             }

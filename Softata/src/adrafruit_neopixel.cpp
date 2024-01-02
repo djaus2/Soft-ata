@@ -39,10 +39,10 @@ bool Adafruit_NeoPixel8::Misc(byte cmd, byte * data, byte length)
 {
     if (cmd<0)
         return false;
-    else if(cmd>(int) NEOPIXELMiscCmds_MAX)
+    else if(cmd>(byte) NEOPIXELMiscCmds_MAX)
         return false;
     NEOPIXELMiscCmds Cmd = (NEOPIXELMiscCmds)cmd;
-    while(pixels->canShow()){delay(1);}
+    //while(pixels->canShow()){delay(1);}
     switch(Cmd)
     {
         case setpixelcolor: 
@@ -51,7 +51,7 @@ bool Adafruit_NeoPixel8::Misc(byte cmd, byte * data, byte length)
             pixels->setPixelColor(data[0], pixels->Color(data[1], data[2], data[3]));
             pixels->show(); 
             break;
-        case setpixelcolorAll: 
+        case setpixelcolorAll: ;
             if (length<3)
                 return false;
             for(int i=0;i<numPixels;i++)

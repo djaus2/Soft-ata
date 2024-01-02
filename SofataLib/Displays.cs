@@ -91,6 +91,29 @@ namespace Softata
                     return false;
             }
 
+            enum LCD1602MiscCmds { home, autoscroll, noautoscroll, blink, noblink, LCD1602MiscCmds_MAX };
+            enum NEOPIXELMiscCmds { setpixelcolor, setpixelcolorAll, setpixelcolorOdds, setpixelcolorEvens, setBrightness, NEOPIXELMiscCmds_MAX };
+            enum OLEDMiscCmds { drawCircle, drawFrame, OLEDMiscCmds_MAX };
+
+
+            public static bool Misc_TestNeo(byte displayLinkedListIndex)
+            {
+                byte[] data = new byte[] { 0x4,(byte)NEOPIXELMiscCmds.setpixelcolorAll, (byte)255, (byte)0, (byte)0 };
+                string result = SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", displayLinkedListIndex, data);
+                Thread.Sleep(2000);
+                data = new byte[] { 0x4, (byte)NEOPIXELMiscCmds.setpixelcolorAll, (byte)0, (byte)255, (byte)0 };
+                result = SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", displayLinkedListIndex, data);
+                Thread.Sleep(2000);
+                data = new byte[] { 0x4, (byte)NEOPIXELMiscCmds.setpixelcolorAll, (byte)0, (byte)0, (byte)255 };
+                result = SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", displayLinkedListIndex, data); if (true) //TBD
+                Thread.Sleep(2000);
+                data = new byte[] { 0x4, (byte)NEOPIXELMiscCmds.setpixelcolorAll, (byte)0, (byte)0, (byte)0 };
+                result = SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", displayLinkedListIndex, data); if (true) //TBD
+                    return true; 
+                else
+                    return false;
+
+            }
         }
 
 

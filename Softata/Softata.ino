@@ -152,7 +152,6 @@ void loop() {
         byte param = 0xff;
         byte other = 0xff;
         byte * otherData = NULL;
-        byte otherDataLength = 0;
         if (length > 1) {
           pin = msg[1];
           if (length > 2) {
@@ -161,9 +160,7 @@ void loop() {
               other = msg[3];
               if(length>4)
               {
-                otherDataLength = length-4;
-                if(otherDataLength>0)
-                  otherData = msg+4;
+                otherData = msg+4;
               }
             }
           }
@@ -603,18 +600,12 @@ void loop() {
                 case s_readallCMD:
                   {
                     int index = other;
-                    Serial.print("===");
-                    Serial.print(index);
-                    Serial.println("===");
                     Grove_Sensor * grove_Sensor = GetSensorFromList(index);
+                    int numProps = grove_Sensor->num_properties;
                     double values[MAX_SENSOR_PROPERTIES];
                     if(grove_Sensor->ReadAll(values))
-                    {
+                    {                 
                       String msgGetAll = "OK:";
-                      int numProps = grove_Sensor->num_properties;
-                    Serial.print("----");
-                    Serial.print(grove_Sensor->num_properties);
-                    Serial.println("----");
                       for (int i=0;i< numProps;i++)
                       {
                         msgGetAll.concat(values[i]);
@@ -635,11 +626,6 @@ void loop() {
                     Grove_Sensor * grove_Sensor = GetSensorFromList(other);
                     // A bit of reuse of real-estate here:
                     byte property = pin;
-                    Serial.print("----");
-                    Serial.print(property);
-                    Serial.print("-");
-                    Serial.print(grove_Sensor->num_properties);
-                    Serial.println("----");
                     if(property>(grove_Sensor->num_properties-1))
                     {
                       client.print("Fail:Read Property no. > no. properties");
@@ -811,7 +797,7 @@ void loop() {
                   {
                     int index = other;
                     Grove_Display * grove_Display = GetDisplayFromList(index);
-                    if(otherDataLength<2)
+                    if(otherData[0]<2)
                     {
                       client.print("Fail:SetCursor needs (x,y)");
                     }
@@ -831,29 +817,39 @@ void loop() {
                   }
                 case d_miscCMD:
                   {
-                    if(otherDataLength<1)
+                    Serial.print("d_miscCMD");Serial.print("-");Serial.println(d_miscCMD);
+                    if(otherData[0]<1)
                     {
                       client.print("Fail:Display.Misc needs a command)");
                     }
                     else
                     {
-                      int index = other;
+                      int index=other;
+                      Serial.println("Misc other");
                       Grove_Display * grove_Display = GetDisplayFromList(index);
-                      byte miscCMD = otherData[0];
-                      byte * miscData = NULL;
-                      byte miscDataLength = 0;
-                      if (otherDataLength>1)
+                      if(grove_Display==NULL)
                       {
-                        miscData = otherData +1;
-                        miscDataLength = otherDataLength-1;
-                      }
-                      if(grove_Display->Misc(cmd,miscData,miscDataLength))
-                      {
-                        client.print("OK:");
+                        client.print("Fail:Display.Misc() NULL");
                       }
                       else
                       {
-                        client.print("Fail:Display.Misc()");
+                        byte miscCMD = otherData[1];
+                        byte * miscData = NULL;
+                        byte miscDataLength = otherData[0]-1;
+                        if (miscDataLength>0)
+                        {
+                          miscData = otherData +2;
+                        }
+                        if(grove_Display->Misc(miscCMD,miscData,miscDataLength))
+                        {
+                          Serial.println("Misc OK");
+                          client.print("OK:");
+                        }
+                        else
+                        {
+                          Serial.println("Misc Fail");
+                          client.print("Fail:Display.Misc()");
+                        }
                       }
                     }
                   }                                

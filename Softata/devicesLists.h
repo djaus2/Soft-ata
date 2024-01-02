@@ -92,7 +92,10 @@ int AddDisplayToList(Grove_Display * display)
   if(displaycount < (MAX_DISPLAYS-1))
   {
     DisplayList[displaycount++]->Display= display;
-    return (count-1);
+    Serial.print("@@@");
+    Serial.print(displaycount-1);
+    Serial.print("@@@");
+    return (displaycount-1);
   }
   else
   {
@@ -133,7 +136,7 @@ int InitDisplayList()
   {
     DisplayList[i]= new DisplayListNode() ;
   }
-  count=0;
+  displaycount=0;
   return MAX_DISPLAYS;
 }
 

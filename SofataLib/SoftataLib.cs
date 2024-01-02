@@ -91,8 +91,8 @@ namespace Softata
             serialGetInt = 0xE6, // Get Int
 
             groveSensor = 0xF0, 
-            groveActuator = 0xF1, 
-            groveDisplay = 0xF2, 
+            groveDisplay = 0xF1,
+            groveActuator = 0xF2,
 
             Undefined = 0xFF
         }
