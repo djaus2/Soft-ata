@@ -16,7 +16,7 @@ bool Adafruit_NeoPixel8::Setup() {
   return true;
 }
 
-bool Adafruit_NeoPixel8::Setup(int * settings, int numSettings)
+bool Adafruit_NeoPixel8::Setup(byte * settings, byte numSettings)
 {
     if (numSettings > 0)
     {
@@ -35,7 +35,7 @@ bool Adafruit_NeoPixel8::Clear()
     return true;
 }
 
-bool Adafruit_NeoPixel8::Misc(int cmd, int * data, int length)
+bool Adafruit_NeoPixel8::Misc(byte cmd, byte * data, byte length)
 {
     if (cmd<0)
         return false;
@@ -94,7 +94,7 @@ bool Adafruit_NeoPixel8::Backlight()
 {
     return false;
 }
-bool Adafruit_NeoPixel8::SetCursor(int x, int y)
+bool Adafruit_NeoPixel8::SetCursor(byte x, byte y)
 {
     return false;
 }
@@ -103,7 +103,7 @@ bool Adafruit_NeoPixel8::WriteString(String msg)
     return false;
 }
 
-bool Adafruit_NeoPixel8::WriteString(int x, int y, String msg)
+bool Adafruit_NeoPixel8::WriteString(byte x, byte y, String msg)
 {
     return false;
 }

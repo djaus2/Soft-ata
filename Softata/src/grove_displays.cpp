@@ -38,7 +38,7 @@ bool Grove_OLED096::Setup() {
   return true;
 }
 
-bool Grove_OLED096::Setup(int * settings, int numSettings)
+bool Grove_OLED096::Setup(byte * settings, byte numSettings)
 {
   if(numSettings>0)
   {
@@ -61,7 +61,7 @@ bool Grove_OLED096::Clear()
   return true;
 }
 
-bool Grove_OLED096::WriteString (int col, int line, String msg)
+bool Grove_OLED096::WriteString (byte col, byte line, String msg)
 {
   int y = LINEHEIGHT*line + FIRSTLINESTART;
   int x = COLWIDTH*col;
@@ -71,7 +71,7 @@ bool Grove_OLED096::WriteString (int col, int line, String msg)
 }
 
 
-bool Grove_OLED096::Misc(int cmd, int * data, int length)
+bool Grove_OLED096::Misc(byte cmd, byte * data, byte length)
 {
   if (cmd<0)
     return false;
@@ -104,7 +104,7 @@ bool Grove_OLED096::Backlight()
 {
     return false;
 }
-bool Grove_OLED096::SetCursor(int x, int y)
+bool Grove_OLED096::SetCursor(byte x, byte y)
 {
     return false;
 }
@@ -143,7 +143,7 @@ bool Grove_LCD1602::Setup()
   return true;
 }
 
-bool Grove_LCD1602::Setup(int * settings, int numSettings)
+bool Grove_LCD1602::Setup(byte * settings, byte numSettings)
 {
   if (numSettings>1)
   {
@@ -183,7 +183,7 @@ bool Grove_LCD1602::Clear()
 }
 
 
-bool Grove_LCD1602::SetCursor(int x, int y)
+bool Grove_LCD1602::SetCursor(byte x, byte y)
 {
   // Note: line 1 is the second row, since counting begins with 0:
   lcd.setCursor(x,y+1);
@@ -196,7 +196,7 @@ bool Grove_LCD1602::WriteString(String msg)
   return true;
 }
 
-bool Grove_LCD1602::WriteString(int x, int y, String msg)
+bool Grove_LCD1602::WriteString(byte x, byte y, String msg)
 {
   // Note: line 1 is the second row, since counting begins with 0:
   lcd.setCursor(x,y+1);
@@ -204,7 +204,7 @@ bool Grove_LCD1602::WriteString(int x, int y, String msg)
   return true;
 }
 
-bool Grove_LCD1602::Misc(int cmd, int * data, int length)
+bool Grove_LCD1602::Misc(byte cmd, byte * data, byte length)
 {
   if (cmd<0)
     return false;

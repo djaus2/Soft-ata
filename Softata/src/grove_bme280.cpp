@@ -2,6 +2,7 @@
 #include <arduino.h>
 #include <Wire.h>
 #include <float.h>
+#include "../Softata.h"
 
 #include <BME280I2C.h> 
 
@@ -34,8 +35,8 @@ double Round2Places(float value)
 
 Grove_BME280::Grove_BME280()
 {
-    num_properties = NUM_PROPERTIES;
-    sensorType = BME280;
+    Grove_Sensor::num_properties = NUM_BME280_PROPERTIES;
+    Grove_Sensor::sensorType = BME280;
 }
 
 
@@ -43,7 +44,7 @@ Grove_BME280::Grove_BME280()
 
 
 
-bool Grove_BME280::Setup(int * settings, int numSettings)
+bool Grove_BME280::Setup(byte * settings, byte numSettings)
 {
     if(numSettings>0)
     {

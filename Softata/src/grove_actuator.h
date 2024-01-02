@@ -47,7 +47,7 @@ class Grove_Actuator: public Grove
 
       //static virtual arduino::String GetPins();
       virtual bool Setup();
-      virtual bool Setup(int * settings, int numSettings);
+      virtual bool Setup(byte * settings, byte numSettings);
       // Index for if there are an array of actuators here.
       virtual bool Write(double value, int index=0);
       virtual bool Write(int value, int index=0);

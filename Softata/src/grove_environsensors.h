@@ -1,6 +1,7 @@
 #ifndef GROVE_DH11H
 #define GROVE_DH11H
 #include "grove_sensor.h"
+#include "../Softata.h"
 
 #include <float.h>
 #define ERRORDBL  DBL_MAX;
@@ -22,10 +23,9 @@ class Grove_DHT11: public Grove_Sensor
         return msg; 
       }
       virtual bool Setup();
-      virtual bool Setup(int * settings, int numSettings);
+      virtual bool Setup(byte * settings, byte numSettings=1);
       virtual bool ReadAll(double * values);
       virtual double Read(int property);
-
     protected:
       int Pin;
       bool SetupPin(int pin);
@@ -49,14 +49,13 @@ class Grove_BME280: public Grove_Sensor
       static String GetListofProperties()
       {
         String msg="OK:";
-        msg.concat(DHT11_PROPERTIES);
+        msg.concat(BME280_PROPERTIES);
         return msg; 
       }
       virtual bool Setup();
-      virtual bool Setup(int * settings, int numSettings);
+      virtual bool Setup(byte * settings, byte numSettings=1);
       virtual bool ReadAll(double * values);
       virtual double Read(int property);
-
     protected:
       bool SetupBME280();
 };

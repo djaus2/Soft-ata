@@ -200,6 +200,16 @@ namespace FirmataBasic
                         }
                         break;
                     case CommandType.Displays:
+                        /*string[] Displays = SoftataLib.Display.GetDisplays();
+                        if (Displays.Length == 0)
+                            Console.WriteLine($"No displays found");
+                        else
+                        {
+                            Console.WriteLine($"Displays found:");
+                            for (byte i = 0; i < Displays.Length; i++)
+                            {
+                            }
+                        }*/
                         break;
                 }
             }

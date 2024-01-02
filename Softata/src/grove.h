@@ -56,7 +56,7 @@ class Grove
     }
 
     virtual bool Setup();
-    virtual bool Setup(int * settings, int numSettings=1);
+    virtual bool Setup(byte * settings, byte numSettings=1);
     DeviceType deviceType;
       
     protected:

@@ -178,7 +178,7 @@ namespace Softata
             }
             return "";
         }
-        public static string SendMessage(Commands MsgType, byte pin = 0xff, byte state = 0xff, string expect = "OK", byte other = 0xff)
+        public static string SendMessage(Commands MsgType, byte pin = 0xff, byte state = 0xff, string expect = "OK", byte other=0xff, byte[]? Data=null )
         {
             if (client == null)
                 throw new Exception("SendMessageCmd: Not connected");
@@ -197,6 +197,14 @@ namespace Softata
                     }
                 }
             }
+            if (Data!= null)
+            {
+                foreach (int d in Data)
+                {
+                    sendmsg.Add((byte)d);
+                }
+            }
+              
             sendmsg[0] = (byte)(sendmsg.Count-1);
             // Get bytes from list.
             byte[] sendBytes = sendmsg.ToArray<byte>();

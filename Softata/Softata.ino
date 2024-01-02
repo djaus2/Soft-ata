@@ -151,12 +151,20 @@ void loop() {
         byte pin = 0xff;
         byte param = 0xff;
         byte other = 0xff;
+        byte * otherData = NULL;
+        byte otherDataLength = 0;
         if (length > 1) {
           pin = msg[1];
           if (length > 2) {
             param = msg[2];
             if (length > 3) {
               other = msg[3];
+              if(length>4)
+              {
+                otherDataLength = length-4;
+                if(otherDataLength>0)
+                  otherData = msg+4;
+              }
             }
           }
         }
@@ -447,9 +455,13 @@ void loop() {
           case 0xF0: //Grove Sensors
             { 
               // Cmd = 0xF0,pin=Index of cmd in list,param=SubCmd,Other=
+              // GroveSensorCmds{
+              // s_getpinsCMD, s_getPropertiesCMD, 
+              // s_setupdefaultCMD, s_setupCMD, s_readallCMD, s_readCMD, s_getSensorsCMD=255 
+              //};
               switch (param)
               {
-                case 0: 
+                case s_getpinsCMD: 
                   {            
                     switch ((GroveSensor)other)
                     {
@@ -478,12 +490,12 @@ void loop() {
                         break;
                       // Add more here
                       default:
-                        client.print("Fail");
+                        client.print("Fail:Not a sensor");
                         break;
                     }
                   }
                   break;
-                case 1:
+                case s_getPropertiesCMD:
                   {
                     switch ((GroveSensor)other)
                     {
@@ -512,14 +524,14 @@ void loop() {
                         break;
                       // Add more here
                       default:
-                        client.print("Fail");
+                        client.print("Fail:Not a sensor");
                         break;
                     }
 
                   }
                   break;
-                case 2:
-                case 3:
+                case s_setupdefaultCMD:
+                case s_setupCMD:
                   {
                     Grove_Sensor * grove_Sensor;
                     GroveSensor groveSensor;
@@ -557,7 +569,7 @@ void loop() {
                     }
                     if(_done)
                     {
-                      if(param==2)
+                      if(param==s_setupdefaultCMD)
                       {
                         if(grove_Sensor->Setup())
                         {
@@ -572,7 +584,7 @@ void loop() {
                         }
                       else
                       {
-                        int settings[1];
+                        byte settings[1];
                         settings[0] = pin;
                         if(grove_Sensor->Setup(settings,1))
                         {
@@ -588,15 +600,21 @@ void loop() {
                     }
                   }
                   break;
-                case 4:
+                case s_readallCMD:
                   {
                     int index = other;
+                    Serial.print("===");
+                    Serial.print(index);
+                    Serial.println("===");
                     Grove_Sensor * grove_Sensor = GetSensorFromList(index);
                     double values[MAX_SENSOR_PROPERTIES];
                     if(grove_Sensor->ReadAll(values))
                     {
                       String msgGetAll = "OK:";
                       int numProps = grove_Sensor->num_properties;
+                    Serial.print("----");
+                    Serial.print(grove_Sensor->num_properties);
+                    Serial.println("----");
                       for (int i=0;i< numProps;i++)
                       {
                         msgGetAll.concat(values[i]);
@@ -611,30 +629,38 @@ void loop() {
                     }
                   }
                   break;
-                case 5:
+                case s_readCMD:
                   {
 
                     Grove_Sensor * grove_Sensor = GetSensorFromList(other);
                     // A bit of reuse of real-estate here:
-                    byte property = pin;;
+                    byte property = pin;
+                    Serial.print("----");
+                    Serial.print(property);
+                    Serial.print("-");
+                    Serial.print(grove_Sensor->num_properties);
+                    Serial.println("----");
                     if(property>(grove_Sensor->num_properties-1))
                     {
                       client.print("Fail:Read Property no. > no. properties");
                     }
-                    double value = grove_Sensor->Read(property);
-                    if (value != DBL_MAX)
-                    {
-                      String msgGetOne = "OK:";
-                      msgGetOne.concat(value);
-                      client.print(msgGetOne);
-                    }
                     else
                     {
-                      client.print("Fail:Read");
+                      double value = grove_Sensor->Read(property);
+                      if (value != DBL_MAX)
+                      {
+                        String msgGetOne = "OK:";
+                        msgGetOne.concat(value);
+                        client.print(msgGetOne);
+                      }
+                      else
+                      {
+                        client.print("Fail:Read");
+                      }
                     }
                   }
                   break;
-                case 0xff:
+                case s_getSensorsCMD:
                   {
                     String msg = String("OK:");
                     msg.concat(Grove_Sensor::GetListof());
@@ -647,10 +673,14 @@ void loop() {
           case 0xF1: //Grove Displays
             {
               //#define G_DISPLAYS C(OLED096)C(LCD1602)C(NEOPIXEL)
+              // enum GroveDisplayCmds{
+              // d_getpinsCMD, d_tbdCMD, d_setupDefaultCMD, d_setupCMD, 
+              // d_clearCMD,d_backlightCND,d_setCursorCMD,d_miscCMD, d_getDisplaysCMD=255 
+              // }
               GroveDisplay display = (GroveDisplay)other;
               switch (param)
               {
-                case 0:
+                case d_getpinsCMD: //getPins
                 {
                   switch (display)
                   {
@@ -663,10 +693,12 @@ void loop() {
                     case NEOPIXEL:
                       client.print(Adafruit_NeoPixel8::GetPins());
                       break;
-                  }
+                    default:
+                      client.print("Fail:Not a display");
+                      break;                 }
                 }
                   break;
-                case 1:
+                case d_tbdCMD: //TBD
                 {
                   switch (display)
                   {
@@ -679,11 +711,14 @@ void loop() {
                     case NEOPIXEL:
                       //Adafruit_NeoPixel8 cc;
                       break;
+                    default:
+                        client.print("Fail:Not a display");
+                        break;
                   }
                 }
                   break;
-                case 2:
-                case 3:
+                case d_setupDefaultCMD: //Setupdefault
+                case d_setupCMD: //Setup(params)
                   {
                     Grove_Display * grove_Display;
                     GroveDisplay groveDisplay;
@@ -715,7 +750,7 @@ void loop() {
                     }
                     if(_done)
                     {
-                      if(param==2)
+                      if(param==d_setupDefaultCMD)
                       {
                         if(grove_Display->Setup())
                         {
@@ -726,11 +761,11 @@ void loop() {
                           client.print(msgSettingsD1);
                         }
                         else
-                          client.print("Fail:Setup");
+                          client.print("Fail:Display.Setup");
                         }
                       else
                       {
-                        int settings[1];
+                        byte settings[1];
                         settings[0] = pin;
                         if(grove_Display->Setup(settings,1))
                         {
@@ -741,12 +776,88 @@ void loop() {
                           client.print(msgSettingsD2);
                         }
                         else
-                          client.print("Fail:Setup");
+                          client.print("Fail:Display.Setup");
                       }
                     }
                   }
                   break;
-                case 0xff:
+                case d_clearCMD:
+                  {
+                    int index = other;
+                    Grove_Display * grove_Display = GetDisplayFromList(index);
+                    if(grove_Display->Clear())
+                    {
+                      client.print("OK:");
+                    }
+                    else
+                    {
+                      client.print("Fail");
+                    }
+                  }  
+                case d_backlightCND:
+                  {
+                    int index = other;
+                    Grove_Display * grove_Display = GetDisplayFromList(index);
+                    if(grove_Display->Backlight())
+                    {
+                      client.print("OK:");
+                    }
+                    else
+                    {
+                      client.print("Fail;Backlight");
+                    }
+                  }
+                case d_setCursorCMD:
+                  {
+                    int index = other;
+                    Grove_Display * grove_Display = GetDisplayFromList(index);
+                    if(otherDataLength<2)
+                    {
+                      client.print("Fail:SetCursor needs (x,y)");
+                    }
+                    else
+                    {
+                      byte x = otherData[0];
+                      byte y = otherData[1];
+                      if(grove_Display->SetCursor(x,y))
+                      {
+                        client.print("OK:");
+                      }
+                      else
+                      {
+                        client.print("Fail:SetCursor");
+                      }
+                    }
+                  }
+                case d_miscCMD:
+                  {
+                    if(otherDataLength<1)
+                    {
+                      client.print("Fail:Display.Misc needs a command)");
+                    }
+                    else
+                    {
+                      int index = other;
+                      Grove_Display * grove_Display = GetDisplayFromList(index);
+                      byte miscCMD = otherData[0];
+                      byte * miscData = NULL;
+                      byte miscDataLength = 0;
+                      if (otherDataLength>1)
+                      {
+                        miscData = otherData +1;
+                        miscDataLength = otherDataLength-1;
+                      }
+                      if(grove_Display->Misc(cmd,miscData,miscDataLength))
+                      {
+                        client.print("OK:");
+                      }
+                      else
+                      {
+                        client.print("Fail:Display.Misc()");
+                      }
+                    }
+                  }                                
+                case d_getDisplaysCMD:
                   {
                     String msg = String("OK:");
                     msg.concat(Grove_Display::GetListof());

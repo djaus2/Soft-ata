@@ -12,13 +12,6 @@ const char * const display_name[] = { DISPLAYS };
 
 
 
-
-// Add Misc commands to list here, before last one.
-// Implement in Grove_XXXX::Misc(int cmd, int * data, int length)
-enum LCD1602MiscCmds {home,autoscroll,noautoscroll,blink,noblink,LCD1602MiscCmds_MAX};
-enum NEOPIXELMiscCmds {setpixelcolor,setpixelcolorAll,setpixelcolorOdds,setpixelcolorEvens,setBrightness,NEOPIXELMiscCmds_MAX};
-enum OLEDMiscCmds {drawCircle,drawFrame,OLEDMiscCmds_MAX};
-
 class Grove_Display: public Grove
 {
     public:
@@ -57,14 +50,14 @@ class Grove_Display: public Grove
 
   
       virtual bool Setup();
-      virtual bool Setup(int * settings, int numSettings=1);
+      virtual bool Setup(byte * settings, byte numSettings);
       // Index for if there are an array of actuators here.
       virtual bool Clear();
       virtual bool Backlight();
-      virtual bool SetCursor(int x, int y);
+      virtual bool SetCursor(byte x, byte y);
       virtual bool WriteString(String msg);
-      virtual bool WriteString(int x, int y, String msg);
-      virtual bool Misc(int cmd, int * data, int length=0);
+      virtual bool WriteString(byte x, byte y, String msg);
+      virtual bool Misc(byte cmd, byte * data, byte length=0);
 
       DeviceType deviceType = display;
     protected:
@@ -85,15 +78,15 @@ class Grove_OLED096: public Grove_Display
         return msg;
       }
       virtual bool Setup();
-      virtual bool Setup(int * settings, int numSettings);
+      virtual bool Setup(byte * settings, byte numSettings);
       virtual bool Clear();
 
       virtual bool Backlight();
-      virtual bool SetCursor(int x, int y);
+      virtual bool SetCursor(byte x, byte y);
       virtual bool WriteString(String msg);
 
-      virtual bool WriteString(int col, int line, String msg);
-      bool Misc(int cmd, int * data, int length);
+      virtual bool WriteString(byte col, byte line, String msg);
+      virtual bool Misc(byte cmd, byte * data, byte length=0);
   protected:
 };
 
@@ -114,16 +107,16 @@ class Grove_LCD1602: public Grove_Display
         return msg;
       }
       virtual bool Setup();
-      virtual bool Setup(int * settings, int numSettings);
+      virtual bool Setup(byte * settings, byte numSettings);
       // Index for if there are an array of actuators here.
       virtual bool Clear();
 
       virtual bool Backlight();
 
-      virtual bool SetCursor(int x, int y);
+      virtual bool SetCursor(byte x, byte y);
       virtual bool WriteString(String msg);
-      virtual bool WriteString(int x, int y, String msg);
-      virtual bool Misc(int cmd, int * data, int length);
+      virtual bool WriteString(byte x, byte y, String msg);
+      virtual bool Misc(byte cmd, byte * data, byte length=0);
   protected:
 };
 
@@ -144,15 +137,15 @@ class Adafruit_NeoPixel8: public Grove_Display
         return msg;
       }
       virtual bool Setup();
-      virtual bool Setup(int * settings, int numSettings);
+      virtual bool Setup(byte * settings, byte numSettings);
       // Index for if there are an array of actuators here.
       virtual bool Clear();
-      virtual bool Misc(int cmd, int * data, int length);
+      virtual bool Misc(byte cmd, byte * data, byte length=0);
 
       virtual bool Backlight();
-      virtual bool SetCursor(int x, int y);
+      virtual bool SetCursor(byte x, byte y);
       virtual bool WriteString(String msg);
-      virtual bool WriteString(int x, int y, String msg); 
+      virtual bool WriteString(byte x, byte y, String msg); 
 
       int numPixels = NEOPIXEL_NUMPIXELS;
       int grovePin = NEOPIXEL_PIN;

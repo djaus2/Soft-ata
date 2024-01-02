@@ -1,8 +1,8 @@
 #include "grove_environsensors.h"
 #include <arduino.h>
 #include <dht.h>
+#include "../Softata.h"
 
-#define NUM_PROPERTIES 2
 
 #ifdef GROVE_RPI_PICO_SHIELD
 #define NUM_PINS 3
@@ -24,8 +24,8 @@ int Pins[] = {PINS};
 
     Grove_DHT11::Grove_DHT11()
     {
-      num_properties = NUM_PROPERTIES;
-      sensorType = DHT11;
+      Grove_Sensor::num_properties = NUM_DHT11_PROPERTIES;
+      Grove_Sensor::sensorType = DHT11;
     }
 
     /*String Grove_DHT11::GetPins()
@@ -40,7 +40,7 @@ int Pins[] = {PINS};
 
   
 
-    bool Grove_DHT11::Setup(int * settings, int numSettings)
+    bool Grove_DHT11::Setup(byte * settings, byte numSettings)
     {
       if(numSettings>0)
       {
@@ -54,6 +54,7 @@ int Pins[] = {PINS};
     bool Grove_DHT11::Setup()
     {
       return SetupPin(DEFAULT_PIN);
+      num_properties = 2;
     }
 
     bool Grove_DHT11::SetupPin(int pin)

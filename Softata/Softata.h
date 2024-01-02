@@ -1,10 +1,10 @@
 #ifndef SOFTATAH
 #define SOFTATAH
 
-#define APP_VERSION "2.03"
+#define APP_VERSION "2.10"
 
-#define RPI_PICO_DEFAULT
-//#define GROVE_RPI_PICO_SHIELD
+//#define RPI_PICO_DEFAULT
+#define GROVE_RPI_PICO_SHIELD
 
 //WiFi
 #ifndef STASSID
@@ -41,15 +41,28 @@
 #define I2C1_SCL  (I2C1_SDA +1)
 #endif
 
+//Maximum number of each that can be instatianted...added to list in deviceLists.h
+#define MAX_SENSORS   10
+#define MAX_ACTUATORS 10
+#define MAX_DISPLAYS  10
 
-// Note: Adresses are typically defined in the device library which typically use I2C0
-#define OLEDDISPLAY_ADDR   0x78
-#define LCD1602LCD_V2_ADDR 0X3E
-#define LCD1602RGB_V2_ADDR 0X62
+#define G_DEVICETYPES C(sensor)C(actuator)C(communication)C(display)
 
+//Add other sensors/actuators here C bracketed, on end.
+#define G_SENSORS C(DHT11)C(BME280)C(LIGHT)C(SOUND)
+#define G_ACTUATORS C(BUZZER)
+#define G_DISPLAYS C(OLED096)C(LCD1602)C(NEOPIXEL)
+
+
+///////////////////////// S E N S O R S /////////////////////////////////////////////////
+
+enum GroveSensorCmds{s_getpinsCMD, s_getPropertiesCMD, s_setupdefaultCMD, s_setupCMD, s_readallCMD, s_readCMD, s_getSensorsCMD=255 };
 
 #define DHT11_PROPERTIES "Temperature,Humidity"
 #define BME280_PROPERTIES "Temperature,Pressure,Humidity"
+
+#define NUM_DHT11_PROPERTIES 2
+#define NUM_BME280_PROPERTIES 3
 
 //#define BME280_I2C_ADDRESS76
 #define BME280_I2C_ADDRESS77
@@ -66,18 +79,14 @@
 #endif
 
 
-//Maximum number of each that can be instatianted...added to list in deviceLists.h
-#define MAX_SENSORS   10
-#define MAX_ACTUATORS 10
-#define MAX_DISPLAYS  10
+///////////////////////// D I S P L A Y S /////////////////////////////////////////////////
 
+enum GroveDisplayCmds{d_getpinsCMD, d_tbdCMD, d_setupDefaultCMD, d_setupCMD, d_clearCMD,d_backlightCND,d_setCursorCMD,d_miscCMD, d_getDisplaysCMD=255 };
 
-#define G_DEVICETYPES C(sensor)C(actuator)C(communication)C(display)
-
-//Add other sensors/actuators here C bracketed, on end.
-#define G_SENSORS C(DHT11)C(BME280)C(LIGHT)C(SOUND)
-#define G_ACTUATORS C(BUZZER)
-#define G_DISPLAYS C(OLED096)C(LCD1602)C(NEOPIXEL)
+// Note: Adresses are typically defined in the device library which typically use I2C0
+#define OLEDDISPLAY_ADDR   0x78
+#define LCD1602LCD_V2_ADDR 0X3E
+#define LCD1602RGB_V2_ADDR 0X62
 
 #define NEOPIXEL_NUMPIXELS 8
 #ifdef RPI_PICO_DEFAULT
@@ -99,9 +108,11 @@
 #endif
 
 
-
-
-
+// Add Misc commands to list here, before last one.
+// Implement in Grove_XXXX::Misc(int cmd, int * data, int length)
+enum LCD1602MiscCmds {home,autoscroll,noautoscroll,blink,noblink,LCD1602MiscCmds_MAX};
+enum NEOPIXELMiscCmds {setpixelcolor,setpixelcolorAll,setpixelcolorOdds,setpixelcolorEvens,setBrightness,NEOPIXELMiscCmds_MAX};
+enum OLEDMiscCmds {drawCircle,drawFrame,OLEDMiscCmds_MAX};
 
 
 #endif
