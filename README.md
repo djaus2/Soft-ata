@@ -25,6 +25,7 @@ _Soft-ata rather than firm-ata!_
 
 ## Latest
 - See **Repository Status** below.
+  - Adding Displays Adafruit Neopixle8 works.
   - Main defines moved to softata.h
     - Can easiliy switch btw RPI Pico W defaults and Grove Pico Shield in header
     - More refactoring of this. softata.h has more overall properties.
@@ -70,6 +71,10 @@ This requires a setup as per previous repositories here as well as in some blog 
 ------
 
 ## Repository Status
+- Version 2.11
+  - Adding Displays:
+    - Adafruit Neopixle8 works, connected to D16 on Grove RPI Pico Shield.
+    - LCD1602 and OLED096 coming.
 - Version 2.02
   - Can easiliy switch btw RPI Pico W defaults and Grove Pico Shield in header
   - V2.03 Fixup for USART defines
