@@ -63,9 +63,9 @@ namespace Softata
                     return -1;
             }*/
 
-            public static bool  Clear(byte linkedListNo)
+            public static bool Clear(byte linkedListNo)
             {
-                string result = SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.backlight , "OK:",linkedListNo);
+                string result = SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.backlight, "OK:", linkedListNo);
                 if (true) //TBD
                     return true;
                 else
@@ -83,8 +83,8 @@ namespace Softata
 
             public static bool SetCursor(byte linkedListNo, int x, int y)
             {
-                byte[] data = new byte[] {0x2,(byte)x, (byte)y };
-                string result = SendMessage(Commands.groveDisplay,0, (byte)GroveDisplayCmds.setCursor, "OK:", linkedListNo, data);
+                byte[] data = new byte[] { 0x2, (byte)x, (byte)y };
+                string result = SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.setCursor, "OK:", linkedListNo, data);
                 if (true) //TBD
                     return true;
                 else
@@ -92,27 +92,45 @@ namespace Softata
             }
 
             enum LCD1602MiscCmds { home, autoscroll, noautoscroll, blink, noblink, LCD1602MiscCmds_MAX };
-            enum NEOPIXELMiscCmds { setpixelcolor, setpixelcolorAll, setpixelcolorOdds, setpixelcolorEvens, setBrightness, NEOPIXELMiscCmds_MAX };
             enum OLEDMiscCmds { drawCircle, drawFrame, OLEDMiscCmds_MAX };
 
-
-            public static bool Misc_TestNeo(byte displayLinkedListIndex)
+            public static class Neopixel
             {
-                byte[] data = new byte[] { 0x4,(byte)NEOPIXELMiscCmds.setpixelcolorAll, (byte)255, (byte)0, (byte)0 };
-                string result = SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", displayLinkedListIndex, data);
-                Thread.Sleep(2000);
-                data = new byte[] { 0x4, (byte)NEOPIXELMiscCmds.setpixelcolorAll, (byte)0, (byte)255, (byte)0 };
-                result = SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", displayLinkedListIndex, data);
-                Thread.Sleep(2000);
-                data = new byte[] { 0x4, (byte)NEOPIXELMiscCmds.setpixelcolorAll, (byte)0, (byte)0, (byte)255 };
-                result = SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", displayLinkedListIndex, data); if (true) //TBD
-                Thread.Sleep(2000);
-                data = new byte[] { 0x4, (byte)NEOPIXELMiscCmds.setpixelcolorAll, (byte)0, (byte)0, (byte)0 };
-                result = SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", displayLinkedListIndex, data); if (true) //TBD
-                    return true; 
-                else
-                    return false;
+                enum NEOPIXELMiscCmds { setpixelcolor, setpixelcolorAll, setpixelcolorOdds, setpixelcolorEvens, setBrightness, NEOPIXELMiscCmds_MAX };
 
+                public static bool Clear(byte displayLinkedListIndex)
+                {
+                    byte[] data = new byte[] { 0x4, (byte)NEOPIXELMiscCmds.setpixelcolorAll, 0, 0, 0 };
+                    string result = SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", displayLinkedListIndex, data);
+                    return true;
+                }
+                public static bool Misc_SetAll(byte displayLinkedListIndex, byte red, byte green, byte blue)
+                {
+                    byte[] data = new byte[] { 0x4, (byte)NEOPIXELMiscCmds.setpixelcolorAll, red, green, blue };
+                    string result = SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", displayLinkedListIndex, data);
+                    return true;
+                }
+
+                public static bool Misc_Set(byte displayLinkedListIndex, byte pixel, byte red, byte green, byte blue)
+                {
+                    byte[] data = new byte[] { 0x5, (byte)NEOPIXELMiscCmds.setpixelcolor, red, green, blue, pixel };
+                    string result = SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", displayLinkedListIndex, data);
+                    return true;
+                }
+
+                public static bool Misc_SetOdd(byte displayLinkedListIndex, byte red, byte green, byte blue)
+                {
+                    byte[] data = new byte[] { 0x4, (byte)NEOPIXELMiscCmds.setpixelcolorOdds, red, green, blue };
+                    string result = SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", displayLinkedListIndex, data);
+                    return true;
+                }
+
+                public static bool Misc_SetEvens(byte displayLinkedListIndex, byte red, byte green, byte blue)
+                {
+                    byte[] data = new byte[] { 0x4, (byte)NEOPIXELMiscCmds.setpixelcolorEvens, red, green, blue };
+                    string result = SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", displayLinkedListIndex, data);
+                    return true;
+                }
             }
         }
 

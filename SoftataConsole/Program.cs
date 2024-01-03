@@ -206,7 +206,12 @@ namespace FirmataBasic
                         else
                         {
                             Console.WriteLine($"Displays found:");
-                            for (byte i = 2; i < Displays.Length; i++)
+                            for (byte i = 0; i < Displays.Length; i++)
+                            {
+                                string display = Displays[i];
+                                Console.WriteLine($"Display = {display}");
+                            }
+                            for (byte i = 2; i < 3; i++) // Neopixel only
                             {
                                 string display = Displays[i];
                                 Console.WriteLine($"Display = {display}");
@@ -217,7 +222,56 @@ namespace FirmataBasic
                                     Console.WriteLine($"Instantiated sensor {display} not found");
                                 else
                                 {
-                                    SoftataLib.Display.Misc_TestNeo(displayLinkedListIndex);
+
+                                    SoftataLib.Display.Neopixel.Clear(displayLinkedListIndex);;
+                                    Thread.Sleep(2000);
+                                    SoftataLib.Display.Neopixel.Misc_SetAll(displayLinkedListIndex,255,0,0);
+                                    Thread.Sleep(100);
+                                    SoftataLib.Display.Neopixel.Misc_SetAll(displayLinkedListIndex, 0xFF, 0xA5, 0);   //Orange
+                                    Thread.Sleep(100);
+                                    SoftataLib.Display.Neopixel.Misc_SetAll(displayLinkedListIndex, 255, 255, 0);     //Yellow
+                                    Thread.Sleep(2000);
+                                    SoftataLib.Display.Neopixel.Misc_SetAll(displayLinkedListIndex, 0, 255, 0);
+                                    Thread.Sleep(2000);
+                                    SoftataLib.Display.Neopixel.Misc_SetAll(displayLinkedListIndex, 0, 0, 255);
+                                    Thread.Sleep(2000);
+                                    SoftataLib.Display.Neopixel.Misc_SetAll(displayLinkedListIndex, 0xA0, 0x20, 0xf0);//Purple
+                                    Thread.Sleep(2000);
+                                    SoftataLib.Display.Neopixel.Misc_SetAll(displayLinkedListIndex, 255, 255, 255);   //White
+                                    Thread.Sleep(2000);
+                                    SoftataLib.Display.Neopixel.Clear(displayLinkedListIndex);
+                                    Thread.Sleep(2000);
+                                    SoftataLib.Display.Neopixel.Misc_SetOdd(displayLinkedListIndex, 255, 0, 0);
+                                    Thread.Sleep(2000);
+                                    SoftataLib.Display.Neopixel.Clear(displayLinkedListIndex);
+                                    Thread.Sleep(100);
+                                    SoftataLib.Display.Neopixel.Misc_SetEvens(displayLinkedListIndex, 0,255, 0);
+                                    Thread.Sleep(2000);
+                                    SoftataLib.Display.Neopixel.Clear(displayLinkedListIndex);
+                                    Thread.Sleep(2000);
+                                    SoftataLib.Display.Neopixel.Misc_SetOdd(displayLinkedListIndex, 0, 0, 255);
+                                    Thread.Sleep(2000);
+                                    SoftataLib.Display.Neopixel.Clear(displayLinkedListIndex);
+                                    Thread.Sleep(100);
+                                    SoftataLib.Display.Neopixel.Misc_SetEvens(displayLinkedListIndex, 255, 255, 0);
+                                    Thread.Sleep(2000);
+                                    SoftataLib.Display.Neopixel.Clear(displayLinkedListIndex);
+                                    Thread.Sleep(2000);
+                                    SoftataLib.Display.Neopixel.Misc_SetOdd(displayLinkedListIndex, 0, 255, 255);
+                                    Thread.Sleep(2000);
+                                    SoftataLib.Display.Neopixel.Clear(displayLinkedListIndex);
+                                    Thread.Sleep(100);
+                                    SoftataLib.Display.Neopixel.Misc_SetEvens(displayLinkedListIndex, 255, 255, 255);
+                                    Thread.Sleep(500);
+                                    SoftataLib.Display.Neopixel.Clear(displayLinkedListIndex);
+                                    Thread.Sleep(500);
+                                    SoftataLib.Display.Neopixel.Misc_SetEvens(displayLinkedListIndex, 255, 255, 255);
+                                    Thread.Sleep(500);
+                                    SoftataLib.Display.Neopixel.Clear(displayLinkedListIndex);
+                                    Thread.Sleep(500);
+                                    SoftataLib.Display.Neopixel.Misc_SetEvens(displayLinkedListIndex, 255, 255, 255);
+                                    Thread.Sleep(2000);
+                                    SoftataLib.Display.Neopixel.Clear(displayLinkedListIndex);
                                     Console.WriteLine("OK");
                                 }
                             }
@@ -234,7 +288,6 @@ namespace FirmataBasic
             Thread.Sleep(500);
 
             return;
-
         }
     }
 }
