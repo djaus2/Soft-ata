@@ -19,7 +19,7 @@ _Soft-ata rather than firm-ata!_
   - bool ReadAll(double[] values)
   - double Read(enum property)
 
-- Grove Displays Addfruit Neopixle8 implemented
+- Grove Displays Addfruit Neopixel8 implemented
     - Grove OLE096 and LCD coming
 - Grove Display API:
   - static String GetDisplays()
