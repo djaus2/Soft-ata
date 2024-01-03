@@ -19,13 +19,26 @@ _Soft-ata rather than firm-ata!_
   - bool ReadAll(double[] values)
   - double Read(enum property)
 
-  > Grove Diplay API coming
+- Grove Displays Addfruit Neopixle8 implemented
+    - Grove OLE096 and LCD coming
+- Grove Display API:
+  - static String GetDisplays()
+  - static String GetPins()
+  - bool Setup();
+  - bool Setup(byte * settings, byte numSettings);.
+  - bool Clear();
+  - bool Misc(byte miscCmd, byte * data, byte length=0);
+  - bool Backlight();
+  - bool SetCursor(byte x, byte y);
+  - bool WriteString(String msg);
+  - bool WriteString(byte x, byte y, String msg)
 
  > See https://github.com/djaus2/Soft-ata/blob/master/Grove.md
 
 ## Latest
 - See **Repository Status** below.
   - Adding Displays Adafruit Neopixle8 works.
+    - Added ``SoftataLib.Display.Neopixel``` static class with specific Misc Cmds. Full app test.
   - Main defines moved to softata.h
     - Can easiliy switch btw RPI Pico W defaults and Grove Pico Shield in header
     - More refactoring of this. softata.h has more overall properties.
@@ -74,6 +87,7 @@ This requires a setup as per previous repositories here as well as in some blog 
 - Version 2.11
   - Adding Displays:
     - Adafruit Neopixle8 works, connected to D16 on Grove RPI Pico Shield.
+      - Added ```SoftataLib.Display.Neopixel``` static class with specific Misc Cmds. Full app test.
     - LCD1602 and OLED096 coming.
 - Version 2.02
   - Can easiliy switch btw RPI Pico W defaults and Grove Pico Shield in header
