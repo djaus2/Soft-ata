@@ -25,7 +25,7 @@ _Soft-ata rather than firm-ata!_
   - static String GetDisplays()
   - static String GetPins()
   - bool Setup();
-  - bool Setup(byte * settings, byte numSettings);.
+  - bool Setup(byte * settings, byte numSettings);. // 2Do
   - bool Clear();
   - bool Misc(byte miscCmd, byte * data, byte length=0);
   - bool Backlight();
@@ -37,11 +37,10 @@ _Soft-ata rather than firm-ata!_
 
 ## Latest
 - See **Repository Status** below.
-  - Adding Displays Adafruit Neopixle8 works.
-    - Added ``SoftataLib.Display.Neopixel``` static class with specific Misc Cmds. Full app test.
-  - Main defines moved to softata.h
-    - Can easiliy switch btw RPI Pico W defaults and Grove Pico Shield in header
-    - More refactoring of this. softata.h has more overall properties.
+  - Added 2  Displays and 2 Console test app
+    -  Adafruit Neopixle8
+    -  Grove LCD RGB Backlight (LCD1602)
+    - For Displays there is a Misc command with various sub commands
   
   - Grove API as above 
 
@@ -84,11 +83,15 @@ This requires a setup as per previous repositories here as well as in some blog 
 ------
 
 ## Repository Status
-- Version 2.11
-  - Adding Displays:
-    - Adafruit Neopixle8 works, connected to D16 on Grove RPI Pico Shield.
-      - Added ```SoftataLib.Display.Neopixel``` static class with specific Misc Cmds. Full app test.
-    - LCD1602 and OLED096 coming.
+- Version 2.30
+ - Added 2 Displays and to Console test app
+    - Adafruit Neopixel8
+      - Connect to D16 on Grove RPi Pico Shield S signal pin on Neopixel
+        - i.e. to Yellow strand of Grove 4 wire cable)
+        - And Vcc pin to Red strand, Gnd pin to Black strand
+    - Grove LCD RGB Backlight (LCD1602)
+      - Connect to I2C0 on Grove RPi Pico Shield using Grove 4 wire cable
+    - For Displays there is a Misc command with various display specific sub commands.
 - Version 2.02
   - Can easiliy switch btw RPI Pico W defaults and Grove Pico Shield in header
   - V2.03 Fixup for USART defines
