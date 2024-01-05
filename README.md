@@ -37,7 +37,7 @@ _Soft-ata rather than firm-ata!_
 
 ## Latest
 - See **Repository Status** below.
-  - Added 2  Displays and 2 Console test app
+  - Added 2  Displays and to Console test app
     -  Adafruit Neopixle8
     -  Grove LCD RGB Backlight (LCD1602)
     - For Displays there is a Misc command with various sub commands
