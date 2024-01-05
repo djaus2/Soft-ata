@@ -47,7 +47,7 @@
 #define MAX_DISPLAYS  10
 
 // Max number of bytes in msgs from client to service here
-#define maxRecvdMsgBytes 128
+#define maxRecvdMsgBytes 32
 
 #define G_DEVICETYPES C(sensor)C(actuator)C(communication)C(display)
 
