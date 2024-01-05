@@ -46,6 +46,9 @@
 #define MAX_ACTUATORS 10
 #define MAX_DISPLAYS  10
 
+// Max number of bytes in msgs from client to service here
+#define maxRecvdMsgBytes 128
+
 #define G_DEVICETYPES C(sensor)C(actuator)C(communication)C(display)
 
 //Add other sensors/actuators here C bracketed, on end.
@@ -81,7 +84,8 @@ enum GroveSensorCmds{s_getpinsCMD, s_getPropertiesCMD, s_setupdefaultCMD, s_setu
 
 ///////////////////////// D I S P L A Y S /////////////////////////////////////////////////
 
-enum GroveDisplayCmds{d_getpinsCMD, d_tbdCMD, d_setupDefaultCMD, d_setupCMD, d_clearCMD,d_backlightCND,d_setCursorCMD,d_miscCMD, d_getDisplaysCMD=255 };
+enum GroveDisplayCmds{d_getpinsCMD, d_tbdCMD, d_setupDefaultCMD, d_setupCMD, d_clearCMD,d_backlightCMD,d_setCursorCMD,d_writestrngCMD,d_cursor_writestringCMD,d_miscCMD, d_getDisplaysCMD=255 };
+//enum GroveDisplayCmds{d_getpinsCMD=0, d_tbdCMD=1, d_setupDefaultCMD=2, d_setupCMD=3, d_clearCMD=4,d_backlightCMD=5,d_setCursorCMD=6, d_writestrngCMD=7,d_cursor_writestringCMD=8,d_miscCMD=9, d_getDisplaysCMD=255 }
 
 // Note: Adresses are typically defined in the device library which typically use I2C0
 #define OLEDDISPLAY_ADDR   0x78

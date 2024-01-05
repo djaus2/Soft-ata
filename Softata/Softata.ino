@@ -92,7 +92,7 @@ void loop() {
     byte length = client.read();
     Serial.println(length);
     int count = 0;
-    byte msg[10];
+    byte msg[maxRecvdMsgBytes];
     if (length == 0) {
       Serial.println("Null msg.");
       return;
@@ -773,26 +773,28 @@ void loop() {
                     Grove_Display * grove_Display = GetDisplayFromList(index);
                     if(grove_Display->Clear())
                     {
-                      client.print("OK:");
+                      client.print("OK:Clear");
                     }
                     else
                     {
-                      client.print("Fail");
+                      client.print("Fail:Clear");
                     }
-                  }  
-                case d_backlightCND:
+                  } 
+                  break;
+                case d_backlightCMD:
                   {
                     int index = other;
                     Grove_Display * grove_Display = GetDisplayFromList(index);
                     if(grove_Display->Backlight())
                     {
-                      client.print("OK:");
+                      client.print("OK:Backlight");
                     }
                     else
                     {
                       client.print("Fail;Backlight");
                     }
                   }
+                  break;
                 case d_setCursorCMD:
                   {
                     int index = other;
@@ -802,12 +804,12 @@ void loop() {
                       client.print("Fail:SetCursor needs (x,y)");
                     }
                     else
-                    {
-                      byte x = otherData[0];
-                      byte y = otherData[1];
+                    {;
+                      byte x = otherData[1];
+                      byte y = otherData[2];
                       if(grove_Display->SetCursor(x,y))
                       {
-                        client.print("OK:");
+                        client.print("OK:SetCursor");
                       }
                       else
                       {
@@ -815,6 +817,74 @@ void loop() {
                       }
                     }
                   }
+                  break;
+                case d_writestrngCMD:
+                {
+                  int index = other;
+                  Grove_Display * grove_Display = GetDisplayFromList(index);
+                  if(otherData[0]<0)
+                  {
+                    client.print("Fail:WriteString needs data");
+                  }
+                  else
+                  {
+                    String msgStr =String("");
+                    if(otherData[0]>1)
+                    {
+                      char * msg = (char *) (otherData + 1);
+                      msgStr = String(msg);
+                    }
+                    Serial.print("Message:");
+                    Serial.println(msgStr);
+                    if(grove_Display->WriteString(msgStr))
+                    {
+                      client.print("OK:WriteString");
+                    }
+                    else
+                    {
+                      client.print("Fail:WriteString");
+                    }
+                  }
+                }
+                break;
+                case d_cursor_writestringCMD:
+                {
+                  int index = other;
+                  Grove_Display * grove_Display = GetDisplayFromList(index);
+                  if(otherData[0]<2)
+                  {
+                    client.print("Fail:SetCursor-WriteString needs (x,y)");
+                  }
+                  else
+                  {
+                    byte x = otherData[1];
+                    byte y = otherData[2];
+                    if(grove_Display->SetCursor(x,y))
+                    {
+                      String msgStr =String("");
+                      if(otherData[0]>2)
+                      {
+                        char * msg = (char *) (otherData + 3);
+                        msgStr = String(msg);
+                      }
+                      Serial.print("Message:");
+                      Serial.println(msgStr);
+                      if(grove_Display->WriteString(msgStr))
+                      {
+                        client.print("OK:SetCursor-WriteString");
+                      }
+                      else
+                      {
+                        client.print("Fail:SetCursor-WriteString");
+                      }
+                    }
+                    else
+                    {
+                      client.print("Fail:SetCursor-WriteString");
+                    }
+                  }
+                }
+                break;              
                 case d_miscCMD:
                   {
                     Serial.print("d_miscCMD");Serial.print("-");Serial.println(d_miscCMD);

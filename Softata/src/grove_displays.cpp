@@ -123,15 +123,16 @@ bool Grove_OLED096::WriteString(String msg)
 // Install Grove-LCD RGB Backlight by Seeed Studio
 // https://github.com/Seeed-Studio/Grove_LCD_RGB_Backlight
 /////////////////////////////////////////////////////////////////////
+//https://github.com/DFRobot/DFRobot_RGBLCD1602
 
 #include "rgb_lcd.h"
 
 rgb_lcd lcd;
 
 // Default backlight
-#define COLORRED  255
-#define COLORGREEN  0
-#define COLORBLUE  0
+#define COLORRED  128
+#define COLORGREEN  128
+#define COLORBLUE  128
 
 
 
@@ -186,7 +187,7 @@ bool Grove_LCD1602::Clear()
 bool Grove_LCD1602::SetCursor(byte x, byte y)
 {
   // Note: line 1 is the second row, since counting begins with 0:
-  lcd.setCursor(x,y+1);
+  lcd.setCursor(x,y);
   return true;
 }
 
@@ -199,7 +200,7 @@ bool Grove_LCD1602::WriteString(String msg)
 bool Grove_LCD1602::WriteString(byte x, byte y, String msg)
 {
   // Note: line 1 is the second row, since counting begins with 0:
-  lcd.setCursor(x,y+1);
+  lcd.setCursor(x,y);
   lcd.print(msg.c_str());
   return true;
 }

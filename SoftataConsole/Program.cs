@@ -26,7 +26,8 @@ namespace FirmataBasic
         static byte POTENTIOMETER = 26;
 
         // Choose test type
-        static SoftataLib.CommandType Testtype = CommandType.Displays;
+        static SoftataLib.CommandType Testtype = CommandType.LCD1602Display;
+        //static SoftataLib.CommandType Testtype = CommandType.NeopixelDisplay;
         //static SoftataLib.CommandType Testtype = CommandType.Digital;
         //static SoftataLib.CommandType Testtype = CommandType.Serial;
         //Set Serial1 or Serial2 for send and receive.
@@ -158,7 +159,7 @@ namespace FirmataBasic
                                 Console.WriteLine($"Sensor = {sensor}");
 
                                 SoftataLib.Sensor.GetPins(i);
-                                byte sensorLinkedListIndex = (byte) SoftataLib.Sensor.SetupDefault(i);
+                                byte sensorLinkedListIndex = (byte)SoftataLib.Sensor.SetupDefault(i);
                                 if (sensorLinkedListIndex < 0)
                                     Console.WriteLine($"Instantiated sensor {sensor} not found");
                                 else
@@ -199,7 +200,7 @@ namespace FirmataBasic
                             }
                         }
                         break;
-                    case CommandType.Displays:
+                    case CommandType.NeopixelDisplay:
                         string[] Displays = SoftataLib.Display.GetDisplays();
                         if (Displays.Length == 0)
                             Console.WriteLine($"No displays found");
@@ -222,10 +223,10 @@ namespace FirmataBasic
                                     Console.WriteLine($"Instantiated sensor {display} not found");
                                 else
                                 {
-
-                                    SoftataLib.Display.Neopixel.Clear(displayLinkedListIndex);;
+                                    Console.WriteLine($"Instantiated {display} linked at {displayLinkedListIndex}");
+                                    SoftataLib.Display.Neopixel.Clear(displayLinkedListIndex); ;
                                     Thread.Sleep(2000);
-                                    SoftataLib.Display.Neopixel.Misc_SetAll(displayLinkedListIndex,255,0,0);
+                                    SoftataLib.Display.Neopixel.Misc_SetAll(displayLinkedListIndex, 255, 0, 0);
                                     Thread.Sleep(100);
                                     SoftataLib.Display.Neopixel.Misc_SetAll(displayLinkedListIndex, 0xFF, 0xA5, 0);   //Orange
                                     Thread.Sleep(100);
@@ -245,7 +246,7 @@ namespace FirmataBasic
                                     Thread.Sleep(2000);
                                     SoftataLib.Display.Neopixel.Clear(displayLinkedListIndex);
                                     Thread.Sleep(100);
-                                    SoftataLib.Display.Neopixel.Misc_SetEvens(displayLinkedListIndex, 0,255, 0);
+                                    SoftataLib.Display.Neopixel.Misc_SetEvens(displayLinkedListIndex, 0, 255, 0);
                                     Thread.Sleep(2000);
                                     SoftataLib.Display.Neopixel.Clear(displayLinkedListIndex);
                                     Thread.Sleep(2000);
@@ -273,6 +274,43 @@ namespace FirmataBasic
                                     Thread.Sleep(2000);
                                     SoftataLib.Display.Neopixel.Clear(displayLinkedListIndex);
                                     Console.WriteLine("OK");
+                                }
+                            }
+                        }
+                        break;
+                    case CommandType.LCD1602Display:
+                        string[] Displays2 = SoftataLib.Display.GetDisplays();
+                        if (Displays2.Length == 0)
+                            Console.WriteLine($"No displays found");
+                        else
+                        {
+                            Console.WriteLine($"Displays found:");
+                            for (byte i = 0; i < Displays2.Length; i++)
+                            {
+                                string display = Displays2[i];
+                                Console.WriteLine($"Display = {display}");
+                            }
+                            for (byte i = 1; i < 2; i++) // LCD1602 only
+                            {
+                                string display = Displays2[i];
+                                Console.WriteLine($"Display = {display}");
+                                SoftataLib.Display.GetPins(i);
+                                byte displayLinkedListIndex = (byte)SoftataLib.Display.SetupDefault(i);
+                                Console.WriteLine($"displayLinkedListIndex: {displayLinkedListIndex}");
+                                if (displayLinkedListIndex < 0)
+                                    Console.WriteLine($"Instantiated sensor {display} not found");
+                                else
+                                {
+                                    Console.WriteLine($"Instantiated {display} linked at {displayLinkedListIndex}");
+                                    SoftataLib.Display.Clear(displayLinkedListIndex);
+                                    SoftataLib.Display.SetCursor(displayLinkedListIndex,0, 0);
+                                    SoftataLib.Display.WriteString(displayLinkedListIndex,"First Line");
+                                    SoftataLib.Display.SetCursor(displayLinkedListIndex, 0, 1);
+                                    SoftataLib.Display.WriteString(displayLinkedListIndex,"Wait 5sec");
+                                    Thread.Sleep(5000);
+                                    SoftataLib.Display.Clear(displayLinkedListIndex);
+                                    SoftataLib.Display.WriteString(displayLinkedListIndex,4,0, "(4,0):Cursor");
+                                    SoftataLib.Display.WriteString(displayLinkedListIndex, 2, 1, "(2,1):Write");
                                 }
                             }
                         }

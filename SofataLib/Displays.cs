@@ -4,10 +4,11 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace Softata
 {
-    public enum GroveDisplayCmds{getpins, tbd, setupDefault, setup, clear,backlight,setCursor,misc, getDisplays=255 }
+    public enum GroveDisplayCmds{getpins=0, tbd=1, setupDefault=2, setup=3, clear=4,backlight=5,setCursor=6, writestrngCMD=7,cursor_writestringCMD=8,misc=8, getDisplays=255 }
     public partial class SoftataLib
     {
 
@@ -65,7 +66,7 @@ namespace Softata
 
             public static bool Clear(byte linkedListNo)
             {
-                string result = SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.backlight, "OK:", linkedListNo);
+                string result = SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.clear, "OK:", linkedListNo);
                 if (true) //TBD
                     return true;
                 else
@@ -91,11 +92,41 @@ namespace Softata
                     return false;
             }
 
-            enum LCD1602MiscCmds { home, autoscroll, noautoscroll, blink, noblink, LCD1602MiscCmds_MAX };
+            public static bool WriteString(byte linkedListNo, string msg)
+            {
+                byte[] bytes = Encoding.ASCII.GetBytes(msg);
+                byte[] bytes2 = bytes.Append((byte) 0).ToArray<byte>(); //Need to append 0
+                byte[] data = bytes2.Prepend((byte)bytes2.Length).ToArray<byte>(); //Prepend string length +1
+                char[] cg = data.Select(b => (char)b).ToArray();
+                string result = SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.writestrngCMD, "OK:", linkedListNo, data);
+                if (true) //TBD
+                    return true;
+                else
+                    return false;
+            }
+
+            public static bool WriteString(byte linkedListNo, int x, int y, string msg)
+            {
+                byte[] cursor = new byte[] {(byte)x, (byte)y };
+                byte[] bytes = Encoding.ASCII.GetBytes(msg);
+                byte[] bytes1 = cursor.Concat(bytes).ToArray<byte>();
+                byte[] bytes2 = bytes1.Append((byte)0).ToArray<byte>(); //Need to append 0
+                byte[] data = bytes2.Prepend((byte)bytes2.Length).ToArray<byte>(); //Prepend string length +1
+                char[] cg = data.Select(b => (char)b).ToArray();
+
+                string result = SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.cursor_writestringCMD, "OK:", linkedListNo, data);
+                if (true) //TBD
+                    return true;
+                else
+                    return false;
+            }
+
+ 
             enum OLEDMiscCmds { drawCircle, drawFrame, OLEDMiscCmds_MAX };
 
             public static class Neopixel
             {
+                // Misc commands
                 enum NEOPIXELMiscCmds { setpixelcolor, setpixelcolorAll, setpixelcolorOdds, setpixelcolorEvens, setBrightness, NEOPIXELMiscCmds_MAX };
 
                 public static bool Clear(byte displayLinkedListIndex)
@@ -131,6 +162,48 @@ namespace Softata
                     string result = SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", displayLinkedListIndex, data);
                     return true;
                 }
+            }
+
+            public static class LCD1602Display
+            {
+                // Misc commands
+                enum LCD1602MiscCmds { home, autoscroll, noautoscroll, blink, noblink, LCD1602MiscCmds_MAX };
+
+                public static bool Home(byte displayLinkedListIndex)
+                {
+                    byte[] data = new byte[] { 0x1, (byte)LCD1602MiscCmds.home };
+                    string result = SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", displayLinkedListIndex, data);
+                    return true;
+                }
+
+                public static bool Autoscroll(byte displayLinkedListIndex)
+                {
+                    byte[] data = new byte[] { 0x1, (byte)LCD1602MiscCmds.autoscroll };
+                    string result = SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", displayLinkedListIndex, data);
+                    return true;
+                }
+
+                public static bool NoAutoscroll(byte displayLinkedListIndex)
+                {
+                    byte[] data = new byte[] { 0x1, (byte)LCD1602MiscCmds.noautoscroll };
+                    string result = SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", displayLinkedListIndex, data);
+                    return true;
+                }
+
+                public static bool Blink(byte displayLinkedListIndex)
+                {
+                    byte[] data = new byte[] { 0x1, (byte)LCD1602MiscCmds.blink };
+                    string result = SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", displayLinkedListIndex, data);
+                    return true;
+                }
+
+                public static bool NoBlink(byte displayLinkedListIndex)
+                {
+                    byte[] data = new byte[] { 0x1, (byte)LCD1602MiscCmds.noblink };
+                    string result = SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", displayLinkedListIndex, data);
+                    return true;
+                }
+
             }
         }
 

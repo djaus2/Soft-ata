@@ -107,7 +107,8 @@ namespace Softata
             SPI = 5,
             OneWire = 6,
             Serial = 7,
-            Displays = 0x8,
+            NeopixelDisplay = 0x8,
+            LCD1602Display = 0x9,
             Undefined = 0xFF
         }
         public enum PinMode
