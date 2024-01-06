@@ -19,8 +19,8 @@ _Soft-ata rather than firm-ata!_
   - bool ReadAll(double[] values)
   - double Read(enum property)
 
-- Grove Displays Addfruit Neopixel8 implemented
-    - Grove OLE096 and LCD coming
+- Grove Displays FreeNove(Adafruit) Neopixel8 and LCD1602 implemented
+    - Grove OLE096 coming
 - Grove Display API:
   - static String GetDisplays()
   - static String GetPins()
@@ -50,7 +50,7 @@ _Soft-ata rather than firm-ata!_
     -  Grove LCD RGB Backlight (LCD1602)
     - For Displays there is a Misc command with various sub commands
   
-  - Grove API as above 
+  - Grove Display API added as above 
 
 ## Blog Post
 
@@ -94,14 +94,16 @@ This requires a setup as per previous repositories here as well as in some blog 
 - Version 2.40
   - Added specif Analog devices API as above
 - Version 2.30
-  - Added 2 Displays and to Console test app
+ - Added 2 Displays and to Console test app
     - Adafruit Neopixel8
       - Connect to D16 on Grove RPi Pico Shield S signal pin on Neopixel
         - i.e. to Yellow strand of Grove 4 wire cable)
         - And Vcc pin to Red strand, Gnd pin to Black strand
     - Grove LCD RGB Backlight (LCD1602)
+      - [seeedstudio Grove-LCD_RGB_Backlight](https://wiki.seeedstudio.com/Grove-LCD_RGB_Backlight/)
       - Connect to I2C0 on Grove RPi Pico Shield using Grove 4 wire cable
     - For Displays there is a Misc command with various display specific sub commands.
+    - Grove Display API 
 - Version 2.02
   - Can easiliy switch btw RPI Pico W defaults and Grove Pico Shield in header
   - V2.03 Fixup for USART defines
