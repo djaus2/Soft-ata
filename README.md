@@ -37,7 +37,7 @@ _Soft-ata rather than firm-ata!_
   - Grove Potentiometer, Sound and Light Sensors
   - Specific API for these (in C# lib not Arduino)
     - InitAnalogDevicePins(RPiPicoMode) //groveShield or defaultMode
-    - SetAnalogPin(device,pinNumber,maxValue) //device:
+    - SetAnalogPin(device,pinNumber,maxValue) //device:potentiometer,light,sound
     - AnalogReadXXXSensor()  // No params
 
  > See https://github.com/djaus2/Soft-ata/blob/master/Grove.md
