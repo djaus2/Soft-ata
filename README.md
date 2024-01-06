@@ -33,10 +33,18 @@ _Soft-ata rather than firm-ata!_
   - bool WriteString(String msg);
   - bool WriteString(byte x, byte y, String msg)
 
+- Analog Devices
+  - Grove Potentiometer, Sound and Light Sensors
+  - Specific API for these (in C# lib not Arduino)
+    - InitAnalogDevicePins(RPiPicoMode) //groveShield or defaultMode
+    - SetAnalogPin(device,pinNumber,maxValue) //device:
+    = AnalogReadXXXSensor()  // No params
+
  > See https://github.com/djaus2/Soft-ata/blob/master/Grove.md
 
 ## Latest
 - See **Repository Status** below.
+  - Added specific Analog devices API as above.
   - Added 2  Displays and 2 Console test app
     -  Adafruit Neopixle8
     -  Grove LCD RGB Backlight (LCD1602)
@@ -83,8 +91,10 @@ This requires a setup as per previous repositories here as well as in some blog 
 ------
 
 ## Repository Status
+- Version 2.40
+  - Added specif Analog devices API as above
 - Version 2.30
- - Added 2 Displays and to Console test app
+  - Added 2 Displays and to Console test app
     - Adafruit Neopixel8
       - Connect to D16 on Grove RPi Pico Shield S signal pin on Neopixel
         - i.e. to Yellow strand of Grove 4 wire cable)

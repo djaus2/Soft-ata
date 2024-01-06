@@ -248,13 +248,11 @@ void loop() {
               client.print("FAIL");
               continue;
             } else {
-              if (cmd == 0xA2) {
-                Serial.print("analogRead:");
-                value = analogRead(pin);
-                String valueADStr = String(value);
+              if (cmd == 0xA2) {              
+                value = analogRead(pin);;
                 String msgAD = "AD:";
-                msgAD.concat(valueADStr);
-                Serial.println(valueADStr);
+                msgAD += value;
+                Serial.println(msgAD);
                 client.print(msgAD);
                 //break;
               }

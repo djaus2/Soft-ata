@@ -1,7 +1,7 @@
 #ifndef SOFTATAH
 #define SOFTATAH
 
-#define APP_VERSION "2.30"
+#define APP_VERSION "2.40"
 
 //#define RPI_PICO_DEFAULT
 #define GROVE_RPI_PICO_SHIELD

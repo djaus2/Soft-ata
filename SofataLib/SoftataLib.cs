@@ -20,7 +20,7 @@ namespace Softata
         public const byte nullData = 0xfe;
 
         public static  int port { get; set; } = 4242;
-        public static string ipAddresStr { get; set; } = "192.168.0.13";
+        public static string ipAddresStr { get; set; } = "192.168.0.11";
 
         private static bool Inited = false;
         public  static void Init(string _ipAddresStr, int _port)
@@ -109,6 +109,7 @@ namespace Softata
             Serial = 7,
             NeopixelDisplay = 0x8,
             LCD1602Display = 0x9,
+            PotLightSoundAnalog = 0xA,
             Undefined = 0xFF
         }
         public enum PinMode

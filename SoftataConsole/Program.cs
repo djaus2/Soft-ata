@@ -18,15 +18,18 @@ namespace FirmataBasic
     {
         // Set the same as Arduino:
         const int port = 4242;
-        const string ipaddressStr = "192.168.0.15";
+        const string ipaddressStr = "192.168.0.11";
 
         // Configure hardware pin connections thus:
         static byte LED = 12;
         static byte BUTTON = 13;
         static byte POTENTIOMETER = 26;
+        static byte LIGHTSENSOR = 27;
+        static byte SOUNDSENSOR = 28;
 
         // Choose test type
-        static SoftataLib.CommandType Testtype = CommandType.LCD1602Display;
+        static SoftataLib.CommandType Testtype = CommandType.PotLightSoundAnalog;
+        //static SoftataLib.CommandType Testtype = CommandType.LCD1602Display;
         //static SoftataLib.CommandType Testtype = CommandType.NeopixelDisplay;
         //static SoftataLib.CommandType Testtype = CommandType.Digital;
         //static SoftataLib.CommandType Testtype = CommandType.Serial;
@@ -64,7 +67,7 @@ namespace FirmataBasic
                         SoftataLib.Digital.SetPinState(LED, SoftataLib.PinState.HIGH);
 
                         // Next is errant as no pin 50 on Pico
-                        //Digital.SetPinMode(50, PinMode.DigitalInput);
+                        //Digital.SetAnalogPin(50, PinMode.DigitalInput);
 
                         // Next is errant as no such command
                         //SoftataLib.SendMessage(SoftataLib.Commands.Undefined, (byte)26, (byte)PinMode.DigitalInput);
@@ -313,6 +316,36 @@ namespace FirmataBasic
                                     SoftataLib.Display.WriteString(displayLinkedListIndex, 2, 1, "(2,1):Write");
                                 }
                             }
+                        }
+                        break;
+                    case CommandType.PotLightSoundAnalog:
+                        SoftataLib.Analog.InitAnalogDevicePins(Analog.RPiPicoMode.groveShield);
+                        SoftataLib.Analog.SetAnalogPin(Analog.AnalogDevice.Potentiometer, POTENTIOMETER, 1023);
+                        SoftataLib.Analog.SetAnalogPin(Analog.AnalogDevice.LightSensor, LIGHTSENSOR);
+                        SoftataLib.Analog.SetAnalogPin(Analog.AnalogDevice.SoundSensor, SOUNDSENSOR);
+                        for (int i=0;i<100;i++)
+                        {
+                            double value;
+                            value = SoftataLib.Analog.AnalogReadLightSensor();
+                            if (value != double.MaxValue)
+                                Console.WriteLine($"\tLight: {value:0.##}");
+                            else
+                                Console.WriteLine($"\tLight Sensor: failed");
+                            Thread.Sleep(2000);
+
+                            value = SoftataLib.Analog.AnalogReadPotentiometer();
+                            if (value != double.MaxValue)
+                                Console.WriteLine($"\tPotentiometer: {value:0.##}");
+                            else
+                                Console.WriteLine($"\tPotentiometer: failed");
+                            Thread.Sleep(2000);
+
+                            value = SoftataLib.Analog.AnalogReadSoundSensor();
+                            if (value != double.MaxValue)
+                                Console.WriteLine($"\tSound: {value:0.##}");
+                            else
+                                Console.WriteLine($"\tSound Sensor: failed");
+                            Thread.Sleep(2000);
                         }
                         break;
                 }
