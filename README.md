@@ -151,8 +151,10 @@ This requires a setup as per previous repositories here as well as in some blog 
 
 ## Required Arduino Libraries
 
-- [Grove_Ultrasonic_Ranger](https://github.com/Seeed-Studio/Seeed_Arduino_UltrasonicRanger
-  - Zip fiole install from [here](https://github.com/Seeed-Studio/Seeed_Arduino_UltrasonicRanger/archive/master.zip)
+- [BMx280](https://bitbucket.org/christandlg/bmx280mi/src/master/)
+  - Direct install from Arduino
+- [Grove_Ultrasonic_Ranger](https://github.com/Seeed-Studio/Seeed_Arduino_UltrasonicRanger0)
+  - Zip file install from [here](https://github.com/Seeed-Studio/Seeed_Arduino_UltrasonicRanger/archive/master.zip)
 
 ------
 
