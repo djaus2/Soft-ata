@@ -50,6 +50,7 @@ class Grove_BME280: public Grove_Sensor
       {
         String msg="OK:";
         msg.concat(BME280_PROPERTIES);
+        Serial.println(msg);
         return msg; 
       }
       virtual bool Setup();
@@ -58,5 +59,36 @@ class Grove_BME280: public Grove_Sensor
       virtual double Read(int property);
     protected:
       bool SetupBME280();
+};
+#endif
+
+#ifndef GROVE_ULTRASONICRANGESENSORH
+#define GROVE_ULTRASONICRANGESENSORH
+#include "grove_sensor.h"
+
+
+class Grove_URangeSensor : public Grove_Sensor
+{
+public:
+    Grove_URangeSensor(int SetupPin);
+    static String GetPins()
+    {
+        String msg = "OK:";
+        msg.concat(URANGE_PINNOUT);
+        return msg;
+    }
+    static String GetListofProperties()
+    {
+        String msg = "OK:";
+        msg.concat(URANGE_PROPERTIES);
+        return msg;
+    }
+
+    virtual bool Setup();
+    virtual bool Setup(byte* settings, byte numSettings = 1);
+    virtual bool ReadAll(double* values);
+    virtual double Read(int property);
+protected:
+    bool SetupURangeSensor();
 };
 #endif

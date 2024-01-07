@@ -44,6 +44,7 @@ _Soft-ata rather than firm-ata!_
 
 ## Latest
 - See **Repository Status** below.
+  - Added Grove Ultrasonic Ranger sensor
   - Added specific Analog devices API as above.
   - Added 2  Displays and 2 Console test app
     -  FreeNove(Adafruit) Neopixle8
@@ -91,6 +92,8 @@ This requires a setup as per previous repositories here as well as in some blog 
 ------
 
 ## Repository Status
+- Version 2.41
+  - Added Grove Ultrasonic Ranger sensor
 - Version 2.40
   - Added specific Analog devices API as above
 - Version 2.30

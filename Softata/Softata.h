@@ -1,7 +1,7 @@
 #ifndef SOFTATAH
 #define SOFTATAH
 
-#define APP_VERSION "2.40"
+#define APP_VERSION "2.41"
 
 //#define RPI_PICO_DEFAULT
 #define GROVE_RPI_PICO_SHIELD
@@ -41,7 +41,7 @@
 #define I2C1_SCL  (I2C1_SDA +1)
 #endif
 
-//Maximum number of each that can be instatianted...added to list in deviceLists.h
+//Maximum number of each that can be instantiated...added to list in deviceLists.h
 #define MAX_SENSORS   10
 #define MAX_ACTUATORS 10
 #define MAX_DISPLAYS  10
@@ -52,7 +52,7 @@
 #define G_DEVICETYPES C(sensor)C(actuator)C(communication)C(display)
 
 //Add other sensors/actuators here C bracketed, on end.
-#define G_SENSORS C(DHT11)C(BME280)C(LIGHT)C(SOUND)
+#define G_SENSORS C(DHT11)C(BME280)C(URANGE)
 #define G_ACTUATORS C(BUZZER)
 #define G_DISPLAYS C(OLED096)C(LCD1602)C(NEOPIXEL)
 
@@ -63,9 +63,11 @@ enum GroveSensorCmds{s_getpinsCMD, s_getPropertiesCMD, s_setupdefaultCMD, s_setu
 
 #define DHT11_PROPERTIES "Temperature,Humidity"
 #define BME280_PROPERTIES "Temperature,Pressure,Humidity"
+#define URANGE_PROPERTIES "mm,cm,inches"
 
 #define NUM_DHT11_PROPERTIES 2
 #define NUM_BME280_PROPERTIES 3
+#define NUM_URANGE_PROPERTIES 3
 
 //#define BME280_I2C_ADDRESS76
 #define BME280_I2C_ADDRESS77
@@ -76,10 +78,15 @@ enum GroveSensorCmds{s_getpinsCMD, s_getPropertiesCMD, s_setupdefaultCMD, s_setu
 #ifdef RPI_PICO_DEFAULT
 #define BME280_PINNOUT  "I2C0 (Pins4/5 (SDA/SCL) default): Address 0x77 (Alt 0x76). Embedded in driver though."
 #define DHT11_PINNOUT "OneWire: Pin 11 or whatever 0 to 26"
+#define URANGE_PINNOUT "Digital and PWM: Pin 11 or whatever 0 to 26"
 #elif defined(GROVE_RPI_PICO_SHIELD)
 #define BME280_PINNOUT  "I2C0 (Pins8/9 (SDA/SCL) fixed): Address 0x77 (Alt 0x76). Embedded in driver though."
 #define DHT11_PINNOUT  "OneWire: Pin 16,18 or 20"
+#define URANGE_PINNOUT "Digital and PWM: Pin 16,18 or 20"
 #endif
+
+#define DEFAULT_URANGE_PIN 16
+
 
 
 ///////////////////////// D I S P L A Y S /////////////////////////////////////////////////
@@ -118,5 +125,6 @@ enum LCD1602MiscCmds {home,autoscroll,noautoscroll,blink,noblink,LCD1602MiscCmds
 enum NEOPIXELMiscCmds {setpixelcolor,setpixelcolorAll,setpixelcolorOdds,setpixelcolorEvens,setBrightness,NEOPIXELMiscCmds_MAX};
 enum OLEDMiscCmds {drawCircle,drawFrame,OLEDMiscCmds_MAX};
 
+enum range_units {mm,cm,inch};
 
 #endif

@@ -466,26 +466,21 @@ void loop() {
                           client.print(Grove_DHT11::GetPins());
                         }
                         break;
-                      case LIGHT:
-                        {
-                          //client.print(Grove_Lioght::GetPins());
-                          client.print("Fail:Not implemented");
-                        }
-                        break;
-                      case SOUND:
-                        {
-                          //client.print(Grove_Sound::GetPins());
-                          client.print("Fail:Not implemented");
-                        }
-                        break;
                       case BME280:
                         {
                           client.print(Grove_BME280::GetPins());
                         }
                         break;
+                      case URANGE:
+                        {
+                          client.print(Grove_URangeSensor::GetPins());
+                        }
+                        break;
                       // Add more here
                       default:
-                        client.print("Fail:Not a sensor");
+                        String msgFail = "Fail:Not a sensor:";
+                        msgFail += other;
+                        client.print(msgFail);
                         break;
                     }
                   }
@@ -500,26 +495,22 @@ void loop() {
                           client.print(Grove_DHT11::GetListofProperties());
                         }
                         break;
-                      case LIGHT:
-                        {
-                          //client.print(Grove_Light::GetListofProperties());
-                          client.print("Fail:Not implemented");
-                        }
-                        break;
-                      case SOUND:
-                        {
-                          //client.print(Grove_Sound::GetListofProperties());
-                          client.print("Fail:Not implemented");
-                        }
-                        break;
                       case BME280:
                         {
                           client.print(Grove_BME280::GetListofProperties());
                         }
                         break;
+                      case URANGE:
+                        {
+                          client.print(Grove_URangeSensor::GetListofProperties());
+                        }
+                        break;                       
                       // Add more here
                       default:
-                        client.print("Fail:Not a sensor");
+                      client.print(Grove_URangeSensor::GetListofProperties());
+                        String msgFail = "Fail:Not a sensor:";
+                        msgFail += other;
+                        client.print(msgFail);
                         break;
                     }
 
@@ -539,21 +530,15 @@ void loop() {
                           _done = true;
                         }
                         break;
-                      case LIGHT:
-                        {
-                          //Grove_Light _light
-                          client.print("Fail:Not implemented");
-                        }
-                        break;
-                      case SOUND:
-                        {
-                          //Grove_Sound _sound
-                          client.print("Fail:Not implemented");
-                        }
-                        break;
                       case BME280:
                         {
                           grove_Sensor  = new Grove_BME280();;
+                          _done = true;
+                        }
+                        break;
+                      case URANGE:
+                        {
+                          grove_Sensor  = new Grove_URangeSensor(DEFAULT_URANGE_PIN);
                           _done = true;
                         }
                         break;

@@ -28,7 +28,8 @@ namespace FirmataBasic
         static byte SOUNDSENSOR = 28;
 
         // Choose test type
-        static SoftataLib.CommandType Testtype = CommandType.PotLightSoundAnalog;
+        static SoftataLib.CommandType Testtype = CommandType.Sensors;
+        //static SoftataLib.CommandType Testtype = CommandType.PotLightSoundAnalog;
         //static SoftataLib.CommandType Testtype = CommandType.LCD1602Display;
         //static SoftataLib.CommandType Testtype = CommandType.NeopixelDisplay;
         //static SoftataLib.CommandType Testtype = CommandType.Digital;
@@ -156,19 +157,36 @@ namespace FirmataBasic
                         else
                         {
                             Console.WriteLine($"Sensors found:");
-                            for (byte i = 0; i < 2; i++) // Sensors.Length; i++)
+                            for (byte i = 0; i < Sensors.Length; i++)
                             {
-                                string sensor = Sensors[i];
-                                Console.WriteLine($"Sensor = {sensor}");
+                                string _sensor = Sensors[i];
+                                Console.WriteLine($"{i + 1}.\t\t{_sensor}");
+                            }
+                            Console.Write("Selection:");
+                            bool found = false;
+                            byte isensor = 0;
+                            do
+                            {
+                                string? s = Console.ReadLine();
+                                if (byte.TryParse(s, out byte isen))
+                                {
+                                    if (isen > 0 && isen <= Sensors.Length)
+                                    {
+                                        isensor = (byte)(isen-1);
+                                        found = true;
+                                    }
+                                }
+                            }  while (!found);
+                            string sensor = Sensors[isensor];
 
-                                SoftataLib.Sensor.GetPins(i);
-                                byte sensorLinkedListIndex = (byte)SoftataLib.Sensor.SetupDefault(i);
+                            SoftataLib.Sensor.GetPins(isensor);
+                                byte sensorLinkedListIndex = (byte)SoftataLib.Sensor.SetupDefault(isensor);
                                 if (sensorLinkedListIndex < 0)
                                     Console.WriteLine($"Instantiated sensor {sensor} not found");
                                 else
                                 {
                                     Console.WriteLine($"Instantiated {sensor} found at {sensorLinkedListIndex}");
-                                    string[] properties = SoftataLib.Sensor.GetProperties(sensorLinkedListIndex);
+                                    string[] properties = SoftataLib.Sensor.GetProperties(isensor);
                                     if (properties.Length == 0)
                                         Console.WriteLine($"{sensor} getProperties() failed");
                                     else
@@ -178,7 +196,19 @@ namespace FirmataBasic
                                             Console.WriteLine($"{sensor} property = {property}");
                                     }
                                     Console.WriteLine();
+                                string pins = SoftataLib.Sensor.GetPins(isensor);
+                                if (string.IsNullOrEmpty(pins))
+                                    Console.WriteLine($"{sensor} getPins() failed");
+                                else
+                                {
+                                    Console.WriteLine($"{sensor} getPins OK");
+                                    Console.WriteLine($"{sensor} Pins = {pins}");
+                                }
+                                Console.WriteLine("Press any key to continue.");
+                                Console.ReadLine();
+                                Console.WriteLine();
 
+                                while (true) { 
                                     double[]? values = SoftataLib.Sensor.ReadAll((byte)sensorLinkedListIndex);
                                     if (values == null)
                                         Console.WriteLine($"{sensor} readAll() failed");
@@ -186,7 +216,7 @@ namespace FirmataBasic
                                     {
                                         Console.WriteLine($"{sensor} readAll OK");
                                         for (int p = 0; p < properties.Length; p++)
-                                            Console.WriteLine($"{sensor} {properties[p]} = {values[p]}");
+                                            Console.WriteLine($"\t\t{sensor} {properties[p]} = {values[p]}");
                                     }
                                     Console.WriteLine();
                                     for (byte p = 0; p < properties.Length; p++)
@@ -195,10 +225,10 @@ namespace FirmataBasic
                                         if (value == null)
                                             Console.WriteLine($"{sensor} read() failed");
                                         else
-                                            Console.WriteLine($"{sensor} {properties[p]} = {value}");
-                                        Thread.Sleep(200);
+                                            Console.WriteLine($"\t\t\t{sensor} {properties[p]} = {value}");
                                         Console.WriteLine();
                                     }
+                                    Thread.Sleep(6000);
                                 }
                             }
                         }

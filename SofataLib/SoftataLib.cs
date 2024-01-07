@@ -110,6 +110,7 @@ namespace Softata
             NeopixelDisplay = 0x8,
             LCD1602Display = 0x9,
             PotLightSoundAnalog = 0xA,
+            USonicRange = 0xB,
             Undefined = 0xFF
         }
         public enum PinMode
