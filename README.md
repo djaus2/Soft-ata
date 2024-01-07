@@ -174,6 +174,7 @@ The test app has three options:
 
 - Implement the other capabilities in the Arduino app, etc
 - Azure IoT Hub connectivity
+- BLE
 - _More:_ See the Blog post 
 
 ------
