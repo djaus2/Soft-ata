@@ -149,6 +149,13 @@ This requires a setup as per previous repositories here as well as in some blog 
 
 ------
 
+## Required Arduino Libraries
+
+- [Grove_Ultrasonic_Ranger](https://github.com/Seeed-Studio/Seeed_Arduino_UltrasonicRanger
+  - Zip fiole install from [here](https://github.com/Seeed-Studio/Seeed_Arduino_UltrasonicRanger/archive/master.zip)
+
+------
+
 ## Usage
 
 See the [Console app](/SoftataConsole) but the IpAddress as determined when the Pico W runs must match that in the library. The ports must also match.
