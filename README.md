@@ -152,7 +152,7 @@ This requires a setup as per previous repositories here as well as in some blog 
 ## Required Arduino Libraries
 
 - [DHT11_Temperature_And_Humidity_Sensor](https://github.com/RobTillaart/Arduino/tree/master/libraries/DHTlib)
-  - ??? TBD
+  - Direct library install from Arduino Search for **DHTlib**
 - [BMx280BMI](https://bitbucket.org/christandlg/bmx280mi/src/master/)
   - Direct library install from Arduino Search for **BMx280BMI**
 - [Grove_Ultrasonic_Ranger](https://github.com/Seeed-Studio/Seeed_Arduino_UltrasonicRanger)
