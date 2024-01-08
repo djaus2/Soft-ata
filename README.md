@@ -149,6 +149,17 @@ This requires a setup as per previous repositories here as well as in some blog 
 
 ------
 
+## Required Arduino Libraries
+
+- [DHT11_Temperature_And_Humidity_Sensor](https://github.com/RobTillaart/Arduino/tree/master/libraries/DHTlib)
+  - ??? 
+- [BMx280BMI](https://bitbucket.org/christandlg/bmx280mi/src/master/)
+  - Direct library install from Arduino
+- [Grove_Ultrasonic_Ranger](https://github.com/Seeed-Studio/Seeed_Arduino_UltrasonicRanger)
+  - Zip file install from [here](https://github.com/Seeed-Studio/Seeed_Arduino_UltrasonicRanger/archive/master.zip)
+
+------
+
 ## Usage
 
 See the [Console app](/SoftataConsole) but the IpAddress as determined when the Pico W runs must match that in the library. The ports must also match.
@@ -163,6 +174,7 @@ The test app has three options:
 
 - Implement the other capabilities in the Arduino app, etc
 - Azure IoT Hub connectivity
+- BLE
 - _More:_ See the Blog post 
 
 ------
