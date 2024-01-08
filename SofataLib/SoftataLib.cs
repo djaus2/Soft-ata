@@ -111,6 +111,8 @@ namespace Softata
             LCD1602Display = 0x9,
             PotLightSoundAnalog = 0xA,
             USonicRange = 0xB,
+            PotRelay = 0xC,
+            MaxType = 0xD,
             Undefined = 0xFF
         }
         public enum PinMode

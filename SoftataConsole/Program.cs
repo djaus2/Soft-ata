@@ -11,6 +11,7 @@ using System.Threading;
 
 using Softata;
 using static Softata.SoftataLib;
+using System.Runtime.ConstrainedExecution;
 
 namespace FirmataBasic
 {
@@ -23,17 +24,19 @@ namespace FirmataBasic
         // Configure hardware pin connections thus:
         static byte LED = 12;
         static byte BUTTON = 13;
-        static byte POTENTIOMETER = 26;
-        static byte LIGHTSENSOR = 27;
-        static byte SOUNDSENSOR = 28;
+        static byte POTENTIOMETER = 26;//A0
+        static byte LIGHTSENSOR = 27;  //A1
+        static byte SOUNDSENSOR = 28;  //A2 
+        static byte RELAY = 16;
 
-        // Choose test type
-        static SoftataLib.CommandType Testtype = CommandType.Sensors;
+        // Choose test DEFAULT type (There is now a menu to select from)
+        //static SoftataLib.CommandType Testtype = CommandType.Sensors;
         //static SoftataLib.CommandType Testtype = CommandType.PotLightSoundAnalog;
         //static SoftataLib.CommandType Testtype = CommandType.LCD1602Display;
         //static SoftataLib.CommandType Testtype = CommandType.NeopixelDisplay;
         //static SoftataLib.CommandType Testtype = CommandType.Digital;
         //static SoftataLib.CommandType Testtype = CommandType.Serial;
+        static SoftataLib.CommandType Testtype = CommandType.PotRelay;
         //Set Serial1 or Serial2 for send and receive.
         //Nb: If both true or both false then loopback on same serial port.
         static bool Send1 = true;
@@ -44,11 +47,41 @@ namespace FirmataBasic
 
         static void Main(string[] args)
         {
-            SoftataLib.Init(ipaddressStr, port);
 
             Console.WriteLine("Hello from Soft-ata!");
+            Console.WriteLine();
+            Console.WriteLine("TESTS");
             try
             {
+                int num = 0;
+                for (int i = 0; i < (int)CommandType.MaxType; i++)
+                {
+                    num++;
+
+                    CommandType cmd = (CommandType)i;
+                    Console.WriteLine($"{i + 1}.\t\t{cmd}");
+                }
+                Console.WriteLine();
+                Console.Write($"Please make a selection (Default is {(int)Testtype+1}):");
+                bool foundTestType = false; 
+                do
+                {
+                    string? s = Console.ReadLine();
+                    if(string.IsNullOrEmpty(s))
+                        break;
+                    if (byte.TryParse(s, out byte icmd))
+                    {
+                        if (icmd > 0 && icmd <= num)
+                        {
+                            Testtype = (CommandType)(num - 1);
+                            foundTestType = true;
+                        }
+                    }
+                } while (!foundTestType);
+
+                Console.WriteLine($"Testtype: {Testtype}");
+
+                SoftataLib.Init(ipaddressStr, port);
 
                 SoftataLib.SendMessageCmd("Begin");
                 Thread.Sleep(500);
@@ -375,6 +408,48 @@ namespace FirmataBasic
                                 Console.WriteLine($"\tSound: {value:0.##}");
                             else
                                 Console.WriteLine($"\tSound Sensor: failed");
+                            Thread.Sleep(2000);
+                        }
+                        break;
+                    case CommandType.PotRelay:
+                        Console.WriteLine("Potentiometer-Relay Test");
+                        Console.WriteLine("Potentiometer controls relay. On if >50%");
+                        Console.WriteLine("Potentiometer connected to A0, Relay to D16");
+                        SoftataLib.Analog.InitAnalogDevicePins(Analog.RPiPicoMode.groveShield);
+                        SoftataLib.Analog.SetAnalogPin(Analog.AnalogDevice.Potentiometer, POTENTIOMETER, 1023);
+                        Console.WriteLine("Press any key to continue.");
+                        Console.ReadLine();
+                        SoftataLib.Digital.SetPinMode(RELAY, SoftataLib.PinMode.DigitalOutput);
+                        bool state = false;
+                        Console.WriteLine("Relay OFF");
+                        for (int i = 0; i < 20; i++)
+                        {
+                            double val = SoftataLib.Analog.AnalogReadPotentiometer();
+                            if (val != double.MaxValue)
+                            {
+                                Console.WriteLine($"AnalogRead({POTENTIOMETER}) = {val:0.##}");
+                                if(val > 50)
+                                {
+                                    if (!state)
+                                    {
+                                        Console.WriteLine("\t\t\tRelay ON");
+                                        state = true;
+                                        SoftataLib.Digital.SetPinState(RELAY, SoftataLib.PinState.HIGH);
+                                    }
+                                }
+                                else
+                                {
+                                    if (state)
+                                    {
+                                        Console.WriteLine("\t\t\tRelay OFF");
+                                        state = false;
+                                        SoftataLib.Digital.SetPinState(RELAY, SoftataLib.PinState.LOW);
+                                    }
+                                }
+                            }
+                            else
+                                Console.WriteLine($"\t\tAnalogRead({POTENTIOMETER}) failed");
+                            Console.WriteLine();
                             Thread.Sleep(2000);
                         }
                         break;
