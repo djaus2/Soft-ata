@@ -43,15 +43,13 @@ _Soft-ata rather than firm-ata!_
  > See https://github.com/djaus2/Soft-ata/blob/master/Grove.md
 
 ## Latest
-- See **Repository Status** below.
-  - Added Grove Ultrasonic Ranger sensor
-  - Added specific Analog devices API as above.
-  - Added 2  Displays and 2 Console test app
-    -  FreeNove(Adafruit) Neopixle8
-    -  Grove LCD RGB Backlight (LCD1602)
-    - For Displays there is a Misc command with various sub commands
-  
-  - Grove Display API added as above 
+
+_See **Repository Status** below._
+
+- Added Potentiometer-Relay Test to Console app.
+  - Also menu at start to select test.
+- Added Grove Ultrasonic Ranger sensor
+- _More:_ See Repository Status
 
 ## Blog Post
 
@@ -93,6 +91,8 @@ This requires a setup as per previous repositories here as well as in some blog 
 
 ## Repository Status
 - Version 2.41
+  - Added Potentiometer-Relay Test to Console app.
+    - Also menu at start to select test.
   - Added Grove Ultrasonic Ranger sensor
 - Version 2.40
   - Added specific Analog devices API as above
