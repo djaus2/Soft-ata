@@ -412,6 +412,7 @@ namespace FirmataBasic
                         }
                         break;
                     case CommandType.PotRelay:
+                        Console.WriteLine();
                         Console.WriteLine("Potentiometer-Relay Test");
                         Console.WriteLine("Potentiometer controls relay. On if >50%");
                         Console.WriteLine("Potentiometer connected to A0, Relay to D16");
