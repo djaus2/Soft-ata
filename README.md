@@ -10,7 +10,7 @@ _Soft-ata rather than firm-ata!_
 # Grove API
 
 - Grove Sensors DHT11 and BME280 implemented
-- Grove Sensor API:
+- Grove Sensor API API (Arduino):
   - String GetSensors()
   - String GetPins()/Pin Options
   - String GetListofProperties()
@@ -21,7 +21,7 @@ _Soft-ata rather than firm-ata!_
 
 - Grove Displays FreeNove(Adafruit) Neopixel8 and LCD1602 implemented
     - Grove OLE096 coming
-- Grove Display API:
+- Grove Display API (Arduino):
   - static String GetDisplays()
   - static String GetPins()
   - bool Setup();
@@ -33,12 +33,19 @@ _Soft-ata rather than firm-ata!_
   - bool WriteString(String msg);
   - bool WriteString(byte x, byte y, String msg)
 
-- Analog Devices
+- Analog Devices API (Arduino)
   - Grove Potentiometer, Sound and Light Sensors
   - Specific API for these (in C# lib not Arduino)
     - InitAnalogDevicePins(RPiPicoMode) //groveShield or defaultMode
     - SetAnalogPin(device,pinNumber,maxValue) //device:potentiometer,light,sound
     - AnalogReadXXXSensor()  // No params
+ 
+- Actuators API in SoftataLib (C#)
+  - string[] GetActuators()  //Get names of actuators implemented (SERVO is only one thus far)
+  - linkedListNo = SetupDefault(ActuatorDevice deviceType)  //Use defaults D16 and 540, 2400 for SERVO
+  - linkedListNo = Setup(ActuatorDevice deviceType, byte pinNumber)
+  - linkedListNo = Setup(ActuatorDevice deviceType, byte pinNumber, byte min=0, byte max=0) //2Do
+  - ActuatorWrite(byte linkedListNo, byte value)
 
  > See https://github.com/djaus2/Soft-ata/blob/master/Grove.md
 
