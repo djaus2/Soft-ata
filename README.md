@@ -52,7 +52,7 @@ _Soft-ata rather than firm-ata!_
 ## Latest
 
 _See **Repository Status** below._
-- Added Servo. Console app includes Servo-Potentiometrr tracker.
+- Added Servo. Console app includes Servo-Potentiometer tracker.
 - Added Potentiometer-Relay Test to Console app.
   - Also menu at start to select test.
 - Added Grove Ultrasonic Ranger sensor
