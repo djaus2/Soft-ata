@@ -12,6 +12,7 @@ using System.Threading;
 using Softata;
 using static Softata.SoftataLib;
 using System.Runtime.ConstrainedExecution;
+using System.Reflection.Metadata;
 
 namespace FirmataBasic
 {
@@ -452,6 +453,106 @@ namespace FirmataBasic
                                 Console.WriteLine($"\t\tAnalogRead({POTENTIOMETER}) failed");
                             Console.WriteLine();
                             Thread.Sleep(2000);
+                        }
+                        break;
+                    case CommandType.PotServo:
+                        string[] Actuators = SoftataLib.Actuator.GetActuators();
+                        if (Actuators.Length == 0)
+                            Console.WriteLine($"No actuators found");
+                        else
+                        {
+                            Console.WriteLine($"Actuators found:");
+                            for (byte i = 0; i < Actuators.Length; i++)
+                            {
+                                string actuatorName = Actuators[i];
+                                Console.WriteLine($"{i+1}. {actuatorName}");
+                            }
+
+                            byte iactuator = 0;
+                            Console.Write($"Select actuator (Default {iactuator+1}):");
+                            bool found = false;
+                            
+                            do
+                            {
+                                string? s = Console.ReadLine();
+                                if (string.IsNullOrEmpty(s))
+                                    break;
+                                if (byte.TryParse(s, out byte isen))
+                                {
+                                    if (isen > 0 && isen <= Actuators.Length)
+                                    {
+                                        iactuator = (byte)(isen - 1);
+                                        found = true;
+                                    }
+                                }
+                            } while (!found);
+                            string actuator = Actuators[iactuator];
+                            Console.WriteLine();
+                            Console.WriteLine($"Using Actuator: {actuator}");
+                            
+                            Console.WriteLine("Testing Actuator");
+                            switch (iactuator)
+                            {
+                                case 0:
+                                    Console.WriteLine("Connect Servo to D16");
+                                    Console.WriteLine("Press any key to continue.");
+                                    Console.ReadLine();
+                                    byte id = (byte)SoftataLib.Actuator.SetupDefault(Actuator.ActuatorDevice.Servo);
+                                    for (int i = 0; i < 2; i++)
+                                    {
+                                        SoftataLib.Actuator.ActuatorWrite(id, 90);
+                                        Console.WriteLine($"\t\t\tAngle: 90");
+                                        Thread.Sleep(2000);
+                                        SoftataLib.Actuator.ActuatorWrite(id, 180);
+                                        Console.WriteLine($"\t\t\tAngle: 180");
+                                        Thread.Sleep(2000);
+                                        SoftataLib.Actuator.ActuatorWrite(id, 90);
+                                        Console.WriteLine($"\t\t\tAngle: 90");
+                                        Thread.Sleep(2000);
+                                        SoftataLib.Actuator.ActuatorWrite(id, 0);
+                                        Console.WriteLine($"\t\t\tAngle: 0");
+                                        Thread.Sleep(2000);
+                                    }
+                                    Console.WriteLine("Connect Potentiometer to A0.");
+                                    Console.WriteLine("Press any key to continue.");
+                                    Console.ReadLine();
+                                    Softata.SoftataLib.Analog.SetAnalogPin(Analog.AnalogDevice.Potentiometer, POTENTIOMETER, 1023);
+                                    Console.WriteLine("Turn potetiometer full in one direction.");
+                                    Console.WriteLine("Press any key to continue.");
+                                    Console.ReadLine();
+                                    double max1 = Softata.SoftataLib.Analog.AnalogReadPotentiometer();
+                                    Console.WriteLine("Turn potetiometer full in other direction.");
+                                    Console.WriteLine("Press any key to continue.");
+                                    Console.ReadLine();
+                                    double max2 = Softata.SoftataLib.Analog.AnalogReadPotentiometer();
+                                    if (max1>max2)
+                                    {
+                                        double temp = max2;
+                                        max2 = max1;
+                                        max1= temp;
+                                    }
+                                    Console.WriteLine("Turn potetiometer periodically.");
+                                    Console.WriteLine("Press any key to start.");
+                                    Console.ReadLine();
+                                    Console.WriteLine("Runs for 20 steps.");
+                                    for(int i=0; i<20;i++)
+                                    {
+                                        double val = Softata.SoftataLib.Analog.AnalogReadPotentiometer();
+                                        byte angle = (byte)(180 * (val - max1) / (max2 - max1));
+                                        Console.WriteLine($"\t\t\t\tAngle: {angle}");
+                   
+                                        SoftataLib.Actuator.ActuatorWrite(id, angle);
+                                        Thread.Sleep(500);
+                                    }
+
+
+                                    break;
+                            }
+                            Console.WriteLine("Finished test");
+                            Console.WriteLine("Press any key to continue.");
+                            Console.ReadLine();
+
+
                         }
                         break;
                 }

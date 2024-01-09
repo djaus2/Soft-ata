@@ -112,7 +112,8 @@ namespace Softata
             PotLightSoundAnalog = 0xA,
             USonicRange = 0xB,
             PotRelay = 0xC,
-            MaxType = 0xD,
+            PotServo = 0xD,
+            MaxType = 0xE,
             Undefined = 0xFF
         }
         public enum PinMode

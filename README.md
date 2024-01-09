@@ -90,6 +90,8 @@ This requires a setup as per previous repositories here as well as in some blog 
 ------
 
 ## Repository Status
+- Version 2.50
+  - Added a Servo and test of it in Console app
 - Version 2.41
   - Added Potentiometer-Relay Test to Console app.
     - Also menu at start to select test.

@@ -53,8 +53,12 @@
 
 //Add other sensors/actuators here C bracketed, on end.
 #define G_SENSORS C(DHT11)C(BME280)C(URANGE)
-#define G_ACTUATORS C(BUZZER)
+#define G_ACTUATORS C(SERVO)
 #define G_DISPLAYS C(OLED096)C(LCD1602)C(NEOPIXEL)
+
+///////////////////////// A C T U A T O R S /////////////////////////////////////////////////
+
+enum GroveActuatorCmds{a_getpinsCMD, a_tbdCMD, a_setupDefaultCMD, a_setupCMD, a_writeDoubleValueCMD, a_writeByteValueCMD, a_getActuatorsCMD=255 };
 
 
 ///////////////////////// S E N S O R S /////////////////////////////////////////////////

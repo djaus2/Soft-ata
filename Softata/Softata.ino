@@ -690,7 +690,7 @@ void loop() {
                 case d_setupCMD: //Setup(params)
                   {
                     Grove_Display * grove_Display;
-                    GroveDisplay groveDisplay;
+                    //GroveDisplay groveDisplay;
                     bool _done=false;
                     switch ((GroveDisplay)other)
                     {
@@ -917,6 +917,136 @@ void loop() {
               }
             }
             break;
+          case 0xF2: //Grove Actuators
+            {
+              GroveActuator actuator = (GroveActuator)other;
+              switch (param)
+              {
+                case a_getpinsCMD: //getPins
+                {
+                  switch (actuator)
+                  {
+                    case SERVO:
+                      client.print(Grove_Servo::GetPins());
+                      break;
+                    default:
+                      client.print("Fail:Not a display");
+                      break;                 }
+                  }
+                  break;
+                case a_tbdCMD: //TBD
+                {
+                  switch (actuator)
+                  {
+                    case SERVO:
+                      //Grove_Servo aa;
+                      break;
+                    default:
+                        client.print("Fail:Not a display");
+                        break;
+                  }
+                }
+                  break;
+                case a_setupDefaultCMD: //Setupdefault
+                case a_setupCMD: //Setup(params)
+                  {
+                    Grove_Actuator * grove_Actuator;
+                    //GroveActuator groveActuator;
+                    bool _done=false;
+                    switch ((GroveActuator)other)
+                    {
+                      case SERVO:
+                        {
+                          grove_Actuator  = new Grove_Servo();
+                          _done = true;
+                        }
+                        break;
+                      // Add more here
+                      default:
+                        client.print("Fail:Not an actuator");
+                        break;
+                    }
+                    if(_done)
+                    {
+                      if(param==d_setupDefaultCMD)
+                      {
+                        if(grove_Actuator->Setup())
+                        {
+                          int index = AddActuatorToList(grove_Actuator);
+                          String msgSettingsA1 = "OK";
+                          msgSettingsA1.concat(':');
+                          msgSettingsA1.concat(index);
+                          client.print(msgSettingsA1);
+                        }
+                        else
+                          client.print("Fail:Actuator.Setup");
+                        }
+                      else
+                      {
+                        byte settings[1];
+                        settings[0] = pin;
+                        if(grove_Actuator->Setup(settings,1))
+                        {
+                          int index = AddActuatorToList(grove_Actuator);
+                          String msgSettingsA2 = "OK";
+                          msgSettingsA2.concat(':');
+                          msgSettingsA2.concat(index);
+                          client.print(msgSettingsA2);
+                        }
+                        else
+                          client.print("Fail:Actuator.Setup");
+                      }
+                    }
+                  }
+                  break;                                       
+                case a_writeDoubleValueCMD:
+                {
+                  int index = other;
+                  Grove_Actuator * grove_Actuator = GetActuatorFromList(index);
+                  if(otherData[0]<1)
+                  {
+                    client.print("Fail:Actuator-WriteDoubleValue needs (a value");
+                  }
+                  else
+                  {
+                    double value = (double)otherData[1];
+                    if(grove_Actuator->Write(value,index))
+                      client.print("OK:Actuator-WriteDoubleValue");
+                    else
+                      client.print("Fail:Actuator-WriteDoubleValue");
+                  }
+                }
+                break;
+              case a_writeByteValueCMD:
+                {
+                  int index = other;
+                  Grove_Actuator * grove_Actuator = GetActuatorFromList(index);
+                  if(otherData[0]<1)
+                  {
+                    client.print("Fail:Actuator-WriteIntValue needs (a value");
+                  }
+                  else
+                  {
+                    byte value = otherData[1];
+                    if(grove_Actuator->Write(value,index))
+                      client.print("OK:Actuator-WriteIntValue");
+                    else
+                      client.print("Fail:Actuator-WriteIntValue");
+                  }
+                }
+                break;            
+                case a_getActuatorsCMD:
+                  {
+                    String msg = String("OK:");
+                    msg.concat(Grove_Actuator::GetListof());
+                    client.print(msg);
+                  }
+                  break;
+                
+              }
+            }
+            break;        
+ 
           default:
             Serial.println("Unknown cmd");
             client.print("Unknown cmd");

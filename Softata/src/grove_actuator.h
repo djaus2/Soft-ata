@@ -49,9 +49,9 @@ class Grove_Actuator: public Grove
       virtual bool Setup();
       virtual bool Setup(byte * settings, byte numSettings);
       // Index for if there are an array of actuators here.
-      virtual bool Write(double value, int index=0);
-      virtual bool Write(int value, int index=0);
-      virtual bool Set(bool state,int index=0);
+      virtual bool Write(double value, int index);
+      virtual bool Write(int value, int index);
+      virtual bool Set(bool state,int index);
       virtual bool Toggle(int index = 0);
       DeviceType deviceType = actuator;
     protected:
@@ -59,3 +59,39 @@ class Grove_Actuator: public Grove
       // Use following to indicate an error
 };
 #endif
+
+#ifndef SERVOH
+#define SERVOH
+
+#include <Servo.h>
+
+#define DEFAULT_SERVO_PIN 16
+#define MAX_PW 2400
+#define MIN_PW 544
+#define PERIOD 20000
+
+class Grove_Servo: public Grove_Actuator
+{
+    public:
+      Grove_Servo();
+      Grove_Servo(int pin);
+      static arduino::String GetPins()
+      {
+        return "16";
+      }
+      virtual bool Setup();
+      virtual bool Setup(byte * settings, byte numSettings);
+
+      // Index for if there are an array of actuators here.
+      virtual bool Write(double value, int index);
+      virtual bool Write(int value, int index);
+      virtual bool Set(bool state,int index);
+      virtual bool Toggle(int index );
+      DeviceType deviceType = actuator;
+    protected:
+      virtual bool SetupServo(int pin, int min, int max, int period);
+      int num_properties=0;
+      Servo myservo;
+};
+#endif
+
