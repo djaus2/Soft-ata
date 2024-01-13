@@ -7,6 +7,10 @@ Console app included with Blazor and MAUI apps coming soon.
   
 _Soft-ata rather than firm-ata!_ 
 
+# Coming
+
+Full API documentatation, how to add devices, and a call-to-arms!
+
 # Grove API
 
 - Grove Sensors DHT11 and BME280 implemented
