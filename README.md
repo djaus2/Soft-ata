@@ -7,9 +7,11 @@ Console app included with Blazor and MAUI apps coming soon.
   
 _Soft-ata rather than firm-ata!_ 
 
-# Coming
+# API Documentation
 
-Full API documentatation, how to add devices, and a call-to-arms!
+Full API documentatation [here](https://davidjones.sportronics.com.au/cats/softata/)
+
+- Coming: How to add devices, and a call-to-arms!
 
 # Grove API
 
