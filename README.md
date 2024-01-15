@@ -9,7 +9,7 @@ _Soft-ata rather than firm-ata!_
 
 # API Documentation
 
-Full API documentatation [here](https://davidjones.sportronics.com.au/cats/softata/)
+Full API documentation [here](https://davidjones.sportronics.com.au/cats/softata/)
 
 - Coming: How to add devices, and a call-to-arms!
 
