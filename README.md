@@ -193,9 +193,8 @@ The test app has three options:
 
 ## Roadmap
 
-- Implement the other capabilities in the Arduino app, etc
 - Azure IoT Hub connectivity
-- BLE
+- Second core, currently flashes inbuilt LED. Add periodic read sensors and send, eg as Telemetry to that.
 - _More:_ See the Blog post 
 
 ------
