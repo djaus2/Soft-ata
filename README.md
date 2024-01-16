@@ -58,6 +58,7 @@ Full API documentation [here](https://davidjones.sportronics.com.au/cats/softata
 ## Latest
 
 _See **Repository Status** below._
+- Can get Json string from sensors.
 - Added Servo. Console app includes Servo-Potentiometer tracker.
 - Added Potentiometer-Relay Test to Console app.
   - Also menu at start to select test.
