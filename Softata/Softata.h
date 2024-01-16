@@ -63,7 +63,7 @@ enum GroveActuatorCmds{a_getpinsCMD, a_tbdCMD, a_setupDefaultCMD, a_setupCMD, a_
 
 ///////////////////////// S E N S O R S /////////////////////////////////////////////////
 
-enum GroveSensorCmds{s_getpinsCMD, s_getPropertiesCMD, s_setupdefaultCMD, s_setupCMD, s_readallCMD, s_readCMD, s_getSensorsCMD=255 };
+enum GroveSensorCmds{s_getpinsCMD, s_getPropertiesCMD, s_setupdefaultCMD, s_setupCMD, s_readallCMD, s_readCMD, s_getTelemetry, s_getSensorsCMD=255 };
 
 #define DHT11_PROPERTIES "Temperature,Humidity"
 #define BME280_PROPERTIES "Temperature,Pressure,Humidity"
@@ -130,5 +130,16 @@ enum NEOPIXELMiscCmds {setpixelcolor,setpixelcolorAll,setpixelcolorOdds,setpixel
 enum OLEDMiscCmds {drawCircle,drawFrame,OLEDMiscCmds_MAX};
 
 enum range_units {mm,cm,inch};
+
+///////////////////////////////////
+
+typedef void(*call_back)(void);
+
+struct CallbackInfo
+{
+  unsigned long next;
+  unsigned long period;
+  call_back back;
+};
 
 #endif

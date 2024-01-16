@@ -53,6 +53,7 @@ class Grove_Sensor: public Grove
       virtual bool Setup();
       virtual bool Setup(byte * settings, byte numSettings=1);
       virtual bool ReadAll(double * values);
+      virtual String GetTelemetry();
       virtual double Read(int property);
       DeviceType deviceType = sensor;
       GroveSensor sensorType = SENSOR_NONE;

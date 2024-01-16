@@ -39,6 +39,26 @@ bool Grove_URangeSensor::ReadAll(double* values)
     return true;
 }
 
+String Grove_URangeSensor::GetTelemetry()
+{
+    double values[3];
+    if(ReadAll(values))
+    {
+        String msg ="{\"MeasureInMillimeters\":";
+        msg.concat(values[0]);
+        msg.concat(',');
+        msg.concat("\"MeasureInCentimeters\":");
+        msg.concat(values[1]);
+        msg.concat(',');
+        msg.concat("\"MeasureInInches\":");
+        msg.concat(values[2]);
+        msg.concat('}');
+        return msg;
+    }
+    else
+        return "ERRORDBL";
+}
+
 double Grove_URangeSensor::Read(int property)
 {
     if(property==0)

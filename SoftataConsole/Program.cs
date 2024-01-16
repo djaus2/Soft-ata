@@ -20,7 +20,7 @@ namespace FirmataBasic
     {
         // Set the same as Arduino:
         const int port = 4242;
-        const string ipaddressStr = "192.168.0.11";
+        const string ipaddressStr = "192.168.0.9";
 
         // Configure hardware pin connections thus:
         static byte LED = 12;
@@ -74,7 +74,7 @@ namespace FirmataBasic
                     {
                         if (icmd > 0 && icmd <= num)
                         {
-                            Testtype = (CommandType)(num - 1);
+                            Testtype = (CommandType)(icmd - 1);
                             foundTestType = true;
                         }
                     }
@@ -242,27 +242,39 @@ namespace FirmataBasic
                                 Console.ReadLine();
                                 Console.WriteLine();
 
-                                while (true) { 
-                                    double[]? values = SoftataLib.Sensor.ReadAll((byte)sensorLinkedListIndex);
-                                    if (values == null)
-                                        Console.WriteLine($"{sensor} readAll() failed");
+                                //////////////////////////////////
+                                bool getJson = true;
+                                /////////////////////////////////
+                                while (true)
+                                {
+                                    if (getJson)
+                                    {
+                                        string json = SoftataLib.Sensor.GetTelemetry((byte)sensorLinkedListIndex);
+                                        Console.WriteLine($"json {json}");
+                                    }
                                     else
                                     {
-                                        Console.WriteLine($"{sensor} readAll OK");
-                                        for (int p = 0; p < properties.Length; p++)
-                                            Console.WriteLine($"\t\t{sensor} {properties[p]} = {values[p]}");
-                                    }
-                                    Console.WriteLine();
-                                    for (byte p = 0; p < properties.Length; p++)
-                                    {
-                                        double? value = SoftataLib.Sensor.Read((byte)sensorLinkedListIndex, p);
-                                        if (value == null)
-                                            Console.WriteLine($"{sensor} read() failed");
+                                        double[]? values = SoftataLib.Sensor.ReadAll((byte)sensorLinkedListIndex);
+                                        if (values == null)
+                                            Console.WriteLine($"{sensor} readAll() failed");
                                         else
-                                            Console.WriteLine($"\t\t\t{sensor} {properties[p]} = {value}");
+                                        {
+                                            Console.WriteLine($"{sensor} readAll OK");
+                                            for (int p = 0; p < properties.Length; p++)
+                                                Console.WriteLine($"\t\t{sensor} {properties[p]} = {values[p]}");
+                                        }
                                         Console.WriteLine();
+                                        for (byte p = 0; p < properties.Length; p++)
+                                        {
+                                            double? value = SoftataLib.Sensor.Read((byte)sensorLinkedListIndex, p);
+                                            if (value == null)
+                                                Console.WriteLine($"{sensor} read() failed");
+                                            else
+                                                Console.WriteLine($"\t\t\t{sensor} {properties[p]} = {value}");
+                                            Console.WriteLine();
+                                        }
+                                        Thread.Sleep(6000);
                                     }
-                                    Thread.Sleep(6000);
                                 }
                             }
                         }

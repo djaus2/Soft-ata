@@ -27,6 +27,14 @@ public:
 protected:
 };
 
+
+class Core2SensorListNode
+{
+public:
+    CallbackInfo * callbackInfo = NULL;
+protected:
+};
+
 ////////////////////////////////////////////////////////////////////////////////////////
 
 SensorListNode * SensorList[MAX_SENSORS];
@@ -194,6 +202,78 @@ int InitActuatorList()
   }
   countActuators=0;
   return MAX_ACTUATORS;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+
+
+Core2SensorListNode * Core2SensorList[MAX_SENSORS];
+int countCore2Sensors =0;
+
+int AddSensorToCore2List(CallbackInfo * callbackInfo)
+{
+  if(countCore2Sensors < (MAX_SENSORS-1))
+  {
+    Core2SensorList[countCore2Sensors++]->callbackInfo = callbackInfo;
+    return (countCore2Sensors-1);
+  }
+  else
+  {
+    for(int i=0; i<MAX_SENSORS; i++)
+    {
+      if(Core2SensorList[i]->callbackInfo == NULL)
+      {
+        Core2SensorList[i]->callbackInfo = callbackInfo;
+        return i;
+      }
+    }
+  }
+  return -1;
+}
+
+bool RemoveSensorFromCore2List(int index)
+{
+  if((index>=0) && (index < MAX_SENSORS))
+  {
+    if(Core2SensorList[index]->callbackInfo != NULL)
+    {
+      free(Core2SensorList[index]->callbackInfo);
+    }
+    Core2SensorList[index]->callbackInfo= NULL;
+    return true;
+  }
+  else
+    return false;
+}
+
+CallbackInfo * GetCallbackInfoFromCore2List(int index)
+{
+  if(Core2SensorList[index]->callbackInfo != NULL)
+    return Core2SensorList[index]->callbackInfo;
+  else
+    return NULL;
+}
+
+bool SetCallbackInfoInCore2List(int index, CallbackInfo * info)
+{
+  if((index>=0) && (index < MAX_SENSORS))
+  {
+    Core2SensorList[index]->callbackInfo = info;
+    return true;
+  }
+  else
+    return false;
+}
+
+
+int InitCore2SensorList()
+{
+  for(int i=0; i<MAX_SENSORS; i++)
+  {
+    Core2SensorList[i]= new Core2SensorListNode() ;
+  }
+  countCore2Sensors=0;
+  return MAX_SENSORS;
 }
 
 #endif

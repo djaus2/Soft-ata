@@ -20,7 +20,7 @@ namespace Softata
         public const byte nullData = 0xfe;
 
         public static  int port { get; set; } = 4242;
-        public static string ipAddresStr { get; set; } = "192.168.0.11";
+        public static string ipAddresStr { get; set; } = "192.168.0.9";
 
         private static bool Inited = false;
         public  static void Init(string _ipAddresStr, int _port)

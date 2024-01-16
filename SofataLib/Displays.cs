@@ -95,7 +95,7 @@ namespace Softata
             public static bool WriteString(byte linkedListNo, string msg)
             {
                 byte[] bytes = Encoding.ASCII.GetBytes(msg);
-                byte[] bytes2 = bytes.Append((byte) 0).ToArray<byte>(); //Need to append 0
+                byte[] bytes2 = bytes.Append((byte)0).ToArray<byte>(); //Need to append 0
                 byte[] data = bytes2.Prepend((byte)bytes2.Length).ToArray<byte>(); //Prepend string length +1
                 char[] cg = data.Select(b => (char)b).ToArray();
                 string result = SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.writestrngCMD, "OK:", linkedListNo, data);
@@ -107,7 +107,7 @@ namespace Softata
 
             public static bool WriteString(byte linkedListNo, int x, int y, string msg)
             {
-                byte[] cursor = new byte[] {(byte)x, (byte)y };
+                byte[] cursor = new byte[] { (byte)x, (byte)y };
                 byte[] bytes = Encoding.ASCII.GetBytes(msg);
                 byte[] bytes1 = cursor.Concat(bytes).ToArray<byte>();
                 byte[] bytes2 = bytes1.Append((byte)0).ToArray<byte>(); //Need to append 0
@@ -121,9 +121,11 @@ namespace Softata
                     return false;
             }
 
- 
-            enum OLEDMiscCmds { drawCircle, drawFrame, OLEDMiscCmds_MAX };
 
+            public static class Oled096
+            { 
+                enum OLEDMiscCmds { drawCircle, drawFrame, OLEDMiscCmds_MAX };
+            }
             public static class Neopixel
             {
                 // Misc commands

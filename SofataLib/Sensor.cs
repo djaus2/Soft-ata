@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 
 namespace Softata
 {
-    public enum GroveSensorCmds{getpins, getProperties, setupdefault, setup, readall, read, getSensors=255 }
+    public enum GroveSensorCmds{getpins, getProperties, setupdefault, setup,  readall, read, getTelemetry, getSensors =255,
+    }
     // getpins, getProperties are specific sensor class static commands so send sensor type as other rather than linkedListNo
     // getSensors is a static sensor class command.
     public partial class SoftataLib
@@ -65,6 +66,12 @@ namespace Softata
                 {
                     return null;
                 }
+            }
+
+            public static string GetTelemetry(byte linkedListNo)
+            {
+                string result = SendMessage(Commands.groveSensor, 0, (byte)GroveSensorCmds.getTelemetry, "OK:", linkedListNo);
+                return result;
             }
 
             public static double? Read(byte linkedListNo, byte property)

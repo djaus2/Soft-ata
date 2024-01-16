@@ -18,7 +18,7 @@
 
 // Use one or other in testing
 // Only used when Serial1/2 Setup is called from client.
-// Commment out both normally.
+// Comment out both normally.
 //#define SERIAL1LOOPBACK
 //#define SERIAL2LOOPBACK
 
@@ -207,7 +207,7 @@ void loop() {
                   Serial.print("pinMode:");
                   Serial.println(param);
                   pinMode(pin, (PinMode)param);
-                  client.print("OK");
+                  client.print("OK:");
                   break;
                 case 0xD2:
                   Serial.println("digitalRead");
@@ -629,6 +629,16 @@ void loop() {
                     }
                   }
                   break;
+                 case s_getTelemetry:
+                  {
+                    int index = other;
+                    Grove_Sensor * grove_Sensor = GetSensorFromList(index);
+                    String json = grove_Sensor->GetTelemetry();
+                    String ret = "OK:";
+                    ret.concat(json);
+                    client.print(ret);
+                  }
+                  break;                 
                 case s_getSensorsCMD:
                   {
                     String msg = String("OK:");
@@ -1062,19 +1072,67 @@ void loop() {
   client.flush();
 }
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <SerialBT.h>
 
+bool Led_State = false;
+
+
+void call_callback_func(void(*call_back)(void))
+{
+    call_back();
+}
+
+int numSensors =0;
+int AddCallBack(CallbackInfo * info)
+{
+  info->next = millis() + info->period;
+  int LEDListIndex=AddSensorToCore2List(info);
+  numSensors = LEDListIndex +1;
+  return LEDListIndex;
+}
+
+void Toggle_InbuiltLED()
+{
+    Led_State = !Led_State;
+    digitalWrite(LED_BUILTIN, (PinStatus)Led_State);
+}
+
+struct CallbackInfo InbuiltLED;
+int LEDListIndex = -1;
 
 void setup1() {
-  // initialize digital pin LED_BUILTIN as an output.
+  numSensors=0;
+
+  SerialBT.begin();
+
   pinMode(LED_BUILTIN, OUTPUT);
+  digitalWrite(LED_BUILTIN, LOW);
+  Led_State = false;
+
+  InitCore2SensorList();
+  InbuiltLED.period = 1000;
+  InbuiltLED.back = Toggle_InbuiltLED;
+  int LEDListIndex = AddCallBack(&InbuiltLED);
+
+  while(!Serial);
 }
 
 void loop1() {
-  digitalWrite(LED_BUILTIN, HIGH);  // turn the LED on (HIGH is the voltage level)
-  delay(1000);                      // wait for a second
-  digitalWrite(LED_BUILTIN, LOW);   // turn the LED off by making the voltage LOW
-  delay(1000);                      // wait for a second
+  for (int i=0; i< numSensors;i++)
+  {
+    CallbackInfo * info = GetCallbackInfoFromCore2List(i);
+    unsigned long currentTime = millis();             
+    if ( currentTime > info->next )
+    {
+        call_callback_func(info->back);
+        info->next += info->period;
+    }
+  }
 }
+
+
 
 
 

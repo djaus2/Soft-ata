@@ -121,12 +121,29 @@ int Pins[] = {PINS};
           break;
       }
       if(!OK)
-        return ERRORDBL;
+        return false;
       // DISPLAY DATA
       values[0] = DHT.temperature;
       values[1] = DHT.humidity;
       return true;
     }
+
+    String Grove_DHT11::GetTelemetry()
+    {
+      double values[2];
+      if(ReadAll(values))
+      {
+        String msg ="{\"temperature\":";
+        msg.concat(values[0]);
+        msg.concat(',');
+        msg.concat("\"humidity\":");
+        msg.concat(values[1]);
+        msg.concat('}');
+        return msg;
+      }
+      else
+        return "ERRORDBL";
+}
 
     double Grove_DHT11::Read(int property)
     {

@@ -114,6 +114,27 @@ bool Grove_BME280::ReadAll(double * values)
     return true;
 }
 
+
+String Grove_BME280::GetTelemetry()
+{
+  double values[3];
+  if (ReadAll(values))
+  {
+   String msg ="{\"temperature\":";
+    msg.concat(values[0]);
+    msg.concat(',');
+    msg.concat("\"pressure\":");
+    msg.concat(values[1]);
+    msg.concat(',');
+    msg.concat("\"humidity\":");
+    msg.concat(values[2]);
+    msg.concat('}');
+    return msg;
+  }
+  else
+    return "ERRORDBL";
+}
+
 double Grove_BME280::Read(int property)
 {
 
