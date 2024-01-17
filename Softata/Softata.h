@@ -1,7 +1,9 @@
 #ifndef SOFTATAH
 #define SOFTATAH
 
-#define APP_VERSION "2.50"
+
+
+#define APP_VERSION "3.00"
 
 //#define RPI_PICO_DEFAULT
 #define GROVE_RPI_PICO_SHIELD
@@ -63,7 +65,7 @@ enum GroveActuatorCmds{a_getpinsCMD, a_tbdCMD, a_setupDefaultCMD, a_setupCMD, a_
 
 ///////////////////////// S E N S O R S /////////////////////////////////////////////////
 
-enum GroveSensorCmds{s_getpinsCMD, s_getPropertiesCMD, s_setupdefaultCMD, s_setupCMD, s_readallCMD, s_readCMD, s_getTelemetry, s_getSensorsCMD=255 };
+enum GroveSensorCmds{s_getpinsCMD, s_getPropertiesCMD, s_setupdefaultCMD, s_setupCMD, s_readallCMD, s_readCMD, s_getTelemetry,s_sendTelemetryBT, s_sendTelemetryToIoTHub, s_getSensorsCMD=255 };
 
 #define DHT11_PROPERTIES "Temperature,Humidity"
 #define BME280_PROPERTIES "Temperature,Pressure,Humidity"
@@ -133,13 +135,19 @@ enum range_units {mm,cm,inch};
 
 ///////////////////////////////////
 
-typedef void(*call_back)(void);
+
+typedef String(*call_back)(void);
+
 
 struct CallbackInfo
 {
   unsigned long next;
   unsigned long period;
+  int SensorIndex;
+  bool isSensor; // False for blinking LED
+  bool sendBT;   //Alt: IoT Hub, coming
   call_back back;
 };
+
 
 #endif

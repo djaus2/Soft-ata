@@ -58,11 +58,8 @@ Full API documentation [here](https://davidjones.sportronics.com.au/cats/softata
 ## Latest
 
 _See **Repository Status** below._
-- Can get Json string from sensors.
+- Can get Json string from sensors AND Stream Telelemtery over Bluetooth
 - Added Servo. Console app includes Servo-Potentiometer tracker.
-- Added Potentiometer-Relay Test to Console app.
-  - Also menu at start to select test.
-- Added Grove Ultrasonic Ranger sensor
 - _More:_ See Repository Status
 
 ## Blog Post
@@ -104,6 +101,11 @@ This requires a setup as per previous repositories here as well as in some blog 
 ------
 
 ## Repository Status
+- Version 3.00
+  - Added Telemetry to Sensors
+    - Can send all properties as Json string
+    - Can also stream this continously, once started over Bluetooth to Serial Bluetooth terminal.
+    - _Coming:_ Stream to Azure IoT Hub
 - Version 2.50
   - Added a Servo and test of it in Console app
 - Version 2.41

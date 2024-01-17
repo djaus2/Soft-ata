@@ -15,6 +15,8 @@
 
 #include "devicesLists.h"
 
+struct CallbackInfo  BME280CBInfo;
+
 
 // Use one or other in testing
 // Only used when Serial1/2 Setup is called from client.
@@ -629,7 +631,7 @@ void loop() {
                     }
                   }
                   break;
-                 case s_getTelemetry:
+                case s_getTelemetry:
                   {
                     int index = other;
                     Grove_Sensor * grove_Sensor = GetSensorFromList(index);
@@ -638,7 +640,31 @@ void loop() {
                     ret.concat(json);
                     client.print(ret);
                   }
-                  break;                 
+                  break; 
+                case s_sendTelemetryBT:
+                  {
+                    int index = other;
+                    BME280CBInfo.period=5000;
+                    BME280CBInfo.isSensor=true;
+                    BME280CBInfo.sendBT=true;
+                    BME280CBInfo.SensorIndex = index;
+                    int LEDListIndex = AddCallBack(&BME280CBInfo);
+                    String msg = String("OK:");
+                    client.print(msg);
+                  }
+                  break; 
+                case s_sendTelemetryToIoTHub:
+                  {
+                    int index = other;
+                    BME280CBInfo.period=5000;
+                    BME280CBInfo.isSensor=true;
+                    BME280CBInfo.sendBT=true;
+                    BME280CBInfo.SensorIndex = index;
+                    //int LEDListIndex = AddCallBack(&BME280CBInfo); //2Do
+                    String msg = String("OK:");
+                    client.print(msg);
+                  } 
+                  break;             
                 case s_getSensorsCMD:
                   {
                     String msg = String("OK:");
@@ -1079,9 +1105,9 @@ void loop() {
 bool Led_State = false;
 
 
-void call_callback_func(void(*call_back)(void))
+String call_callback_func(String(*call_back)(void))
 {
-    call_back();
+    return call_back();
 }
 
 int numSensors =0;
@@ -1093,13 +1119,18 @@ int AddCallBack(CallbackInfo * info)
   return LEDListIndex;
 }
 
-void Toggle_InbuiltLED()
+String Toggle_InbuiltLED()
 {
     Led_State = !Led_State;
     digitalWrite(LED_BUILTIN, (PinStatus)Led_State);
+    if(Led_State)
+      return "ON";
+    else
+      return "OFF";
 }
 
 struct CallbackInfo InbuiltLED;
+
 int LEDListIndex = -1;
 
 void setup1() {
@@ -1112,7 +1143,8 @@ void setup1() {
   Led_State = false;
 
   InitCore2SensorList();
-  InbuiltLED.period = 1000;
+  InbuiltLED.period = 10000;
+  InbuiltLED.isSensor = false;
   InbuiltLED.back = Toggle_InbuiltLED;
   int LEDListIndex = AddCallBack(&InbuiltLED);
 
@@ -1126,8 +1158,38 @@ void loop1() {
     unsigned long currentTime = millis();             
     if ( currentTime > info->next )
     {
-        call_callback_func(info->back);
-        info->next += info->period;
+      if(!info->isSensor)
+      {
+        String res = call_callback_func(info->back);
+        if(!(res == String("")))
+        {
+          //Fwd json
+          SerialBT.println(res);
+        }
+      }
+      else if (info->sendBT)
+      {
+        int index = info->SensorIndex;
+        Grove_Sensor * grove_Sensor = GetSensorFromList(index);
+        String res = grove_Sensor->GetTelemetry();
+        if(!(res == String("")))
+        {
+          //Fwd json
+          SerialBT.println(res);
+        }
+      }
+      else if (!info->sendBT) 
+      {
+        int index = info->SensorIndex;
+        Grove_Sensor * grove_Sensor = GetSensorFromList(index);
+        String res = grove_Sensor->GetTelemetry();
+        if(!(res == String("")))
+        {
+          //Fwd json
+          //2DO send to Azure IoT Hub
+        }
+      }
+      info->next += info->period;
     }
   }
 }

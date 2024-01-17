@@ -243,14 +243,77 @@ namespace FirmataBasic
                                 Console.WriteLine();
 
                                 //////////////////////////////////
-                                bool getJson = true;
+                                int sensorMode = 1;
                                 /////////////////////////////////
-                                while (true)
+                                Console.WriteLine("(START) SELECT SENSOR MODE");
+                                Console.WriteLine("1. Read Sensor Values.");
+                                Console.WriteLine("2. Get Telemetry");
+                                Console.WriteLine("3. Start Stream Telemetry to Bluetooth");
+                                Console.WriteLine("Default 1.");
+                                Console.Write("Selection:");
+                                do
                                 {
-                                    if (getJson)
+                                    string? s = Console.ReadLine();
+                                    if (byte.TryParse(s, out byte mode))
+                                    {
+                                        if (mode > 0 && mode <= 3)
+                                        {
+                                            sensorMode = (byte)mode;
+                                            found = true;
+                                        }
+                                    }
+                                } while (!found);
+                                bool showMenu = false;
+                                bool keepRunning = true;
+                                while (keepRunning)
+                                {
+                                    if (showMenu)
+                                    {
+                                        sensorMode = 1;
+                                        Console.WriteLine("SELECT SENSOR MODE");
+                                        Console.WriteLine("1. Read Sensor Values.");
+                                        Console.WriteLine("2. Get Telemetry");
+                                        Console.WriteLine("3. Quit");
+                                        Console.WriteLine("4. Stop Stream Telemetry to Bluetooth (Not available yet)");
+                                        Console.WriteLine("Default 1.");
+
+                                        Console.Write("Selection:");
+                                        do
+                                        {
+                                            string? s = Console.ReadLine();
+                                            if (byte.TryParse(s, out byte mode))
+                                            {
+                                                if (mode > 0 && mode <= 3)
+                                                {
+                                                    sensorMode = (byte)mode;
+                                                    found = true;
+                                                    if (sensorMode == 3)
+                                                    {
+                                                        sensorMode = 255;
+                                                        keepRunning = false;
+                                                    }
+                                                }
+                                            }
+                                        } while (!found);
+                                        showMenu = false;
+                                    }
+                                    if (sensorMode == 255)
+                                    {
+                                        Console.WriteLine("Quitting app. Please wait.");
+                                    }
+                                    else if (sensorMode ==2)
                                     {
                                         string json = SoftataLib.Sensor.GetTelemetry((byte)sensorLinkedListIndex);
                                         Console.WriteLine($"json {json}");
+                                    }
+                                    else if (sensorMode == 3)
+                                    {
+                                        string json = SoftataLib.Sensor.SendTelemetry((byte)sensorLinkedListIndex);
+                                        if (json == "")
+                                            Console.WriteLine($"Streaming to BT started.");
+                                        else
+                                            Console.WriteLine($"Streaming to BT failed to start.");
+                                        showMenu = true;
                                     }
                                     else
                                     {
@@ -273,7 +336,7 @@ namespace FirmataBasic
                                                 Console.WriteLine($"\t\t\t{sensor} {properties[p]} = {value}");
                                             Console.WriteLine();
                                         }
-                                        Thread.Sleep(6000);
+                                        Thread.Sleep(5000);
                                     }
                                 }
                             }
