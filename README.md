@@ -24,6 +24,8 @@ Full API documentation [here](https://davidjones.sportronics.com.au/cats/softata
   - bool Setup(int[] settings)
   - bool ReadAll(double[] values)
   - double Read(enum property)
+  - String GetTelemetry(); 
+  - Also can iniate BT Stream of telemetry,
 
 - Grove Displays FreeNove(Adafruit) Neopixel8 and LCD1602 implemented
     - Grove OLE096 coming
@@ -59,7 +61,7 @@ Full API documentation [here](https://davidjones.sportronics.com.au/cats/softata
 
 _See **Repository Status** below._
 - Can get Json string from sensors AND Stream Telelemtery over Bluetooth
-- Added Servo. Console app includes Servo-Potentiometer tracker.
+  - Can pause and continure BT stream
 - _More:_ See Repository Status
 
 ## Blog Post
@@ -101,6 +103,10 @@ This requires a setup as per previous repositories here as well as in some blog 
 ------
 
 ## Repository Status
+- Version 3.10
+  - Code improvement for Telemetry
+  - Can pause of continue BT Telemetry stream.
+  - Sensor UI improved.
 - Version 3.00
   - Added Telemetry to Sensors
     - Can send all properties as Json string

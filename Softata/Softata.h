@@ -3,7 +3,7 @@
 
 
 
-#define APP_VERSION "3.00"
+#define APP_VERSION "3.10"
 
 //#define RPI_PICO_DEFAULT
 #define GROVE_RPI_PICO_SHIELD
@@ -65,7 +65,7 @@ enum GroveActuatorCmds{a_getpinsCMD, a_tbdCMD, a_setupDefaultCMD, a_setupCMD, a_
 
 ///////////////////////// S E N S O R S /////////////////////////////////////////////////
 
-enum GroveSensorCmds{s_getpinsCMD, s_getPropertiesCMD, s_setupdefaultCMD, s_setupCMD, s_readallCMD, s_readCMD, s_getTelemetry,s_sendTelemetryBT, s_sendTelemetryToIoTHub, s_getSensorsCMD=255 };
+enum GroveSensorCmds{s_getpinsCMD, s_getPropertiesCMD, s_setupdefaultCMD, s_setupCMD, s_readallCMD, s_readCMD, s_getTelemetry,s_sendTelemetryBT, s_sendTelemetryToIoTHub, s_pause_sendTelemetry, s_continue_sendTelemetry, s_getSensorsCMD=255 };
 
 #define DHT11_PROPERTIES "Temperature,Humidity"
 #define BME280_PROPERTIES "Temperature,Pressure,Humidity"
@@ -146,8 +146,12 @@ struct CallbackInfo
   int SensorIndex;
   bool isSensor; // False for blinking LED
   bool sendBT;   //Alt: IoT Hub, coming
+  bool isRunning; // Can stop and continue Telemetry
   call_back back;
 };
 
+int AddCallBack(CallbackInfo * info);
+bool PauseTelemetrySend(int index);
+bool ContinueTelemetrySend(int index);
 
 #endif

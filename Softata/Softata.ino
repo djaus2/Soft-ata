@@ -643,28 +643,112 @@ void loop() {
                   break; 
                 case s_sendTelemetryBT:
                   {
+                    //TelemetryStreamNo
                     int index = other;
-                    BME280CBInfo.period=5000;
-                    BME280CBInfo.isSensor=true;
-                    BME280CBInfo.sendBT=true;
-                    BME280CBInfo.SensorIndex = index;
-                    int LEDListIndex = AddCallBack(&BME280CBInfo);
-                    String msg = String("OK:");
+                    SensorListNode * node = GetNode(index);
+                    String msg;
+                    if(node != NULL)
+                    {
+                      Grove_Sensor * grove_Sensor  = node->Sensor;
+                      // Note: Each sensor instance has a private CallbackInfo property
+                      CallbackInfo * info = grove_Sensor->GetCallbackInfo();
+                      if(info==NULL)
+                      {
+                        Serial.println("IsNull");
+                      }
+                      else
+                      {
+
+                      }
+
+                      info->period=5000;
+                      info->isSensor=true;
+                      info->sendBT=true;
+                      info->SensorIndex = index;
+                      int LEDListIndex = AddCallBack(info);
+                      node->TelemetryStreamNo = LEDListIndex;
+                      msg = String("OK:");
+                      msg.concat(LEDListIndex);
+                    }
+                    else
+                    {
+                      msg=String("Fail:SendTelemetryBT-Sensor not found.");
+                    }
                     client.print(msg);
                   }
                   break; 
                 case s_sendTelemetryToIoTHub:
                   {
                     int index = other;
-                    BME280CBInfo.period=5000;
-                    BME280CBInfo.isSensor=true;
-                    BME280CBInfo.sendBT=true;
-                    BME280CBInfo.SensorIndex = index;
-                    //int LEDListIndex = AddCallBack(&BME280CBInfo); //2Do
-                    String msg = String("OK:");
+                    SensorListNode * node = GetNode(index);                   
+                    String msg;
+                    if(node != NULL)
+                    {
+                      Grove_Sensor * grove_Sensor  = node->Sensor;
+                      // Note: Each sensor instance has a private CallbackInfo property
+                      CallbackInfo * info = grove_Sensor->GetCallbackInfo();
+                      info->period=5000;
+                      info->isSensor=true;
+                      info->sendBT=false;
+                      info->SensorIndex = index;
+                      int LEDListIndex = AddCallBack(info); //2 Finish
+                      node->TelemetryStreamNo = LEDListIndex;
+                      String msg = String("OK:");
+                      msg.concat(LEDListIndex);
+                    }
+                    else
+                    {
+                      msg=String("Fail:SendTelemetryToIoTHub-Sensor not found");
+                    }
                     client.print(msg);
                   } 
-                  break;             
+                  break; 
+                case s_pause_sendTelemetry:
+                  {
+                    int index = other;
+                    SensorListNode * node = GetNode(index);
+                    String msg;
+                    if(node != NULL)
+                    {
+                      if(PauseTelemetrySend(node->TelemetryStreamNo))
+                      {
+                        msg = String("OK:");
+                      }
+                      else
+                      {
+                        msg = String("Fail:Pause_sendTelemetry()-Pause error");
+                      }
+                    }
+                    else
+                    {
+                      msg = String("Fail:Pause_sendTelemetry()-Sensor not found");
+                    }
+                    client.print(msg);
+                  } 
+                  break;  
+                case s_continue_sendTelemetry:
+                  {
+                    int index = other;
+                    SensorListNode * node = GetNode(index);
+                    String msg;
+                    if(node != NULL)
+                    {
+                      if(ContinueTelemetrySend(node->TelemetryStreamNo))
+                      {
+                        msg = String("OK:");
+                      }
+                      else
+                      {
+                        msg = String("Fail:Pause_sendTelemetry()-Continue error");
+                      }
+                    }
+                    else
+                    {
+                      msg = String("Fail:Pause_sendTelemetry()-Sensor not found");
+                    }
+                    client.print(msg);
+                  } 
+                  break;         
                 case s_getSensorsCMD:
                   {
                     String msg = String("OK:");
@@ -1113,10 +1197,35 @@ String call_callback_func(String(*call_back)(void))
 int numSensors =0;
 int AddCallBack(CallbackInfo * info)
 {
-  info->next = millis() + info->period;
+  info->isRunning = true;
+  info->next = millis() + info->period;;
   int LEDListIndex=AddSensorToCore2List(info);
   numSensors = LEDListIndex +1;
   return LEDListIndex;
+}
+
+bool PauseTelemetrySend(int index)
+{
+  CallbackInfo * info = GetCallbackInfoFromCore2List(index);
+  if (info!= NULL)
+  {
+    info->isRunning = false;
+    return true;
+  }
+  else
+    return false;
+}
+
+bool ContinueTelemetrySend(int index)
+{
+  CallbackInfo * info = GetCallbackInfoFromCore2List(index);
+  if (info!= NULL)
+  {
+    info->isRunning = true;
+    return true;
+  }
+  else
+    return false;
 }
 
 String Toggle_InbuiltLED()
@@ -1143,7 +1252,8 @@ void setup1() {
   Led_State = false;
 
   InitCore2SensorList();
-  InbuiltLED.period = 10000;
+  InbuiltLED.period = 2000;
+  InbuiltLED.isRunning = true;
   InbuiltLED.isSensor = false;
   InbuiltLED.back = Toggle_InbuiltLED;
   int LEDListIndex = AddCallBack(&InbuiltLED);
@@ -1155,9 +1265,15 @@ void loop1() {
   for (int i=0; i< numSensors;i++)
   {
     CallbackInfo * info = GetCallbackInfoFromCore2List(i);
+    if (info == NULL)
+      continue;
+
     unsigned long currentTime = millis();             
     if ( currentTime > info->next )
     {
+      info->next = millis() + info->period;
+      if(!info->isRunning)
+        continue;
       if(!info->isSensor)
       {
         String res = call_callback_func(info->back);
@@ -1189,7 +1305,6 @@ void loop1() {
           //2DO send to Azure IoT Hub
         }
       }
-      info->next += info->period;
     }
   }
 }

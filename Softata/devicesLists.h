@@ -10,6 +10,7 @@ class SensorListNode
 {
 public:
     Grove_Sensor * Sensor=NULL;
+    int TelemetryStreamNo;
 protected:
 };
 
@@ -78,6 +79,11 @@ Grove_Sensor * GetSensorFromList(int index)
     return SensorList[index]->Sensor;
   else
     return NULL;
+}
+
+SensorListNode * GetNode(int index)
+{
+  return SensorList[index];
 }
 
 int InitSensorList()
@@ -235,10 +241,6 @@ bool RemoveSensorFromCore2List(int index)
 {
   if((index>=0) && (index < MAX_SENSORS))
   {
-    if(Core2SensorList[index]->callbackInfo != NULL)
-    {
-      free(Core2SensorList[index]->callbackInfo);
-    }
     Core2SensorList[index]->callbackInfo= NULL;
     return true;
   }

@@ -135,6 +135,16 @@ String Grove_BME280::GetTelemetry()
     return "ERRORDBL";
 }
 
+CallbackInfo * Grove_BME280::GetCallbackInfo()
+{
+    info.period = 314159;
+    info.next = 137;
+    info.SensorIndex = 123456;
+    info.sendBT = false;
+    info.isSensor=false;
+    info.isRunning=false;
+    return &info;
+}
 
 double Grove_BME280::Read(int property)
 {

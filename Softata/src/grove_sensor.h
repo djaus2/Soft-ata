@@ -55,6 +55,7 @@ class Grove_Sensor: public Grove
       virtual bool ReadAll(double * values);
       virtual String GetTelemetry();
       virtual double Read(int property);
+      virtual CallbackInfo * GetCallbackInfo();
       DeviceType deviceType = sensor;
       GroveSensor sensorType = SENSOR_NONE;
       int num_properties;

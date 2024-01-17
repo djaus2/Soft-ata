@@ -24,6 +24,25 @@ bool Grove_URangeSensor::Setup()
     return true;
 }
 
+CallbackInfo * Grove_URangeSensor::GetCallbackInfo()
+{
+    info.period = 314159;
+    info.next = 137;
+    info.SensorIndex = 123456;
+    info.sendBT = false;
+    info.isSensor=false;
+    info.isRunning=false;
+                    Serial.println("info in class:");
+                    Serial.println(info.period); 
+                    Serial.println(info.next); 
+                    Serial.println(info.SensorIndex);
+                    Serial.println(info.sendBT);
+                    Serial.println(info.isSensor);
+                    Serial.println(info.isRunning);
+                    Serial.println("End info in class");
+    return &info;
+}
+
 
 bool Grove_URangeSensor::ReadAll(double* values)
 {

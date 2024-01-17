@@ -270,11 +270,12 @@ namespace FirmataBasic
                                     if (showMenu)
                                     {
                                         sensorMode = 1;
-                                        Console.WriteLine("SELECT SENSOR MODE");
+                                        Console.WriteLine(" SELECT SENSOR MODE");
                                         Console.WriteLine("1. Read Sensor Values.");
                                         Console.WriteLine("2. Get Telemetry");
-                                        Console.WriteLine("3. Quit");
-                                        Console.WriteLine("4. Stop Stream Telemetry to Bluetooth (Not available yet)");
+                                        Console.WriteLine("4. Pause Telemetry Stream");
+                                        Console.WriteLine("5. Continue Telemetry Stream");
+                                        Console.WriteLine("6. Quit");
                                         Console.WriteLine("Default 1.");
 
                                         Console.Write("Selection:");
@@ -283,39 +284,67 @@ namespace FirmataBasic
                                             string? s = Console.ReadLine();
                                             if (byte.TryParse(s, out byte mode))
                                             {
-                                                if (mode > 0 && mode <= 3)
+                                                if ((mode > 0) && (mode <= 6) && (mode != 3))
                                                 {
                                                     sensorMode = (byte)mode;
                                                     found = true;
-                                                    if (sensorMode == 3)
+                                                    if (sensorMode == 6)
                                                     {
-                                                        sensorMode = 255;
                                                         keepRunning = false;
                                                     }
                                                 }
                                             }
+                                            else if (!string.IsNullOrEmpty(s))
+                                            {
+                                                string key = s;
+                                                if (key.ToUpper()=="Q")
+                                                {
+                                                    sensorMode = 6;
+                                                    keepRunning = false;
+                                                }
+                                            }
                                         } while (!found);
-                                        showMenu = false;
+                                        showMenu = true;
+                                        switch (sensorMode)
+                                        {
+                                            case 1: case 2:
+                                                showMenu = false;
+                                                break;
+                                        }
+                                        
                                     }
-                                    if (sensorMode == 255)
+                                    if (sensorMode == 6)
                                     {
                                         Console.WriteLine("Quitting app. Please wait.");
+                                        break;
                                     }
                                     else if (sensorMode ==2)
                                     {
                                         string json = SoftataLib.Sensor.GetTelemetry((byte)sensorLinkedListIndex);
                                         Console.WriteLine($"json {json}");
+                                        Console.WriteLine("Press [Esc] to stop");
+                                        Thread.Sleep(5000);
                                     }
                                     else if (sensorMode == 3)
                                     {
-                                        string json = SoftataLib.Sensor.SendTelemetry((byte)sensorLinkedListIndex);
-                                        if (json == "")
-                                            Console.WriteLine($"Streaming to BT started.");
+                                        string indxStr = SoftataLib.Sensor.SendTelemetry((byte)sensorLinkedListIndex);
+                                        if (int.TryParse(indxStr, out int val))
+                                            Console.WriteLine($"Streaming to BT started. List No:{val}");
                                         else
                                             Console.WriteLine($"Streaming to BT failed to start.");
                                         showMenu = true;
                                     }
-                                    else
+                                    else if (sensorMode == 4)
+                                    {
+                                        string json = SoftataLib.Sensor.PauseSendTelemetry((byte)sensorLinkedListIndex);
+                                        Console.WriteLine($"json {json}");
+                                    }
+                                    else if (sensorMode == 5)
+                                    {
+                                        string json = SoftataLib.Sensor.ContinueSendTelemetry((byte)sensorLinkedListIndex);
+                                        Console.WriteLine($"json {json}");
+                                    }
+                                    else if (sensorMode == 1)
                                     {
                                         double[]? values = SoftataLib.Sensor.ReadAll((byte)sensorLinkedListIndex);
                                         if (values == null)
@@ -336,8 +365,18 @@ namespace FirmataBasic
                                                 Console.WriteLine($"\t\t\t{sensor} {properties[p]} = {value}");
                                             Console.WriteLine();
                                         }
+                                        Console.WriteLine("Press [Esc] to stop");
                                         Thread.Sleep(5000);
                                     }
+                                    if (Console.KeyAvailable)
+                                    {
+                                        var cki = Console.ReadKey();
+                                        if (cki.Key == ConsoleKey.Escape)
+                                        {
+                                            showMenu = true;
+                                        }
+                                    }
+
                                 }
                             }
                         }

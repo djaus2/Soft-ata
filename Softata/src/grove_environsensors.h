@@ -27,7 +27,9 @@ class Grove_DHT11: public Grove_Sensor
       virtual bool ReadAll(double * values);
       virtual String GetTelemetry();
       virtual double Read(int property);
+      virtual CallbackInfo * GetCallbackInfo();
     protected:
+      CallbackInfo info;
       int Pin;
       bool SetupPin(int pin);
 };
@@ -59,7 +61,9 @@ class Grove_BME280: public Grove_Sensor
       virtual bool ReadAll(double * values);
       virtual String GetTelemetry();
       virtual double Read(int property);
+      virtual CallbackInfo * GetCallbackInfo();
     protected:
+      CallbackInfo info;
       bool SetupBME280();
 };
 #endif
@@ -91,7 +95,9 @@ public:
     virtual bool ReadAll(double* values);
     virtual String GetTelemetry();
     virtual double Read(int property);
-protected:
+    virtual CallbackInfo * GetCallbackInfo();    
+    protected:
+      CallbackInfo info;
     bool SetupURangeSensor();
 };
 #endif
