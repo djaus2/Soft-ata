@@ -13,6 +13,9 @@ Full API documentation [here](https://davidjones.sportronics.com.au/cats/softata
 
 - Coming: How to add devices, and a call-to-arms!
 
+- Blog on Console app Serial mode [here]() //Coming
+- Detailed blogs on Softata [here](https://davidjones.sportronics.com.au/cats/softata/)
+
 # Grove API
 
 - Grove Sensors DHT11 and BME280 implemented
