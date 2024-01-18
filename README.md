@@ -25,7 +25,8 @@ Full API documentation [here](https://davidjones.sportronics.com.au/cats/softata
   - bool ReadAll(double[] values)
   - double Read(enum property)
   - String GetTelemetry(); 
-  - Also can iniate BT Stream of telemetry,
+  - Also can initiate BT Stream of telemetry, pause and contnue it.
+    - Runs in second core
 
 - Grove Displays FreeNove(Adafruit) Neopixel8 and LCD1602 implemented
     - Grove OLE096 coming
