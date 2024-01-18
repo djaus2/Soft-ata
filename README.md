@@ -61,6 +61,7 @@ Full API documentation [here](https://davidjones.sportronics.com.au/cats/softata
 ## Latest
 
 _See **Repository Status** below._
+- Improved menu driven Serial with serial GPS option.
 - Can get Json string from sensors AND Stream Telelemtery over Bluetooth
   - Can pause and continure BT stream
 - _More:_ See Repository Status
@@ -104,7 +105,11 @@ This requires a setup as per previous repositories here as well as in some blog 
 ------
 
 ## Repository Status
+- Version 3.12
+  - Improved menu driven Serial
+    - Grove Serial GPS option, connect to Serial1 or Serial2
 - Version 3.10
+  - Also option to turn off status/debug messages in C#.
   - Code improvement for Telemetry
   - Can pause of continue BT Telemetry stream.
   - Sensor UI improved.
