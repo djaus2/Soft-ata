@@ -108,8 +108,8 @@ This requires a setup as per previous repositories here as well as in some blog 
 - Version 3.12
   - Improved menu driven Serial
     - Grove Serial GPS option, connect to Serial1 or Serial2
+ - Also option to turn off status/debug messages in C#.
 - Version 3.10
-  - Also option to turn off status/debug messages in C#.
   - Code improvement for Telemetry
   - Can pause of continue BT Telemetry stream.
   - Sensor UI improved.
