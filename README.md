@@ -13,7 +13,7 @@ Full API documentation [here](https://davidjones.sportronics.com.au/cats/softata
 
 - Coming: How to add devices, and a call-to-arms!
 
-- Blog on Console app Serial mode [here]() //Coming
+- Blog on Console app Serial mode [here](https://davidjones.sportronics.com.au/softata/Softata-Console_App_-_Serial-GPS-softata.html)
 - Detailed blogs on Softata [here](https://davidjones.sportronics.com.au/cats/softata/)
 
 # Grove API
