@@ -139,17 +139,141 @@ namespace FirmataBasic
                         break;
                     case CommandType.Serial:
                         byte[] txPins = new byte[] { 0, 0, 4 }; //Nb: Recv are Tx+1
-                        SoftataLib.Serial.serialSetup(txPins[1], 9600, 1);
-                        SoftataLib.Serial.serialSetup(txPins[2], 9600, 2);
+
+
+                        Console.WriteLine("Serial Test");
+                        Console.WriteLine("1. Serial 1");
+                        Console.WriteLine("2. Serial 2");
+                        Console.WriteLine("3. (Tx)Serial 1 -> (Rx)Serial 2");
+                        Console.WriteLine("4. (Tx)Serial 2 -> (Rx)Serial 1");
+                        Console.WriteLine("5. Quit");
+
+                        Console.Write("Selection:");
+                        bool serialFound = false;
+                        byte iserialTxRx = 1;
+                        do
+                        {
+                            string? s = Console.ReadLine();
+                            if (byte.TryParse(s, out byte numTxRx))
+                            {
+                                if ((numTxRx > 0) && (numTxRx <= 5))
+                                {
+                                    serialFound = true;
+                                    iserialTxRx = numTxRx;
+                                }
+                            }
+                            else if (!string.IsNullOrEmpty(s))
+                            {
+                                string key = s;
+                                if (key.ToUpper() == "Q")
+                                {
+                                    iserialTxRx = 5;
+                                    serialFound = true;
+                                }
+                            }
+                        } while (!serialFound);
+
+                        if (iserialTxRx == 5)
+                            break;
 
                         byte comTx = 1;
-                        if (!Send1)
-                            comTx = 2;
                         byte comRx = 1;
-                        if (!Recv1)
-                            comRx = 2;
 
-                        if (true) // ASCII test
+                        switch (iserialTxRx)
+                        {
+                            case 1:
+                                comTx = 1;
+                                comRx = 1;
+                                break;
+                            case 2:
+                                comTx = 2;
+                                comRx = 2;
+                                break;
+                            case 3:
+                                comTx = 1;
+                                comRx = 2;
+                                break;
+                            case 4:
+                                comTx = 2;
+                                comRx = 1;
+                                break;
+                            case 5:
+                                break;
+                        }
+
+                        Console.WriteLine("");
+                        Console.WriteLine("Serial mode Selection:");
+                        Console.WriteLine("1. ASCII");
+                        Console.WriteLine("2. Byte");
+                        ;
+                        if (iserialTxRx < 3)
+                        {
+                            Console.WriteLine("3. GPS");
+                        }
+                        Console.WriteLine("4. Quit");
+
+                        Console.Write("Selection:");
+                        serialFound = false;
+                        int iserialMode = 1;
+                        do
+                        {
+                            string? s = Console.ReadLine();
+                            if (byte.TryParse(s, out byte numMode))
+                            {
+                                if ((numMode > 0) && (numMode <= 4) && (!((numMode == 3)&&(iserialTxRx>2))))
+                                {
+                                    serialFound = true;
+                                    iserialMode = numMode;
+
+                                }
+                            }
+                            else if (!string.IsNullOrEmpty(s))
+                            {
+                                string key = s;
+                                if (key.ToUpper() == "Q")
+                                {
+                                    iserialMode = 4;
+                                    serialFound = true;
+                                }
+                            }
+                        } while (!serialFound);
+                        if (iserialMode == 4)
+                            break;
+
+                        
+                        Console.WriteLine();
+                        Console.WriteLine("BAUD Rate (Default 9600).");
+                        int baudRate = 9600;
+                        do
+                        {
+                            serialFound = false;
+                            baudRate = 9600;
+                            while (!serialFound)
+                            {
+                                Console.Write("Enter BAUD:");
+                                string? baudStr = Console.ReadLine();
+                                if (int.TryParse(baudStr, out int baud))
+                                {
+                                    serialFound = true;
+                                    baudRate = baud;
+                                }
+                                else if (string.IsNullOrEmpty(baudStr))
+                                {
+                                    serialFound = true;
+                                }
+                            }
+                            if (!serialFound)
+                                Console.WriteLine("Invalid");
+                            else if (!SoftataLib.Baudrates.Contains(baudRate))
+                                Console.WriteLine("Invalid");
+                        } while (!SoftataLib.Baudrates.Contains(baudRate));
+
+
+                        SoftataLib.Serial.serialSetup(txPins[1], baudRate, 1);
+                        SoftataLib.Serial.serialSetup(txPins[2], baudRate, 2);
+
+
+                        if (iserialMode==1) // ASCII test
                         {
                             for (char sendCh = ' '; sendCh <= '~'; sendCh++)
                             {
@@ -164,7 +288,7 @@ namespace FirmataBasic
                                 Thread.Sleep(200);
                             }
                         }
-                        else // Byte test
+                        else if (iserialMode == 2)  // Byte test
                         {
                             for (byte sendByte = 0x00; sendByte <= 0xff; sendByte++)
                             {
@@ -180,8 +304,27 @@ namespace FirmataBasic
                                 if (sendByte == 0xff)
                                     break;
                             }
+                        }
+                        else if(iserialMode == 3)  // GPS
+                        {
+                            Console.WriteLine();
+                            Console.WriteLine("Reading GPS");
+                            Console.WriteLine("Press [Esc] to stop");
+                            Thread.Sleep(0500);
+                            while (true)
+                            {
+                                string msg  = SoftataLib.Serial.readLine(comRx,false);
+                                Console.WriteLine($"\t{msg}");
 
-
+                                if (Console.KeyAvailable)
+                                {
+                                    var cki = Console.ReadKey();
+                                    if (cki.Key == ConsoleKey.Escape)
+                                    {
+                                        break;
+                                    }
+                                }
+                            }
                         }
                         break;
                     case CommandType.Sensors:

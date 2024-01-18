@@ -20,8 +20,8 @@
 
 #ifdef RPI_PICO_DEFAULT
 #define DHT11Pin_D  13 // Whatever 0 to 26
-#define UART9TX   0  // GPIO0, GPIO16, GPIO22
-#define UART9RX   (UART0TX+1)
+#define UART0TX   0  // GPIO0, GPIO16, GPIO22
+#define UART0RX   (UART0TX+1)
 #define UART1TX   4  // GPIO4, GPIO8, GPIO12
 #define UART1RX   (UART1TX+1)
 // Default I2C is first listed pin

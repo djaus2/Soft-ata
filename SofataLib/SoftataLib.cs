@@ -89,6 +89,7 @@ namespace Softata
             serialWriteChar = 0xE4, // Write a char
             serialGetFloat = 0xE5, // Get Flost
             serialGetInt = 0xE6, // Get Int
+            serialReadLine = 0xE7, 
 
             groveSensor = 0xF0, 
             groveDisplay = 0xF1,
@@ -184,7 +185,7 @@ namespace Softata
             }
             return "";
         }
-        public static string SendMessage(Commands MsgType, byte pin = 0xff, byte state = 0xff, string expect = "OK", byte other=0xff, byte[]? Data=null )
+        public static string SendMessage(Commands MsgType, byte pin = 0xff, byte state = 0xff, string expect = "OK", byte other=0xff, byte[]? Data=null, bool debug=true )
         {
             if (client == null)
                 throw new Exception("SendMessageCmd: Not connected");
@@ -214,17 +215,19 @@ namespace Softata
             sendmsg[0] = (byte)(sendmsg.Count-1);
             // Get bytes from list.
             byte[] sendBytes = sendmsg.ToArray<byte>();
-            Console.WriteLine($"Sending {sendBytes.Length} data bytes");
+            if(debug)
+                Console.WriteLine($"Sending {sendBytes.Length} data bytes");
 
             int sent = client.Send(sendBytes, 0, sendBytes.Length, SocketFlags.None);
             if (sent != sendBytes.Length)
                 throw new Exception($"SendMessage: Sent {sent} bytes, expected {sendBytes.Length} bytes");
 
-            Console.WriteLine($"Sent {sent} bytes");
+            if(debug)
+                Console.WriteLine($"Sent {sent} bytes");
 
             //Wait for response
             while (client.Available == 0) ;
-            byte[] data = new byte[100];
+            byte[] data = new byte[256];
             int recvd = client.Receive(data);
 
             string result = Encoding.UTF8.GetString(data).Substring(0, recvd);
@@ -239,7 +242,8 @@ namespace Softata
                 Console.WriteLine($"Received {result} [{recvd}] bytes\n");
                 return "Reset";
             }
-            Console.WriteLine($"Received {result} [{recvd}] bytes\n");
+            if(debug)
+                 Console.WriteLine($"Received {result} [{recvd}] bytes\n");
             return result.Replace(expect,"");
         }
         static void Main(string[] args)

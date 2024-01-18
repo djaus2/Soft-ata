@@ -291,6 +291,7 @@ void loop() {
           case 0xE4:  // Write a char
                       //case 0xE5: // Get Flost
                       //case 0xE6: // Get Int
+          case 0xE7:
             if (!((other == 1) || (other == 2))) {
               //Nb: For serial except for setup, pin parameter is ignored
               // But need to specify Serial1 or Serial2 as 1 or 2 in other parameter
@@ -316,8 +317,12 @@ void loop() {
                   {
 
 #ifdef GROVE_RPI_PICO_SHIELD
-                    byte Tx = UART1TX;
-                    byte Rx = UART1RX;
+                  byte Tx = UART0TX;
+                  byte Rx = UART0RX;
+                  if(other==2) {
+                    Tx = UART1TX;
+                    Rx = UART1RX;
+                  }
 #elif defined(RPI_PICO_DEFAULT)
                     byte Tx = pin;
                     byte Rx = pin + 1;
@@ -345,7 +350,7 @@ void loop() {
                         Serial.println(chw, HEX);
 #endif
                         Serial.println("Serial1.setup");
-                        client.print("OK");
+                        client.print("OK:");
                       } else if (other == 2) {
                         Serial2.setTX(Tx);
                         Serial2.setRX(Rx);
@@ -366,7 +371,7 @@ void loop() {
                         Serial.println(chw, HEX);
 #endif
                         Serial.println("Serial2.setup");
-                        client.print("OK");
+                        client.print("OK:");
                       }
                     } else {
                       Serial.println("Serial.setup Fail");
@@ -387,7 +392,7 @@ void loop() {
                     ch = Serial2.read();
                     Serial.print("Serial2.readChar:");                                       
                   }
-                  msgSerial = "SER";
+                  msgSerial = "OK:";
                   msgSerial.concat((byte)ch);
                   client.print(msgSerial);
                   break;
@@ -424,7 +429,7 @@ void loop() {
                     Serial2.write(ch);
                     Serial.println("Serial2.writeChar");                   
                   }
-                  client.print("OK");
+                  client.print("OK:");
                   break;
                   /*               case 0xE5:
                   while(!Comport.available()){ delay(100);}
@@ -446,6 +451,30 @@ void loop() {
                   msgSerial.concat(str);
                   client.print(msgSerial);
                   break;    */
+                case 0xE7:
+                  {
+                    String msgSerial = "OK:";
+                    String line="";
+                    if (other == 1)
+                    {
+                      while(!Serial1.available()){ watchdog_update();delay(100);}
+                      line = Serial1.readStringUntil('\n');
+                    }
+                    else if(other==2)
+                    {
+                      while(!Serial2.available()){ watchdog_update();delay(100);}
+                      line = Serial2.readStringUntil('\n');               
+                    }
+                    else
+                    {
+                      client.print("Fail:Serial.Readlin()");
+                      break;
+                    }
+                    msgSerial.concat(line);
+                    Serial.println(msgSerial);
+                    client.print(msgSerial);
+                  }
+                  break;
               }
             }
             break;

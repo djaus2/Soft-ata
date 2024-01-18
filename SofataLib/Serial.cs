@@ -28,7 +28,7 @@ namespace Softata
             bd50, bd75, bd110, bd134, bd150, bd200, bd300, bd600, bd1200, bd1800, bd2400, bd4800, bd9600, bd19200, bd38400, bd57600, bd115200
         };
 
-        static int[] Baudrates = { 50, 75, 110, 134, 150, 200, 300, 600, 1200, 1800, 2400, 4800, 9600, 19200, 38400, 57600, 115200 };
+        public static int[] Baudrates = { 50, 75, 110, 134, 150, 200, 300, 600, 1200, 1800, 2400, 4800, 9600, 19200, 38400, 57600, 115200 };
 
         public static class Serial
         {
@@ -38,7 +38,7 @@ namespace Softata
 
             public static void serialSetup(byte pin, int baud, byte serialportNo)
             {
-                string expect = "OK";
+                string expect = "OK:";
                 if (pin < 0 || pin >= PinMax)
                     throw new ArgumentOutOfRangeException(nameof(pin), "Messages.ArgumentEx_PinRange0_127");
                 if (serialportNo < 1 || serialportNo > 2)
@@ -51,15 +51,27 @@ namespace Softata
                     .ToList().First();
 
                 string state = SendMessage(Commands.serialSetup, pin, baudIndex, expect, serialportNo);
-                if (state != expect)
+                if (state != "")
                     throw new Exception($"serialGetChar({serialportNo}):InvalidResult");
                 return;
+            }
+
+            public static string readLine(byte serialportNo, bool debug = true)
+            {
+
+                string expect = "OK:";
+                if (serialportNo < 1 || serialportNo > 2)
+                    throw new ArgumentOutOfRangeException(nameof(serialportNo), "Messages.ArgumentEx_SerialPortRange1or2");
+                string state = SendMessage(Commands.serialReadLine, nullData, nullData, expect, serialportNo, null,debug);
+                Thread.Sleep(100);
+                return state;
+
             }
 
             //Nb: Next two commands both call serialGetChar on Pico
             public static char serialGetChar(byte serialportNo)
             {
-                string expect = "SER";
+                string expect = "OK:";
                 if (serialportNo <1 || serialportNo >2)
                     throw new ArgumentOutOfRangeException(nameof(serialportNo), "Messages.ArgumentEx_SerialPortRange1or2");
                 string state = SendMessage(Commands.serialGetChar, nullData, nullData, expect, serialportNo);
@@ -76,7 +88,7 @@ namespace Softata
 
             public static byte serialGetByte(byte serialportNo)
             {
-                string expect = "SER";
+                string expect = "OK:";
                 if (serialportNo < 1 || serialportNo > 2)
                     throw new ArgumentOutOfRangeException(nameof(serialportNo), "Messages.ArgumentEx_SerialPortRange1or2");
                 string state = SendMessage(Commands.serialGetChar, nullData, nullData, expect, serialportNo);
@@ -97,7 +109,7 @@ namespace Softata
             //Nb: Next two commands both call serialWriteChar on Pico 
             public static void serialWriteChar(byte serialportNo, char value)
             {
-                string expect = "OK";
+                string expect = "OK:";
                 if (serialportNo < 1 || serialportNo > 2)
                     throw new ArgumentOutOfRangeException(nameof(serialportNo), "Messages.ArgumentEx_SerialPortRange1or2");
                 string state = SendMessage(Commands.serialWriteChar, nullData, (byte)value, expect, serialportNo);
@@ -108,7 +120,7 @@ namespace Softata
 
             public static void serialWriteByte(byte serialportNo, byte value)
             {
-                string expect = "OK";
+                string expect = "OK:";
                 if (serialportNo < 1 || serialportNo > 2)
                     throw new ArgumentOutOfRangeException(nameof(serialportNo), "Messages.ArgumentEx_SerialPortRange1or2");
                 string state = SendMessage(Commands.serialWriteChar, nullData, value, expect, serialportNo);
