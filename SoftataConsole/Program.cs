@@ -40,8 +40,8 @@ namespace FirmataBasic
         static SoftataLib.CommandType Testtype = CommandType.PotRelay;
         //Set Serial1 or Serial2 for send and receive.
         //Nb: If both true or both false then loopback on same serial port.
-        static bool Send1 = true;
-        static bool Recv1 = true;
+        //static bool Send1 = true;
+        //static bool Recv1 = true;
         // Next two are the same test
         //static SoftataLib.CommandType Testtype = CommandType.Analog;
         //static SoftataLib.CommandType Testtype = CommandType.PWM;
@@ -328,6 +328,7 @@ namespace FirmataBasic
                         }
                         break;
                     case CommandType.Sensors:
+                        bool debug = false;
                         string[] Sensors = SoftataLib.Sensor.GetSensors();
                         if (Sensors.Length == 0)
                             Console.WriteLine($"No sensors found");
@@ -408,6 +409,30 @@ namespace FirmataBasic
                                 } while (!found);
                                 bool showMenu = false;
                                 bool keepRunning = true;
+
+
+                                uint period = 2500;
+                                switch (sensorMode)
+                                {
+                                    case 1:
+                                    case 2:
+                                        found = false;
+                                        do {
+                                            Console.Write($"Please enter the period btw sensor reads (Default {period}mS): ");
+                                            string? p = Console.ReadLine();
+                                            if (uint.TryParse(p, out uint _period))
+                                            {
+                                                period = _period;
+                                                found = true;
+                                            }
+                                            else if (string.IsNullOrEmpty(p))
+                                            {
+                                                found = true;
+                                            }
+                                        }while (!found);
+                                        Console.WriteLine();
+                                        break;
+                                }                            
                                 while (keepRunning)
                                 {
                                     if (showMenu)
@@ -463,10 +488,10 @@ namespace FirmataBasic
                                     }
                                     else if (sensorMode ==2)
                                     {
-                                        string json = SoftataLib.Sensor.GetTelemetry((byte)sensorLinkedListIndex);
-                                        Console.WriteLine($"json {json}");
+                                        string json = SoftataLib.Sensor.GetTelemetry((byte)sensorLinkedListIndex,debug);
+                                        Console.WriteLine($"\t\t Telemetry: {json}");
                                         Console.WriteLine("Press [Esc] to stop");
-                                        Thread.Sleep(5000);
+                                        Thread.Sleep((int)period);
                                     }
                                     else if (sensorMode == 3)
                                     {
@@ -489,27 +514,30 @@ namespace FirmataBasic
                                     }
                                     else if (sensorMode == 1)
                                     {
-                                        double[]? values = SoftataLib.Sensor.ReadAll((byte)sensorLinkedListIndex);
+                                        double[]? values = SoftataLib.Sensor.ReadAll((byte)sensorLinkedListIndex,debug);
                                         if (values == null)
                                             Console.WriteLine($"{sensor} readAll() failed");
                                         else
                                         {
-                                            Console.WriteLine($"{sensor} readAll OK");
+                                            if (debug)
+                                                Console.WriteLine($"{sensor} readAll() OK");
+                                            else
+                                                Console.WriteLine("ReadAll():");
                                             for (int p = 0; p < properties.Length; p++)
                                                 Console.WriteLine($"\t\t{sensor} {properties[p]} = {values[p]}");
                                         }
-                                        Console.WriteLine();
+                                        Console.WriteLine("Individual Read():");
                                         for (byte p = 0; p < properties.Length; p++)
                                         {
-                                            double? value = SoftataLib.Sensor.Read((byte)sensorLinkedListIndex, p);
+                                            double? value = SoftataLib.Sensor.Read((byte)sensorLinkedListIndex, p,debug);
                                             if (value == null)
                                                 Console.WriteLine($"{sensor} read() failed");
                                             else
-                                                Console.WriteLine($"\t\t\t{sensor} {properties[p]} = {value}");
+                                                Console.WriteLine($"\t\t{sensor} {properties[p]} = {value}");
                                             Console.WriteLine();
                                         }
                                         Console.WriteLine("Press [Esc] to stop");
-                                        Thread.Sleep(5000);
+                                        Thread.Sleep((int)period);
                                     }
                                     if (Console.KeyAvailable)
                                     {

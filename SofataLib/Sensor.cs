@@ -27,33 +27,33 @@ namespace Softata
                     return new string[0];
             }
 
-            public static string GetPins(byte sensorType)
+            public static string GetPins(byte sensorType, bool debug = true)
             {
-                string result = SendMessage(Commands.groveSensor, 0, (byte)GroveSensorCmds.getpins, "OK:", sensorType);
+                string result = SendMessage(Commands.groveSensor, 0, (byte)GroveSensorCmds.getpins, "OK:", sensorType, null, debug=true);
                 return result;
             }
 
-            public static string[] GetProperties(byte sensorType)
+            public static string[] GetProperties(byte sensorType, bool debug = true)
             {
-                string result = SendMessage(Commands.groveSensor, 0, (byte)GroveSensorCmds.getProperties, "OK:", sensorType);
+                string result = SendMessage(Commands.groveSensor, 0, (byte)GroveSensorCmds.getProperties, "OK:", sensorType, null, debug=true);
                 if (!string.IsNullOrEmpty(result))
                     return result.Split(',');
                 else
                     return new string[0];
             }
 
-            public static int SetupDefault(byte sensorType)
+            public static int SetupDefault(byte sensorType, bool debug = true)
             {
-                string result = SendMessage(Commands.groveSensor, 0, (byte)GroveSensorCmds.setupdefault, "OK:", sensorType);
+                string result = SendMessage(Commands.groveSensor, 0, (byte)GroveSensorCmds.setupdefault, "OK:", sensorType, null, debug);
                 if (int.TryParse(result, out int linkedListNo))
                     return linkedListNo;
                 else
                     return -1;
             }
 
-            public static double[]?  ReadAll(byte linkedListNo)
+            public static double[]?  ReadAll(byte linkedListNo, bool debug=true )
             {
-                string result = SendMessage(Commands.groveSensor, 0, (byte)GroveSensorCmds.readall , "OK:",linkedListNo);
+                string result = SendMessage(Commands.groveSensor, 0, (byte)GroveSensorCmds.readall , "OK:",linkedListNo,null,debug);
                 try { 
                     string[] values = result.Split(',');
                     double[]? results = (from v in values
@@ -69,15 +69,15 @@ namespace Softata
                 }
             }
 
-            public static string GetTelemetry(byte linkedListNo)
+            public static string GetTelemetry(byte linkedListNo, bool debug=true)
             {
-                string result = SendMessage(Commands.groveSensor, 0, (byte)GroveSensorCmds.getTelemetry, "OK:", linkedListNo);
+                string result = SendMessage(Commands.groveSensor, 0, (byte)GroveSensorCmds.getTelemetry, "OK:", linkedListNo, null,debug);
                 return result;
             }
 
-            public static double? Read(byte linkedListNo, byte property)
+            public static double? Read(byte linkedListNo, byte property, bool debug = true)
             {
-                string result = SendMessage(Commands.groveSensor, property, (byte)GroveSensorCmds.read, "OK:", linkedListNo);
+                string result = SendMessage(Commands.groveSensor, property, (byte)GroveSensorCmds.read, "OK:", linkedListNo, null,debug);
                 try
                 {
                     if (double.TryParse(result, out double value))
@@ -91,9 +91,9 @@ namespace Softata
                 }
             }
 
-            public static string SendTelemetry(byte linkedListNo)
+            public static string SendTelemetry(byte linkedListNo, bool debug=true)
             {
-                string result = SendMessage(Commands.groveSensor, 0, (byte)GroveSensorCmds.sendTelemetry, "OK:", linkedListNo);
+                string result = SendMessage(Commands.groveSensor, 0, (byte)GroveSensorCmds.sendTelemetry, "OK:", linkedListNo, null, debug);
                 if(int.TryParse(result, out int value))
                 {
                    
@@ -101,15 +101,15 @@ namespace Softata
                 return result;
             }
 
-            public static string PauseSendTelemetry(byte linkedListNo)
+            public static string PauseSendTelemetry(byte linkedListNo, bool debug = true)
             {
-                string result = SendMessage(Commands.groveSensor, 0, (byte)GroveSensorCmds.pause_sendTelemetry, "OK:", linkedListNo);
+                string result = SendMessage(Commands.groveSensor, 0, (byte)GroveSensorCmds.pause_sendTelemetry, "OK:", linkedListNo, null, debug = true);
                 return result;
             }
 
-            public static string ContinueSendTelemetry(byte linkedListNo)
+            public static string ContinueSendTelemetry(byte linkedListNo, bool debug = true)
             {
-                string result = SendMessage(Commands.groveSensor, 0, (byte)GroveSensorCmds.continue_sendTelemetry, "OK:", linkedListNo);
+                string result = SendMessage(Commands.groveSensor, 0, (byte)GroveSensorCmds.continue_sendTelemetry, "OK:", linkedListNo, null, debug= true);
                 return result;
             }
         }
