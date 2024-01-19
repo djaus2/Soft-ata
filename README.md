@@ -9,12 +9,9 @@ _Soft-ata rather than firm-ata!_
 
 # API Documentation
 
-Full API documentation [here](https://davidjones.sportronics.com.au/cats/softata/)
+[Full API documentation](https://davidjones.sportronics.com.au/cats/softata/) __(Extended/updated)__
 
 - Coming: How to add devices, and a call-to-arms!
-
-- Blog on Console app Serial mode [here](https://davidjones.sportronics.com.au/softata/Softata-Console_App_-_Serial-GPS-softata.html)
-- Detailed blogs on Softata [here](https://davidjones.sportronics.com.au/cats/softata/)
 
 # Grove API
 
