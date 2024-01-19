@@ -65,7 +65,7 @@ Full API documentation [here](https://davidjones.sportronics.com.au/cats/softata
 
 _See **Repository Status** below._
 - Improved Senor UI in Console app
-- Improved menu driven Serial with serial GPS option.
+- Improved menu driven Serial with serial GPS option. _(Includes bug fix)_
 - Can get Json string from sensors AND Stream Telelemtery over Bluetooth
   - Can pause and continure BT stream
 - _More:_ See Repository Status
