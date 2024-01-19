@@ -13,6 +13,9 @@ Full API documentation [here](https://davidjones.sportronics.com.au/cats/softata
 
 - Coming: How to add devices, and a call-to-arms!
 
+- Blog on Console app Serial mode [here](https://davidjones.sportronics.com.au/softata/Softata-Console_App_-_Serial-GPS-softata.html)
+- Detailed blogs on Softata [here](https://davidjones.sportronics.com.au/cats/softata/)
+
 # Grove API
 
 - Grove Sensors DHT11 and BME280 implemented
@@ -109,10 +112,10 @@ This requires a setup as per previous repositories here as well as in some blog 
 - Version 3.15
   - Improved Senor UI in Console app
 - Version 3.12
-  - Improved menu driven Serial
+  - Improved menu driven Serial. _Includes a bug fix wrt setting Serial1vSerial2 TxRx_
     - Grove Serial GPS option, connect to Serial1 or Serial2
-- Version 3.10
   - Also option to turn off status/debug messages in C#.
+- Version 3.10
   - Code improvement for Telemetry
   - Can pause of continue BT Telemetry stream.
   - Sensor UI improved.
