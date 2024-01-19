@@ -357,8 +357,17 @@ namespace FirmataBasic
                             }  while (!found);
                             string sensor = Sensors[isensor];
 
-                            SoftataLib.Sensor.GetPins(isensor);
-                                byte sensorLinkedListIndex = (byte)SoftataLib.Sensor.SetupDefault(isensor);
+                            string pins = SoftataLib.Sensor.GetPins(isensor);
+                            if (string.IsNullOrEmpty(pins))
+                                Console.WriteLine($"{sensor} getPins() failed");
+                            else
+                            {
+                                Console.WriteLine($"{sensor} getPins OK");
+                                Console.WriteLine($"{sensor} Pins = {pins}");
+                            }
+                            Console.WriteLine("Press any key to setup sensor");
+                            Console.ReadLine();
+                            byte sensorLinkedListIndex = (byte)SoftataLib.Sensor.SetupDefault(isensor);
                                 if (sensorLinkedListIndex < 0)
                                     Console.WriteLine($"Instantiated sensor {sensor} not found");
                                 else
@@ -374,14 +383,7 @@ namespace FirmataBasic
                                             Console.WriteLine($"{sensor} property = {property}");
                                     }
                                     Console.WriteLine();
-                                string pins = SoftataLib.Sensor.GetPins(isensor);
-                                if (string.IsNullOrEmpty(pins))
-                                    Console.WriteLine($"{sensor} getPins() failed");
-                                else
-                                {
-                                    Console.WriteLine($"{sensor} getPins OK");
-                                    Console.WriteLine($"{sensor} Pins = {pins}");
-                                }
+
                                 Console.WriteLine("Press any key to continue.");
                                 Console.ReadLine();
                                 Console.WriteLine();
