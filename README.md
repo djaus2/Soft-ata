@@ -15,7 +15,7 @@ _Soft-ata rather than firm-ata!_
 
 # Grove API
 
-- Grove Sensors DHT11 and BME280 implemented
+- Grove Sensors DHT11,BME280 and Ultrasonic Ranger implemented
 - Grove Sensor API API (Arduino):
   - String GetSensors()
   - String GetPins()/Pin Options
@@ -55,6 +55,10 @@ _Soft-ata rather than firm-ata!_
   - linkedListNo = Setup(ActuatorDevice deviceType, byte pinNumber)
   - linkedListNo = Setup(ActuatorDevice deviceType, byte pinNumber, byte min=0, byte max=0) //2Do
   - ActuatorWrite(byte linkedListNo, byte value)
+
+  - Other
+    - Serial1 and Serial2, icluding GPS
+    - Second core used for periodic streaming over Bluetooth
 
  > See https://github.com/djaus2/Soft-ata/blob/master/Grove.md
 
