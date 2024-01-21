@@ -105,18 +105,22 @@ namespace Softata
             PWM = 2,
             Servo = 3,
             Sensors = 4,
-            SPI = 5,
-            OneWire = 6,
-            Serial = 7,
-            NeopixelDisplay = 0x8,
-            LCD1602Display = 0x9,
-            PotLightSoundAnalog = 0xA,
-            USonicRange = 0xB,
-            PotRelay = 0xC,
-            PotServo = 0xD,
-            MaxType = 0xE,
+            Displays = 0x5,
+            Serial = 6,
+            PotLightSoundAnalog = 0x7,
+            USonicRange = 0x8,
+            PotRelay = 0x9,
+            PotServo = 0xA,
+            MaxType = 0xB,
+
             Undefined = 0xFF
         }
+
+        //////////////////////////////////////////
+        // NOTE enum order of DisplayDevice must match that returned by GroveDisplayCmds.getDisplays()
+        public enum DisplayDevice { OLEDSO096, LCD1602Display, NeopixelDisplay }
+        //////////////////////////////////////////
+
         public enum PinMode
         {
             Undefined = -1,

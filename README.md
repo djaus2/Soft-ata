@@ -61,10 +61,9 @@ _Soft-ata rather than firm-ata!_
 ## Latest
 
 _See **Repository Status** below._
-- Improved Senor UI in Console app
+- Restructed Display part of Console app.
+- Improved Sensor UI in Console app
 - Improved menu driven Serial with serial GPS option. _(Includes bug fix)_
-- Can get Json string from sensors AND Stream Telelemtery over Bluetooth
-  - Can pause and continure BT stream
 - _More:_ See Repository Status
 
 ## Blog Post
@@ -106,6 +105,9 @@ This requires a setup as per previous repositories here as well as in some blog 
 ------
 
 ## Repository Status
+- Version 3.20
+  - Restructed Display part of Console app:  
+More generic for if other displays are added.
 - Version 3.15
   - Improved Senor UI in Console app
 - Version 3.12

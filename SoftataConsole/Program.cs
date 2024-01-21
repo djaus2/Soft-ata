@@ -18,6 +18,7 @@ namespace FirmataBasic
 {
     internal class Program
     {
+
         // Set the same as Arduino:
         const int port = 4242;
         const string ipaddressStr = "192.168.0.9";
@@ -37,7 +38,7 @@ namespace FirmataBasic
         //static SoftataLib.CommandType Testtype = CommandType.NeopixelDisplay;
         //static SoftataLib.CommandType Testtype = CommandType.Digital;
         //static SoftataLib.CommandType Testtype = CommandType.Serial;
-        static SoftataLib.CommandType Testtype = CommandType.PotRelay;
+        static SoftataLib.CommandType Testtype = CommandType.Digital;
         //Set Serial1 or Serial2 for send and receive.
         //Nb: If both true or both false then loopback on same serial port.
         //static bool Send1 = true;
@@ -554,7 +555,9 @@ namespace FirmataBasic
                             }
                         }
                         break;
-                    case CommandType.NeopixelDisplay:
+                    case CommandType.Displays:
+                        byte idisplay = 0;
+                        string display = "";
                         string[] Displays = SoftataLib.Display.GetDisplays();
                         if (Displays.Length == 0)
                             Console.WriteLine($"No displays found");
@@ -563,109 +566,129 @@ namespace FirmataBasic
                             Console.WriteLine($"Displays found:");
                             for (byte i = 0; i < Displays.Length; i++)
                             {
-                                string display = Displays[i];
-                                Console.WriteLine($"Display = {display}");
+                                display = Displays[i];
+                                Console.WriteLine($"{i + 1}.\t\t{display}");
                             }
-                            for (byte i = 2; i < 3; i++) // Neopixel only
+                            Console.WriteLine("Default: 1.");
+                            Console.WriteLine("Nb: Option 1. not yet available.");
+
+                            Console.Write("Selection:");
+                            bool found = false;
+                            
+                            do
                             {
-                                string display = Displays[i];
-                                Console.WriteLine($"Display = {display}");
-                                SoftataLib.Display.GetPins(i);
-                                byte displayLinkedListIndex = (byte)SoftataLib.Display.SetupDefault(i);
-                                Console.WriteLine($"displayLinkedListIndex: {displayLinkedListIndex}");
-                                if (displayLinkedListIndex < 0)
-                                    Console.WriteLine($"Instantiated sensor {display} not found");
-                                else
+                                string? s = Console.ReadLine();
+                                if (byte.TryParse(s, out byte idis))
                                 {
-                                    Console.WriteLine($"Instantiated {display} linked at {displayLinkedListIndex}");
-                                    SoftataLib.Display.Neopixel.Clear(displayLinkedListIndex); ;
-                                    Thread.Sleep(2000);
-                                    SoftataLib.Display.Neopixel.Misc_SetAll(displayLinkedListIndex, 255, 0, 0);
-                                    Thread.Sleep(100);
-                                    SoftataLib.Display.Neopixel.Misc_SetAll(displayLinkedListIndex, 0xFF, 0xA5, 0);   //Orange
-                                    Thread.Sleep(100);
-                                    SoftataLib.Display.Neopixel.Misc_SetAll(displayLinkedListIndex, 255, 255, 0);     //Yellow
-                                    Thread.Sleep(2000);
-                                    SoftataLib.Display.Neopixel.Misc_SetAll(displayLinkedListIndex, 0, 255, 0);
-                                    Thread.Sleep(2000);
-                                    SoftataLib.Display.Neopixel.Misc_SetAll(displayLinkedListIndex, 0, 0, 255);
-                                    Thread.Sleep(2000);
-                                    SoftataLib.Display.Neopixel.Misc_SetAll(displayLinkedListIndex, 0xA0, 0x20, 0xf0);//Purple
-                                    Thread.Sleep(2000);
-                                    SoftataLib.Display.Neopixel.Misc_SetAll(displayLinkedListIndex, 255, 255, 255);   //White
-                                    Thread.Sleep(2000);
-                                    SoftataLib.Display.Neopixel.Clear(displayLinkedListIndex);
-                                    Thread.Sleep(2000);
-                                    SoftataLib.Display.Neopixel.Misc_SetOdd(displayLinkedListIndex, 255, 0, 0);
-                                    Thread.Sleep(2000);
-                                    SoftataLib.Display.Neopixel.Clear(displayLinkedListIndex);
-                                    Thread.Sleep(100);
-                                    SoftataLib.Display.Neopixel.Misc_SetEvens(displayLinkedListIndex, 0, 255, 0);
-                                    Thread.Sleep(2000);
-                                    SoftataLib.Display.Neopixel.Clear(displayLinkedListIndex);
-                                    Thread.Sleep(2000);
-                                    SoftataLib.Display.Neopixel.Misc_SetOdd(displayLinkedListIndex, 0, 0, 255);
-                                    Thread.Sleep(2000);
-                                    SoftataLib.Display.Neopixel.Clear(displayLinkedListIndex);
-                                    Thread.Sleep(100);
-                                    SoftataLib.Display.Neopixel.Misc_SetEvens(displayLinkedListIndex, 255, 255, 0);
-                                    Thread.Sleep(2000);
-                                    SoftataLib.Display.Neopixel.Clear(displayLinkedListIndex);
-                                    Thread.Sleep(2000);
-                                    SoftataLib.Display.Neopixel.Misc_SetOdd(displayLinkedListIndex, 0, 255, 255);
-                                    Thread.Sleep(2000);
-                                    SoftataLib.Display.Neopixel.Clear(displayLinkedListIndex);
-                                    Thread.Sleep(100);
-                                    SoftataLib.Display.Neopixel.Misc_SetEvens(displayLinkedListIndex, 255, 255, 255);
-                                    Thread.Sleep(500);
-                                    SoftataLib.Display.Neopixel.Clear(displayLinkedListIndex);
-                                    Thread.Sleep(500);
-                                    SoftataLib.Display.Neopixel.Misc_SetEvens(displayLinkedListIndex, 255, 255, 255);
-                                    Thread.Sleep(500);
-                                    SoftataLib.Display.Neopixel.Clear(displayLinkedListIndex);
-                                    Thread.Sleep(500);
-                                    SoftataLib.Display.Neopixel.Misc_SetEvens(displayLinkedListIndex, 255, 255, 255);
-                                    Thread.Sleep(2000);
-                                    SoftataLib.Display.Neopixel.Clear(displayLinkedListIndex);
-                                    Console.WriteLine("OK");
+                                    if ((idis > 0) && (idis <= Displays.Length) && (idis != 1))
+                                    {
+                                        idisplay = (byte)(idis - 1);
+                                        found = true;
+                                    }
+                                    else if(string.IsNullOrEmpty(s))
+                                    {
+                                        found = true;
+                                    }
                                 }
+                            } while (!found);
+                            display = Displays[idisplay];
+
+                            string pins = SoftataLib.Display.GetPins(idisplay);
+                            if (string.IsNullOrEmpty(pins))
+                                Console.WriteLine($"{display} getPins() failed");
+                            else
+                            {
+                                Console.WriteLine($"{display} getPins OK");
+                                Console.WriteLine($"{display} Pins = {pins}");
                             }
                         }
-                        break;
-                    case CommandType.LCD1602Display:
-                        string[] Displays2 = SoftataLib.Display.GetDisplays();
-                        if (Displays2.Length == 0)
-                            Console.WriteLine($"No displays found");
+                        byte displayLinkedListIndex;
+
+                        Console.WriteLine("Press any key to continue.");
+                        Console.ReadLine();
+
+                        //////////////////////////////////////////
+                        // NOTE: enum order of DisplayDevice must match that returned by GroveDisplayCmds.getDisplays
+                        DisplayDevice displayDevice = (DisplayDevice)idisplay;
+                        //////////////////////////////////////////
+
+                        displayLinkedListIndex = (byte)SoftataLib.Display.SetupDefault(idisplay);
+                        Console.WriteLine($"displayLinkedListIndex: {displayLinkedListIndex}");
+                        if (displayLinkedListIndex < 0)
+                            Console.WriteLine($"Instantiated sensor {display} not found");
                         else
                         {
-                            Console.WriteLine($"Displays found:");
-                            for (byte i = 0; i < Displays2.Length; i++)
+                            switch (displayDevice)
                             {
-                                string display = Displays2[i];
-                                Console.WriteLine($"Display = {display}");
-                            }
-                            for (byte i = 1; i < 2; i++) // LCD1602 only
-                            {
-                                string display = Displays2[i];
-                                Console.WriteLine($"Display = {display}");
-                                SoftataLib.Display.GetPins(i);
-                                byte displayLinkedListIndex = (byte)SoftataLib.Display.SetupDefault(i);
-                                Console.WriteLine($"displayLinkedListIndex: {displayLinkedListIndex}");
-                                if (displayLinkedListIndex < 0)
-                                    Console.WriteLine($"Instantiated sensor {display} not found");
-                                else
-                                {
-                                    Console.WriteLine($"Instantiated {display} linked at {displayLinkedListIndex}");
-                                    SoftataLib.Display.Clear(displayLinkedListIndex);
-                                    SoftataLib.Display.SetCursor(displayLinkedListIndex,0, 0);
-                                    SoftataLib.Display.WriteString(displayLinkedListIndex,"First Line");
-                                    SoftataLib.Display.SetCursor(displayLinkedListIndex, 0, 1);
-                                    SoftataLib.Display.WriteString(displayLinkedListIndex,"Wait 5sec");
-                                    Thread.Sleep(5000);
-                                    SoftataLib.Display.Clear(displayLinkedListIndex);
-                                    SoftataLib.Display.WriteString(displayLinkedListIndex,4,0, "(4,0):Cursor");
-                                    SoftataLib.Display.WriteString(displayLinkedListIndex, 2, 1, "(2,1):Write");
-                                }
+                                case DisplayDevice.NeopixelDisplay:
+                                    {
+                                        Console.WriteLine($"Instantiated {display} linked at {displayLinkedListIndex}");
+                                        SoftataLib.Display.Neopixel.Clear(displayLinkedListIndex); ;
+                                        Thread.Sleep(2000);
+                                        SoftataLib.Display.Neopixel.Misc_SetAll(displayLinkedListIndex, 255, 0, 0);
+                                        Thread.Sleep(100);
+                                        SoftataLib.Display.Neopixel.Misc_SetAll(displayLinkedListIndex, 0xFF, 0xA5, 0);   //Orange
+                                        Thread.Sleep(100);
+                                        SoftataLib.Display.Neopixel.Misc_SetAll(displayLinkedListIndex, 255, 255, 0);     //Yellow
+                                        Thread.Sleep(2000);
+                                        SoftataLib.Display.Neopixel.Misc_SetAll(displayLinkedListIndex, 0, 255, 0);
+                                        Thread.Sleep(2000);
+                                        SoftataLib.Display.Neopixel.Misc_SetAll(displayLinkedListIndex, 0, 0, 255);
+                                        Thread.Sleep(2000);
+                                        SoftataLib.Display.Neopixel.Misc_SetAll(displayLinkedListIndex, 0xA0, 0x20, 0xf0);//Purple
+                                        Thread.Sleep(2000);
+                                        SoftataLib.Display.Neopixel.Misc_SetAll(displayLinkedListIndex, 255, 255, 255);   //White
+                                        Thread.Sleep(2000);
+                                        SoftataLib.Display.Neopixel.Clear(displayLinkedListIndex);
+                                        Thread.Sleep(2000);
+                                        SoftataLib.Display.Neopixel.Misc_SetOdd(displayLinkedListIndex, 255, 0, 0);
+                                        Thread.Sleep(2000);
+                                        SoftataLib.Display.Neopixel.Clear(displayLinkedListIndex);
+                                        Thread.Sleep(100);
+                                        SoftataLib.Display.Neopixel.Misc_SetEvens(displayLinkedListIndex, 0, 255, 0);
+                                        Thread.Sleep(2000);
+                                        SoftataLib.Display.Neopixel.Clear(displayLinkedListIndex);
+                                        Thread.Sleep(2000);
+                                        SoftataLib.Display.Neopixel.Misc_SetOdd(displayLinkedListIndex, 0, 0, 255);
+                                        Thread.Sleep(2000);
+                                        SoftataLib.Display.Neopixel.Clear(displayLinkedListIndex);
+                                        Thread.Sleep(100);
+                                        SoftataLib.Display.Neopixel.Misc_SetEvens(displayLinkedListIndex, 255, 255, 0);
+                                        Thread.Sleep(2000);
+                                        SoftataLib.Display.Neopixel.Clear(displayLinkedListIndex);
+                                        Thread.Sleep(2000);
+                                        SoftataLib.Display.Neopixel.Misc_SetOdd(displayLinkedListIndex, 0, 255, 255);
+                                        Thread.Sleep(2000);
+                                        SoftataLib.Display.Neopixel.Clear(displayLinkedListIndex);
+                                        Thread.Sleep(100);
+                                        SoftataLib.Display.Neopixel.Misc_SetEvens(displayLinkedListIndex, 255, 255, 255);
+                                        Thread.Sleep(500);
+                                        SoftataLib.Display.Neopixel.Clear(displayLinkedListIndex);
+                                        Thread.Sleep(500);
+                                        SoftataLib.Display.Neopixel.Misc_SetEvens(displayLinkedListIndex, 255, 255, 255);
+                                        Thread.Sleep(500);
+                                        SoftataLib.Display.Neopixel.Clear(displayLinkedListIndex);
+                                        Thread.Sleep(500);
+                                        SoftataLib.Display.Neopixel.Misc_SetEvens(displayLinkedListIndex, 255, 255, 255);
+                                        Thread.Sleep(2000);
+                                        SoftataLib.Display.Neopixel.Clear(displayLinkedListIndex);
+                                        Console.WriteLine("OK");
+                                    }
+                                    break;
+                                case DisplayDevice.LCD1602Display:
+                                    {
+                                        Console.WriteLine($"Instantiated {display} linked at {displayLinkedListIndex}");
+                                        SoftataLib.Display.Clear(displayLinkedListIndex);
+                                        SoftataLib.Display.SetCursor(displayLinkedListIndex, 0, 0);
+                                        SoftataLib.Display.WriteString(displayLinkedListIndex, "First Line");
+                                        SoftataLib.Display.SetCursor(displayLinkedListIndex, 0, 1);
+                                        SoftataLib.Display.WriteString(displayLinkedListIndex, "Wait 5sec");
+                                        Thread.Sleep(5000);
+                                        SoftataLib.Display.Clear(displayLinkedListIndex);
+                                        SoftataLib.Display.WriteString(displayLinkedListIndex, 4, 0, "(4,0):Cursor");
+                                        SoftataLib.Display.WriteString(displayLinkedListIndex, 2, 1, "(2,1):Write");
+                                    }
+                                    break;
                             }
                         }
                         break;

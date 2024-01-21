@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace Softata
 {
-    public enum GroveDisplayCmds{getpins=0, tbd=1, setupDefault=2, setup=3, clear=4,backlight=5,setCursor=6, writestrngCMD=7,cursor_writestringCMD=8,misc=8, getDisplays=255 }
+    public enum GroveDisplayCmds{getpins=0, tbd=1, setupDefault=2, setup=3, clear=4,backlight=5,setCursor=6, writestrngCMD=7,cursor_writestringCMD=8,misc=9, getDisplays=255 }
     public partial class SoftataLib
     {
 
@@ -23,6 +23,7 @@ namespace Softata
                 //    throw new ArgumentOutOfRangeException(nameof(pinNumber), "Messages.ArgumentEx_PinRange0_127");
 
                 string result = SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.getDisplays, "OK:", 0);
+                result = result.Replace("Displays:", "");
                 if (!string.IsNullOrEmpty(result))
                     return result.Split(',');
                 else
