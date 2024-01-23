@@ -109,9 +109,9 @@ This requires a setup as per previous repositories here as well as in some blog 
 ------
 
 ## Repository Status
-- Version 3.99
+- Version 4.00
   - Can stream sensor telemetry to Azure IoT Hub.
-    -  _(Pause and continue don't work for it. 2Do)_
+    -  _Pause and continue now work.)_
 - Version 3.20
   - Restructed Display part of Console app:  
 More generic for if other displays are added.
@@ -129,7 +129,7 @@ More generic for if other displays are added.
   - Added Telemetry to Sensors
     - Can send all properties as Json string
     - Can also stream this continously, once started over Bluetooth to Serial Bluetooth terminal.
-    - _Coming:_ Stream to Azure IoT Hub
+    - _Also:_ Stream to Azure IoT Hub
 - Version 2.50
   - Added a Servo and test of it in Console app
 - Version 2.41

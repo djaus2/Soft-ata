@@ -229,15 +229,6 @@ static int connectToAzureIoTHub()
     printf("Failed to get MQTT clientId, return code\n");
     return 1;
   }
-
-  Serial.print("Client ID: ");
-  Serial.println(mqtt_client_id);
-
-  Serial.print("Username: ");
-  Serial.println(mqtt_username);
-  Serial.print("SasToken: ");
-  Serial.println(sas_token);
-
   mqtt_client.setBufferSize(MQTT_PACKET_SIZE);
 
   while (!mqtt_client.connected())
@@ -264,13 +255,22 @@ static int connectToAzureIoTHub()
 
   return 0;
 }
-
+static bool WiFiStarted = false;
+static bool timeInited = false;
+static bool clientsInited = false;
 static void establishConnection()
 {
+  if(!WiFiStarted)
   connectToWiFi();
+  if(!timeInited)
   initializeTime();
   printCurrentTime();
+  if(!clientsInited)
   initializeClients();
+
+  WiFiStarted = true;
+  timeInited = true;
+  clientsInited = true;
 
   // The SAS token is valid for 1 hour by default in this sample.
   // After one hour the sample must be restarted, or the client won't be able

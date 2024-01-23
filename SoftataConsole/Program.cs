@@ -446,11 +446,10 @@ namespace FirmataBasic
                                         Console.WriteLine(" SELECT SENSOR MODE");
                                         Console.WriteLine("1. Read Sensor Values.");
                                         Console.WriteLine("2. Get Telemetry");
-                                        Console.WriteLine("5. Pause BT Telemetry Stream");
-                                        Console.WriteLine("6. Continue BT Telemetry Stream");
+                                        Console.WriteLine("5. Pause BT or IoT Telemetry Stream");
+                                        Console.WriteLine("6. Continue BT IoT Telemetry Stream");
                                         Console.WriteLine("7. Quit");
                                         Console.WriteLine("Default 1.");
-                                        Console.WriteLine("Nb: Pause/Continue IoT Fails (2Do)");
 
                                         Console.Write("Selection:");
                                         do

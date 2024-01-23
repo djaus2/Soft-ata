@@ -750,14 +750,18 @@ void loop() {
                   break; 
                 case s_pause_sendTelemetry:
                   {
-                    Serial.println("Pause start");
                     int index = other;
                     SensorListNode * node = GetNode(index);
                     String msg;
                     if(node != NULL)
                     {
+                      // Encapsulate the TelemetryStreamNo and oause (ie 9) in one value
                       int num = node->TelemetryStreamNo*1000 + 0;
                       rp2040.fifo.push(num);
+                      while (!rp2040.fifo.available())
+                      {
+                          watchdog_update();
+                      }
                       uint32_t sync = rp2040.fifo.pop();
                       if(sync == 1)
                       {
@@ -783,8 +787,13 @@ void loop() {
                     String msg;
                     if(node != NULL)
                     {
+                      // Encapsulate the TelemetryStreamNo and run/continue (ie 1) in one value
                       int num = node->TelemetryStreamNo*1000 + 1;
                       rp2040.fifo.push(num);
+                      while (!rp2040.fifo.available())
+                      {
+                          watchdog_update();
+                      }
                       uint32_t sync = rp2040.fifo.pop();
                       if(sync == 1)
                       {

@@ -3,14 +3,14 @@
 
 
 
-#define APP_VERSION "3.99"
+#define APP_VERSION "4.00"
 
 //#define RPI_PICO_DEFAULT
 #define GROVE_RPI_PICO_SHIELD
 
 //WiFi
 #ifndef STASSID
-#define STASSID <"Wifi Network>"
+#define STASSID "<Wifi Network>"
 #define STAPSK "<password>"
 #endif
 
@@ -18,9 +18,11 @@
 #define IOT_CONFIG_WIFI_PASSWORD STAPSK 
 
 // Azure IoT
-#define IOT_CONFIG_IOTHUB_FQDN  "<IoT hub name>.azure-devices.net"
-#define IOT_CONFIG_DEVICE_ID  "<device name>"
-#define IOT_CONFIG_DEVICE_KEY  "<device key>" 
+#define IOT_CONFIG_IOTHUB_FQDN  "<Hub name>.azure-devices.net"
+#define IOT_CONFIG_DEVICE_ID  "<Device name>"
+#define IOT_CONFIG_DEVICE_KEY  "<Device key>" 
+
+//Server Port
 #define PORT 4242
 
 #define MAX_SENSOR_PROPERTIES 10

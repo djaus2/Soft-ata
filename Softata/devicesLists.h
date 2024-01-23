@@ -221,8 +221,6 @@ int AddSensorToCore2List(CallbackInfo * callbackInfo)
   if(countCore2Sensors < (MAX_SENSORS-1))
   {
     Core2SensorList[countCore2Sensors++]->callbackInfo = callbackInfo;
-    Serial.print("AddSensorToCore2List:");
-    Serial.println((countCore2Sensors-1));
     return (countCore2Sensors-1);
   }
   else
