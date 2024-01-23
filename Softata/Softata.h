@@ -10,10 +10,17 @@
 
 //WiFi
 #ifndef STASSID
-#define STASSID "APQLZM"
-#define STAPSK "silly1371"
+#define STASSID <"Wifi Network>"
+#define STAPSK "<password>"
 #endif
 
+#define IOT_CONFIG_WIFI_SSID STASSID
+#define IOT_CONFIG_WIFI_PASSWORD STAPSK 
+
+// Azure IoT
+#define IOT_CONFIG_IOTHUB_FQDN  "<IoT hub name>.azure-devices.net"
+#define IOT_CONFIG_DEVICE_ID  "<device name>"
+#define IOT_CONFIG_DEVICE_KEY  "<device key>" 
 #define PORT 4242
 
 #define MAX_SENSOR_PROPERTIES 10

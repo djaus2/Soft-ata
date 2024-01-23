@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Softata
 {
-    public enum GroveSensorCmds{getpins, getProperties, setupdefault, setup,  readall, read, getTelemetry, sendTelemetry, sendTelemetryToIoTHub, pause_sendTelemetry, continue_sendTelemetry, getSensors =255
+    public enum GroveSensorCmds{getpins, getProperties, setupdefault, setup,  readall, read, getTelemetry, sendTelemetryBT, sendTelemetryToIoTHub, pause_sendTelemetry, continue_sendTelemetry, getSensors =255
       ,
     }
     // getpins, getProperties are specific sensor class static commands so send sensor type as other rather than linkedListNo
@@ -21,6 +21,7 @@ namespace Softata
             public static string[] GetSensors()
             {
                 string result = SendMessage(Commands.groveSensor, 0, (byte)GroveSensorCmds.getSensors, "OK:", 0);
+                result = result.Replace("SENSORS:","");
                 if (!string.IsNullOrEmpty(result))
                     return result.Split(',');
                 else
@@ -91,12 +92,22 @@ namespace Softata
                 }
             }
 
-            public static string SendTelemetry(byte linkedListNo, bool debug=true)
+            public static string SendTelemetryBT(byte linkedListNo, bool debug=true)
             {
-                string result = SendMessage(Commands.groveSensor, 0, (byte)GroveSensorCmds.sendTelemetry, "OK:", linkedListNo, null, debug);
+                string result = SendMessage(Commands.groveSensor, 0, (byte)GroveSensorCmds.sendTelemetryBT, "OK:", linkedListNo, null, debug);
                 if(int.TryParse(result, out int value))
                 {
                    
+                }
+                return result;
+            }
+
+            public static string SendTelemetryToIoTHub(byte linkedListNo, bool debug = true)
+            {
+                string result = SendMessage(Commands.groveSensor, 0, (byte)GroveSensorCmds.sendTelemetryToIoTHub, "OK:", linkedListNo, null, debug);
+                if (int.TryParse(result, out int value))
+                {
+
                 }
                 return result;
             }

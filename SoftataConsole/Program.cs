@@ -396,6 +396,7 @@ namespace FirmataBasic
                                 Console.WriteLine("1. Read Sensor Values.");
                                 Console.WriteLine("2. Get Telemetry");
                                 Console.WriteLine("3. Start Stream Telemetry to Bluetooth");
+                                Console.WriteLine("4. Start Stream Telemetry to Azure IoT Hub");
                                 Console.WriteLine("Default 1.");
                                 Console.Write("Selection:");
                                 do
@@ -403,7 +404,7 @@ namespace FirmataBasic
                                     string? s = Console.ReadLine();
                                     if (byte.TryParse(s, out byte mode))
                                     {
-                                        if (mode > 0 && mode <= 3)
+                                        if (mode > 0 && mode <= 4)
                                         {
                                             sensorMode = (byte)mode;
                                             found = true;
@@ -435,7 +436,8 @@ namespace FirmataBasic
                                         }while (!found);
                                         Console.WriteLine();
                                         break;
-                                }                            
+                                }
+                                int sensorQuitModeNo = 7;
                                 while (keepRunning)
                                 {
                                     if (showMenu)
@@ -444,10 +446,11 @@ namespace FirmataBasic
                                         Console.WriteLine(" SELECT SENSOR MODE");
                                         Console.WriteLine("1. Read Sensor Values.");
                                         Console.WriteLine("2. Get Telemetry");
-                                        Console.WriteLine("4. Pause Telemetry Stream");
-                                        Console.WriteLine("5. Continue Telemetry Stream");
-                                        Console.WriteLine("6. Quit");
+                                        Console.WriteLine("5. Pause BT Telemetry Stream");
+                                        Console.WriteLine("6. Continue BT Telemetry Stream");
+                                        Console.WriteLine("7. Quit");
                                         Console.WriteLine("Default 1.");
+                                        Console.WriteLine("Nb: Pause/Continue IoT Fails (2Do)");
 
                                         Console.Write("Selection:");
                                         do
@@ -455,11 +458,11 @@ namespace FirmataBasic
                                             string? s = Console.ReadLine();
                                             if (byte.TryParse(s, out byte mode))
                                             {
-                                                if ((mode > 0) && (mode <= 6) && (mode != 3))
+                                                if ((mode > 0) && (mode <= sensorQuitModeNo) && (mode != 3) && (mode != 4))
                                                 {
                                                     sensorMode = (byte)mode;
                                                     found = true;
-                                                    if (sensorMode == 6)
+                                                    if (sensorMode == 7)
                                                     {
                                                         keepRunning = false;
                                                     }
@@ -470,7 +473,7 @@ namespace FirmataBasic
                                                 string key = s;
                                                 if (key.ToUpper()=="Q")
                                                 {
-                                                    sensorMode = 6;
+                                                    sensorMode = sensorQuitModeNo;
                                                     keepRunning = false;
                                                 }
                                             }
@@ -484,7 +487,7 @@ namespace FirmataBasic
                                         }
                                         
                                     }
-                                    if (sensorMode == 6)
+                                    if (sensorMode == sensorQuitModeNo)
                                     {
                                         Console.WriteLine("Quitting app. Please wait.");
                                         break;
@@ -498,7 +501,7 @@ namespace FirmataBasic
                                     }
                                     else if (sensorMode == 3)
                                     {
-                                        string indxStr = SoftataLib.Sensor.SendTelemetry((byte)sensorLinkedListIndex);
+                                        string indxStr = SoftataLib.Sensor.SendTelemetryBT((byte)sensorLinkedListIndex);
                                         if (int.TryParse(indxStr, out int val))
                                             Console.WriteLine($"Streaming to BT started. List No:{val}");
                                         else
@@ -507,14 +510,26 @@ namespace FirmataBasic
                                     }
                                     else if (sensorMode == 4)
                                     {
+                                        string indxStr = SoftataLib.Sensor.SendTelemetryToIoTHub((byte)sensorLinkedListIndex);
+                                        if (int.TryParse(indxStr, out int val))
+                                        { 
+                                            Console.WriteLine($"Streaming to Azure IoT Hub started. List No:{val}");
+                                        }
+                                            else
+                                            Console.WriteLine($"Streaming to Azure IoT Hub failed to start.");
+                                        showMenu = true;
+                                    }
+                                    else if (sensorMode == 5)
+                                    {
                                         string json = SoftataLib.Sensor.PauseSendTelemetry((byte)sensorLinkedListIndex);
                                         Console.WriteLine($"json {json}");
                                     }
-                                    else if (sensorMode == 5)
+                                    else if (sensorMode == 6)
                                     {
                                         string json = SoftataLib.Sensor.ContinueSendTelemetry((byte)sensorLinkedListIndex);
                                         Console.WriteLine($"json {json}");
                                     }
+                
                                     else if (sensorMode == 1)
                                     {
                                         double[]? values = SoftataLib.Sensor.ReadAll((byte)sensorLinkedListIndex,debug);

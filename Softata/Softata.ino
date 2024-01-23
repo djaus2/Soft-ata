@@ -51,11 +51,21 @@ void setup() {
   Serial.printf("\nConnected to WiFi\n\nConnect to server at %s:%d\n", WiFi.localIP().toString().c_str(), port);
 
   server.begin();
-  watchdog_enable(WATCHDOG_SECS * 1000, false);
+  
   InitSensorList();
   InitDisplayList();
   InitActuatorList();  
   first = false;
+  // Just to be safe don't simulatabeously setup server and client
+  uint32_t val = 137;
+  Serial.println(val);
+  rp2040.fifo.push(val);
+  uint32_t sync = rp2040.fifo.pop();
+  if(val==sync)
+    Serial.println("Core1 and Core2 Setup Sync OK");
+  else
+    Serial.println("Core1 and Core2 Setup Sync Fail");
+  watchdog_enable(WATCHDOG_SECS * 1000, false);
 }
 
 //Ref: https://www.thegeekpub.com/276838/how-to-reset-an-arduino-using-code/
@@ -720,26 +730,36 @@ void loop() {
                       info->isSensor=true;
                       info->sendBT=false;
                       info->SensorIndex = index;
-                      int LEDListIndex = AddCallBack(info); //2 Finish
+
+                      // Lock around Callbacks
+                      rp2040.idleOtherCore();
+                      int LEDListIndex = AddCallBack(info);
                       node->TelemetryStreamNo = LEDListIndex;
-                      String msg = String("OK:");
+                      rp2040.resumeOtherCore();
+
+                      msg = String("OK:");
                       msg.concat(LEDListIndex);
                     }
                     else
                     {
                       msg=String("Fail:SendTelemetryToIoTHub-Sensor not found");
                     }
+                    Serial.println(msg);
                     client.print(msg);
                   } 
                   break; 
                 case s_pause_sendTelemetry:
                   {
+                    Serial.println("Pause start");
                     int index = other;
                     SensorListNode * node = GetNode(index);
                     String msg;
                     if(node != NULL)
                     {
-                      if(PauseTelemetrySend(node->TelemetryStreamNo))
+                      int num = node->TelemetryStreamNo*1000 + 0;
+                      rp2040.fifo.push(num);
+                      uint32_t sync = rp2040.fifo.pop();
+                      if(sync == 1)
                       {
                         msg = String("OK:");
                       }
@@ -752,6 +772,7 @@ void loop() {
                     {
                       msg = String("Fail:Pause_sendTelemetry()-Sensor not found");
                     }
+                    Serial.println(msg);
                     client.print(msg);
                   } 
                   break;  
@@ -762,19 +783,23 @@ void loop() {
                     String msg;
                     if(node != NULL)
                     {
-                      if(ContinueTelemetrySend(node->TelemetryStreamNo))
+                      int num = node->TelemetryStreamNo*1000 + 1;
+                      rp2040.fifo.push(num);
+                      uint32_t sync = rp2040.fifo.pop();
+                      if(sync == 1)
                       {
                         msg = String("OK:");
                       }
                       else
                       {
-                        msg = String("Fail:Pause_sendTelemetry()-Continue error");
+                        msg = String("Fail:Pause_sendTelemetry()-Pause error");
                       }
                     }
                     else
                     {
                       msg = String("Fail:Pause_sendTelemetry()-Sensor not found");
                     }
+                    Serial.println(msg);
                     client.print(msg);
                   } 
                   break;         
@@ -1211,11 +1236,15 @@ void loop() {
   client.flush();
 }
 
+///////////////////////////
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <SerialBT.h>
+#include "iothub.h"
 
 bool Led_State = false;
+bool doingIoTHub = false;
 
 
 String call_callback_func(String(*call_back)(void))
@@ -1230,6 +1259,11 @@ int AddCallBack(CallbackInfo * info)
   info->next = millis() + info->period;;
   int LEDListIndex=AddSensorToCore2List(info);
   numSensors = LEDListIndex +1;
+  // Turn on mqtt loop if IoT Hub Sends
+  if((info->isSensor)&&(!info->sendBT))
+  {
+    doingIoTHub=true;
+  }
   return LEDListIndex;
 }
 
@@ -1279,6 +1313,7 @@ void setup1() {
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, LOW);
   Led_State = false;
+  doingIoTHub = false;
 
   InitCore2SensorList();
   InbuiltLED.period = 2000;
@@ -1288,9 +1323,29 @@ void setup1() {
   int LEDListIndex = AddCallBack(&InbuiltLED);
 
   while(!Serial);
+
+  // Wait for other Setup to finish
+  uint32_t sync = rp2040.fifo.pop();
+  establishConnection();
+  rp2040.fifo.push(sync);
 }
 
 void loop1() {
+  if (rp2040.fifo.available())
+  {
+    uint32_t val = rp2040.fifo.pop();
+    int index = val / 1000;
+    int state = val % 1000;
+    bool res = false;
+    if (state ==0)
+      res =  PauseTelemetrySend(index);
+    else
+      res =  ContinueTelemetrySend(index);
+    if(res)
+      rp2040.fifo.push(1);
+    else
+      rp2040.fifo.push(0);
+  }
   for (int i=0; i< numSensors;i++)
   {
     CallbackInfo * info = GetCallbackInfoFromCore2List(i);
@@ -1330,10 +1385,19 @@ void loop1() {
         String res = grove_Sensor->GetTelemetry();
         if(!(res == String("")))
         {
-          //Fwd json
-          //2DO send to Azure IoT Hub
+          if (!mqtt_client.connected())
+          {
+            establishConnection();
+          }
+          // Send Telemetry to IoT Hub
+          sendTelemetry(res);
         }
       }
+    }
+    if(doingIoTHub)
+    {
+       // MQTT loop must be called to process Device-to-Cloud and Cloud-to-Device.
+      mqtt_client.loop();
     }
   }
 }

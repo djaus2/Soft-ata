@@ -32,14 +32,6 @@ CallbackInfo * Grove_URangeSensor::GetCallbackInfo()
     info.sendBT = false;
     info.isSensor=false;
     info.isRunning=false;
-                    Serial.println("info in class:");
-                    Serial.println(info.period); 
-                    Serial.println(info.next); 
-                    Serial.println(info.SensorIndex);
-                    Serial.println(info.sendBT);
-                    Serial.println(info.isSensor);
-                    Serial.println(info.isRunning);
-                    Serial.println("End info in class");
     return &info;
 }
 

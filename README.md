@@ -65,9 +65,9 @@ _Soft-ata rather than firm-ata!_
 ## Latest
 
 _See **Repository Status** below._
+- Azure IoT Hub telemtry streaming
 - Restructed Display part of Console app.
 - Improved Sensor UI in Console app
-- Improved menu driven Serial with serial GPS option. _(Includes bug fix)_
 - _More:_ See Repository Status
 
 ## Blog Post
@@ -109,6 +109,9 @@ This requires a setup as per previous repositories here as well as in some blog 
 ------
 
 ## Repository Status
+- Version 3.99
+  - Can stream sensor telemetry to Azure IoT Hub.
+    -  _(Pause and continue don't work for it. 2Do)_
 - Version 3.20
   - Restructed Display part of Console app:  
 More generic for if other displays are added.
