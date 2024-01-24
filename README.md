@@ -8,17 +8,21 @@ Console app included with Blazor and MAUI apps coming soon.
 _Soft-ata rather than firm-ata!_ 
 
 ## About
-<font color="purple">
-_The plan was to implement an Arduino app to run on a RPi Pico W placed in a Grove RPi Pico Shield. 
+
+***The plan was to implement an Arduino app to run on a RPi Pico W placed in a Grove RPi Pico Shield. 
 The Grove instructure being used because of it's simple standardised connectivity between devices and the shield at both ends.
 Rather than implement a general purpose interface for devices in One Wire, I2C or SPI, etc, 
 make use of existing Arduino libraries for Grove devices. 
-Also implement a base library for each device type (sensor display, actuator etc) such
-that each can be extended for each device of thta type by implementing teh base methods. 
+Also implement a class for each device type (sensor display, actuator etc) such
+that the class can be extended for each actual device of that type by implementing the base methods. 
 That way, the functionality of the app for a device type needs no modification for any additions. 
-Additional non Grove devices can be added by connecting to a Grove cable. 
-Ultimately the intention was to stream Telemetry from sensors to an Azure IoT Hub._
-</font>
+Additional non Grove devices can be added by connecting to a Grove cable.   
+Ultimately the intention was to stream Telemetry from sensors to an Azure IoT Hub  
+Communication with a host app uses a client service model with the service running on the Arduino app connected to by clients running on a hots 
+
+A .NET library was built that communicates to the service as mirror of the Arduino functionality. 
+A Console app was built to fully test and demonstrate this functionality. A Blazor app to do same is under development. ***
+
 
 # API Documentation
 
