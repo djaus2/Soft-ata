@@ -15,7 +15,7 @@ _Soft-ata rather than firm-ata!_
 
 ## Local Docs
 
-- [ReadMe .. this](./REAME.md)
+- [ReadMe .. this](./README.md)
 - [Softata API](./SoftataAPI.md)
 - [Repository History](./RepositoryHistory.md)
 - [Original ReadMe](./OldREADME.md)
