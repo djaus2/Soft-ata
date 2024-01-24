@@ -105,8 +105,8 @@ The Console test app has multiple options:
 
 ## Roadmap
 
-- Azure IoT Hub connectivity
-- Second core, currently flashes inbuilt LED. Add periodic read sensors and send, eg as Telemetry to that.
+- Completed
+- _Please leave suggestions in Issues or Discussions,thx_
 - _More:_ See the Blog post 
 
 ------
