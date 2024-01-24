@@ -1,4 +1,4 @@
-# Soft-ata
+# Soft-ata API
 
 ## In Brief
 **An Arduino app _LIKE_ Firmata for RPI Pico W running Arduino.**
