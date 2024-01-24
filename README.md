@@ -24,6 +24,7 @@ _Soft-ata rather than firm-ata!_
 
 _See **Repository Status** below._
 - Azure IoT Hub telemtry streaming
+  - Uses the implementation on GitHub at [djaus2/Azure_IoT_Hub_Arduino_RPI_Pico_Telemetry](https://github.com/djaus2/Azure_IoT_Hub_Arduino_RPI_Pico_Telemetry)
 - Restructed Display part of Console app.
 - Improved Sensor UI in Console app
 - _More:_ See Repository Status
