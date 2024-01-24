@@ -11,6 +11,13 @@ _Soft-ata rather than firm-ata!_
 
 [Full API documentation](https://davidjones.sportronics.com.au/cats/softata/) __(Extended/updated)__
 
+## Local Docs
+
+- [ReadMe](./REAME.md)
+- [Softata API ... this](./SoftataAPI.md)
+- [Repository History](./RepositoryHistory.md)
+- [Original ReadMe](./OldREADME.md)
+
 # Grove API
 
 - Grove Sensors DHT11,BME280 and Ultrasonic Ranger implemented

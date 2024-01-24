@@ -13,6 +13,13 @@ _Soft-ata rather than firm-ata!_
 
 - Coming: How to add devices, and a call-to-arms!
 
+## Local Docs
+
+- [ReadMe](./REAME.md)
+- [Softata API](./SoftataAPI.md)
+- [Repository History ... this](./RepositoryHistory.md)
+- [Original ReadMe](./OldREADME.md)
+
 ## Repository History
 - Version 4.00
   - Can stream sensor telemetry to Azure IoT Hub.

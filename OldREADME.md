@@ -13,6 +13,13 @@ _Soft-ata rather than firm-ata!_
 
 - Coming: How to add devices, and a call-to-arms!
 
+## Local Docs
+
+- [ReadMe](./REAME.md)
+- [Softata API](./SoftataAPI.md)
+- [Repository History](./RepositoryHistory.md)
+- [Original ReadMe ... this](./OldREADME.md)
+
 # Grove API
 
 - Grove Sensors DHT11,BME280 and Ultrasonic Ranger implemented
