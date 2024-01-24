@@ -18,7 +18,7 @@ _Soft-ata rather than firm-ata!_
 - [ReadMe .. this](./REAME.md)
 - [Softata API](./Softata.md)
 - [Repository History](./RepositoryHistory.md)
-- [Original ReadMe](./OldREAME.md)
+- [Original ReadMe](./OldREADME.md)
 
 ## Latest
 
