@@ -1,4 +1,4 @@
-# Soft-ata
+# Soft-ata Repository History
 
 ## In Brief
 **An Arduino app _LIKE_ Firmata for RPI Pico W running Arduino.**
