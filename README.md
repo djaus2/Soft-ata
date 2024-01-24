@@ -66,18 +66,22 @@ This requires a setup as per previous repositories here as well as in some blog 
 ## Required Arduino Libraries
 
 - [DHT11_Temperature_And_Humidity_Sensor](https://github.com/RobTillaart/Arduino/tree/master/libraries/DHTlib)
-  - Direct library install from Arduino Search for **DHTlib**
+  - Direct library install from Arduino. Search for **DHTlib**
 - [BMx280BMI](https://bitbucket.org/christandlg/bmx280mi/src/master/)
-  - Direct library install from Arduino Search for **BMx280BMI**
+  - Direct library install from Arduino. Search for **BMx280BMI**
 - [Grove_Ultrasonic_Ranger](https://github.com/Seeed-Studio/Seeed_Arduino_UltrasonicRanger)
   - Zip file install from [here](https://github.com/Seeed-Studio/Seeed_Arduino_UltrasonicRanger/archive/master.zip)
 - [ubg2](https://github.com/olikraus/u8g2) For [Grove OLED096 Display](https://wiki.seeedstudio.com/Grove-OLED_Display_0.96inch/)
-  - Direct library install from Arduino Search for **ubg2**
+  - Direct library install from Arduino. Search for **ubg2**
 - [Grove_LCD_RGB_Backlight](https://github.com/Seeed-Studio/Grove_LCD_RGB_Backlight) For Grove-LCD RGB V4.00
   - Zip file install from [here](https://github.com/Seeed-Studio/Grove_LCD_RGB_Backlight/archive/master.zip) 
 - [Adafruit NeoPixel](https://github.com/adafruit/Adafruit_NeoPixel)
-  - Direct library install from Arduino Search for **Adafruit NeoPixel**
-
+  - Direct library install from Arduino, Search for **Adafruit NeoPixel**
+- [PubSubClient](https://pubsubclient.knolleary.net/)
+  - Direct library install from Arduino. Search for **PubSubClient**
+- [Azure SDK for C - Arduino](https://github.com/Azure/azure-sdk-for-c-arduino)
+  - Direct library install from Arduino. Search for **Azure SDK for C** b Microsoft.
+  - Zip install from (azure-sdk-for-c-arduino/releases)[https://github.com/Azure/azure-sdk-for-c-arduino/releases]
 ------
 
 ## Usage
