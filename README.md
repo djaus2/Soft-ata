@@ -18,7 +18,7 @@ that each can be extended for each device of thta type by implementing teh base 
 That way, the functionality of the app for a device type needs no modification for any additions. 
 Additional non Grove devices can be added by connecting to a Grove cable. 
 Ultimately the intention was to stream Telemetry from sensors to an Azure IoT Hub._
-</font>>
+</font>
 
 # API Documentation
 
