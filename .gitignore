@@ -361,5 +361,14 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
-/NetStandardSoftata
 /MeadowLab
+/MeadowLab/MeadowApp.cs
+/NetStandardSoftata/Actuator.cs
+/NetStandardSoftata/Analog .cs
+/NetStandardSoftata/Digital.cs
+/NetStandardSoftata/Displays.cs
+/NetStandardSoftata/NetStandardSoftata.csproj
+/NetStandardSoftata/Sensor.cs
+/NetStandardSoftata/Serial.cs
+/NetStandardSoftata/SofataDeviceInterface.cs
+/NetStandardSoftata/SoftataLib.cs
