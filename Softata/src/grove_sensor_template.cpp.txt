@@ -1,0 +1,109 @@
+#include "grove_template.h"
+#include <arduino.h>
+//#include <????.h> // Header to teh device's Arduino librrary
+#include "../Softata.h"
+
+
+#ifdef GROVE_RPI_PICO_SHIELD
+// Insert, see DHT11 and BME280
+#elif defined(RPI_PICO_DEFAULT)
+// Insert, see DHT11 and BME280
+#endif
+
+
+
+
+
+
+    Grove_SensorTemplate::Grove_SensorTemplate()
+    {
+      //Any class instantiation
+    }
+
+  
+
+    bool Grove_SensorTemplate::Setup(byte * settings, byte numSettings)
+    {
+      if(numSettings>0)
+      {
+        int pin = settings[0];
+        return SetupPin(pin);
+      }
+      else
+        return false;
+    }
+ 
+    bool Grove_DHT11::Setup()
+    {
+      return SetupPin(DEFAULT_PIN);
+      num_properties = NUM_PROPERTIES;
+    }
+
+    bool Grove_DHT11::SetupPin(int pin)
+    {
+      // Check that the nominated pin is valid
+      bool found = false;
+#ifdef GROVE_RPI_PICO_SHIELD
+      for (int i=0;i<NUM_PINS;i++)
+      {
+        if(pin == Pins[i])
+        {
+          found= true;
+          break;
+        }
+      }
+#elif defined(RPI_PICO_DEFAULT)
+      if ((pin>=PIN_START) && (pin<=PIN_END))
+        found = true;
+#endif
+      if(!found)
+        return false;
+
+      //Set the sensor pin
+      Pin = pin;
+      // Additional setup here
+      return true;
+    }
+
+    bool Grove_DHT11::ReadAll(double * values)
+    {
+      //Read all values and assign to values array eg:
+      values[0] = DHT.temperature;
+      values[1] = DHT.humidity;
+      return true;
+    }
+
+    String Grove_DHT11::GetTelemetry()
+    {
+      double values[NUM_PROPERTIES];
+      if(ReadAll(values))
+      {
+        String msg="{";
+        //Construct json string from num_properties
+        // See DHT11 and BME280
+        msg.concat("}");
+        return msg;
+      }
+      else
+        return "ERRORDBL";
+}
+
+CallbackInfo * Grove_DHT11::GetCallbackInfo()
+{
+    info.period = 314159;
+    info.next = 137;
+    info.SensorIndex = 123456;
+    info.sendBT = false;
+    info.isSensor=false;
+    info.isRunning=false;
+    return &info;
+}
+
+    double Grove_DHT11::Read(int property)
+    {
+      // Read and return teh nth property
+      // Might need to readall then select int
+      // See DHT11 and BME280
+    }
+
+

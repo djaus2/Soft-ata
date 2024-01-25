@@ -4,6 +4,8 @@
 #include "grove.h"
 #include "../Softata.h"
 
+#define NUM_PROPERTIES 0
+
 
 
 #define C(x) x,

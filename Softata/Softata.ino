@@ -592,6 +592,7 @@ void loop() {
                     {
                       if(param==s_setupdefaultCMD)
                       {
+                        //Default setup
                         if(grove_Sensor->Setup())
                         {
                           int index = AddSensorToList(grove_Sensor);
@@ -605,6 +606,7 @@ void loop() {
                         }
                       else
                       {
+                        // Non-default setup
                         byte settings[1];
                         settings[0] = pin;
                         if(grove_Sensor->Setup(settings,1))
