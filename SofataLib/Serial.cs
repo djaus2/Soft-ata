@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static Softata.SoftataLib;
+using static NetStandard_Softata.SoftataLib;
 
 namespace Softata
 {

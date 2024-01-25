@@ -9,10 +9,6 @@ using System.Net.Sockets;
 using System.IO;
 using System.Threading;
 
-using Softata;
-using static Softata.SoftataLib;
-using System.Runtime.ConstrainedExecution;
-using System.Reflection.Metadata;
 
 namespace FirmataBasic
 {
@@ -840,15 +836,15 @@ namespace FirmataBasic
                                     Console.WriteLine("Connect Potentiometer to A0.");
                                     Console.WriteLine("Press any key to continue.");
                                     Console.ReadLine();
-                                    Softata.SoftataLib.Analog.SetAnalogPin(Analog.AnalogDevice.Potentiometer, POTENTIOMETER, 1023);
+                                    NetStandard_Softata.SoftataLib.Analog.SetAnalogPin(Analog.AnalogDevice.Potentiometer, POTENTIOMETER, 1023);
                                     Console.WriteLine("Turn potetiometer full in one direction.");
                                     Console.WriteLine("Press any key to continue.");
                                     Console.ReadLine();
-                                    double max1 = Softata.SoftataLib.Analog.AnalogReadPotentiometer();
+                                    double max1 = NetStandard_Softata.SoftataLib.Analog.AnalogReadPotentiometer();
                                     Console.WriteLine("Turn potetiometer full in other direction.");
                                     Console.WriteLine("Press any key to continue.");
                                     Console.ReadLine();
-                                    double max2 = Softata.SoftataLib.Analog.AnalogReadPotentiometer();
+                                    double max2 = NetStandard_Softata.SoftataLib.Analog.AnalogReadPotentiometer();
                                     if (max1>max2)
                                     {
                                         double temp = max2;
@@ -861,7 +857,7 @@ namespace FirmataBasic
                                     Console.WriteLine("Runs for 20 steps.");
                                     for(int i=0; i<20;i++)
                                     {
-                                        double val = Softata.SoftataLib.Analog.AnalogReadPotentiometer();
+                                        double val = NetStandard_Softata.SoftataLib.Analog.AnalogReadPotentiometer();
                                         byte angle = (byte)(180 * (val - max1) / (max2 - max1));
                                         Console.WriteLine($"\t\t\t\tAngle: {angle}");
                    
