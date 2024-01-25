@@ -7,6 +7,26 @@ Console app included with Blazor and MAUI apps coming soon.
   
 _Soft-ata rather than firm-ata!_ 
 
+## About
+
+***The plan was to implement an Arduino app to run on a [RPi Pico W](https://www.raspberrypi.com/documentation/microcontrollers/raspberry-pi-pico.html) placed in a [Grove Shield for Pi Pico](https://www.seeedstudio.com/Grove-Shield-for-Pi-Pico-v1-0-p-4846.html).  
+The Pico W has onboard Arduino implemented using the [earlephilhowe BSP implementation](https://github.com/earlephilhower/arduino-pico). 
+The Grove instructure being used because of it's simple standardised connectivity between devices and the shield at both ends.
+Rather than impelement a general purpose interface for devices in One Wire, I2C or SPI, etc, 
+make use of existing Arduino libraries for Grove devices. 
+Also implement a class for each device type (sensor display, actuator etc) such
+that the class can be extended for each actual device of that type by implementing the base methods. 
+That way, the functionality of the app for a device type needs no modification for any additions. 
+Additional non Grove devices can be added by connecting to a Grove cable.   
+Ultimately the intention was to stream Telemetry from sensors to an Azure IoT Hub  
+Communication with a host app uses a client service model with the service running on the Arduino app connected to by clients running on a host. 
+This is all now functional. 
+
+A .NET library was built that communicates to the service as a mirror of the Arduino functionality. 
+A Console app was built to fully test and demonstrate this functionality. A Blazor app to do same is under development. 
+Similarly a .NET MAUI app is envisaged. Finally, a port of the .NET library to the [Wilderness Labs Project Lab V3 ](https://store.wildernesslabs.co/products/project-lab-board)device is also envisaged.***
+
+
 # API Documentation
 
 [Full API documentation](https://davidjones.sportronics.com.au/cats/softata/) __(Extended/updated)__
@@ -24,6 +44,7 @@ _Soft-ata rather than firm-ata!_
 
 _See **Repository Status** below._
 - Azure IoT Hub telemtry streaming
+  - Uses the implementation on GitHub at [djaus2/Azure_IoT_Hub_Arduino_RPI_Pico_Telemetry](https://github.com/djaus2/Azure_IoT_Hub_Arduino_RPI_Pico_Telemetry)
 - Restructed Display part of Console app.
 - Improved Sensor UI in Console app
 - _More:_ See Repository Status
@@ -66,34 +87,47 @@ This requires a setup as per previous repositories here as well as in some blog 
 ## Required Arduino Libraries
 
 - [DHT11_Temperature_And_Humidity_Sensor](https://github.com/RobTillaart/Arduino/tree/master/libraries/DHTlib)
-  - Direct library install from Arduino Search for **DHTlib**
+  - Direct library install from Arduino. Search for **DHTlib**
 - [BMx280BMI](https://bitbucket.org/christandlg/bmx280mi/src/master/)
-  - Direct library install from Arduino Search for **BMx280BMI**
+  - Direct library install from Arduino. Search for **BMx280BMI**
 - [Grove_Ultrasonic_Ranger](https://github.com/Seeed-Studio/Seeed_Arduino_UltrasonicRanger)
   - Zip file install from [here](https://github.com/Seeed-Studio/Seeed_Arduino_UltrasonicRanger/archive/master.zip)
 - [ubg2](https://github.com/olikraus/u8g2) For [Grove OLED096 Display](https://wiki.seeedstudio.com/Grove-OLED_Display_0.96inch/)
-  - Direct library install from Arduino Search for **ubg2**
+  - Direct library install from Arduino. Search for **ubg2**
 - [Grove_LCD_RGB_Backlight](https://github.com/Seeed-Studio/Grove_LCD_RGB_Backlight) For Grove-LCD RGB V4.00
   - Zip file install from [here](https://github.com/Seeed-Studio/Grove_LCD_RGB_Backlight/archive/master.zip) 
 - [Adafruit NeoPixel](https://github.com/adafruit/Adafruit_NeoPixel)
-  - Direct library install from Arduino Search for **Adafruit NeoPixel**
-
+  - Direct library install from Arduino, Search for **Adafruit NeoPixel**
+- [PubSubClient](https://pubsubclient.knolleary.net/)
+  - Direct library install from Arduino. Search for **PubSubClient**
+- [Azure SDK for C - Arduino](https://github.com/Azure/azure-sdk-for-c-arduino)
+  - Direct library install from Arduino. Search for **Azure SDK for C** b Microsoft.
+  - Zip install from (azure-sdk-for-c-arduino/releases)[https://github.com/Azure/azure-sdk-for-c-arduino/releases]
 ------
 
 ## Usage
 
 See the [Console app](/SoftataConsole) but the IpAddress as determined when the Pico W runs must match that in the library. The ports must also match.
-The test app has three options:
-- Digital IO: Button to LED
-- Analog/PWM: Potentiometer sets LED brightness.
-- Serial1 and Serial2 loopback tests.
+The Console test app has multiple options:
+
+- 1  Digital
+- 2  Analog
+- 3  PWM
+- 4  Servo
+- 5  Sensors
+- 6  Displays
+- 7  Serial
+- 8  PotLightSoundAnalog
+- 9  UltrasonicRange
+- 10  PotRelay
+- 11  PotServo
 
 ------
 
 ## Roadmap
 
-- Azure IoT Hub connectivity
-- Second core, currently flashes inbuilt LED. Add periodic read sensors and send, eg as Telemetry to that.
+- Completed
+- _Please leave suggestions in Issues or Discussions,thx_
 - _More:_ See the Blog post 
 
 ------
