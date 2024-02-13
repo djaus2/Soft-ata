@@ -1,0 +1,277 @@
+﻿@page "/digital"
+
+
+@using Softata;
+@using static Softata.SoftataLib;
+@inject AppState AppState
+@using BlazorPro.Spinkit
+
+<PageTitle>Softata</PageTitle>
+<h1>Softata</h1>
+<i><b>Softata:</b> A Firmata like C# library connecting to a RPi Pico W running Arduino.</i>
+@if (!string.IsNullOrEmpty(AppState.AppVersion))
+{
+    <tr>
+        <td><b>App Version: </b></td>
+        <td>@AppState.AppVersion</td>
+    </tr>
+}
+@if (!string.IsNullOrEmpty(AppState.Connected))
+{
+    <tr>
+        <td><b>Connected: </b></td>
+        <td>@AppState.Connected</td>
+    </tr>
+}
+@if (!string.IsNullOrEmpty(AppState.DevicesCSV))
+{
+    <tr>
+        <td><b>Device Types: </b></td>
+        <td>@AppState.DevicesCSV.Replace("DEVICES:", "")</td>
+    </tr>
+}
+@if (!(AppState.TestType == CommandType.MaxType))
+{
+    <tr>
+        <td><b>Selected Test Type: </b></td>
+        <td>@AppState.TestType</td>
+    </tr>
+}
+
+<hr />
+
+@if (Busy)
+{
+    <Pulse />
+    <p>Please wait ...</p>
+}
+else if(AppState.Running)
+{
+    <Fold />
+    <p>Running ...</p>
+}
+
+@if (AppState.ReadytoRun)
+{
+    <h4>Digital Button-LED Test </h4>
+    <p>
+        This page tests the digital input and output pins of the RPi Pico W with a Button and LED.<br />
+        Runs the digital test as per the Console app without user web page interaction<br /> but requires a button press to toggle the LED.
+    </p>
+    <p>Button Pin: @AppState.Button</p>
+    <p>LED Pin: @AppState.LED </p>
+    @if (!AppState.Running)
+    { 
+        @if (ReconnectVisible)
+        {
+            <button  class="btn btn-primary" @onclick="Reconnect">Reconnect and run test</button>
+        }
+        else if (RunVisble)
+        {
+            <button class="btn btn-primary" @onclick="Start">Run test</button>
+        }
+    }
+    else
+    {
+        <div class="form-group">
+            @switch (AppState.TestType)
+            {
+                case Softata.SoftataLib.CommandType.Digital:
+                    {
+                        <h2>Press hardware button to toggle LED.</h2>
+                        <h3>Hold until LED changes state = Button here is HIGH</h3>
+
+                        <table>
+                            <tr>
+                                <td width="150">Button:</td>
+                                <td rowspan="2">
+                                    <div class="row">
+                                        <div class="lights">
+                                            <div class="yellow @(Buttonstate== SoftataLib.PinState.HIGH ? "on" : "off")"></div>
+                                            <div class="blue @(LEDstate== SoftataLib.PinState.HIGH ? "on" : "off")"></div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>&nbsp;&nbsp;</td>
+                                <td>@Buttonstate</td>
+                            </tr>
+                            <tr>
+                                <td>LED:</td>
+                                <td>&nbsp;&nbsp;</td>
+                                <td>@LEDstate</td>
+                            </tr>
+                        </table>
+                    }
+                    break;
+            }
+
+        </div>
+
+
+        <button class="btn btn-primary" @onclick="Stop">Cancel</button>
+
+        
+    }
+}
+
+
+
+
+
+@code {
+
+    bool busy = false;
+    bool Busy
+    {
+        get => busy;
+        set { busy = value; StateHasChanged(); }
+    }
+
+    public class LEDandButtonStates
+    {
+        public SoftataLib.PinState LEDstate { get; set; } = SoftataLib.PinState.LOW;
+        public SoftataLib.PinState Buttonstate { get; set; } = SoftataLib.PinState.LOW;
+    }
+    bool reconnectable = false;
+
+    Queue<LEDandButtonStates> queue = new Queue<LEDandButtonStates>();
+
+    SoftataLib.PinState LEDstate = SoftataLib.PinState.LOW;
+    SoftataLib.PinState Buttonstate { get; set; } = SoftataLib.PinState.LOW;
+
+    public System.Threading.WaitHandle Trigger { get; set; }
+
+
+    protected override void OnInitialized()
+    {
+        AppState.OnChange += StateHasChanged;
+        AppState.ReadytoRun = true; ;
+        AppState.Running = false;
+        ReconnectVisible = false;
+        RunVisble = true;
+
+    }
+
+    private async Task Start()
+    {
+        AppState.Running = true;
+        StateHasChanged();
+        await Task.Delay(100);
+
+        queue = new Queue<LEDandButtonStates>();
+        Trigger = new System.Threading.ManualResetEvent(false);
+        var thread = new System.Threading.Thread(_ =>
+        {
+            Trigger.WaitOne();
+            Run();
+        });
+
+        thread.Start();
+        queue = new Queue<LEDandButtonStates>();
+        await Task.Delay(100);
+        ((ManualResetEvent)Trigger).Set();
+        while(AppState.Running)
+        {
+            try
+            {
+                if (queue.TryDequeue(out LEDandButtonStates? states))
+                {
+                    if (states != null)
+                    {
+                        Buttonstate = states.Buttonstate;
+                        LEDstate = states.LEDstate;
+                        StateHasChanged();
+                    }
+                }
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            await Task.Delay(333);
+        }
+        RunVisble = false;
+        Busy = true;
+        StateHasChanged();
+        await Task.Delay(333);
+        SoftataLib.SendMessageCmd("End");      
+        await Task.Delay(30000);
+        Busy = false;
+        await Task.Delay(100);
+        ReconnectVisible = true;
+        StateHasChanged();
+    }
+
+    bool RunVisble { get; set; } = false;
+    bool ReconnectVisible  { get; set; } = false;
+
+    private void Stop()
+    {
+        AppState.Running = false;
+        StateHasChanged();
+    }
+
+    private async void Reconnect()
+    {
+        Busy = true;
+        StateHasChanged();
+        await Task.Delay(100);
+        ReconnectVisible = false;
+        SoftataLib.Reconnect();
+        StateHasChanged();
+        await Task.Delay(1000);
+        Busy = false;
+        StateHasChanged();
+        await Task.Delay(100);
+        await Start();
+    }
+
+
+    private  async void Run()
+    {
+        LEDandButtonStates states = new LEDandButtonStates();
+
+
+        byte BUTTON = AppState.Button;
+        byte LED = AppState.LED;
+
+        SoftataLib.Digital.SetPinMode((byte)BUTTON, SoftataLib.PinMode.DigitalInput);
+        SoftataLib.Digital.SetPinMode((byte)LED, SoftataLib.PinMode.DigitalOutput);
+
+        SoftataLib.PinState state = SoftataLib.PinState.HIGH;
+        SoftataLib.PinState buttonState = SoftataLib.PinState.LOW;
+        SoftataLib.Digital.SetPinState(LED, state);
+        states.Buttonstate = buttonState;
+        states.LEDstate = state;
+        queue.Enqueue(states); ;
+
+        for (int i = 0; i < 6; i++)
+        {
+            if (!AppState.Running) return;
+            while (!SoftataLib.Digital.GetPinState(BUTTON))
+            {
+                await Task.Delay(333); ;
+                if (!AppState.Running) return;
+            };
+
+            states.Buttonstate = SoftataLib.PinState.HIGH;
+            state = (state == SoftataLib.PinState.HIGH) ? SoftataLib.PinState.LOW : SoftataLib.PinState.HIGH;
+            SoftataLib.Digital.SetPinState(LED, state);
+            states.LEDstate = state;
+            queue.Enqueue(states);
+
+            while (SoftataLib.Digital.GetPinState(BUTTON))
+            {
+                await Task.Delay(333);
+                if (!AppState.Running) return;
+            }
+            states.Buttonstate = SoftataLib.PinState.LOW;
+            queue.Enqueue(states);
+        }
+        AppState.Running = false;
+        await Task.Delay(333);
+       
+    }
+
+}
+

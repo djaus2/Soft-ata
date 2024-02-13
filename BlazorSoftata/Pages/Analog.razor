@@ -1,0 +1,289 @@
+﻿@page "/analog"
+
+
+@using Softata;
+@using static Softata.SoftataLib;
+@inject AppState AppState
+@using BlazorPro.Spinkit
+
+<PageTitle>Softata</PageTitle>
+<h1>Softata</h1>
+<i><b>Softata:</b> A Firmata like C# library connecting to a RPi Pico W running Arduino.</i>
+@if (!string.IsNullOrEmpty(AppState.AppVersion))
+{
+    <tr>
+        <td><b>App Version: </b></td>
+        <td>@AppState.AppVersion</td>
+    </tr>
+}
+@if (!string.IsNullOrEmpty(AppState.Connected))
+{
+    <tr>
+        <td><b>Connected: </b></td>
+        <td>@AppState.Connected</td>
+    </tr>
+}
+@if (!string.IsNullOrEmpty(AppState.DevicesCSV))
+{
+    <tr>
+        <td><b>Device Types: </b></td>
+        <td>@AppState.DevicesCSV.Replace("DEVICES:", "")</td>
+    </tr>
+}
+@if (!(AppState.TestType == CommandType.MaxType))
+{
+    <tr>
+        <td><b>Selected Test Type: </b></td>
+        <td>@AppState.TestType</td>
+    </tr>
+}
+
+<hr />
+
+@if (Busy)
+{
+    <Pulse />
+    <p>Please wait ...</p>
+}
+else if(AppState.Running)
+{
+    <Fold />
+    <p>Running ...</p>
+}
+
+@if (AppState.ReadytoRun)
+{
+    <h4>Analog Potentiometer-LED Test </h4>
+    <p>
+        This page tests the Analog input (potentiometer) and PWM output to an LED with the  RPi Pico W.<br />
+        Runs the test as per the Console app without user web page interaction.<br/>
+        The analog value is read on the Pico passed back to this app,<br />
+        processed then sent back to Pico as a PWM value for the LED. <br />
+        UI Lights show when certain threshholds are reached.
+    </p>
+
+
+    <h2>Setup</h2>
+
+    <ul>
+        <li>Connect a Potentiometer to pin @AppState.Potentiometer</li>
+        <li>Connect a LED to pin @AppState.LED</li>
+    </ul>
+
+    @if (!AppState.Running)
+    { 
+        @if (ReconnectVisible)
+        {
+            <button  class="btn btn-primary" @onclick="Reconnect">Reconnect and run test</button>
+        }
+        else if (RunVisble)
+        {
+            <button class="btn btn-primary" @onclick="Start">Run test</button>
+        }
+    }
+    else
+    {
+        <div class="form-group">
+            @switch (AppState.TestType)
+            {
+                case Softata.SoftataLib.CommandType.Analog:
+                    {
+                        <h2>Rotate the potentiometer slowly to change the brightness of the LED.</h2>
+                        <ul>
+                            <li>Pot glows when &lt;512/1023</li>
+                            <li>LED glows when &gt;127/255</li>
+                        </ul>
+
+                        <table>
+                            <tr>
+                                <td width="150">Potentiometer:</td>
+                                <td rowspan="2">
+                                    <div class="row">
+                                        <div class="lights">
+                                            <div class="red @(PotValue<512 ? "on" : "off")"></div>
+                                            <div class="green @(LEDValue>0x7f ? "on" : "off")"></div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>&nbsp;&nbsp;</td>
+                                <td>@PotValue</td>
+                            </tr>
+                            <tr>
+                                <td>LED:</td>
+                                <td>&nbsp;&nbsp;</td>
+                                <td>@LEDValue</td>
+                            </tr>
+                        </table>
+                    }
+                    break;
+            }
+
+        </div>
+
+
+        <button class="btn btn-primary" @onclick="Stop">Cancel</button>
+
+        
+    }
+}
+
+
+
+
+
+@code {
+    byte LEDValue = 0;
+    int PotValue { get; set; } = 0;
+
+    public class A2DandPWMValues
+    {
+        public int PotValue { get; set; } = 0;
+        public byte PWMValue { get; set; } = 0;
+    }
+
+    bool busy = false;
+    bool Busy
+    {
+        get => busy;
+        set { busy = value; StateHasChanged(); }
+    }
+
+    Queue<A2DandPWMValues> queue = new Queue<A2DandPWMValues>();
+
+
+
+
+
+    public System.Threading.WaitHandle Trigger { get; set; }
+    bool reconnectable = false;
+
+
+
+
+    protected override void OnInitialized()
+    {
+        AppState.OnChange += StateHasChanged;
+        AppState.ReadytoRun = true; ;
+        AppState.Running = false;
+        ReconnectVisible = false;
+        RunVisble = true;
+
+        queue = new Queue<A2DandPWMValues>();
+        Trigger = new System.Threading.ManualResetEvent(false);
+        var thread = new System.Threading.Thread(_ =>
+        {
+            Trigger.WaitOne();
+            Run();
+        });
+
+        thread.Start();
+
+    }
+
+    private async Task Start()
+    {
+        AppState.Running = true;
+        StateHasChanged();
+        await Task.Delay(100);
+
+        queue = new Queue<A2DandPWMValues>();
+        Trigger = new System.Threading.ManualResetEvent(false);
+        var thread = new System.Threading.Thread(_ =>
+        {
+            Trigger.WaitOne();
+            Run();
+        });
+
+        thread.Start();
+        queue = new Queue<A2DandPWMValues>();
+        await Task.Delay(100);
+        ((ManualResetEvent)Trigger).Set();
+        while(AppState.Running)
+        {
+            try
+            {
+                if (queue.TryDequeue(out A2DandPWMValues? states))
+                {
+                    if (states != null)
+                    {
+                        PotValue = states.PotValue;
+                        LEDValue = states.PWMValue;
+                        StateHasChanged();
+                    }
+                }
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            await Task.Delay(333);
+        }
+        RunVisble = false;
+        Busy = true;
+        StateHasChanged();
+        await Task.Delay(333);
+        SoftataLib.SendMessageCmd("End");      
+        await Task.Delay(30000);
+        Busy = false;
+        await Task.Delay(100);
+        ReconnectVisible = true;
+        StateHasChanged();
+    }
+
+    bool RunVisble { get; set; } = false;
+    bool ReconnectVisible  { get; set; } = false;
+
+    private void Stop()
+    {
+        AppState.Running = false;
+        StateHasChanged();
+    }
+
+    private async void Reconnect()
+    {
+        Busy = true;
+        StateHasChanged();
+        await Task.Delay(100);
+        ReconnectVisible = false;
+        SoftataLib.Reconnect();
+        StateHasChanged();
+        await Task.Delay(1000);
+        Busy = false;
+        StateHasChanged();
+        await Task.Delay(100);
+        await Start();
+    }
+
+
+    private  async void Run()
+    {
+        A2DandPWMValues a2DandPwmValues = new A2DandPWMValues();
+        SoftataLib.Analog.SetAnalogPin(SoftataLib.Analog.AnalogDevice.Potentiometer, AppState.Potentiometer);
+
+        // Note no pin setup needed for analog
+        SoftataLib.Digital.SetPinMode(AppState.LED, SoftataLib.PinMode.DigitalOutput);
+
+        for (int i = 0; i < 60; i++)
+        {
+            if (!AppState.Running) return;
+            a2DandPwmValues.PotValue = SoftataLib.Analog.AnalogRead(AppState.Potentiometer);
+            if (a2DandPwmValues.PotValue != int.MaxValue)
+            {
+                Console.WriteLine($"AnalogRead({AppState.Potentiometer}) = {a2DandPwmValues.PotValue}");
+                a2DandPwmValues.PWMValue = (byte)(a2DandPwmValues.PotValue >> 2);
+                if (a2DandPwmValues.PotValue > 1023)
+                    a2DandPwmValues.PWMValue = 255;
+                SoftataLib.PWM.SetPWM(AppState.LED, (byte)(a2DandPwmValues.PWMValue));
+                queue.Enqueue(a2DandPwmValues);
+            }
+            else
+                Console.WriteLine($"AnalogRead({AppState.Potentiometer}) failed");
+            Console.WriteLine();
+            Thread.Sleep(3333);
+        }
+        AppState.Running = false;
+        Thread.Sleep(333);     
+    }
+
+}
+

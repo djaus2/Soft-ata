@@ -21,8 +21,28 @@ namespace Softata
 
         public static  int port { get; set; } = 4242;
         public static string ipAddresStr { get; set; } = "192.168.0.9";
+        public static Socket? Client { get => client; set => client = value; }// { get => Client1; set => Client1 = value; }
+        /*public static Socket? Client1 { get => client; set => client = value; }*/
 
         private static bool Inited = false;
+
+        public static void Reconnect()
+        {
+            try
+            {
+                if (Client != null)
+                {
+                    if (Client.Connected)
+                    {
+                        Client.Close();
+                    }
+                    Client.Dispose();
+                }
+            }
+            catch (Exception ex) { }
+
+            Init(ipAddresStr, port);
+        }
         public  static void Init(string _ipAddresStr, int _port)
         {
             ipAddresStr = _ipAddresStr;
@@ -33,31 +53,39 @@ namespace Softata
             IPEndPoint ipEndpoint = new IPEndPoint(ipAdress, port);
 
             Console.WriteLine("Connecting to Softata Server.");
-            client = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            Client = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             try
             {
-                client.Connect(ipEndpoint);
-                while (!client.Connected)
+                Client.Connect(ipEndpoint);
+                while (!Client.Connected)
                 {
                     Thread.Sleep(500);
                 }
 
-                Console.WriteLine("Socket created to {0}", client.RemoteEndPoint?.ToString());
+                Console.WriteLine("Socket created to {0}", Client.RemoteEndPoint?.ToString());
                 Thread.Sleep(500);
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                if (client.Connected)
+                if (Client.Connected)
                 {
-                    client.Shutdown(SocketShutdown.Both);
-                    client.Close();
+                    Client.Shutdown(SocketShutdown.Both);
+                    Client.Close();
                 }
-                client = null;
+                Client = null;
             }
         }
 
-        private static Socket? client;
+
+        private static Socket? _client;
+
+        private static Socket? client
+         {  get { if (_client == null){
+                }; 
+                return _client;
+            }
+            set => _client = value; }
 
         static SoftataLib()
         {
@@ -144,7 +172,7 @@ namespace Softata
         }
         public static string SendMessageCmd(string cmd)
         {
-            if (client == null)
+            if (Client == null)
                 throw new Exception("SendMessageCmd: Not connected");
 
             // Construct command and parameters as list of bytes
@@ -153,16 +181,16 @@ namespace Softata
             byte[] sendBytes = sendmsg.ToArray<byte>();
             Console.WriteLine($"Sending {sendBytes.Length} data bytes");
             ;
-            int sent = client.Send(sendBytes, 0, sendBytes.Length, SocketFlags.None);
+            int sent = Client.Send(sendBytes, 0, sendBytes.Length, SocketFlags.None);
             if (sent != sendBytes.Length)
                 throw new Exception($"SendMessage: Sent {sent} bytes, expected {sendBytes.Length} bytes");
 
             Console.WriteLine($"Sent {sent} bytes");
 
             //Wait for response
-            while (client.Available == 0) ;
+            while (Client.Available == 0) ;
             byte[] data = new byte[100];
-            int recvd = client.Receive(data);
+            int recvd = Client.Receive(data);
 
             string result = Encoding.ASCII.GetString(data).Substring(0, recvd).Trim();
             Console.WriteLine($"Received {result} [{recvd}] bytes\n");
@@ -181,8 +209,8 @@ namespace Softata
                     break;
                 case "End":
                     Thread.Sleep(2000);
-                    client.Shutdown(SocketShutdown.Both);
-                    client.Close();
+                    Client.Shutdown(SocketShutdown.Both);
+                    Client.Close();
                     break;
                 case "Reset":
                     break;
@@ -191,7 +219,7 @@ namespace Softata
         }
         public static string SendMessage(Commands MsgType, byte pin = 0xff, byte state = 0xff, string expect = "OK", byte other=0xff, byte[]? Data=null, bool debug=true )
         {
-            if (client == null)
+            if (Client == null)
                 throw new Exception("SendMessageCmd: Not connected");
 
             // Construct command and parameters as list of bytes
@@ -222,7 +250,7 @@ namespace Softata
             if(debug)
                 Console.WriteLine($"Sending {sendBytes.Length} data bytes");
 
-            int sent = client.Send(sendBytes, 0, sendBytes.Length, SocketFlags.None);
+            int sent = Client.Send(sendBytes, 0, sendBytes.Length, SocketFlags.None);
             if (sent != sendBytes.Length)
                 throw new Exception($"SendMessage: Sent {sent} bytes, expected {sendBytes.Length} bytes");
 
@@ -230,9 +258,9 @@ namespace Softata
                 Console.WriteLine($"Sent {sent} bytes");
 
             //Wait for response
-            while (client.Available == 0) ;
+            while (Client.Available == 0) ;
             byte[] data = new byte[256];
-            int recvd = client.Receive(data);
+            int recvd = Client.Receive(data);
 
             string result = Encoding.UTF8.GetString(data).Substring(0, recvd);
 
@@ -241,7 +269,7 @@ namespace Softata
             {
                 Console.WriteLine($"Expected {expect} got {result}... rebooting");
                 SendMessageCmd("Reset");
-                recvd = client.Receive(data);
+                recvd = Client.Receive(data);
                 result = Encoding.ASCII.GetString(data).Substring(0, recvd).Trim();
                 Console.WriteLine($"Received {result} [{recvd}] bytes\n");
                 return "Reset";
@@ -264,26 +292,26 @@ namespace Softata
             IPEndPoint ipEndpoint = new IPEndPoint(ipAdress, port);
 
             Console.WriteLine("Hello, World!");
-            client = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            Client = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             try
             {
-                client.Connect(ipEndpoint);
-                while (!client.Connected)
+                Client.Connect(ipEndpoint);
+                while (!Client.Connected)
                 {
                     Thread.Sleep(500);
                 }
 
-                Console.WriteLine("Socket created to {0}", client.RemoteEndPoint?.ToString());
+                Console.WriteLine("Socket created to {0}", Client.RemoteEndPoint?.ToString());
 
                 return;
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.ToString());
-                if (client.Connected)
+                if (Client.Connected)
                 {
-                    client.Shutdown(SocketShutdown.Both);
-                    client.Close();
+                    Client.Shutdown(SocketShutdown.Both);
+                    Client.Close();
                 }
             }
         }

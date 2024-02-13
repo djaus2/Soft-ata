@@ -1,0 +1,508 @@
+﻿@page "/"
+@page "/index"
+
+
+@using Softata;
+@using static Softata.SoftataLib;
+@inject AppState AppState
+@inject NavigationManager navigationManager
+@using BlazorPro.Spinkit
+
+
+<PageTitle>Softata</PageTitle>
+<h1>Softata</h1>
+<i><b>Softata:</b> A Firmata like C# library connecting to a RPi Pico W running Arduino.</i>
+@if (!string.IsNullOrEmpty(AppState.AppVersion))
+{
+    <tr>
+        <td><b>App Version: </b></td>
+        <td>@AppState.AppVersion</td>
+    </tr>
+}
+@if (!string.IsNullOrEmpty(AppState.Connected))
+{
+    <tr>
+        <td><b>Connected: </b></td>
+        <td>@AppState.Connected</td>
+    </tr>
+}
+@if (!string.IsNullOrEmpty(AppState.DevicesCSV))
+{
+    <tr>
+        <td><b>Device Types: </b></td>
+        <td>@AppState.DevicesCSV.Replace("DEVICES:", "")</td>
+    </tr>
+}
+@if (!(AppState.TestType == CommandType.MaxType))
+{
+    <tr>
+        <td><b>Selected Test Type: </b></td>
+        <td>@AppState.TestType</td>
+    </tr>
+}
+
+<hr />
+
+@if (Busy)
+{
+    <Pulse />
+    <p>Please wait ...</p>
+}
+
+@if (!AppState.Running)
+{
+    @if (AppState.UsingGroveShield == null)
+    {
+        <h2>Start</h2>
+        <table>
+            <tr>
+                <td>Select Pico Context:</td>
+                <td>
+                    <select @bind=@AppState.StrUsingGroveShield>
+                        <option value="null">Select</option>
+                        <option value="true">Grove Shield</option>
+                        <option value="false">Default Pico</option>
+                    </select>
+                </td>
+            </tr>
+
+        </table>
+    }
+    else if (string.IsNullOrEmpty(AppState.Connected))
+    {
+        <h2>Start</h2>
+        <table>
+            <tr>
+                <td>IP Address:</td>
+                <td><input type="text" value="@ipaddressStr" /></td>
+            </tr>
+            <tr>
+                <td>Port:</td>
+                <td><input type="text" value="@port" /></td>
+            </tr>
+            <button class="btn btn-primary" @onclick="Connect">Connect</button>
+
+        </table>
+    }
+    else if (AppState.TestType == CommandType.MaxType)
+    {
+         <div class="form-group">
+            Test Type: @AppState.TestType <br />
+            <select @onchange="OnChangeCommandType">
+                <option value="None">Select Test Type</option>
+                @foreach (var value in Enum.GetValues<CommandType>())
+                {
+                    <option value="@value">@value</option>
+                }
+            </select>
+         </div>
+    }
+    else if (!AppState.ReadytoRun)
+    {
+        <div class="form-group">
+            @switch (AppState.TestType)
+           {
+                case Softata.SoftataLib.CommandType.Sensors:
+                    {
+
+                    }
+                    break;
+                case Softata.SoftataLib.CommandType.Displays:
+                    {
+
+                    }
+                    break;
+                case Softata.SoftataLib.CommandType.Serial:
+                    {
+                        <table>
+                            <tr><td>Serial Tx</td><td>&nbsp;</td><td>Serial Rx</td></tr>
+                             <tr>
+                                <td>
+                                    <select @bind=@AppState.SerialTx>
+                                        <option value=null>Select</option>
+                                        <option value=1>Serial 1 Tx</option>
+                                        <option value=2>Serial 2 Tx</option>
+                                    </select>
+                                </td>
+                                <td>&nbsp;</td>
+                                <td>
+                                     <select @bind=@AppState.SerialRx>
+                                        <option value=null>Select</option>
+                                        <option value=1>Serial 1 Rx</option>
+                                        <option value=2>Serial 2 Rx</option>
+                                    </select>
+                                </td>
+                            </tr> 
+                        </table>
+                    } 
+                    break;
+                case Softata.SoftataLib.CommandType.PotServo:
+                    {
+                        <h4>Potentiometer-Servo Test</h4>
+                        <p>
+                            This page tests the digital input and output pins of the RPi Pico W with a Button and LED.<br />
+                            Runs the digital test as per the Console app without user web page interaction<br /> but requires a button press to toggle the LED.
+                        </p>
+                        <table>
+                            <tr><td>Potentiometer Pin</td><td>&nbsp;</td><td>Servo Pin</td></tr>
+                            <tr>
+                                <td>
+                                    <select @bind=@AppState.Potentiometer>
+                                        <option value=null>Select</option>
+                                        <option value=26>A0</option>
+                                        <option value=27>A1</option>
+                                        <option value=28>A2</option>
+                                    </select>
+                                </td>
+                                <td>&nbsp;</td>
+                                <td>
+                                    <select @bind=@AppState.Servo>
+                                        @foreach (var value in AppState.GPIOPins)
+                                        {
+                                            <option value=@value>@value</option>
+                                        }
+                                    </select>
+                                </td>
+                            </tr>
+                        </table>
+                    }
+                    break;
+                case Softata.SoftataLib.CommandType.PotRelay:
+                    {
+                        <h4>Potentiometer-LED Test</h4>
+                        <p>
+                            This page tests the digital input and output pins of the RPi Pico W with a Button and LED.<br />
+                            Runs the digital test as per the Console app without user web page interaction<br /> but requires a button press to toggle the LED.
+                        </p>
+                        <table>
+                            <tr><td>Potentiometer Pin</td><td>&nbsp;</td><td>Relay Pin</td></tr>
+                            <tr>
+                                <td>
+                                    <select @bind=@AppState.Potentiometer>
+                                        <option value=null>Select</option>
+                                        <option value=26>A0</option>
+                                        <option value=27>A1</option>
+                                        <option value=28>A2</option>
+                                    </select>
+                                </td>
+                                <td>&nbsp;</td>
+                                <td>
+                                    <select @bind=@AppState.LED>
+                                        @foreach (var value in AppState.GPIOPins)
+                                        {
+                                            <option value=@value>@value</option>
+                                        }
+                                    </select>
+                                </td>
+                            </tr>
+                        </table>
+                    }
+                    break;
+                case Softata.SoftataLib.CommandType.PWM:
+                case Softata.SoftataLib.CommandType.Analog:
+                    {
+                        <h4>Potentiometer-LED Test</h4>
+                        <p>
+                            This page tests the Analog input (potentiometer) and PWM output to an LED with the  RPi Pico W.<br />
+                            Runs the test as per the Console app without user web page interaction.<br />
+                            The analog value is read on the Pico passed back to this app,<br />
+                            processed then sent back to Pico as a PWM value for the LED. <br />
+                            UI Lights show when certain threshholds are reached.
+                        </p>
+                        <table>
+                            <tr><td>Potentiometer Pin</td><td>&nbsp;</td><td>LED Pin</td></tr>
+                            <tr>
+                                <td>
+                                    <select @bind=@AppState.Potentiometer>
+                                        <option value=null>Select</option>
+                                        <option value=26>A0</option>
+                                        <option value=27>A1</option>
+                                        <option value=28>A2</option>
+                                    </select>
+                                </td>
+                                <td>&nbsp;</td>
+                                <td>
+                                    <select @bind=@AppState.LED>
+                                        @foreach (var value in AppState.GPIOPins)
+                                        {
+                                            <option value=@value>@value</option>
+                                        }
+                                    </select>
+                                </td>
+                            </tr>
+                        </table>
+                    }
+                    break;
+                case Softata.SoftataLib.CommandType.Digital:
+                {
+                    <h4>Digital Button-LED Test </h4>
+                        <p>
+                            This page tests the digital input and output pins of the RPi Pico W with a Button and LED.<br />
+                            Runs the digital test as per the Console app without user web page interaction<br /> but requires a button press to toggle the LED.
+                        </p>
+                    <table>
+                            <tr><td>Button Pin</td><td>&nbsp;</td><td>LED Pin</td></tr>
+                        <tr>
+                            <td>
+                                <select @bind=@AppState.Button>
+                                    @foreach (var value in AppState.GPIOPins)
+                                    {
+                                        <option value=@value>@value</option>
+                                    }
+                                </select>
+                            </td>
+                            <td>&nbsp;</td>
+                            <td>
+                                <select @bind=@AppState.LED>
+                                        @foreach (var value in AppState.GPIOPins)
+                                    {
+                                        <option value=@value>@value</option>
+                                    }
+                                </select>
+                            </td>
+                        </tr>
+                    </table> 
+                }
+                break;
+            }
+            <br />
+            <button class="btn btn-primary" @onclick="Ready">Test is configured</button>
+        </div>
+    }
+    else if (AppState.ReadytoRun)
+    {
+        <div class="form-group">
+            @switch (AppState.TestType)
+            {
+                case Softata.SoftataLib.CommandType.Sensors:
+                    {
+                        <p>NOT YET AVAILABLE... Coming!</p>
+                    }
+                    break;
+                case Softata.SoftataLib.CommandType.Displays:
+                    {
+                        <p>NOT YET AVAILABLE... Coming!</p>
+                    }
+                    break;
+                case Softata.SoftataLib.CommandType.Serial:
+                    {
+                       <h4>Serial Test</h4>
+                       <p>Serial Tx: Serial @AppState.SerialTx</p>
+                       <p>Serial Rx: Serial @AppState.SerialRx</p>
+                        <p>NOT YET AVAILABLE... Coming!</p>
+                    }
+                    break;
+                case Softata.SoftataLib.CommandType.PotServo:
+                    {
+                        <h4>Potentiometer-Servo Test</h4>
+                        <p>
+                            NOT YET AVAILABLE ... Coming!
+                       </p>
+                        <p>Potentiometer Pin: @AppState.Potentiometer</p>
+                        <p>Servo Pin: @AppState.Servo </p>
+                    }
+                    break;
+                case Softata.SoftataLib.CommandType.PotRelay:
+                    {
+                        <h4>Potentiometer-Relay Test</h4>
+                        <p>
+                            NOT YET AVAILABLE ... Coming!
+                        </p>
+                        <p>Potentiometer Pin: @AppState.Potentiometer</p>
+                        <p>Relay Pin: @AppState.Relay </p>
+                    }
+                    break;
+                case Softata.SoftataLib.CommandType.Analog:
+                case Softata.SoftataLib.CommandType.PWM:
+                    {
+                        <h4>Potentiometer-LED Test</h4>
+    <p>This page tests the Analog input(potentiometer) and PWM output to an LED with the  RPi Pico W.
+    <br />
+    Runs the test as per the Console app without user web page interaction.
+    <br />
+    The analog value is read on the Pico passed back to this app,
+    <br />
+    processed then sent back to Pico as a PWM value for the LED.
+    <br />
+    UI Lights show when certain threshholds are reached.</p>
+                        <p>Potentiometer Pin: @AppState.Potentiometer</p>
+                        <p>LED Pin: @AppState.LED </p>
+                    }
+                    <button class="btn btn-primary" @onclick="Start">Go to test</button>
+
+                    break;
+                case Softata.SoftataLib.CommandType.Digital:
+                    {
+                        <h4>Digital Button-LED Test </h4>
+                        <p>
+                            This page tests the digital input and output pins of the RPi Pico W with a Button and LED.<br />
+                            Runs the digital test as per the Console app without user web page interaction<br /> but requires a button press to toggle the LED.
+                        </p>
+                        <p>Button Pin: @AppState.Button</p>
+                        <p>LED Pin: @AppState.LED </p>
+                    }
+                    <button class="btn btn-primary" @onclick="Start">Go to test</button>
+
+                    break;
+            }
+        </div>      
+    }
+
+}
+
+
+
+
+
+@code {
+    // Set the same as Arduino: Boot Pico as view settings in terminal
+    const int port = 4242;
+    const string ipaddressStr = "192.168.0.9";
+
+    bool busy = false;
+    bool Busy { get => busy; 
+        set { busy = value; StateHasChanged(); } }
+
+
+    private void OnChangeCommandType(ChangeEventArgs e)
+    {
+        if (e == null)
+            return;
+        var selected = e.Value.ToString();
+        if (selected != null)
+        {
+            string TestType = selected;
+            if (Enum.TryParse(TestType, out CommandType _testType))
+            {
+                AppState.TestType = _testType;
+                switch (AppState.TestType)
+                {
+                    case CommandType.Digital:
+                        //AppState = new Digital();
+                        break;
+                }
+            }
+            StateHasChanged();
+        }
+    }
+
+
+
+
+    public async Task Connect()
+    {
+        Busy = true;
+        StateHasChanged();
+        await Task.Delay(333);
+        SoftataLib.Init(ipaddressStr, port);
+        AppState.Connected = "Connected";
+        await Task.Delay(333);
+        SoftataLib.SendMessageCmd("Begin");
+        await Task.Delay(333);
+        AppState.AppVersion = SoftataLib.SendMessageCmd("Version");
+        Console.WriteLine($"Softata Version: {AppState.AppVersion}");
+        await Task.Delay(333);
+        AppState.DevicesCSV = SoftataLib.SendMessageCmd("Devices");
+        Console.WriteLine($"{AppState.DevicesCSV}");
+        await Task.Delay(333);
+        Busy = false;
+        StateHasChanged();
+        AppState.Connected = "IsConnected";
+        await Task.Delay(333);
+    }
+
+    public void Select()
+    {
+        var commandsArray = Enum.GetValues(typeof(CommandType));
+
+        // Convert the array to an IEnumerable<Colors>
+        var commandsList = commandsArray.Cast<CommandType>().ToList();
+    }
+
+
+
+
+    protected override void OnInitialized()
+    {
+        AppState.OnChange += StateHasChanged;
+        AppState.ReadytoRun = false;
+        AppState.Running = false;
+    }
+
+    private async void Ready()
+    {
+        AppState.ReadytoRun = false;
+        switch (AppState.TestType)
+        {
+            case CommandType.Sensors:
+                break;
+            case CommandType.Displays:
+                break;;
+            case CommandType.PotServo:
+                if (!AppState.GPIOPins.Contains(AppState.Servo))
+                    return;
+                if (AppState.Potentiometer == AppState.Servo)
+                    return;
+                break;
+            case CommandType.Serial:
+                break;
+            case CommandType.PotRelay:
+                if (!AppState.GPIOPins.Contains(AppState.Relay))
+                    return;
+                if (AppState.Potentiometer == AppState.Relay)
+                    return;
+                break;
+            case CommandType.Analog:
+            case CommandType.PWM:
+                if (!AppState.GPIOPins.Contains(AppState.LED))
+                    return;
+                if (AppState.Potentiometer == AppState.LED)
+                    return;
+                break;
+            case CommandType.Digital:
+                if (AppState == null)
+                    return;
+                if (!AppState.GPIOPins.Contains(AppState.Button))
+                    return;
+                if (!AppState.GPIOPins.Contains(AppState.LED))
+                    return;
+                if (AppState.Button == AppState.LED)
+                    return;
+                break;
+        }
+        AppState.ReadytoRun = true;
+        StateHasChanged();
+    }
+
+    private async Task Start()
+    {
+        switch (AppState.TestType)
+        {
+            case CommandType.Sensors:
+            navigationManager.NavigateTo("/digital");
+                break;
+            case CommandType.Displays:
+                navigationManager.NavigateTo("/digital");
+                break; ;
+            case CommandType.PotServo:
+                navigationManager.NavigateTo("/digital");
+                break;
+            case CommandType.Serial:
+                navigationManager.NavigateTo("/digital");
+                break;
+            case CommandType.PotRelay:
+                navigationManager.NavigateTo("/digital");
+                break;
+            case CommandType.Analog:
+            case CommandType.PWM:
+                navigationManager.NavigateTo("/analog");
+                break;
+            case CommandType.Digital:
+                navigationManager.NavigateTo("/digital");
+                break;
+        }
+
+    }
+
+}
+
