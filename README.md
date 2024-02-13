@@ -7,8 +7,6 @@ Console app included with Blazor and MAUI apps coming soon.
   
 _Soft-ata rather than firm-ata!_ 
 
-> Ps Had a glitch adding another host. Reverted. All should be OK now.
-
 ## About
 
 ***The plan was to implement an Arduino app to run on a [RPi Pico W](https://www.raspberrypi.com/documentation/microcontrollers/raspberry-pi-pico.html) placed in a [Grove Shield for Pi Pico](https://www.seeedstudio.com/Grove-Shield-for-Pi-Pico-v1-0-p-4846.html).  
