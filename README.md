@@ -45,7 +45,7 @@ Similarly a .NET MAUI app is envisaged. Finally, a port of the .NET library to t
 ## Latest
 
 _See **Repository Status** below._
-- Extending Blazor app to match the Console app. Digital Button-LED and Analog Pot-LED test migrated.  _More eto come._
+- Extending Blazor app to match the Console app. Digital Button-LED and Analog Pot-LED tests migrated.  _More to come._
 - Azure IoT Hub telemtry streaming
   - Uses the implementation on GitHub at [djaus2/Azure_IoT_Hub_Arduino_RPI_Pico_Telemetry](https://github.com/djaus2/Azure_IoT_Hub_Arduino_RPI_Pico_Telemetry)
 - Restructed Display part of Console app.
