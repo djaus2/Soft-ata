@@ -140,7 +140,7 @@
                     {
                         <h4>Potentiometer-Servo Test</h4>
                         <p>
-                            This page tests the digital input and output pins of the RPi Pico W with a Button and LED.<br />
+                            This tests the digital input and output pins of the RPi Pico W with a Button and LED.<br />
                             Runs the digital test as per the Console app without user web page interaction<br /> but requires a button press to toggle the LED.
                         </p>
                         <table>
@@ -169,10 +169,21 @@
                     break;
                 case Softata.SoftataLib.CommandType.PotRelay:
                     {
-                        <h4>Potentiometer-LED Test</h4>
+                        <h4>Potentiometer-Relay Test</h4>
                         <p>
-                            This page tests the digital input and output pins of the RPi Pico W with a Button and LED.<br />
-                            Runs the digital test as per the Console app without user web page interaction<br /> but requires a button press to toggle the LED.
+                            This tests the Analog input(potentiometer) and that triggers a relay RPi Pico W.
+                            <br />
+                            Runs the test as per the Console app without user web page interaction.
+                            <br />
+                            The analog value is read on the Pico passed back to this app,
+                            <br />
+                            if greater than 50% the state is true, false otherwise.
+                            <br />
+                            If the state has changed then sent back to Pico a dital signal to the Relay..
+                            <br />
+                            UI Lights show when certain threshholds are reached.
+                            <br />
+                            <i>Set to run for 60s (2 readings ps)</i>
                         </p>
                         <table>
                             <tr><td>Potentiometer Pin</td><td>&nbsp;</td><td>Relay Pin</td></tr>
@@ -187,7 +198,7 @@
                                 </td>
                                 <td>&nbsp;</td>
                                 <td>
-                                    <select @bind=@AppState.LED>
+                                    <select @bind=@AppState.Relay>
                                         @foreach (var value in AppState.GPIOPins)
                                         {
                                             <option value=@value>@value</option>
@@ -203,11 +214,12 @@
                     {
                         <h4>Potentiometer-LED Test</h4>
                         <p>
-                            This page tests the Analog input (potentiometer) and PWM output to an LED with the  RPi Pico W.<br />
+                            This tests the Analog input (potentiometer) and PWM output to an LED with the  RPi Pico W.<br />
                             Runs the test as per the Console app without user web page interaction.<br />
                             The analog value is read on the Pico passed back to this app,<br />
                             processed then sent back to Pico as a PWM value for the LED. <br />
-                            UI Lights show when certain threshholds are reached.
+                            UI Lights show when certain threshholds are reached.<br />
+                            <i>Set to run for 60s (2 readings ps)</i>
                         </p>
                         <table>
                             <tr><td>Potentiometer Pin</td><td>&nbsp;</td><td>LED Pin</td></tr>
@@ -237,7 +249,7 @@
                 {
                     <h4>Digital Button-LED Test </h4>
                         <p>
-                            This page tests the digital input and output pins of the RPi Pico W with a Button and LED.<br />
+                            This tests the digital input and output pins of the RPi Pico W with a Button and LED.<br />
                             Runs the digital test as per the Console app without user web page interaction<br /> but requires a button press to toggle the LED.
                         </p>
                     <table>
@@ -306,17 +318,30 @@
                     {
                         <h4>Potentiometer-Relay Test</h4>
                         <p>
-                            NOT YET AVAILABLE ... Coming!
+                            This tests the Analog input(potentiometer) and that triggers a relay RPi Pico W.
+                            <br />
+                            Runs the test as per the Console app without user web page interaction.
+                            <br />
+                            The analog value is read on the Pico passed back to this app,
+                            <br />
+                            if greater than 50% the state is true, false otherwise.
+                            <br />
+                            If the state has changed then sent back to Pico a dital signal to the Relay..
+                            <br />
+                            UI Lights show when certain threshholds are reached.
+                            <br />
+                            <i>Set to run for 60s (2 readings ps)</i>
                         </p>
                         <p>Potentiometer Pin: @AppState.Potentiometer</p>
                         <p>Relay Pin: @AppState.Relay </p>
+                        <button class="btn btn-primary" @onclick="Start">Go to test</button>
                     }
                     break;
                 case Softata.SoftataLib.CommandType.Analog:
                 case Softata.SoftataLib.CommandType.PWM:
                     {
                         <h4>Potentiometer-LED Test</h4>
-    <p>This page tests the Analog input(potentiometer) and PWM output to an LED with the  RPi Pico W.
+    <p>This tests the Analog input(potentiometer) and PWM output to an LED with the  RPi Pico W.
     <br />
     Runs the test as per the Console app without user web page interaction.
     <br />
@@ -335,7 +360,7 @@
                     {
                         <h4>Digital Button-LED Test </h4>
                         <p>
-                            This page tests the digital input and output pins of the RPi Pico W with a Button and LED.<br />
+                            This tests the digital input and output pins of the RPi Pico W with a Button and LED.<br />
                             Runs the digital test as per the Console app without user web page interaction<br /> but requires a button press to toggle the LED.
                         </p>
                         <p>Button Pin: @AppState.Button</p>
@@ -491,7 +516,7 @@
                 navigationManager.NavigateTo("/digital");
                 break;
             case CommandType.PotRelay:
-                navigationManager.NavigateTo("/digital");
+                navigationManager.NavigateTo("/potrelay");
                 break;
             case CommandType.Analog:
             case CommandType.PWM:

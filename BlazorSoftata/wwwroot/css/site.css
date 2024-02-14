@@ -87,7 +87,7 @@ div.yellow.on {
 }
 
 div.amber.on {
-    background-color: orange;
+    background-color: darkorange;
 }
 
 div.green.on {
@@ -96,4 +96,8 @@ div.green.on {
 
 div.blue.on {
     background-color: blue;
+}
+
+div.orange.on {
+    background-color: orange;
 }
