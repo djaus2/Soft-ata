@@ -7,8 +7,6 @@ Console app included with Blazor and MAUI apps coming soon.
   
 _Soft-ata rather than firm-ata!_ 
 
-> Ps Had a glitch adding another host. Reverted. All should be OK now.
-
 ## About
 
 ***The plan was to implement an Arduino app to run on a [RPi Pico W](https://www.raspberrypi.com/documentation/microcontrollers/raspberry-pi-pico.html) placed in a [Grove Shield for Pi Pico](https://www.seeedstudio.com/Grove-Shield-for-Pi-Pico-v1-0-p-4846.html).  
@@ -45,10 +43,10 @@ Similarly a .NET MAUI app is envisaged. Finally, a port of the .NET library to t
 ## Latest
 
 _See **Repository Status** below._
+- Extending Blazor app to match the Console app. Digital Button-LED and Analog Pot-LED tests migrated.  _More to come._
 - Azure IoT Hub telemtry streaming
   - Uses the implementation on GitHub at [djaus2/Azure_IoT_Hub_Arduino_RPI_Pico_Telemetry](https://github.com/djaus2/Azure_IoT_Hub_Arduino_RPI_Pico_Telemetry)
 - Restructed Display part of Console app.
-- Improved Sensor UI in Console app
 - _More:_ See Repository Status
 
 ## Background
