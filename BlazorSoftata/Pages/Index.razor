@@ -138,33 +138,56 @@
                     break;
                 case Softata.SoftataLib.CommandType.PotServo:
                     {
-                        <h4>Potentiometer-Servo Test</h4>
-                        <p>
-                            This tests the digital input and output pins of the RPi Pico W with a Button and LED.<br />
-                            Runs the digital test as per the Console app without user web page interaction<br /> but requires a button press to toggle the LED.
-                        </p>
-                        <table>
-                            <tr><td>Potentiometer Pin</td><td>&nbsp;</td><td>Servo Pin</td></tr>
-                            <tr>
-                                <td>
-                                    <select @bind=@AppState.Potentiometer>
-                                        <option value=null>Select</option>
-                                        <option value=26>A0</option>
-                                        <option value=27>A1</option>
-                                        <option value=28>A2</option>
-                                    </select>
-                                </td>
-                                <td>&nbsp;</td>
-                                <td>
-                                    <select @bind=@AppState.Servo>
-                                        @foreach (var value in AppState.GPIOPins)
-                                        {
-                                            <option value=@value>@value</option>
-                                        }
-                                    </select>
+                        @if (!AppState.GetPins)
+                        {
+                            <h4>Actuators</h4>
+                            <p>
+                                Select an Actuator from the list. <i>There may be only one.</i><br /> .
+                            </p>
+                            <h4>Actuators:</h4>
+                            <select @bind=@AppState.IActuator>
+                                <option value=0xff>Select</option>
+                                @for (int i=0;i< AppState.Actuators.Count();i++)
+                                {
+                                    <option value=@i>@AppState.Actuators[i]</option>
+                                }
+                            </select>
+                        }
+                        else
+                        {
+                            @* //Need a specific entry here for each Actuator *@
+                            @if (AppState.IActuator == 0)
+                            {
+                                <h4>Potentiometer-Servo Test</h4>
+                                <p>
+                                    This tests the tracking of a Servo to a Potentiometer.<br />
+                                    Runs the test as per the Console app without user web page interaction<br /> .
+                                </p>
+                                <table>
+                                    <tr><td colspan="3"><button class="btn btn-primary" @onclick="ServoDefaults">Use Defaults</button></td></tr>
+                                    <tr><td>Potentiometer Pin</td><td>&nbsp;</td><td>Servo Pin</td></tr>
+                                    <tr>
+                                        <td>
+                                            <select @bind=@AppState.Potentiometer>
+                                                <option value=null>Select</option>
+                                                <option value=26>A0</option>
+                                                <option value=27>A1</option>
+                                                <option value=28>A2</option>
+                                            </select>
+                                        </td>
+                                        <td>&nbsp;</td>
+                                        <td>
+                                            <select @bind=@AppState.Servo>
+                                                @foreach (var value in AppState.GPIOPins)
+                                                {
+                                                    <option value=@value>@value</option>
+                                                }
+                                            </select>
                                 </td>
                             </tr>
                         </table>
+                            }
+                        }
                     }
                     break;
                 case Softata.SoftataLib.CommandType.PotRelay:
@@ -187,6 +210,8 @@
                         </p>
                         <table>
                             <tr><td>Potentiometer Pin</td><td>&nbsp;</td><td>Relay Pin</td></tr>
+                            <tr><td colspan="3"><button class="btn btn-primary" @onclick="PotRelayDefaults">Use Defaults</button></td></tr>
+
                             <tr>
                                 <td>
                                     <select @bind=@AppState.Potentiometer>
@@ -223,6 +248,7 @@
                         </p>
                         <table>
                             <tr><td>Potentiometer Pin</td><td>&nbsp;</td><td>LED Pin</td></tr>
+                            <tr><td colspan="3"><button class="btn btn-primary" @onclick="PotLEDDefaults">Use Defaults</button></td></tr>
                             <tr>
                                 <td>
                                     <select @bind=@AppState.Potentiometer>
@@ -306,13 +332,29 @@
                     break;
                 case Softata.SoftataLib.CommandType.PotServo:
                     {
-                        <h4>Potentiometer-Servo Test</h4>
-                        <p>
-                            NOT YET AVAILABLE ... Coming!
-                       </p>
-                        <p>Potentiometer Pin: @AppState.Potentiometer</p>
-                        <p>Servo Pin: @AppState.Servo </p>
+                        @* //One entry needed here for each actuator *@
+                        @if (AppState.IActuator == 0)
+                        {
+                            <h4>Potentiometer-Servo Test</h4>
+                            <p>
+                                This tests the tracking of a Servo to a Potentiometer.<br />
+                                Runs the test as per the Console app without user web page interaction<br /> .
+                            </p>
+                            <table>
+                                <tr><td>Potentiometer Pin</td><td>&nbsp;</td><td>Servo Pin</td></tr>
+                                <tr>
+                                    <td>
+                                        @AppState.Potentiometer
+                                    </td>
+                                    <td>&nbsp;</td>
+                                    <td>
+                                        @AppState.Servo
+                                    </td>
+                                </tr>
+                            </table>
+                        }
                     }
+                    <button class="btn btn-primary" @onclick="Start">Go to test</button>
                     break;
                 case Softata.SoftataLib.CommandType.PotRelay:
                     {
@@ -384,6 +426,7 @@
     const int port = 4242;
     const string ipaddressStr = "192.168.0.9";
 
+
     bool busy = false;
     bool Busy { get => busy; 
         set { busy = value; StateHasChanged(); } }
@@ -404,6 +447,10 @@
                 {
                     case CommandType.Digital:
                         //AppState = new Digital();
+                        break;
+                    case CommandType.PotServo:
+                        AppState.Actuators = SoftataLib.Actuator.GetActuators().ToList();
+                        AppState.IActuator = 0xff;
                         break;
                 }
             }
@@ -454,7 +501,28 @@
         AppState.Running = false;
     }
 
-    private async void Ready()
+    private void ServoDefaults()
+    {
+        AppState.Potentiometer = 26;
+        AppState.Servo = 16;
+        Ready();
+    }
+
+    private void PotRelayDefaults()
+    {
+        AppState.Potentiometer = 26;
+        AppState.Relay = 16;
+        Ready();
+    }
+
+    private void PotLEDDefaults()
+    {
+        AppState.Potentiometer = 26;
+        AppState.LED = 16;
+        Ready();
+    }
+
+    private void Ready()
     {
         AppState.ReadytoRun = false;
         switch (AppState.TestType)
@@ -468,6 +536,10 @@
                     return;
                 if (AppState.Potentiometer == AppState.Servo)
                     return;
+                if ((AppState.Potentiometer == 26) && (AppState.Servo == 16))
+                    AppState.DefaultSettings = true;
+                else
+                    AppState.DefaultSettings = false;
                 break;
             case CommandType.Serial:
                 break;
@@ -476,6 +548,10 @@
                     return;
                 if (AppState.Potentiometer == AppState.Relay)
                     return;
+                if ((AppState.Potentiometer == 26) && (AppState.Relay == 16))
+                    AppState.DefaultSettings = true;
+                else
+                    AppState.DefaultSettings = false;
                 break;
             case CommandType.Analog:
             case CommandType.PWM:
@@ -510,7 +586,7 @@
                 navigationManager.NavigateTo("/digital");
                 break; ;
             case CommandType.PotServo:
-                navigationManager.NavigateTo("/digital");
+                navigationManager.NavigateTo("/potservo");
                 break;
             case CommandType.Serial:
                 navigationManager.NavigateTo("/digital");

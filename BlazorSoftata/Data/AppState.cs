@@ -35,8 +35,21 @@ namespace BlazorSoftata
         public CommandType TestType { get => testType; set { testType = value; NotifyStateChanged(); } }
         public bool ReadytoRun { get => readytoRun; set { readytoRun = value; NotifyStateChanged(); } }
         public bool Running { get => running; set { running = value; NotifyStateChanged(); } }
+        public bool DefaultSettings { get => defaultSettings; set { NotifyStateChanged(); }}
+        public bool GetPins { get => servoGetPins; set { servoGetPins = value; NotifyStateChanged(); }}
+        public List<string> Actuators { get => actuators; set { actuators = value; NotifyStateChanged(); }}
 
-        public string AppVersion { get => appVersion; set { appVersion = value; NotifyStateChanged(); } }
+        public byte IActuator { get => iactuator; 
+            set { 
+                if (value < Actuators.Count())
+                    GetPins = true; 
+                else
+                    GetPins = false;
+                iactuator  = value; 
+                NotifyStateChanged(); 
+            }
+        }
+public string AppVersion { get => appVersion; set { appVersion = value; NotifyStateChanged(); } }
         public string Connected { get => connected; set { connected = value; NotifyStateChanged(); } }
         public string DevicesCSV { get => devicesCSV; set { devicesCSV = value; NotifyStateChanged(); }
 }
@@ -60,6 +73,10 @@ public byte I2C { get => i2C; set { if ((value < 0) || (value > 1)) return; i2C 
         private string appVersion = "";
         private string connected = "";
         private string devicesCSV = "";
+        private List<string> actuators;
+        private byte iactuator;
+        private bool servoGetPins;
+        private bool defaultSettings = false;
 
         public AppState()
         {

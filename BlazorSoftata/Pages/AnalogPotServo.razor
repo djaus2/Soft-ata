@@ -1,0 +1,422 @@
+﻿@page "/potservo"
+
+
+@using Softata;
+@using static Softata.SoftataLib;
+@inject AppState AppState
+@using BlazorPro.Spinkit
+
+<PageTitle>Softata: Pot-Servo</PageTitle>
+<h1>Softata: Pot-Servo</h1>
+<i><b>Softata:</b> A Firmata like C# library connecting to a RPi Pico W running Arduino.</i>
+@if (!string.IsNullOrEmpty(AppState.AppVersion))
+{
+    <tr>
+        <td><b>App Version: </b></td>
+        <td>@AppState.AppVersion</td>
+    </tr>
+}
+@if (!string.IsNullOrEmpty(AppState.Connected))
+{
+    <tr>
+        <td><b>Connected: </b></td>
+        <td>@AppState.Connected</td>
+    </tr>
+}
+@if (!string.IsNullOrEmpty(AppState.DevicesCSV))
+{
+    <tr>
+        <td><b>Device Types: </b></td>
+        <td>@AppState.DevicesCSV.Replace("DEVICES:", "")</td>
+    </tr>
+}
+@if (!(AppState.TestType == CommandType.MaxType))
+{
+    <tr>
+        <td><b>Selected Test Type: </b></td>
+        <td>@AppState.TestType</td>
+    </tr>
+}
+
+<hr />
+
+@if (Busy)
+{
+    <Pulse />
+    <p>Please wait ...</p>
+}
+else if(AppState.Running)
+{
+    <Fold />
+    <p>Running ...</p>
+}
+
+@if (AppState.ReadytoRun)
+{
+    <h4>Potentiometer-Servo Test</h4>
+    <p>
+        This tests the tracking of a Servo to a Potentiometer.<br />
+        Runs the test as per the Console app without user web page interaction<br /> .
+    </p>
+
+
+    <h2>Setup</h2>
+
+    <ul>
+        <li>Connect a Potentiometer to pin @AppState.Potentiometer</li>
+        <li>Connect a Servo to pin @AppState.Servo</li>
+    </ul>
+
+    @if (!AppState.Running)
+    { 
+        @if (ReconnectVisible)
+        {
+            <button  class="btn btn-primary" @onclick="Reconnect">Reconnect and run test</button>
+        }
+        else if (RunVisble)
+        {
+            <button class="btn btn-primary" @onclick="Start">Run test</button>
+        }
+    }
+    else
+    {
+        <div class="form-group">
+            @switch (AppState.TestType)
+            {
+                case Softata.SoftataLib.CommandType.PotServo:
+                    {
+                        <h2>Rotate the potentiometer slowly to change the brightness of the LED.</h2>
+                        <ul>
+                            <li>Pot glows when &lt;50/100</li>
+                            <li>Servo Bar Graph shows Angle</li>
+                        </ul>
+
+                        <table>
+                            <tr>
+                                <td width="150">Potentiometer:</td>
+                                <td rowspan="2">
+                                    <div class="row">
+                                        <div class="lights">
+                                            <div class="orange @(PotValue<50 ? "on" : "off")"></div>
+
+                                            <div class="green @(ServoAngle>4 ? "on" : "off")"></div>
+
+                                            <div class="green @(ServoAngle>44 ? "on" : "off")"></div>
+                                            
+                                            <div class="green @(ServoAngle>84 ? "on" : "off")"></div>
+                                            
+                                            <div class="green @(ServoAngle>124 ? "on" : "off")"></div>
+
+                                            <div class="green @(ServoAngle>164 ? "on" : "off")"></div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>&nbsp;&nbsp;</td>
+                                <td>@PotValue</td>
+                            </tr>
+                            <tr>
+                                <td>Servo Angle:</td>
+                                <td>&nbsp;&nbsp;</td>
+                                <td>@ServoAngle</td>
+                            </tr>
+                        </table>
+                    }
+                    break;
+            }
+            @switch(@Calibrating)
+            {
+                case 0:
+                    break;
+                case 1:
+                    <p>Turn potetiometer full in one direction.</p>
+                    <button class="btn btn-primary" @onclick="CalibrateNext">Next</button>
+                    break;
+                case 2:
+                    <p>Turn potetiometer full in other direction.</p>
+                    <button class="btn btn-primary" @onclick="CalibrateNext">Next</button>
+                    break;
+                case 3:
+                    <p>Calibrated</p>
+                    <button class="btn btn-primary" @onclick="CalibrateNext">Go</button>
+                    break;
+                case 4:
+                    <h3>Stepping</h3>
+                    <p>Setting positions</p>
+                    <button class="btn btn-primary" @onclick="CalibrateNext">Skip to next</button>
+                    break;
+                case 5:
+                    <h3>Tracking Potentiometer</h3>
+                    <p>Turn potentiometer</p>
+                    break;
+            }
+
+        </div>
+
+
+        <button class="btn btn-primary" @onclick="Stop">Cancel</button>
+
+        
+    }
+}
+
+
+
+
+
+@code {
+    int PotValue { get; set; } = 0;
+    double ServoAngle { get; set; } = 0;
+    int Calibrating = 0;
+
+    private void CalibrateNext()
+    {
+        Calibrating++;
+        StateHasChanged();
+    }
+
+    public class A2DandServoValues
+    {
+        public int PotValue { get; set; } = 0;
+        public byte ServoAngle { get; set; } = 0;
+    }
+
+    bool busy = false;
+    bool Busy
+    {
+        get => busy;
+        set { busy = value; StateHasChanged(); }
+    }
+
+    Queue<A2DandServoValues> queue = new Queue<A2DandServoValues>();
+
+
+
+
+
+    public System.Threading.WaitHandle Trigger { get; set; }
+    bool reconnectable = false;
+
+
+
+
+    protected override void OnInitialized()
+    {
+        AppState.OnChange += StateHasChanged;
+        AppState.ReadytoRun = true; ;
+        AppState.Running = false;
+        ReconnectVisible = false;
+        RunVisble = true;
+        Calibrating = 0;
+
+        queue = new Queue<A2DandServoValues>();
+        Trigger = new System.Threading.ManualResetEvent(false);
+        var thread = new System.Threading.Thread(_ =>
+        {
+            Trigger.WaitOne();
+            Run();
+        });
+
+        thread.Start();
+
+    }
+
+    private async Task Start()
+    {
+        AppState.Running = true;
+        Calibrating = 1;
+        StateHasChanged();
+        await Task.Delay(100);
+
+
+        queue = new Queue<A2DandServoValues>();
+        Trigger = new System.Threading.ManualResetEvent(false);
+        var thread = new System.Threading.Thread(_ =>
+        {
+            Trigger.WaitOne();
+            Run();
+        });
+
+        thread.Start();
+        queue = new Queue<A2DandServoValues>();
+        await Task.Delay(100);
+        ((ManualResetEvent)Trigger).Set();
+        while(AppState.Running)
+        {
+            try
+            {
+                if (queue.TryDequeue(out A2DandServoValues? states))
+                {
+                    if (states != null)
+                    {
+                        PotValue = states.PotValue;
+                        ServoAngle = states.ServoAngle;
+                        StateHasChanged();
+                    }
+                }
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            await Task.Delay(333);
+        }
+        RunVisble = false;
+        Busy = true;
+        StateHasChanged();
+        await Task.Delay(333);
+        SoftataLib.SendMessageCmd("End");      
+        await Task.Delay(30000);
+        Busy = false;
+        await Task.Delay(100);
+        ReconnectVisible = true;
+        StateHasChanged();
+    }
+
+    bool RunVisble { get; set; } = false;
+    bool ReconnectVisible  { get; set; } = false;
+
+    private void Stop()
+    {
+        AppState.Running = false;
+        StateHasChanged();
+    }
+
+    private async void Reconnect()
+    {
+        Busy = true;
+        StateHasChanged();
+        await Task.Delay(100);
+        ReconnectVisible = false;
+        SoftataLib.Reconnect();
+        StateHasChanged();
+        await Task.Delay(1000);
+        Busy = false;
+        StateHasChanged();
+        await Task.Delay(100);
+        await Start();
+    }
+
+
+    private  async void Run()
+    {
+        byte id = 0;
+        if (AppState.DefaultSettings)
+        {
+            id = (byte)SoftataLib.Actuator.SetupDefault(Actuator.ActuatorDevice.Servo);
+            SoftataLib.Analog.SetAnalogPin(SoftataLib.Analog.AnalogDevice.Potentiometer, AppState.Potentiometer, 1023);
+        }
+        else //Alt
+        {
+            id = (byte)SoftataLib.Actuator.SetupDefault(Actuator.ActuatorDevice.Servo);
+            SoftataLib.Analog.SetAnalogPin(SoftataLib.Analog.AnalogDevice.Potentiometer, AppState.Potentiometer, 1023);
+        }
+        A2DandServoValues a2DandServoValues = new A2DandServoValues();
+
+
+        //Console.WriteLine("Turn potetiometer full in one direction.");
+        //Console.WriteLine("Press any key to continue.");
+        //Console.ReadLine();
+        while (Calibrating == 1)
+            await Task.Delay(100);
+        double max1 = Softata.SoftataLib.Analog.AnalogReadPotentiometer();
+        //Calibrating = 2;
+        //Console.WriteLine("Turn potetiometer full in other direction.");
+        //Console.WriteLine("Press any key to continue.");
+        //Console.ReadLine();
+        while (Calibrating == 2)
+            await Task.Delay(100);
+        double max2 = Softata.SoftataLib.Analog.AnalogReadPotentiometer();
+        if (max1 > max2)
+        {
+            double temp = max2;
+            max2 = max1;
+            max1 = temp;
+        }
+        while (Calibrating == 3)
+            await Task.Delay(100);
+
+        a2DandServoValues.PotValue = 0;
+        a2DandServoValues.ServoAngle = 0;
+        queue.Enqueue(a2DandServoValues);
+        Thread.Sleep(500);
+        int count = 0;
+        SoftataLib.Actuator.ActuatorWrite(id, a2DandServoValues.ServoAngle);
+        Console.WriteLine($"\t\t\tAngle: {a2DandServoValues.ServoAngle}");
+        Console.WriteLine($"\t\t\tAngle: 0");
+        Thread.Sleep(1000);
+        while ((Calibrating == 4) && (count<2))
+        {
+            count++;
+            a2DandServoValues.ServoAngle = 45;
+            SoftataLib.Actuator.ActuatorWrite(id, a2DandServoValues.ServoAngle);
+            Console.WriteLine($"\t\t\tAngle: {a2DandServoValues.ServoAngle}");
+            Thread.Sleep(1000);
+            if (Calibrating != 4)
+                break;
+            a2DandServoValues.ServoAngle = 90;
+            SoftataLib.Actuator.ActuatorWrite(id, a2DandServoValues.ServoAngle);
+            Console.WriteLine($"\t\t\tAngle: {a2DandServoValues.ServoAngle}");
+            Thread.Sleep(1000);
+            if (Calibrating != 4)
+                break;
+            a2DandServoValues.ServoAngle = 135;
+            SoftataLib.Actuator.ActuatorWrite(id, a2DandServoValues.ServoAngle);
+            Console.WriteLine($"\t\t\tAngle: {a2DandServoValues.ServoAngle}");
+            Thread.Sleep(1000);
+            if (Calibrating != 4)
+                break;
+            a2DandServoValues.ServoAngle = 180;
+            SoftataLib.Actuator.ActuatorWrite(id, a2DandServoValues.ServoAngle);
+            Console.WriteLine($"\t\t\tAngle: {a2DandServoValues.ServoAngle}");
+            Thread.Sleep(1000);
+            if (Calibrating != 4)
+                break;
+            a2DandServoValues.ServoAngle = 135;
+            SoftataLib.Actuator.ActuatorWrite(id, a2DandServoValues.ServoAngle);
+            Console.WriteLine($"\t\t\tAngle: {a2DandServoValues.ServoAngle}");
+            Thread.Sleep(1000);
+            if (Calibrating != 4)
+                break;
+            a2DandServoValues.ServoAngle = 90;
+            SoftataLib.Actuator.ActuatorWrite(id, a2DandServoValues.ServoAngle);
+            Console.WriteLine($"\t\t\tAngle: {a2DandServoValues.ServoAngle}");
+            Thread.Sleep(1000);
+            if (Calibrating != 4)
+                break;
+            a2DandServoValues.ServoAngle = 45;
+            SoftataLib.Actuator.ActuatorWrite(id, a2DandServoValues.ServoAngle);
+            Console.WriteLine($"\t\t\tAngle: {a2DandServoValues.ServoAngle}");
+            Thread.Sleep(1000);
+            if (Calibrating != 4)
+                break;
+            a2DandServoValues.ServoAngle = 0;
+            SoftataLib.Actuator.ActuatorWrite(id, a2DandServoValues.ServoAngle);
+            Console.WriteLine($"\t\t\tAngle: {a2DandServoValues.ServoAngle}");
+            Thread.Sleep(1000);
+            if (Calibrating != 4)
+                break;
+        }
+        Calibrating = 5;
+        for (int i = 0; i < 1200; i++)
+        {
+            double val = SoftataLib.Analog.AnalogReadPotentiometer();
+            a2DandServoValues.PotValue = (int)val;
+            if (val != double.MaxValue)
+            {
+                Console.WriteLine($"AnalogRead({AppState.Potentiometer}) = {val:0.##}");
+                byte angle = (byte)val;
+                a2DandServoValues.ServoAngle  = (byte)(180 * (val - max1) / (max2 - max1));
+                SoftataLib.Actuator.ActuatorWrite(AppState.IActuator, a2DandServoValues.ServoAngle);
+            }
+            else
+                Console.WriteLine($"\t\tAnalogRead({AppState.Potentiometer}) failed");
+            Console.WriteLine();
+            queue.Enqueue(a2DandServoValues);
+            Thread.Sleep(500);
+        }
+        AppState.Running = false;
+        Thread.Sleep(333);     
+    }
+
+}
+

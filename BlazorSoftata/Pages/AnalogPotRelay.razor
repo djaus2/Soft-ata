@@ -63,7 +63,7 @@ else if(AppState.Running)
         <br />
         if greater than 50% the state is true, false otherwise.
         <br />
-        If the state has changed then sent back to Pico a dital signal to the Relay..
+        If the state has changed then sent back to Pico a digital signal to the Relay..
         <br />
         UI Lights show when certain threshholds are reached.
         <br/>
@@ -96,10 +96,10 @@ else if(AppState.Running)
             {
                 case Softata.SoftataLib.CommandType.PotRelay:
                     {
-                        <h2>Rotate the potentiometer slowly to change the brightness of the LED.</h2>
+                        <h2>Rotate the potentiometer slowly. At 50% the Relay turns on..</h2>
                         <ul>
-                            <li>Pot glows when &lt;50/100</li>
-                            <li>LED glows when &gt;49/100</li>
+                            <li>Pot: Bar Graph show level.</li>
+                            <li>Relay glows when ON.</li>
                         </ul>
 
                         <table>
@@ -108,7 +108,11 @@ else if(AppState.Running)
                                 <td rowspan="2">
                                     <div class="row">
                                         <div class="lights">
-                                            <div class="orange @(PotValue<50 ? "on" : "off")"></div>
+                                            <div class="orange @(PotValue>9 ? "on" : "off")"></div>
+                                            <div class="orange @(PotValue>24 ? "on" : "off")"></div>
+                                            <div class="orange @(PotValue>49 ? "on" : "off")"></div>
+                                            <div class="orange @(PotValue>74 ? "on" : "off")"></div>
+                                            <div class="orange @(PotValue>89 ? "on" : "off")"></div>
                                             <div class="green @(RelayValue==SoftataLib.PinState.HIGH ? "on" : "off")"></div>
                                         </div>
                                     </div>
@@ -275,6 +279,7 @@ else if(AppState.Running)
         a2DandRelayValues.RelayValue = SoftataLib.PinState.LOW;
         queue.Enqueue(a2DandRelayValues);
         Thread.Sleep(500);
+
         for (int i = 0; i < 1200; i++)
         {
             double val = SoftataLib.Analog.AnalogReadPotentiometer();

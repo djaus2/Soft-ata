@@ -38,6 +38,9 @@ WiFiServer server(port);
 
 bool first = true;
 void setup() {
+
+
+
   Serial.begin(115200);
   while (!Serial);
   WiFi.mode(WIFI_STA);
@@ -1213,6 +1216,10 @@ void loop() {
                   else
                   {
                     byte value = otherData[1];
+                    Serial.print("Servo: ");
+                    Serial.print(value);
+                    Serial.print('-');
+                    Serial.println(index);
                     if(grove_Actuator->Write(value,index))
                       client.print("OK:Actuator-WriteIntValue");
                     else
@@ -1319,12 +1326,22 @@ int LEDListIndex = -1;
 void setup1() {
   numSensors=0;
 
+  /////////////////////////////////////////////////
+  // Defined in Softata.h
+  // Perhaps make software setable??
+  // App starts quicker if not defined
+  #if USINGIOTHUB
+    doingIoTHub = true;
+  #else
+    doingIoTHub = false;
+  #endif
+  ////////////////////////////////////////////////
+
   SerialBT.begin();
 
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, LOW);
   Led_State = false;
-  doingIoTHub = false;
 
   InitCore2SensorList();
   InbuiltLED.period = 2000;
@@ -1337,7 +1354,10 @@ void setup1() {
 
   // Wait for other Setup to finish
   uint32_t sync = rp2040.fifo.pop();
-  establishConnection();
+  if(doingIoTHub)
+  {
+    establishConnection();
+  }
   rp2040.fifo.push(sync);
 }
 

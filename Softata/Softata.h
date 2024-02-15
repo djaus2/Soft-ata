@@ -18,6 +18,8 @@
 #define IOT_CONFIG_WIFI_PASSWORD STAPSK 
 
 // Azure IoT
+// Undefine following if using IOT Hub
+//#define USINGIOTHUB
 #define IOT_CONFIG_IOTHUB_FQDN  "<Hub name>.azure-devices.net"
 #define IOT_CONFIG_DEVICE_ID  "<Device name>"
 #define IOT_CONFIG_DEVICE_KEY  "<Device key>" 

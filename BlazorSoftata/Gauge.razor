@@ -1,0 +1,58 @@
+﻿<table>
+     <tr>
+        <td>@Title:</td> 
+    </tr>
+@foreach (int value  in @Values)
+{
+    <tr>
+        <td >
+           <div class="row">
+                <div class="lights">
+                        <div class="@Color @(GaugeValue > value ? "on" : "off")"></div>
+                </div>
+            </div>
+        </td> 
+    </tr> 
+}
+    <tr><td>Value:</td></tr>
+    <tr><td>@GaugeValue</td></tr>
+</table>
+
+@code {
+    [Parameter]
+    public int Min { get; set; } = 0;
+    [Parameter]
+    public int Max { get; set; } = 100;
+    [Parameter]
+    public int NumSteps { get; set; } = 2;
+    [Parameter]
+    public double  GaugeValue
+    {
+        get => gaugevalue; 
+        set { 
+            gaugevalue = value; StateHasChanged(); }
+    }
+    [Parameter]
+    public string Color { get; set; } = "green";
+
+
+    List<int> Values { get; set; } = new List<int>();
+    int n { get{ return Values.Count(); }}
+    string Title {get; set;} = "";
+    
+    double gaugevalue { get; set; } = 0;
+
+    protected override void OnInitialized()
+    {
+        if (NumSteps < 2)
+            NumSteps = 2;
+        Values = new List<int>();
+        for (int i = 0; i < NumSteps; i++)
+        {
+            double val = Min + i * ((Max - Min) / NumSteps);
+        }
+
+    }
+
+
+}

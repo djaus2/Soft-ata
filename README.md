@@ -43,10 +43,13 @@ Similarly a .NET MAUI app is envisaged. Finally, a port of the .NET library to t
 ## Latest
 
 _See **Repository Status** below._
-- Extending Blazor app to match the Console app. Digital Button-LED and Analog Pot-LED tests migrated.  _More to come._
+- MQTT etc (and IoT turned off by default): Faster Blazor app start.
+  - #define in Softata.h
+- Extending Blazor app to match the Console app. Digital Button-LED,Analog Pot-LED, Pot-Relay and Pot-Servo tests migrated.  _More to come._
+  - Added a custom Bar Graph for analog value display in Blazor app.
+  - Also introducing default pin settings for Analog tests 
 - Azure IoT Hub telemtry streaming
   - Uses the implementation on GitHub at [djaus2/Azure_IoT_Hub_Arduino_RPI_Pico_Telemetry](https://github.com/djaus2/Azure_IoT_Hub_Arduino_RPI_Pico_Telemetry)
-- Restructed Display part of Console app.
 - _More:_ See Repository Status
 
 ## Background

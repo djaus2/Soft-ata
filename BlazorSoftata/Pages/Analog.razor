@@ -92,7 +92,7 @@ else if(AppState.Running)
                         <h2>Rotate the potentiometer slowly to change the brightness of the LED.</h2>
                         <ul>
                             <li>Pot glows when &lt;512/1023</li>
-                            <li>LED glows when &gt;127/255</li>
+                            <li>LED Bar Graph shows LED level up to 255</li>
                         </ul>
 
                         <table>
@@ -102,7 +102,11 @@ else if(AppState.Running)
                                     <div class="row">
                                         <div class="lights">
                                             <div class="orange @(PotValue<512 ? "on" : "off")"></div>
+                                            <div class="green @(LEDValue>0xEf ? "on" : "off")"></div>
+                                            <div class="green @(LEDValue>0xBf ? "on" : "off")"></div>
                                             <div class="green @(LEDValue>0x7f ? "on" : "off")"></div>
+                                            <div class="green @(LEDValue>0x3f ? "on" : "off")"></div>
+                                            <div class="green @(LEDValue>0x0f ? "on" : "off")"></div>
                                         </div>
                                     </div>
                                 </td>
