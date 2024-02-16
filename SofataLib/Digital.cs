@@ -12,7 +12,7 @@ namespace Softata
         /*
         public enum Commands
         {
-            //Digital IO
+            //DigitalButtonLED IO
             pinMode = 0xD0,
             digitalWrite = 0xD1,
             digitalRead = 0xD2,

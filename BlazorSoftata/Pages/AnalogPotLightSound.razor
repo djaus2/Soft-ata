@@ -1,0 +1,357 @@
+﻿@page "/potlightsoundanalog"
+
+
+@using Softata;
+@using static Softata.SoftataLib;
+@inject AppState AppState
+@using BlazorPro.Spinkit
+
+<PageTitle>Softata</PageTitle>
+<h1>Softata</h1>
+<i><b>Softata:</b> A Firmata like C# library connecting to a RPi Pico W running Arduino.</i>
+@if (!string.IsNullOrEmpty(AppState.AppVersion))
+{
+    <tr>
+        <td><b>App Version: </b></td>
+        <td>@AppState.AppVersion</td>
+    </tr>
+}
+@if (!string.IsNullOrEmpty(AppState.Connected))
+{
+    <tr>
+        <td><b>Connected: </b></td>
+        <td>@AppState.Connected</td>
+    </tr>
+}
+@if (!string.IsNullOrEmpty(AppState.DevicesCSV))
+{
+    <tr>
+        <td><b>Device Types: </b></td>
+        <td>@AppState.DevicesCSV.Replace("DEVICES:", "")</td>
+    </tr>
+}
+@if (!(AppState.TestCategory == DeviceCategory.MaxType))
+{
+    <tr>
+        <td><b>Selected Test Category: </b></td>
+        <td>@AppState.TestCategory</td>
+    </tr>
+}
+@if (!(AppState.TestType == CommandType.MaxType))
+{
+    <tr>
+        <td><b>Selected Test Type: </b></td>
+        <td>@AppState.TestType</td>
+    </tr>
+}
+
+<hr />
+
+@if (Busy)
+{
+    <Pulse />
+    <p>Please wait ...</p>
+}
+else if(AppState.Running)
+{
+    <Fold />
+    <p>Running ...</p>
+}
+
+@if (AppState.ReadytoRun)
+{
+    <h4>Potentiometer-Relay Test</h4>
+    <p>
+        2Do
+    </p>
+
+
+    <h2>Setup</h2>
+    <h3>Devices</h3>
+    <ul>
+        <li><a href="https://wiki.seeedstudio.com/Grove-Rotary_Angle_Sensor/">Potentiometer</a></li>
+        <li><a href="https://wiki.seeedstudio.com/Grove-Light_Sensor/">Light Sensor</a></li>
+        <li><a href="https://wiki.seeedstudio.com/Grove-Sound_Sensor/">Sound Sensor</a></li>
+    </ul>
+    <h3>Connections</h3>
+    <ul>
+        <li>Connect a Potentiometer to pin @AppState.Potentiometer</li>
+        <li>Connect a Light Sensor to pin @AppState.LightSensor</li>
+        <li>Connect a Sound Sensor to pin @AppState.SoundSensor</li>
+    </ul>
+    <p>Nb: 26=A0, 27=A1 and 28 = A2</p>
+
+
+    @if (!AppState.Running)
+    { 
+        @if (ReconnectVisible)
+        {
+            <button  class="btn btn-primary" @onclick="Reconnect">Reconnect and run test</button>
+        }
+        else if (RunVisble)
+        {
+            <button class="btn btn-primary" @onclick="Start">Run test</button>
+        }
+    }
+    else
+    {
+        <div class="form-group">
+            @switch (AppState.TestType)
+            {
+                case Softata.SoftataLib.CommandType.PotLightSoundAnalog:
+                    {
+                        <h4>Rotate the potentiometer, cover light sensor/shine torch on it,.</h4>
+                        <h4>Cover light sensor/shine torch on it,.</h4>
+                        <h4>Make loud noise near sound sensor</h4>
+                        <ul>
+                            <li>Pot: Bar Graph shows level.</li>
+                            <li>Light: Bar Graph shows level.</li>
+                            <li>Sound: Bar Graph shows level.</li>
+                        </ul>
+
+                        <table>
+                            <tr>
+                                <td>Pot</td>
+                                <td>Light</td>
+                                <td>Sound</td>
+                            </tr>
+                            <tr>
+                                <td>@PotValue</td>
+                                <td>@LightValue</td>
+                                <td>@SoundValue</td>
+                            </tr>
+                            <tr>
+                                <td rowspan="5">
+                                    <div class="row">
+                                        <div class="lights">
+                                            <div class="green @(PotValue>89 ? "on" : "off")"></div>
+                                            <div class="green @(PotValue>74 ? "on" : "off")"></div>
+                                            <div class="green @(PotValue>49 ? "on" : "off")"></div>
+                                            <div class="green @(PotValue>24 ? "on" : "off")"></div>
+                                            <div class="green @(PotValue>9 ? "on" : "off")"></div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td rowspan="5">
+                                    <div class="row">
+                                        <div class="lights">
+                                            <div class="blue @(LightValue>89 ? "on" : "off")"></div>
+                                            <div class="blue @(LightValue>74 ? "on" : "off")"></div>
+                                            <div class="blue @(LightValue>49 ? "on" : "off")"></div>
+                                            <div class="blue @(LightValue>24 ? "on" : "off")"></div>
+                                            <div class="blue @(LightValue>9 ? "on" : "off")"></div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td rowspan="5">
+                                    <div class="row">
+                                        <div class="lights">
+                                            <div class="red @(SoundValue>89 ? "on" : "off")"></div>
+                                            <div class="red @(SoundValue>74 ? "on" : "off")"></div>
+                                            <div class="red @(SoundValue>49 ? "on" : "off")"></div>
+                                            <div class="red @(SoundValue>24 ? "on" : "off")"></div>
+                                            <div class="red @(SoundValue>9 ? "on" : "off")"></div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                          
+                        </table>
+                    }
+                    break;
+            }
+
+        </div>
+
+
+        <button class="btn btn-primary" @onclick="Stop">Cancel</button>
+
+        
+    }
+}
+
+
+
+
+
+@code {
+    int PotValue { get; set; } = 0;
+    int LightValue { get; set; } = 0;
+    int SoundValue { get; set; } = 0;
+
+    public class A2DandPotLightSoundValues
+    {
+        public int PotValue { get; set; } = 0;
+        public int LightValue { get; set; } = 0;
+        public int SoundValue { get; set; } = 0;
+    }
+
+    bool busy = false;
+    bool Busy
+    {
+        get => busy;
+        set { busy = value; StateHasChanged(); }
+    }
+
+    Queue<A2DandPotLightSoundValues> queue = new Queue<A2DandPotLightSoundValues>();
+
+
+
+
+
+    public System.Threading.WaitHandle Trigger { get; set; }
+    bool reconnectable = false;
+
+
+
+
+    protected override void OnInitialized()
+    {
+        AppState.OnChange += StateHasChanged;
+        AppState.ReadytoRun = true; ;
+        AppState.Running = false;
+        ReconnectVisible = false;
+        RunVisble = true;
+        firstRun = true;
+
+        queue = new Queue<A2DandPotLightSoundValues>();
+        Trigger = new System.Threading.ManualResetEvent(false);
+        var thread = new System.Threading.Thread(_ =>
+        {
+            Trigger.WaitOne();
+            Run();
+        });
+
+        thread.Start();
+
+    }
+
+    private async Task Start()
+    {
+        AppState.Running = true;
+        StateHasChanged();
+        await Task.Delay(100);
+
+        queue = new Queue<A2DandPotLightSoundValues>();
+        Trigger = new System.Threading.ManualResetEvent(false);
+        var thread = new System.Threading.Thread(_ =>
+        {
+            Trigger.WaitOne();
+            Run();
+        });
+
+        thread.Start();
+        queue = new Queue<A2DandPotLightSoundValues>();
+        await Task.Delay(100);
+        ((ManualResetEvent)Trigger).Set();
+        while(AppState.Running)
+        {
+            try
+            {
+                if (queue.TryDequeue(out A2DandPotLightSoundValues? states))
+                {
+                    if (states != null)
+                    {
+                        PotValue = states.PotValue;
+                        LightValue = states.LightValue;
+                        SoundValue = states.SoundValue;
+                        StateHasChanged();
+                    }
+                }
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            await Task.Delay(333);
+        }
+        RunVisble = false;
+        Busy = true;
+        StateHasChanged();
+        await Task.Delay(333);
+        //SoftataLib.SendMessageCmd("End");      
+        //await Task.Delay(3000);
+        Busy = false;
+        await Task.Delay(100);
+        ReconnectVisible = true;
+        StateHasChanged();
+    }
+
+    bool RunVisble { get; set; } = false;
+    bool ReconnectVisible  { get; set; } = false;
+
+    private void Stop()
+    {
+        readSensors = false;
+        StateHasChanged();
+    }
+
+    private async void Reconnect()
+    {
+        Busy = true;
+        StateHasChanged();
+        await Task.Delay(100);
+        ReconnectVisible = false;
+        SoftataLib.Reconnect();
+        StateHasChanged();
+        await Task.Delay(1000);
+        Busy = false;
+        StateHasChanged();
+        await Task.Delay(100);
+        await Start();
+    }
+
+    bool readSensors = false;
+    bool firstRun = true;
+    private  async void Run()
+    {
+        A2DandPotLightSoundValues a2DandRelayValues = new A2DandPotLightSoundValues();
+        if (firstRun)
+        {
+            firstRun = false;
+            SoftataLib.Analog.SetAnalogPin(SoftataLib.Analog.AnalogDevice.Potentiometer, AppState.Potentiometer);
+            SoftataLib.Analog.InitAnalogDevicePins(SoftataLib.Analog.RPiPicoMode.groveShield);
+            SoftataLib.Analog.SetAnalogPin(SoftataLib.Analog.AnalogDevice.Potentiometer, AppState.Potentiometer); //, 1023);
+            SoftataLib.Analog.SetAnalogPin(SoftataLib.Analog.AnalogDevice.LightSensor, AppState.LightSensor);
+            SoftataLib.Analog.SetAnalogPin(SoftataLib.Analog.AnalogDevice.SoundSensor, AppState.SoundSensor);
+        }
+        bool state = false;
+        a2DandRelayValues.PotValue = 10;
+        a2DandRelayValues.LightValue = 20;
+        a2DandRelayValues.SoundValue = 30;
+        queue.Enqueue(a2DandRelayValues);
+        Thread.Sleep(500);
+        readSensors = true;
+        while (readSensors)
+        {
+            double value = SoftataLib.Analog.AnalogReadLightSensor();
+            if (value != double.MaxValue)
+            {
+                a2DandRelayValues.LightValue = (int)value;
+                queue.Enqueue(a2DandRelayValues);
+            }
+            Thread.Sleep(100);
+
+            value = SoftataLib.Analog.AnalogReadPotentiometer();
+            if (value != double.MaxValue)
+            {
+                a2DandRelayValues.PotValue = (int)value;
+                queue.Enqueue(a2DandRelayValues);
+            }
+            Thread.Sleep(100);
+
+            value = SoftataLib.Analog.AnalogReadSoundSensor();
+            if (value != double.MaxValue)
+            {
+                a2DandRelayValues.SoundValue = (int)value;
+                queue.Enqueue(a2DandRelayValues);
+            }
+            Thread.Sleep(100); 
+            
+        }
+        AppState.Running = false;
+        Thread.Sleep(333);     
+    }
+
+}
+

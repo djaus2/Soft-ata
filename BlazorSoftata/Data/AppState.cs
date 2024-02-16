@@ -14,6 +14,8 @@ namespace BlazorSoftata
         private byte lED = 0xff;
         private byte relay = 0xff;
         private byte potentiometer = 0xff;
+        private byte lightsensor = 0xff;
+        private byte soundsensor = 0xff;
         private byte servo = 0xff;
         private bool readytoRun = false;
         private bool running = false;
@@ -30,18 +32,71 @@ namespace BlazorSoftata
         public byte Button { get => button; set { button = value; NotifyStateChanged(); } }
         public byte LED { get => lED; set { lED = value; NotifyStateChanged(); } }
         public byte Relay { get => relay; set { relay = value; NotifyStateChanged(); } }
+
+        public byte SoundSensor { get => soundsensor; set { soundsensor = value; NotifyStateChanged(); } }
+
+        public byte LightSensor { get => lightsensor; set { lightsensor = value; NotifyStateChanged(); } }
+
         public byte Potentiometer { get => potentiometer; set { potentiometer = value; NotifyStateChanged(); } }
         public byte Servo { get => servo; set { servo = value; NotifyStateChanged(); } }
         public CommandType TestType { get => testType; set { testType = value; NotifyStateChanged(); } }
         public bool ReadytoRun { get => readytoRun; set { readytoRun = value; NotifyStateChanged(); } }
         public bool Running { get => running; set { running = value; NotifyStateChanged(); } }
-        public bool DefaultSettings { get => defaultSettings; set { NotifyStateChanged(); }}
-        public bool GetPins { get => servoGetPins; set { servoGetPins = value; NotifyStateChanged(); }}
-        public List<string> Actuators { get => actuators; set { actuators = value; NotifyStateChanged(); }}
+        public bool DefaultSettings { get => defaultSettings; set { NotifyStateChanged(); } }
+        public bool GetPins { get => servoGetPins; set { servoGetPins = value; NotifyStateChanged(); } }
+        
+        // List of tests as string names. Downloaded form Softata on Arduino
+        public List<string> Actuators { get => actuators; set { actuators = value; NotifyStateChanged(); } }
 
+        public List<string> Displays { get => displays; set { displays = value; NotifyStateChanged(); } }
+
+
+        public List<string> Sensors { get => sensors; set { sensors = value; NotifyStateChanged(); } }
+
+
+        // Test Categories
+        public DeviceCategory TestCategory { get => testCategory; set { testCategory = value; NotifyStateChanged(); } }
+
+        // Lists of tests as a CommandType
+        public List<CommandType> LDigitals { get => lDigitals; set { lDigitals = value; NotifyStateChanged(); } }
+        public List<CommandType> LAnalogs { get => lAnalogs; set { lAnalogs = value; NotifyStateChanged(); } }
+
+        public List<CommandType> LActuators { get => lActuators; set { lActuators = value; NotifyStateChanged(); } }
+
+        public List<CommandType> LSensors { get => lAnalogs; set { lAnalogs = value; NotifyStateChanged(); } }
+
+        public List<CommandType> LDisplays { get => lActuators; set { lActuators = value; NotifyStateChanged(); } }
+
+        public byte IDigital
+        {
+            get => idigital;
+            set
+            {
+                if (value < LDigitals.Count())
+                    GetPins = true;
+                else
+                    GetPins = false;
+                idigital = value;
+                NotifyStateChanged();
+            }
+        }
+
+        public byte IAnalog
+        {
+            get => ianalog;
+            set
+            {
+                if (value < LAnalogs.Count())
+                    GetPins = true;
+                else
+                    GetPins = false;
+                ianalog = value;
+                NotifyStateChanged();
+            }
+        }
         public byte IActuator { get => iactuator; 
             set { 
-                if (value < Actuators.Count())
+                if (value < LActuators.Count())
                     GetPins = true; 
                 else
                     GetPins = false;
@@ -49,7 +104,38 @@ namespace BlazorSoftata
                 NotifyStateChanged(); 
             }
         }
-public string AppVersion { get => appVersion; set { appVersion = value; NotifyStateChanged(); } }
+
+        public byte IDisplay
+        {
+            get => idisplay;
+            set
+            {
+                //if (Displays != null)
+                //{
+                    if (value < Displays.Count())
+                        GetPins = true;
+                    else
+                        GetPins = false;
+               // }
+                idisplay = value;
+                NotifyStateChanged();
+            }
+        }
+
+        public byte ISensor
+        {
+            get => isensor;
+            set
+            {
+                if (value < Sensors.Count())
+                    GetPins = true;
+                else
+                    GetPins = false;
+                isensor = value;
+                NotifyStateChanged();
+            }
+        }
+        public string AppVersion { get => appVersion; set { appVersion = value; NotifyStateChanged(); } }
         public string Connected { get => connected; set { connected = value; NotifyStateChanged(); } }
         public string DevicesCSV { get => devicesCSV; set { devicesCSV = value; NotifyStateChanged(); }
 }
@@ -74,9 +160,21 @@ public byte I2C { get => i2C; set { if ((value < 0) || (value > 1)) return; i2C 
         private string connected = "";
         private string devicesCSV = "";
         private List<string> actuators;
+        private List<string> displays;
+        private List<string> sensors;
+        private byte idigital;
+        private byte ianalog;
         private byte iactuator;
+        private byte idisplay;
+        private byte isensor;
         private bool servoGetPins;
         private bool defaultSettings = false;
+        private DeviceCategory testCategory;
+        private List<CommandType> lDigitals;
+        private List<CommandType> lAnalogs;
+        private List<CommandType> lDisplays;
+        private List<CommandType> lSensors;
+        private List<CommandType> lActuators;
 
         public AppState()
         {

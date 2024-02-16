@@ -16,6 +16,8 @@
 #include "devicesLists.h"
 
 struct CallbackInfo  BME280CBInfo;
+// Used when first connected to change inbuilt LED blink rate.
+bool hasConnected = false;
 
 
 // Use one or other in testing
@@ -40,7 +42,7 @@ bool first = true;
 void setup() {
 
 
-
+  hasConnected = false; 
   Serial.begin(115200);
   while (!Serial);
   WiFi.mode(WIFI_STA);
@@ -59,7 +61,7 @@ void setup() {
   InitDisplayList();
   InitActuatorList();  
   first = false;
-  // Just to be safe don't simulatabeously setup server and client
+  // Just to be safe don't simulataneously setup server and client
   uint32_t val = 137;
   Serial.println(val);
   rp2040.fifo.push(val);
@@ -73,6 +75,8 @@ void setup() {
 
 //Ref: https://www.thegeekpub.com/276838/how-to-reset-an-arduino-using-code/
 void (*resetFunc)(void) = 0;
+
+
 
 void loop() {
   watchdog_update();
@@ -104,6 +108,16 @@ void loop() {
     }
 
     Serial.println("...Is connected.");
+    if(!hasConnected)
+    {
+      hasConnected = true;
+      rp2040.fifo.push(10010); //Make Inbuilt LED flash faster
+      while (!rp2040.fifo.available())
+      {
+          watchdog_update();
+      }
+      uint32_t sync = rp2040.fifo.pop();
+    }
     byte length = client.read();
     Serial.println(length);
     int count = 0;
@@ -1344,7 +1358,7 @@ void setup1() {
   Led_State = false;
 
   InitCore2SensorList();
-  InbuiltLED.period = 2000;
+  InbuiltLED.period = UNCONNECTED_BLINK_ON_PERIOD;
   InbuiltLED.isRunning = true;
   InbuiltLED.isSensor = false;
   InbuiltLED.back = Toggle_InbuiltLED;
@@ -1370,6 +1384,16 @@ void loop1() {
     bool res = false;
     if (state ==0)
       res =  PauseTelemetrySend(index);
+    else if(state==10)
+    {
+      // Double LED blink speed if connected
+      // should be done before any sensors etc added
+      RemoveSensorFromCore2List(LEDListIndex);
+      InitCore2SensorList();
+      InbuiltLED.period = InbuiltLED.period /4;
+      LEDListIndex = AddCallBack(&InbuiltLED);
+      res = true;
+    }
     else
       res =  ContinueTelemetrySend(index);
     if(res)

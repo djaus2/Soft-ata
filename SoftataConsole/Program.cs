@@ -34,15 +34,15 @@ namespace FirmataBasic
         //static SoftataLib.CommandType Testtype = CommandType.PotLightSoundAnalog;
         //static SoftataLib.CommandType Testtype = CommandType.LCD1602Display;
         //static SoftataLib.CommandType Testtype = CommandType.NeopixelDisplay;
-        //static SoftataLib.CommandType Testtype = CommandType.Digital;
+        //static SoftataLib.CommandType Testtype = CommandType.DigitalButtonLED;
         //static SoftataLib.CommandType Testtype = CommandType.Serial;
-        static SoftataLib.CommandType Testtype = CommandType.Digital;
+        static SoftataLib.CommandType Testtype = CommandType.DigitalButtonLED;
         //Set Serial1 or Serial2 for send and receive.
         //Nb: If both true or both false then loopback on same serial port.
         //static bool Send1 = true;
         //static bool Recv1 = true;
         // Next two are the same test
-        //static SoftataLib.CommandType Testtype = CommandType.Analog;
+        //static SoftataLib.CommandType Testtype = CommandType.AnalogPotLED;
         //static SoftataLib.CommandType Testtype = CommandType.PWM;
 
         static void Main(string[] args)
@@ -95,13 +95,13 @@ namespace FirmataBasic
                 switch (Testtype)
                 {
                     // LED-Button test
-                    case CommandType.Digital:
+                    case CommandType.DigitalButtonLED:
                         SoftataLib.Digital.SetPinMode(BUTTON, SoftataLib.PinMode.DigitalInput);
                         SoftataLib.Digital.SetPinMode(LED, SoftataLib.PinMode.DigitalOutput);
                         SoftataLib.Digital.SetPinState(LED, SoftataLib.PinState.HIGH);
 
                         // Next is errant as no pin 50 on Pico
-                        //Digital.SetAnalogPin(50, PinMode.DigitalInput);
+                        //DigitalButtonLED.SetAnalogPin(50, PinMode.DigitalInput);
 
                         // Next is errant as no such command
                         //SoftataLib.SendMessage(SoftataLib.Commands.Undefined, (byte)26, (byte)PinMode.DigitalInput);
@@ -115,7 +115,7 @@ namespace FirmataBasic
                         break;
 
                     // Potentiometer-LED Test
-                    case CommandType.Analog:
+                    case CommandType.AnalogPotLED:
                     case CommandType.PWM:
                         // Note no pin setup needed for analog
                         SoftataLib.Digital.SetPinMode(LED, SoftataLib.PinMode.DigitalOutput);

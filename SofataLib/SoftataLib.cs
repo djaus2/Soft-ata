@@ -9,6 +9,7 @@ using System.Net.Sockets;
 using System.IO;
 using System.Threading;
 using System.Net.NetworkInformation;
+using static Softata.SoftataLib;
 
 namespace Softata
 {
@@ -99,13 +100,13 @@ namespace Softata
 
         public enum Commands
         {
-            //Digital IO
+            //DigitalButtonLED IO
             pinMode = 0xD0,
             digitalWrite = 0xD1,
             digitalRead = 0xD2,
             digitalToggle = 0xD3,
         
-            //Analog/PWM
+            //AnalogPotLED/PWM
             analogRead = 0xA2,
             pwmWrite = 0xB1,
 
@@ -128,8 +129,8 @@ namespace Softata
 
         public enum CommandType : byte
         {
-            Digital = 0,
-            Analog = 1,
+            DigitalButtonLED = 0,
+            AnalogPotLED = 1,
             PWM = 2,
             Servo = 3,
             Sensors = 4,
@@ -144,8 +145,30 @@ namespace Softata
             Undefined = 0xFF
         }
 
-        //////////////////////////////////////////
-        // NOTE enum order of DisplayDevice must match that returned by GroveDisplayCmds.getDisplays()
+        public enum DeviceCategory: byte
+        {
+            digital=0,
+            analog=0x1,
+            sensor=0x2,
+            actuator=0x3,
+            display=0x4,
+            MaxType = 0x5,
+            //communication,
+            Undefined = 0xFF
+        }
+
+        // For simplicity add items to lists below using their ordinal:
+        public static Dictionary<DeviceCategory, List<byte>> DeviceCategoryMembers = new Dictionary<DeviceCategory, List<byte>>()
+        {
+            { DeviceCategory.digital,new List<byte>(){0}},
+            { DeviceCategory.analog,new List<byte>(){1,7,9,0xA }},
+            { DeviceCategory.sensor,new List<byte>(){4} },
+            { DeviceCategory.actuator,new List<byte>(){9,0xA}},
+            { DeviceCategory.display,new List<byte>(){5}}
+        };
+
+    //////////////////////////////////////////
+    // NOTE enum order of DisplayDevice must match that returned by GroveDisplayCmds.getDisplays()
         public enum DisplayDevice { OLEDSO096, LCD1602Display, NeopixelDisplay }
         //////////////////////////////////////////
 

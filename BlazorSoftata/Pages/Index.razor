@@ -33,6 +33,13 @@
         <td>@AppState.DevicesCSV.Replace("DEVICES:", "")</td>
     </tr>
 }
+@if (!(AppState.TestCategory == DeviceCategory.MaxType))
+{
+    <tr>
+        <td><b>Selected Test Category: </b></td>
+        <td>@TestCategory</td>
+    </tr>
+}
 @if (!(AppState.TestType == CommandType.MaxType))
 {
     <tr>
@@ -67,6 +74,10 @@
             </tr>
 
         </table>
+        <br/>
+        <p><b>Comment:</b> The Grove Shield connections are limited. If selected then  
+            for tests this is enforced for pin selection.</p>
+
     }
     else if (string.IsNullOrEmpty(AppState.Connected))
     {
@@ -84,21 +95,89 @@
 
         </table>
     }
-    else if (AppState.TestType == CommandType.MaxType)
+    else if (AppState.TestCategory == DeviceCategory.MaxType)
     {
-         <div class="form-group">
-            Test Type: @AppState.TestType <br />
-            <select @onchange="OnChangeCommandType">
-                <option value="None">Select Test Type</option>
-                @foreach (var value in Enum.GetValues<CommandType>())
+        <div class="form-group">
+            @if (AppState.TestCategory!= DeviceCategory.MaxType)
+            {
+                <h4>Test Category: @AppState.TestCategory</h4>
+            }
+            else
+            {
+                <h4>Test Category:</h4> 
+            }
+            <select @onchange="OnChangeDeviceType">
+                <option value="None">Select Test Category</option>
+                @foreach (var value in Enum.GetValues<DeviceCategory>().Where(value=>value<DeviceCategory.MaxType))
                 {
                     <option value="@value">@value</option>
                 }
             </select>
-         </div>
+        </div>
+    }
+    else if (AppState.TestType == CommandType.MaxType)
+    {
+        <h3>@TestCategory</h3>
+        <button class="btn btn-primary" @onclick="Reset">Reset</button>
+        @switch(@AppState.TestCategory)
+        {
+            case DeviceCategory.digital:
+            case DeviceCategory.analog:
+            case DeviceCategory.actuator:
+            @if(CurrentTypes != null)
+                {
+                    <div class="form-group">
+                        @if (AppState.TestType != CommandType.MaxType)
+                        {
+                            <h4>Tests: @AppState.TestType </h4>
+                        }
+                        else
+                        {
+                            <h4>Tests:</h4>
+                        }
+                        <select @onchange="OnChangeCommandType">
+                            <option value="None">Select test</option>
+                            @foreach (var value in CurrentTypes)
+                            {
+                                <option value="@value">@value</option>
+                            }
+                        </select>
+                    </div>
+                }
+                break;
+            case DeviceCategory.display:
+                <div class="form-group">
+                    <h4>Tests: </h4>
+                    <select @bind=@AppState.IDisplay>
+                        <option value=0xff>Select test</option>
+                        @for (int i = 0; i < ListDeviceTypeTests.Count(); i++)
+                        {
+                            <option value=@i>@ListDeviceTypeTests[i]</option>
+                        }
+                    </select>
+                    <br/>
+                    <i>Note: Not yet implemented</i>
+                </div>
+                break;
+            case DeviceCategory.sensor:
+                <div>
+                    <h4>Tests:</h4>
+                    <select @bind=@AppState.ISensor>
+                        <option value=0xff>Select test</option>
+                        @for (int i = 0; i < ListDeviceTypeTests.Count(); i++)
+                        {
+                            <option value=@i>@ListDeviceTypeTests[i]</option>
+                        }
+                    </select>
+                    <br />
+                    <i>Note: Not yet implemented</i>
+                </div>
+                break;
+            }
     }
     else if (!AppState.ReadytoRun)
     {
+        <button class="btn btn-primary" @onclick="Reset">Reset</button>
         <div class="form-group">
             @switch (AppState.TestType)
            {
@@ -190,6 +269,46 @@
                         }
                     }
                     break;
+                case Softata.SoftataLib.CommandType.PotLightSoundAnalog:
+                    {
+                        <h4>Analog Potentiometer-Light-Sound Test</h4>
+                        <p>2Do
+                        </p>
+                        <table>
+                            <tr><td>Pot Pin</td><td>&nbsp;</td><td>Light Pin</td><td>&nbsp;</td><td>Sound Pin</td></tr>
+                            <tr><td colspan="4"><button class="btn btn-primary" @onclick="PotLightSoundDefaults">Use Defaults</button></td></tr>
+
+                            <tr>
+                                <td>
+                                    <select @bind=@AppState.Potentiometer>
+                                        <option value=null>Select</option>
+                                        <option value=26>A0</option>
+                                        <option value=27>A1</option>
+                                        <option value=28>A2</option>
+                                    </select>
+                                </td>
+                                <td>&nbsp;</td>
+                                <td>
+                                    <select @bind=@AppState.LightSensor>
+                                        <option value=null>Select</option>
+                                        <option value=27>A1</option>
+                                        <option value=28>A2</option>
+                                        <option value=26>A0</option>
+                                    </select>
+                                </td>
+                                <td>&nbsp;</td>
+                                <td>
+                                    <select @bind=@AppState.SoundSensor>
+                                        <option value=null>Select</option>
+                                        <option value=28>A2</option>
+                                        <option value=26>A0</option>
+                                        <option value=27>A1</option>
+                                    </select>
+                                </td>
+                            </tr>
+                        </table>
+                    }
+                    break;
                 case Softata.SoftataLib.CommandType.PotRelay:
                     {
                         <h4>Potentiometer-Relay Test</h4>
@@ -235,7 +354,7 @@
                     }
                     break;
                 case Softata.SoftataLib.CommandType.PWM:
-                case Softata.SoftataLib.CommandType.Analog:
+                case Softata.SoftataLib.CommandType.AnalogPotLED:
                     {
                         <h4>Potentiometer-LED Test</h4>
                         <p>
@@ -271,7 +390,7 @@
                         </table>
                     }
                     break;
-                case Softata.SoftataLib.CommandType.Digital:
+                case Softata.SoftataLib.CommandType.DigitalButtonLED:
                 {
                     <h4>Digital Button-LED Test </h4>
                         <p>
@@ -280,6 +399,7 @@
                         </p>
                     <table>
                             <tr><td>Button Pin</td><td>&nbsp;</td><td>LED Pin</td></tr>
+                            <tr><td colspan="3"><button class="btn btn-primary" @onclick="LEDButtonDefaults">Use Defaults</button></td></tr>
                         <tr>
                             <td>
                                 <select @bind=@AppState.Button>
@@ -309,6 +429,7 @@
     }
     else if (AppState.ReadytoRun)
     {
+        <button class="btn btn-primary" @onclick="Reset">Reset</button>
         <div class="form-group">
             @switch (AppState.TestType)
             {
@@ -329,6 +450,18 @@
                        <p>Serial Rx: Serial @AppState.SerialRx</p>
                         <p>NOT YET AVAILABLE... Coming!</p>
                     }
+                    break;
+                case Softata.SoftataLib.CommandType.PotLightSoundAnalog:
+                    {
+                        <h4>Potentiometer-LED Test</h4>
+                        <p>
+                            2Do.
+                        </p>
+                        <p>Potentiometer Pin: @AppState.Potentiometer</p>
+                        <p>Light Sensor Pin: @AppState.LightSensor </p>
+                        <p>Sound Sensor Pin: @AppState.SoundSensor </p>
+                    }
+                    <button class="btn btn-primary" @onclick="Start">Go to test</button>
                     break;
                 case Softata.SoftataLib.CommandType.PotServo:
                     {
@@ -379,7 +512,7 @@
                         <button class="btn btn-primary" @onclick="Start">Go to test</button>
                     }
                     break;
-                case Softata.SoftataLib.CommandType.Analog:
+                case Softata.SoftataLib.CommandType.AnalogPotLED:
                 case Softata.SoftataLib.CommandType.PWM:
                     {
                         <h4>Potentiometer-LED Test</h4>
@@ -398,7 +531,7 @@
                     <button class="btn btn-primary" @onclick="Start">Go to test</button>
 
                     break;
-                case Softata.SoftataLib.CommandType.Digital:
+                case Softata.SoftataLib.CommandType.DigitalButtonLED:
                     {
                         <h4>Digital Button-LED Test </h4>
                         <p>
@@ -426,11 +559,78 @@
     const int port = 4242;
     const string ipaddressStr = "192.168.0.9";
 
+    private void Reset()
+    {
+        AppState.TestCategory = DeviceCategory.MaxType;
+        AppState.ReadytoRun = false;
+        AppState.Running = false;
+        AppState.TestType = CommandType.MaxType;
+        /*AppState.IDigital = 0xff;
+        AppState.IDisplay = 0xff;
+        AppState.IAnalog = 0xff;
+        AppState.IActuator = 0xff;
+        AppState.ISensor = 0xff;*/
+    }
+
 
     bool busy = false;
     bool Busy { get => busy; 
         set { busy = value; StateHasChanged(); } }
 
+    List<CommandType> CurrentTypes { get; set; } = new List<CommandType>();
+    List<string> ListDeviceTypeTests { get; set; } = new List<string>();
+    string TestCategory = "";
+
+    private void OnChangeDeviceType(ChangeEventArgs e)
+    {
+        if (e == null)
+            return;
+        var selected = e.Value?.ToString();
+        if (selected != null)
+        {
+            string _TestCategory = selected;
+            if (Enum.TryParse(_TestCategory, out DeviceCategory _testType))
+            {
+                List<byte> acts = new List<byte>();
+                AppState.TestCategory = _testType;
+                TestCategory = _TestCategory.Substring(0,1).ToUpper() + _TestCategory.Substring(1);
+                switch (AppState.TestCategory)
+                {
+                    case DeviceCategory.digital:
+                        acts = SoftataLib.DeviceCategoryMembers[DeviceCategory.digital];
+                        AppState.LDigitals = (from a in acts select (CommandType)a).ToList<CommandType>();
+                        CurrentTypes = AppState.LDigitals;
+                        AppState.IDigital = 0xff;
+                        break;
+                    case DeviceCategory.analog:
+                        acts = SoftataLib.DeviceCategoryMembers[DeviceCategory.analog];
+                        AppState.LAnalogs = (from a in acts select (CommandType)a).ToList<CommandType>();
+                        CurrentTypes =AppState.LAnalogs;
+                        AppState.IAnalog = 0xff;
+                        break;
+                    case DeviceCategory.sensor:
+                        AppState.Sensors = SoftataLib.Sensor.GetSensors().ToList();
+                        ListDeviceTypeTests = AppState.Sensors;
+                        AppState.ISensor = 0xff;
+                        break;
+                    case DeviceCategory.display:
+                        AppState.Displays = SoftataLib.Display.GetDisplays().ToList();
+                        ListDeviceTypeTests = AppState.Displays;
+                        AppState.IDisplay = 0xff;
+                        break;
+                    case DeviceCategory.actuator:
+                        acts =  SoftataLib.DeviceCategoryMembers[DeviceCategory.actuator];
+                        AppState.Actuators = SoftataLib.Actuator.GetActuators().ToList();
+                        AppState.LActuators = (from a in acts select (CommandType)a).ToList<CommandType>();
+                        AppState.Actuators.AddRange(from a in AppState.LActuators select a.ToString());
+                        CurrentTypes = AppState.LActuators;
+                        AppState.IActuator = 0xff;
+                        break;
+                }
+            }
+            StateHasChanged();
+        }
+    }
 
     private void OnChangeCommandType(ChangeEventArgs e)
     {
@@ -445,12 +645,13 @@
                 AppState.TestType = _testType;
                 switch (AppState.TestType)
                 {
-                    case CommandType.Digital:
-                        //AppState = new Digital();
+                    case CommandType.DigitalButtonLED:
+                        //AppState = new DigitalButtonLED();
                         break;
                     case CommandType.PotServo:
                         AppState.Actuators = SoftataLib.Actuator.GetActuators().ToList();
-                        AppState.IActuator = 0xff;
+                        AppState.GetPins = true;
+                        AppState.IActuator = 0;
                         break;
                 }
             }
@@ -480,6 +681,7 @@
         Busy = false;
         StateHasChanged();
         AppState.Connected = "IsConnected";
+        AppState.TestCategory = DeviceCategory.MaxType;
         await Task.Delay(333);
     }
 
@@ -522,6 +724,22 @@
         Ready();
     }
 
+    private void LEDButtonDefaults()
+    {
+        AppState.Button = 26;
+        AppState.LED = 18;
+        Ready();
+    }
+
+    private void PotLightSoundDefaults()
+    {
+        AppState.Potentiometer = 26; //A0
+        AppState.LightSensor = 27; //A1
+        AppState.SoundSensor = 28; //A2
+        Ready();
+    }
+
+
     private void Ready()
     {
         AppState.ReadytoRun = false;
@@ -553,14 +771,14 @@
                 else
                     AppState.DefaultSettings = false;
                 break;
-            case CommandType.Analog:
+            case CommandType.AnalogPotLED:
             case CommandType.PWM:
                 if (!AppState.GPIOPins.Contains(AppState.LED))
                     return;
                 if (AppState.Potentiometer == AppState.LED)
                     return;
                 break;
-            case CommandType.Digital:
+            case CommandType.DigitalButtonLED:
                 if (AppState == null)
                     return;
                 if (!AppState.GPIOPins.Contains(AppState.Button))
@@ -568,6 +786,14 @@
                 if (!AppState.GPIOPins.Contains(AppState.LED))
                     return;
                 if (AppState.Button == AppState.LED)
+                    return;
+                break;
+            case CommandType.PotLightSoundAnalog:
+                if (AppState.Potentiometer == AppState.LightSensor)
+                    return;
+                if (AppState.Potentiometer == AppState.SoundSensor)
+                    return;
+                if (AppState.SoundSensor == AppState.LightSensor)
                     return;
                 break;
         }
@@ -594,11 +820,14 @@
             case CommandType.PotRelay:
                 navigationManager.NavigateTo("/potrelay");
                 break;
-            case CommandType.Analog:
+            case CommandType.PotLightSoundAnalog:
+                navigationManager.NavigateTo("/potlightsoundanalog");
+                break;
+            case CommandType.AnalogPotLED:
             case CommandType.PWM:
                 navigationManager.NavigateTo("/analog");
                 break;
-            case CommandType.Digital:
+            case CommandType.DigitalButtonLED:
                 navigationManager.NavigateTo("/digital");
                 break;
         }

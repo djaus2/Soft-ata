@@ -1,5 +1,15 @@
 # Soft-ata
 
+<hr/>
+<h2>Project is being updated:</h2>
+- Inbuilt LED flash rate: Slow if not connected, fast if connected. _(Done)_
+  - NB: This runs on the second core.
+- Change UI to start with test Categories selection _(Working)_
+  - Some overlap of test types between categories.
+- Added Analog Pot-Sound-Sound sensors test _(Works)_
+- Sensors and Displays incomplete.
+<hr/>
+
 ## In Brief
 **An Arduino app _LIKE_ Firmata for RPI Pico W running Arduino.**
 Includes a .NET package so that you can write your own client in C#. 

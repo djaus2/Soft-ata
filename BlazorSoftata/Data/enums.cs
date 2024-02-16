@@ -8,8 +8,8 @@
     public enum Servos : byte { Servo }
    /* public enum CommandType : byte
     {
-        Digital = 0,
-        Analog = 1,
+        DigitalButtonLED = 0,
+        AnalogPotLED = 1,
         PWM = 2,
         Servo = 3,
         Sensors = 4,

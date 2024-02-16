@@ -30,6 +30,13 @@
         <td>@AppState.DevicesCSV.Replace("DEVICES:", "")</td>
     </tr>
 }
+@if (!(AppState.TestCategory == DeviceCategory.MaxType))
+{
+    <tr>
+        <td><b>Selected Test Category: </b></td>
+        <td>@AppState.TestCategory</td>
+    </tr>
+}
 @if (!(AppState.TestType == CommandType.MaxType))
 {
     <tr>

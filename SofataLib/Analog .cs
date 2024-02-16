@@ -12,7 +12,7 @@ namespace Softata
         /*
         public enum Commands
         {      
-            //Analog/PWM
+            //AnalogPotLED/PWM
             analogRead = 0xA2,
             pwmWrite = 0xB1,
 
@@ -58,7 +58,7 @@ namespace Softata
                 {
                     if (item.Value.PinNumber == pinNumber)
                     {
-                        throw new ArgumentOutOfRangeException(nameof(pinNumber), "Analog pin already assigned");
+                        throw new ArgumentOutOfRangeException(nameof(pinNumber), "AnalogPotLED pin already assigned");
                         //break;
                     }
                 }

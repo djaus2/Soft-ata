@@ -10,15 +10,15 @@
 
 //WiFi
 #ifndef STASSID
-#define STASSID "<Wifi Network>"
-#define STAPSK "<password>"
+#define STASSID "APQLZM"
+#define STAPSK "silly1371"
 #endif
 
 #define IOT_CONFIG_WIFI_SSID STASSID
 #define IOT_CONFIG_WIFI_PASSWORD STAPSK 
 
 // Azure IoT
-// Undefine following if using IOT Hub
+// Uncomment following if using Azure IoT Hub
 //#define USINGIOTHUB
 #define IOT_CONFIG_IOTHUB_FQDN  "<Hub name>.azure-devices.net"
 #define IOT_CONFIG_DEVICE_ID  "<Device name>"
@@ -26,6 +26,10 @@
 
 //Server Port
 #define PORT 4242
+
+// Inbuilt Blink ON Period
+#define UNCONNECTED_BLINK_ON_PERIOD 4000
+// Connected blink rate is 1/4 of this.
 
 #define MAX_SENSOR_PROPERTIES 10
 

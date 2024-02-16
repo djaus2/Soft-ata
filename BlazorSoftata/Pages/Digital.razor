@@ -30,6 +30,13 @@
         <td>@AppState.DevicesCSV.Replace("DEVICES:", "")</td>
     </tr>
 }
+@if (!(AppState.TestCategory == DeviceCategory.MaxType))
+{
+    <tr>
+        <td><b>Selected Test Category: </b></td>
+        <td>@AppState.TestCategory</td>
+    </tr>
+}
 @if (!(AppState.TestType == CommandType.MaxType))
 {
     <tr>
@@ -76,7 +83,7 @@ else if(AppState.Running)
         <div class="form-group">
             @switch (AppState.TestType)
             {
-                case Softata.SoftataLib.CommandType.Digital:
+                case Softata.SoftataLib.CommandType.DigitalButtonLED:
                     {
                         <h2>Press hardware button to toggle LED.</h2>
                         <h3>Hold until LED changes state = Button here is HIGH</h3>
