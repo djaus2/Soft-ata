@@ -9,6 +9,7 @@
   - Change UI to start with test Categories selection _(Working)_
     - Some overlap of test types between categories.
   - Added Analog Pot-Sound-Sound sensors test _(Works)_
+  - _Note:_ Software bargraphs in app for Analog data.
   - Sensors and Displays incomplete.
 
 <hr/>
