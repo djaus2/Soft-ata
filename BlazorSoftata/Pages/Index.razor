@@ -47,6 +47,13 @@
         <td>@AppState.TestType</td>
     </tr>
 }
+@if ((AppState.IDisplay != 0xff)) 
+{
+    <tr>
+        <td><b>Selected Display: </b></td>
+        <td>@AppState.DisplayDevice</td>
+    </tr>
+}
 
 <hr />
 
@@ -148,7 +155,7 @@
             case DeviceCategory.display:
                 <div class="form-group">
                     <h4>Tests: </h4>
-                    <select @bind=@AppState.IDisplay>
+                    <select @onchange="OnChangeCommandType">
                         <option value=0xff>Select test</option>
                         @for (int i = 0; i < ListDeviceTypeTests.Count(); i++)
                         {
@@ -156,7 +163,7 @@
                         }
                     </select>
                     <br/>
-                    <i>Note: Not yet implemented</i>
+                    <i>Note: Only Neopixel implemented thus far...Other 2 soon.</i>
                 </div>
                 break;
             case DeviceCategory.sensor:
@@ -183,12 +190,16 @@
            {
                 case Softata.SoftataLib.CommandType.Sensors:
                     {
-
+                        <table>
+                        <tr><td colspan="4"><button class="btn btn-primary" @onclick="SensorsDefaults">Use Defaults</button></td></tr>
+                        </table>
                     }
                     break;
                 case Softata.SoftataLib.CommandType.Displays:
                     {
-
+                        <table>
+                        <tr><td colspan="4"><button class="btn btn-primary" @onclick="DisplaysDefaults">Use Defaults</button></td></tr>
+                        </table>
                     }
                     break;
                 case Softata.SoftataLib.CommandType.Serial:
@@ -440,7 +451,8 @@
                     break;
                 case Softata.SoftataLib.CommandType.Displays:
                     {
-                        <p>NOT YET AVAILABLE... Coming!</p>
+                        <p>Using Default pins for device</p>
+                        <button class="btn btn-primary" @onclick="Start">Go to test</button>
                     }
                     break;
                 case Softata.SoftataLib.CommandType.Serial:
@@ -639,19 +651,40 @@
         var selected = e.Value.ToString();
         if (selected != null)
         {
-            string TestType = selected;
-            if (Enum.TryParse(TestType, out CommandType _testType))
+            if (AppState.TestCategory != DeviceCategory.display)
             {
-                AppState.TestType = _testType;
-                switch (AppState.TestType)
+                string TestType = selected;
+                if (Enum.TryParse(TestType, out CommandType _testType))
                 {
-                    case CommandType.DigitalButtonLED:
-                        //AppState = new DigitalButtonLED();
-                        break;
-                    case CommandType.PotServo:
-                        AppState.Actuators = SoftataLib.Actuator.GetActuators().ToList();
-                        AppState.GetPins = true;
-                        AppState.IActuator = 0;
+                    AppState.TestType = _testType;
+                    switch (AppState.TestType)
+                    {
+                        case CommandType.DigitalButtonLED:
+                            //AppState = new DigitalButtonLED();
+                            break;
+                        case CommandType.PotServo:
+                            AppState.Actuators = SoftataLib.Actuator.GetActuators().ToList();
+                            AppState.GetPins = true;
+                            AppState.IActuator = 0;
+                            break;
+                        case CommandType.Displays:
+                            AppState.GetPins = true;
+                            break;
+                    }
+                }
+            }
+            else
+            {
+                // Get subcommand
+                switch (AppState.TestCategory)
+                {
+                    case DeviceCategory.display:
+                        AppState.TestType = CommandType.Displays;
+                        string DisplayType = selected;
+                        if (byte.TryParse(DisplayType, out byte idisplay))
+                        {
+                            AppState.IDisplay = idisplay;
+                        }
                         break;
                 }
             }
@@ -703,10 +736,19 @@
         AppState.Running = false;
     }
 
-    private void ServoDefaults()
+    private void SensorsDefaults()
     {
-        AppState.Potentiometer = 26;
-        AppState.Servo = 16;
+@*         AppState.Potentiometer = 26;
+        AppState.Servo = 16; *@
+        AppState.DefaultSettings = true;
+        Ready();
+    }
+
+    private void DisplaysDefaults()
+    {
+        @* AppState.Potentiometer = 26;
+        AppState.Servo = 16; *@
+        AppState.DefaultSettings = true;
         Ready();
     }
 
@@ -714,6 +756,12 @@
     {
         AppState.Potentiometer = 26;
         AppState.Relay = 16;
+        Ready();
+    }
+    private void ServoDefaults()
+    {
+        AppState.Potentiometer = 26;
+        AppState.Servo = 16;
         Ready();
     }
 
@@ -806,10 +854,23 @@
         switch (AppState.TestType)
         {
             case CommandType.Sensors:
-            navigationManager.NavigateTo("/digital");
+                navigationManager.NavigateTo("/digital");
                 break;
             case CommandType.Displays:
-                navigationManager.NavigateTo("/digital");
+                switch((DisplayDevice)AppState.IDisplay)
+                {
+                    case DisplayDevice.OLEDSO096:
+                        navigationManager.NavigateTo("/display_oledsO096");
+                        break;
+                    case DisplayDevice.LCD1602Display:
+                        navigationManager.NavigateTo("/display_lcd1602");
+                        break;
+                    case DisplayDevice.NeopixelDisplay:
+                        navigationManager.NavigateTo("/display_neopixel");
+                        break;
+
+                }
+                
                 break; ;
             case CommandType.PotServo:
                 navigationManager.NavigateTo("/potservo");

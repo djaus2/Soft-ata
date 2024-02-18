@@ -44,7 +44,7 @@ namespace BlazorSoftata
         public bool Running { get => running; set { running = value; NotifyStateChanged(); } }
         public bool DefaultSettings { get => defaultSettings; set { NotifyStateChanged(); } }
         public bool GetPins { get => servoGetPins; set { servoGetPins = value; NotifyStateChanged(); } }
-        
+
         // List of tests as string names. Downloaded form Softata on Arduino
         public List<string> Actuators { get => actuators; set { actuators = value; NotifyStateChanged(); } }
 
@@ -94,14 +94,21 @@ namespace BlazorSoftata
                 NotifyStateChanged();
             }
         }
-        public byte IActuator { get => iactuator; 
-            set { 
+        public byte IActuator { get => iactuator;
+            set {
                 if (value < LActuators.Count())
-                    GetPins = true; 
+                    GetPins = true;
                 else
                     GetPins = false;
-                iactuator  = value; 
-                NotifyStateChanged(); 
+                iactuator = value;
+                NotifyStateChanged();
+            }
+        }
+
+        public DisplayDevice DisplayDevice
+        {
+            get {
+                return (DisplayDevice)IDisplay;
             }
         }
 
@@ -110,6 +117,7 @@ namespace BlazorSoftata
             get => idisplay;
             set
             {
+                TestCategory = DeviceCategory.display;
                 //if (Displays != null)
                 //{
                     if (value < Displays.Count())
@@ -165,8 +173,8 @@ public byte I2C { get => i2C; set { if ((value < 0) || (value > 1)) return; i2C 
         private byte idigital;
         private byte ianalog;
         private byte iactuator;
-        private byte idisplay;
-        private byte isensor;
+        private byte idisplay = 0xff;
+        private byte isensor = 0xff;
         private bool servoGetPins;
         private bool defaultSettings = false;
         private DeviceCategory testCategory;

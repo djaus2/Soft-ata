@@ -136,7 +136,7 @@ enum GroveDisplayCmds{d_getpinsCMD, d_tbdCMD, d_setupDefaultCMD, d_setupCMD, d_c
 #elif defined(GROVE_RPI_PICO_SHIELD)
 #define OLED096_PINNOUT  "I2C0 (Pins8/9 (SDA/SCL)fixed): Address 0x78. Embedded in driver though."
 #define LCD1602_PINNOUT  "I2C0 (Pins8/9 (SDA/SCL) fixed): Addresses (LCD)0X3E and (RGB)0X62. Embedded in driver though."
-#define NEOPIXEL_PINNOUT "OneWire: Pin 16 Alt 18 or 20 (Grove yellow cable).. 17,19,21 (Grove white cable)"
+#define NEOPIXEL_PINNOUT "OneWire: Pin 16 (default) Alt 18 or 20 (Grove yellow cable).. 17,19,21 (Grove white cable)"
 #endif
 
 
