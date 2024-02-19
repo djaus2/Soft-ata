@@ -27,6 +27,23 @@ namespace Softata
 
         private static bool Inited = false;
 
+        public static void Disconnect()
+        {
+ 
+            try
+            {
+                if (Client != null)
+                {
+                    if (Client.Connected)
+                    {
+                        Client.Close();
+                    }
+                    Client.Dispose();
+                }
+            }
+            catch (Exception ex) { }
+        }
+
         public static void Reconnect()
         {
             try
@@ -234,6 +251,8 @@ namespace Softata
                     Thread.Sleep(2000);
                     Client.Shutdown(SocketShutdown.Both);
                     Client.Close();
+                    Client.Dispose();
+                    Client = null;
                     break;
                 case "Reset":
                     break;

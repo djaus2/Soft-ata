@@ -50,6 +50,8 @@ namespace BlazorSoftata
 
         public List<string> Displays { get => displays; set { displays = value; NotifyStateChanged(); } }
 
+        public int NeoPeriod { get => neoperiod; set { neoperiod = value; NotifyStateChanged(); } }
+        public int NeoClearPeriod { get => neoclearperiod; set { neoclearperiod = value; NotifyStateChanged(); } }
 
         public List<string> Sensors { get => sensors; set { sensors = value; NotifyStateChanged(); } }
 
@@ -175,6 +177,8 @@ public byte I2C { get => i2C; set { if ((value < 0) || (value > 1)) return; i2C 
         private byte iactuator;
         private byte idisplay = 0xff;
         private byte isensor = 0xff;
+        private int neoperiod = 2000;
+        private int neoclearperiod = 100;
         private bool servoGetPins;
         private bool defaultSettings = false;
         private DeviceCategory testCategory;

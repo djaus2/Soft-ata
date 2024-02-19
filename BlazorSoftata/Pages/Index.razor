@@ -154,7 +154,10 @@
                 break;
             case DeviceCategory.display:
                 <div class="form-group">
-                    <h4>Tests: </h4>
+                    <h4>Display Tests</h4>
+                    <table>
+                        <tr><td colspan="4">Run an exemplar sequence of tests demonstrating the capabilities for a Display.</td></tr>
+                    </table>
                     <select @onchange="OnChangeCommandType">
                         <option value=0xff>Select test</option>
                         @for (int i = 0; i < ListDeviceTypeTests.Count(); i++)
@@ -197,9 +200,11 @@
                     break;
                 case Softata.SoftataLib.CommandType.Displays:
                     {
+                        <h4>Display Test</h4>
                         <table>
-                        <tr colspan="4"><td>Use defaults for now.</td></tr>
-                        <tr><td colspan="4"><button class="btn btn-primary" @onclick="DisplaysDefaults">Use Defaults</button></td></tr>
+                            <tr><td colspan="4">Run an exemplar sequence of tests demonstrating the capabilities for a Display.</td></tr>
+                            <tr colspan="4"><td>Use defaults for now.</td></tr>
+                            <tr><td colspan="4"><button class="btn btn-primary" @onclick="DisplaysDefaults">Use Defaults</button></td></tr>
                         </table>
                     }
                     break;
@@ -436,7 +441,16 @@
                 break;
             }
             <br />
-            <button class="btn btn-primary" @onclick="Ready">Test is configured</button>
+            @switch (AppState.TestType)
+            {
+                case CommandType.Sensors:
+                case CommandType.Displays:
+                // Only used defaults for now
+                    break;
+                default:
+                    <button class="btn btn-primary" @onclick="Ready">Test is configured</button>
+                    break;
+            }
         </div>
     }
     else if (AppState.ReadytoRun)
@@ -452,6 +466,10 @@
                     break;
                 case Softata.SoftataLib.CommandType.Displays:
                     {
+                        <h4>Display Test</h4>
+                        <p>
+                            Run an exemplar sequence of tests demonstrating the capabilities for a Display.
+                        </p>
                         <p>Using Default pins for device</p>
                         <button class="btn btn-primary" @onclick="Start">Go to test</button>
                     }
