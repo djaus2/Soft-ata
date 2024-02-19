@@ -50,8 +50,8 @@ namespace BlazorSoftata
 
         public List<string> Displays { get => displays; set { displays = value; NotifyStateChanged(); } }
 
-        public int NeoPeriod { get => neoperiod; set { neoperiod = value; NotifyStateChanged(); } }
-        public int NeoClearPeriod { get => neoclearperiod; set { neoclearperiod = value; NotifyStateChanged(); } }
+        public int DisplayPeriod { get => neoperiod; set { neoperiod = value; NotifyStateChanged(); } }
+        public int DisplayClearPeriod { get => neoclearperiod; set { neoclearperiod = value; NotifyStateChanged(); } }
 
         public List<string> Sensors { get => sensors; set { sensors = value; NotifyStateChanged(); } }
 

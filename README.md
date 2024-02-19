@@ -11,7 +11,7 @@
   - Added Analog Pot-Sound-Sound sensors test _(Works)_
   - _Note:_ Software bargraphs in app for Analog data.
   - Sensors and Displays incomplete.
-    - Neopixel works with default setiings.
+    - Neopixel and Grove LCD16x3 RGB Display work with default setiings.
 
 <hr/>
 

@@ -156,7 +156,7 @@
                 <div class="form-group">
                     <h4>Display Tests</h4>
                     <table>
-                        <tr><td colspan="4">Run an exemplar sequence of tests demonstrating the capabilities for a Display.</td></tr>
+                        <tr><td colspan="4">Run an exemplar sequence of tests demonstrating .NET interaction with the Display.</td></tr>
                     </table>
                     <select @onchange="OnChangeCommandType">
                         <option value=0xff>Select test</option>
@@ -166,7 +166,7 @@
                         }
                     </select>
                     <br/>
-                    <i>Note: Only Neopixel implemented thus far...Other 2 soon.</i>
+                    <i>Note: Only LCD and Neopixel implemented thus far...Other 2 soon.</i>
                 </div>
                 break;
             case DeviceCategory.sensor:
@@ -202,7 +202,7 @@
                     {
                         <h4>Display Test</h4>
                         <table>
-                            <tr><td colspan="4">Run an exemplar sequence of tests demonstrating the capabilities for a Display.</td></tr>
+                            <tr><td colspan="4">Run an exemplar sequence of tests demonstrating .NET interaction with the Display.</td></tr>
                             <tr colspan="4"><td>Use defaults for now.</td></tr>
                             <tr><td colspan="4"><button class="btn btn-primary" @onclick="DisplaysDefaults">Use Defaults</button></td></tr>
                         </table>
@@ -468,7 +468,7 @@
                     {
                         <h4>Display Test</h4>
                         <p>
-                            Run an exemplar sequence of tests demonstrating the capabilities for a Display.
+                            Run an exemplar sequence of tests demonstrating .NET interaction with the Display.
                         </p>
                         <p>Using Default pins for device</p>
                         <button class="btn btn-primary" @onclick="Start">Go to test</button>
