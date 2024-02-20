@@ -12,6 +12,9 @@
   - _Note:_ Software bargraphs in app for Analog data.
   - Sensors and Displays incomplete.
     - Neopixel and Grove LCD16x2 RGB Display work with default setiings.
+- Console App
+  - OLED096 now partially works. Simple test (In Console only thus far).
+  - Note also added Home method to Display API.
 
 <hr/>
 
