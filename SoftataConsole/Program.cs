@@ -582,7 +582,7 @@ namespace FirmataBasic
                                 Console.WriteLine($"{i + 1}.\t\t{display}");
                             }
                             Console.WriteLine("Default: 1.");
-                            Console.WriteLine("Nb: Option 1. not yet available.");
+                            //Console.WriteLine("Nb: Option 1. not yet available.");
 
                             Console.Write("Selection:");
                             bool found = false;
@@ -592,7 +592,7 @@ namespace FirmataBasic
                                 string? s = Console.ReadLine();
                                 if (byte.TryParse(s, out byte idis))
                                 {
-                                    if ((idis > 0) && (idis <= Displays.Length) && (idis != 1))
+                                    if ((idis > 0) && (idis <= Displays.Length)) // && (idis != 1))
                                     {
                                         idisplay = (byte)(idis - 1);
                                         found = true;
@@ -700,6 +700,11 @@ namespace FirmataBasic
                                         SoftataLib.Display.WriteString(displayLinkedListIndex, 4, 0, "(4,0):Cursor");
                                         SoftataLib.Display.WriteString(displayLinkedListIndex, 2, 1, "(2,1):Write");
                                     }
+                                    break;
+                                case DisplayDevice.OLEDSO096:
+                                    SoftataLib.Display.Clear(displayLinkedListIndex);
+                                    Thread.Sleep(2000);
+                                    SoftataLib.Display.WriteString(displayLinkedListIndex,0,0,  "Hello Joe!");
                                     break;
                             }
                         }

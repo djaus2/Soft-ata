@@ -50,6 +50,7 @@ class Grove_Display: public Grove
 
   
       virtual bool Setup();
+      virtual bool Home();
       virtual bool Setup(byte * settings, byte numSettings);
       // Index for if there are an array of actuators here.
       virtual bool Clear();
@@ -80,6 +81,7 @@ class Grove_OLED096: public Grove_Display
       virtual bool Setup();
       virtual bool Setup(byte * settings, byte numSettings);
       virtual bool Clear();
+      virtual bool Home();
 
       virtual bool Backlight();
       virtual bool SetCursor(byte x, byte y);
@@ -110,6 +112,7 @@ class Grove_LCD1602: public Grove_Display
       virtual bool Setup(byte * settings, byte numSettings);
       // Index for if there are an array of actuators here.
       virtual bool Clear();
+      virtual bool Home();
 
       virtual bool Backlight();
 
@@ -140,6 +143,7 @@ class Adafruit_NeoPixel8: public Grove_Display
       virtual bool Setup(byte * settings, byte numSettings);
       // Index for if there are an array of actuators here.
       virtual bool Clear();
+      virtual bool Home();
       virtual bool Misc(byte cmd, byte * data, byte length=0);
 
       virtual bool Backlight();

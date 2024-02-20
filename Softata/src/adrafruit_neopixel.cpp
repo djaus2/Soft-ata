@@ -35,6 +35,11 @@ bool Adafruit_NeoPixel8::Clear()
     return true;
 }
 
+bool Adafruit_NeoPixel8::Home()
+{
+    return false;
+}
+
 bool Adafruit_NeoPixel8::Misc(byte cmd, byte * data, byte length)
 {
     if (cmd<0)

@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace Softata
 {
-    public enum GroveDisplayCmds{getpins=0, tbd=1, setupDefault=2, setup=3, clear=4,backlight=5,setCursor=6, writestrngCMD=7,cursor_writestringCMD=8,misc=9, getDisplays=255 }
+    public enum GroveDisplayCmds{getpins=0, tbd=1, setupDefault=2, setup=3, clear=4,backlight=5,setCursor=6, writestrngCMD=7,cursor_writestringCMD=8,homeCMD=9, misc=10, getDisplays=255 }
     public partial class SoftataLib
     {
 
@@ -126,6 +126,22 @@ namespace Softata
             public static class Oled096
             { 
                 enum OLEDMiscCmds { drawCircle, drawFrame, OLEDMiscCmds_MAX };
+
+
+
+                public static bool drawCircle(byte displayLinkedListIndex)
+                {
+                    byte[] data = new byte[] { 0x4, (byte)OLEDMiscCmds.drawCircle, 0, 0, 0 };
+                    string result = SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", displayLinkedListIndex, data);
+                    return true;
+                }
+
+                public static bool drawFrame(byte displayLinkedListIndex)
+                {
+                    byte[] data = new byte[] { 0x4, (byte)OLEDMiscCmds.drawFrame, 0, 0, 0 };
+                    string result = SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", displayLinkedListIndex, data);
+                    return true;
+                }
             }
             public static class Neopixel
             {

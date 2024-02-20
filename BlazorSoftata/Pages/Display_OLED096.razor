@@ -1,0 +1,303 @@
+﻿@page "/display_oled096"
+
+
+@using Softata;
+@using static Softata.SoftataLib;
+@inject AppState AppState
+@using BlazorPro.Spinkit
+@inject NavigationManager navigationManager
+
+<PageTitle>Softata: Grove - OLED Display 0.96 inch Display</PageTitle>
+<h1>Softata: Grove - OLED Display 0.96 inch Display</h1> 
+<i><b>Softata:</b> A Firmata like C# library connecting to a RPi Pico  W running Arduino.</i> 
+<hr/>
+<a href="https://wiki.seeedstudio.com/Grove-OLED_Display_0.96inch/">Grove - OLED Display 0.96 inch</a>
+<hr/>
+@if (!string.IsNullOrEmpty(AppState.AppVersion))
+{
+    <tr>
+        <td><b>App Version: </b></td>
+        <td>@AppState.AppVersion</td>
+    </tr>
+}
+@if (!string.IsNullOrEmpty(AppState.Connected))
+{
+    <tr>
+        <td><b>Connected: </b></td>
+        <td>@AppState.Connected</td>
+    </tr>
+}
+@if (!string.IsNullOrEmpty(AppState.DevicesCSV))
+{
+    <tr>
+        <td><b>Device Types: </b></td>
+        <td>@AppState.DevicesCSV.Replace("DEVICES:", "")</td>
+    </tr>
+}
+@if (!(AppState.TestCategory == DeviceCategory.MaxType))
+{
+    <tr>
+        <td><b>Selected Test Category: </b></td>
+        <td>@AppState.TestCategory</td>
+    </tr>
+}
+@if (!(AppState.TestType == CommandType.MaxType))
+{
+    <tr>
+        <td><b>Selected Test Type: </b></td>
+        <td>@AppState.TestType</td>
+    </tr>
+}
+@if ((AppState.IDisplay != 0xff))
+{
+    <tr>
+        <td><b>Selected Display: </b></td>
+        <td>@display</td>
+    </tr>
+}
+
+<hr />
+<h4>Displays: Grove - OLED Display 0.96 inch</h4>
+<p>
+    Run an exemplar sequence of tests demonstrating .NET interaction with the Display.
+</p>
+
+@if (Busy)
+{
+    <Pulse />
+    <p>Please wait ...</p>
+}
+else if(AppState.Running)
+{
+    <Fold />
+    <p>Running ...</p>
+}
+
+<hr />
+<div class="form-group">
+    @switch (AppState.TestType)
+    {
+        case Softata.SoftataLib.CommandType.Displays:
+            {
+                switch (displayDevice)
+                {
+                    case DisplayDevice.OLEDSO096:
+                         @if(RunMsg.Value!="")
+                         {
+                            <table>
+                                @RunMsg
+                            </table>
+                         }
+                        break;
+                }
+            }
+            break;
+    }
+
+</div>
+<hr />
+
+@if (AppState.ReadytoRun)
+{
+
+    @if (FailMsg.Value != "")
+    {
+        @FailMsg
+    }
+    else
+    {
+        @if (OKMsg.Value != "")
+        {
+            @OKMsg
+        }
+    }
+<hr /> 
+
+    @if (!IsReady)
+   { 
+        <h2>Setup</h2>
+
+        <font color="blue>"><h4>Pins: @pins</h4></font>
+         <EditForm Model=@AppState>
+            LCD Display Period (mS): <InputNumber  @bind-Value="AppState.DisplayPeriod" />
+            <br /><br />
+            <button class="btn btn-primary" @onclick="Ready">Is Connected as per default</button>
+        </EditForm>
+    }
+    else
+    {
+
+        @if (!AppState.Running)
+        { 
+            @if (ReconnectVisible)
+            {
+                <button  class="btn btn-primary" @onclick="Reconnect">Reconnect and run test</button>
+            }
+            else if (RunVisble)
+            { 
+                <br/>
+                <button class="btn btn-primary" @onclick="Start">Run sequence of tests.</button>
+            }
+        }
+        else
+        {
+            <div class="form-group">
+                @switch (AppState.TestType)
+                {
+                    case Softata.SoftataLib.CommandType.Displays:
+                        {
+                            switch (displayDevice)
+                            {
+                                case DisplayDevice.OLEDSO096:
+                                <table>
+                              
+                                </table>
+                                break;
+                            }
+                        }
+                        break;
+                }
+
+            </div>
+            <br/><br/>
+            <button class="btn btn-primary" @onclick="Stop">Cancel</button>
+
+        }
+    }
+    <br /><br/>
+    @if (!AppState.Running)
+    {
+        <p>Nb: Cancel not working. Threading issues 2Do</p>
+        <button class="btn btn-primary" @onclick="Reset">Restart app.</button>
+    }
+
+}
+
+
+
+
+
+@code {
+    string pins { get; set; } = "";
+    DisplayDevice displayDevice { get; set; }
+    byte displayLinkedListIndex;
+    MarkupString FailMsg { get; set; } = new MarkupString("");
+    MarkupString OKMsg { get; set; } = new MarkupString("");
+    MarkupString RunMsg { get; set; } = new MarkupString("");
+
+    bool busy = false;
+    bool Busy
+    {
+        get => busy;
+        set { busy = value; StateHasChanged(); }
+    }
+
+    bool reconnectable = false;
+    bool RunVisble { get; set; } = false;
+    bool ReconnectVisible { get; set; } = false;
+    bool IsReady = false;
+
+
+    byte idisplay = 0;
+    string display = "";
+    string[] Displays = new string[0];
+
+    protected override void OnInitialized()
+    {
+        AppState.OnChange += StateHasChanged;
+        AppState.ReadytoRun = true; 
+        AppState.Running = false;
+        ReconnectVisible = false;
+        RunVisble = true;
+        IsReady = false;
+        idisplay = AppState.IDisplay;
+        display = "";
+        Displays = SoftataLib.Display.GetDisplays();
+        display = Displays[idisplay];
+        displayDevice = (DisplayDevice)idisplay;
+        pins = Softata.SoftataLib.Display.GetPins(idisplay);
+
+    }
+
+    private async Task Start()
+    {
+        AppState.Running = true;
+        RunVisble = false;
+        Busy = true;
+        StateHasChanged();
+        await Task.Delay(333);
+
+        RunMsg = new MarkupString("<h4>Exercising the Grove LCD 16x2 RGB Display.</h4>");
+        StateHasChanged();
+
+        FailMsg  = new MarkupString("Sorry ...Not yet avilable");
+        await Task.Delay(5000);
+
+        Thread.Sleep(AppState.DisplayClearPeriod);
+        RunMsg = new MarkupString("<h4>Done.</h4>");
+        Busy = false;
+        AppState.Running = false;
+        RunVisble = true;
+        StateHasChanged();
+    }
+
+
+    private async Task Reset()
+    {
+        Busy = true;
+        RunMsg = new MarkupString("<h4>Resetting the Pico.. please wait</h4>");
+        StateHasChanged();
+        SoftataLib.SendMessageCmd("End");
+        await Task.Delay(20000);
+        RunMsg = new MarkupString("<h4>Pico should have resetted by about now ...</h4><p>Pico should now slow blink</p>");
+        StateHasChanged();
+        AppState.OnChange -= StateHasChanged;
+        AppState.ReadytoRun = false;
+        AppState.Running = false;
+        AppState.IDisplay = 0xff;
+        AppState.Running = false;
+        AppState.TestType = CommandType.MaxType;
+        AppState.TestCategory = DeviceCategory.MaxType;
+        AppState.Connected = "";
+        ReconnectVisible = false;
+        await Task.Delay(3333);
+        busy = false;
+        StateHasChanged();
+        navigationManager.NavigateTo("/");
+    }
+
+    private async Task Stop()
+    {
+        AppState.Running = false;
+        StateHasChanged();
+    }
+
+
+
+
+
+
+    private void Ready(MouseEventArgs e)
+    {
+        displayLinkedListIndex = (byte)SoftataLib.Display.SetupDefault(idisplay);
+        if (displayLinkedListIndex < 0)
+        {
+            FailMsg = new MarkupString($"<h3>Instantiated {display} not found</h3>");
+            return;
+        }
+        else
+        {
+            switch (displayDevice)
+            {
+                case DisplayDevice.OLEDSO096:
+                    {
+                        OKMsg = new MarkupString($"Instantiated {display} linked at {displayLinkedListIndex}");
+                    }
+                    break;
+            }
+        }
+        IsReady = true;
+        StateHasChanged();
+    }
+}
+

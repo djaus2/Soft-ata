@@ -166,7 +166,7 @@
                         }
                     </select>
                     <br/>
-                    <i>Note: Only LCD and Neopixel implemented thus far...Other 2 soon.</i>
+                    <i>Note: LCD, Neopixel fully implemented. OLED only partially implemented.</i>
                 </div>
                 break;
             case DeviceCategory.sensor:
@@ -879,7 +879,7 @@
                 switch((DisplayDevice)AppState.IDisplay)
                 {
                     case DisplayDevice.OLEDSO096:
-                        navigationManager.NavigateTo("/display_oledsO096");
+                        navigationManager.NavigateTo("/display_oled096");
                         break;
                     case DisplayDevice.LCD1602Display:
                         navigationManager.NavigateTo("/display_lcd1602");

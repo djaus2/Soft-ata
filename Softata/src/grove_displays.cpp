@@ -35,6 +35,12 @@ U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, /* clock=*/ SCL, /* data=*/ SD
 bool Grove_OLED096::Setup() {
   Grove::SetI2CPins(0);
   u8g2.begin();
+ 
+  u8g2.clearBuffer();
+  u8g2.setFlipMode(1);                   
+  u8g2.setFont(u8g2_font_ncenB08_tr);   // choose a suitable font
+  //u8g2.drawStr(0,10,"Hello World!");    // write something to the internal memory
+  //u8g2.sendBuffer();                    // transfer internal memory to the display
   return true;
 }
 
@@ -48,6 +54,10 @@ bool Grove_OLED096::Setup(byte * settings, byte numSettings)
       // Note u8g2 code fixes to I2C0!
       Grove::SetI2CPins(i2c);
       u8g2.begin();
+      u8g2.setFlipMode(1);
+      u8g2.clearBuffer();                   // clear the internal memory
+      u8g2.setFont(u8g2_font_ncenB08_tr);   // choose a suitable font
+
       return true;
     }
   }
@@ -65,8 +75,15 @@ bool Grove_OLED096::WriteString (byte col, byte line, String msg)
 {
   int y = LINEHEIGHT*line + FIRSTLINESTART;
   int x = COLWIDTH*col;
-  u8g2.drawStr(x,y,msg.c_str());
+  //u8g2.setFont(u8g2_font_ncenB08_tr); 
+  u8g2.drawStr(x,y,"Hi KL"); //msg.c_str());
   u8g2.sendBuffer(); 
+  return true;
+}
+
+bool Grove_OLED096::Home ()
+{
+  u8g2.home(); 
   return true;
 }
 
@@ -104,13 +121,19 @@ bool Grove_OLED096::Backlight()
 {
     return false;
 }
-bool Grove_OLED096::SetCursor(byte x, byte y)
+bool Grove_OLED096::SetCursor(byte col, byte line)
 {
-    return false;
+    int y = LINEHEIGHT*line + FIRSTLINESTART;
+    int x = COLWIDTH*col;
+    u8g2.setCursor(x,y);
+    return true;
 }
 bool Grove_OLED096::WriteString(String msg)
 {
-    return false;
+    //u8g2.setFont(u8g2_font_ncenB08_tr);   // choose a suitable font
+    u8g2.print(msg.c_str());
+    u8g2.sendBuffer();
+    return true;
 }
 
 
@@ -183,6 +206,12 @@ bool Grove_LCD1602::Clear()
   return true;
 }
 
+bool Grove_LCD1602::Home()
+{
+    lcd.home();
+    return true;
+}
+
 
 bool Grove_LCD1602::SetCursor(byte x, byte y)
 {
@@ -215,7 +244,7 @@ bool Grove_LCD1602::Misc(byte cmd, byte * data, byte length)
   switch (Cmd)
   {
     home:
-      lcd.home();
+      lcd.home(); // Could remove this from here now
       break;
     autoscroll:
       lcd.autoscroll();

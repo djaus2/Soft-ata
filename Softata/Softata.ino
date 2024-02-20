@@ -989,7 +989,7 @@ void loop() {
                       client.print("Fail:SetCursor needs (x,y)");
                     }
                     else
-                    {;
+                    {
                       byte x = otherData[1];
                       byte y = otherData[2];
                       if(grove_Display->SetCursor(x,y))
@@ -1056,18 +1056,33 @@ void loop() {
                       Serial.println(msgStr);
                       if(grove_Display->WriteString(msgStr))
                       {
-                        client.print("OK:SetCursor-WriteString");
+                        client.print("OK:SetCursor-then-WriteString");
+                      }
+                      else
+                      {
+                        client.print("Fail:SetCursor-then-WriteString");
+                      }
+                    }
+                    else 
+                    {
+                      String msgStr =String("");
+                      if(otherData[0]>2)
+                      {
+                        char * msg = (char *) (otherData + 3);
+                        msgStr = String(msg);
+                      }
+                      Serial.print("Message:");
+                      Serial.println(msgStr);
+                      if(grove_Display->WriteString(x,y,msgStr))
+                      {
+                        client.print("OK:Cursor_WriteString");
                       }
                       else
                       {
                         client.print("Fail:SetCursor-WriteString");
                       }
                     }
-                    else
-                    {
-                      client.print("Fail:SetCursor-WriteString");
-                    }
-                  }
+                  }              
                 }
                 break;              
                 case d_miscCMD:
