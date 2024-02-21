@@ -17,7 +17,7 @@
     ... or if it has to do as 2 methods. Uses ```grove_Display->CursorWriteStringAvailable()``` method to check.. 
     - **Hint:** I'm using the OLED display in [Grove Beginner Kit for Arduino](https://wiki.seeedstudio.com/Grove-Beginner-Kit-For-Arduino/) connected to Pico without removing it as it's I2C  
      _Just need to have kit powered and not using I2C._
-  - Note also added Home method to Display API. __Retu text to start of line.__
+  - Note also added Home method to Display API. _Return text to start of line._
 
 <hr/>
 
