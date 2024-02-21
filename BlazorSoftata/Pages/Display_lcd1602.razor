@@ -118,8 +118,10 @@ else if(AppState.Running)
         <h2>Setup</h2>
 
         <font color="blue>"><h4>Pins: @pins</h4></font>
-         <EditForm Model=@AppState>
-            LCD Display Period (mS): <InputNumber  @bind-Value="AppState.DisplayPeriod" />
+        <EditForm Model=@AppState>
+            Test step period (mS): <InputNumber @bind-Value="AppState.DisplayPeriod" />
+            <br /><br />
+            Delay after Clear period (mS): <InputNumber @bind-Value="AppState.DisplayClearPeriod" />
             <br /><br />
             <button class="btn btn-primary" @onclick="Ready">Is Connected as per default</button>
         </EditForm>
