@@ -12,8 +12,9 @@
   - _Note:_ Software bargraphs in app for Analog data.
   - Sensors and Displays incomplete.
     - Neopixel and Grove LCD16x2 RGB Display work with default setiings.
-- Console App
-  - OLED096 now partially works. Simple test (In Console only thus far).
+  - OLED096 now partially works. Simple test _(Now in both apps)_.
+    - V4.11 Softata checks if its can directly write Cursor and string  
+    ... or if it has to do as 2 methods. Uses ```grove_Display->CursorWriteStringAvailable()``` method to check.. 
   - Note also added Home method to Display API.
 
 <hr/>

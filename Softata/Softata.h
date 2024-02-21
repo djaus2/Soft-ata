@@ -3,7 +3,7 @@
 
 
 
-#define APP_VERSION "4.10"
+#define APP_VERSION "4.11"
 
 //#define RPI_PICO_DEFAULT
 #define GROVE_RPI_PICO_SHIELD

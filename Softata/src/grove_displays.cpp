@@ -71,12 +71,32 @@ bool Grove_OLED096::Clear()
   return true;
 }
 
+bool Grove_OLED096::CursorWriteStringAvailable()
+{
+	return true;
+}
+
+bool Grove_OLED096::SetCursor(byte col, byte line)
+{
+    int y = LINEHEIGHT*line + FIRSTLINESTART;
+    int x = COLWIDTH*col;
+    u8g2.setCursor(x,y);
+    return true;
+}
+bool Grove_OLED096::WriteString(String msg)
+{
+    //u8g2.setFont(u8g2_font_ncenB08_tr);   // choose a suitable font
+    u8g2.print(msg.c_str());
+    u8g2.sendBuffer();
+    return true;
+}
+
 bool Grove_OLED096::WriteString (byte col, byte line, String msg)
 {
   int y = LINEHEIGHT*line + FIRSTLINESTART;
   int x = COLWIDTH*col;
   //u8g2.setFont(u8g2_font_ncenB08_tr); 
-  u8g2.drawStr(x,y,"Hi KL"); //msg.c_str());
+  u8g2.drawStr(x,y,msg.c_str());
   u8g2.sendBuffer(); 
   return true;
 }
@@ -121,20 +141,7 @@ bool Grove_OLED096::Backlight()
 {
     return false;
 }
-bool Grove_OLED096::SetCursor(byte col, byte line)
-{
-    int y = LINEHEIGHT*line + FIRSTLINESTART;
-    int x = COLWIDTH*col;
-    u8g2.setCursor(x,y);
-    return true;
-}
-bool Grove_OLED096::WriteString(String msg)
-{
-    //u8g2.setFont(u8g2_font_ncenB08_tr);   // choose a suitable font
-    u8g2.print(msg.c_str());
-    u8g2.sendBuffer();
-    return true;
-}
+
 
 
 
@@ -224,6 +231,11 @@ bool Grove_LCD1602::WriteString(String msg)
 {
   lcd.print(msg.c_str());
   return true;
+}
+
+bool Grove_LCD1602::CursorWriteStringAvailable()
+{
+	return true;
 }
 
 bool Grove_LCD1602::WriteString(byte x, byte y, String msg)

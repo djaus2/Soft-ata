@@ -6,7 +6,7 @@
 
 #include <BME280I2C.h> 
 
-
+#undef NUM_PROPERTIES
 #define NUM_PROPERTIES 3
 
 BME280I2C::Settings settings(

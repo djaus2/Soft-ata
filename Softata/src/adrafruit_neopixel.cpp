@@ -103,10 +103,17 @@ bool Adafruit_NeoPixel8::SetCursor(byte x, byte y)
 {
     return false;
 }
+
+bool Adafruit_NeoPixel8::CursorWriteStringAvailable()
+{
+	return false;
+}
+
 bool Adafruit_NeoPixel8::WriteString(String msg)
 {
     return false;
 }
+
 
 bool Adafruit_NeoPixel8::WriteString(byte x, byte y, String msg)
 {

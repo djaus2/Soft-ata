@@ -119,7 +119,9 @@ else if(AppState.Running)
 
         <font color="blue>"><h4>Pins: @pins</h4></font>
          <EditForm Model=@AppState>
-            LCD Display Period (mS): <InputNumber  @bind-Value="AppState.DisplayPeriod" />
+            OLED Display Period btw tests (mS): <InputNumber  @bind-Value="AppState.DisplayPeriod" />
+            <br /><br />
+            OLED Display After Clear Period (mS): <InputNumber @bind-Value="AppState.DisplayClearPeriod" />
             <br /><br />
             <button class="btn btn-primary" @onclick="Ready">Is Connected as per default</button>
         </EditForm>
@@ -229,11 +231,11 @@ else if(AppState.Running)
 
         RunMsg = new MarkupString("<h4>Exercising the Grove LCD 16x2 RGB Display.</h4>");
         StateHasChanged();
-
-        FailMsg  = new MarkupString("Sorry ...Not yet avilable");
-        await Task.Delay(5000);
-
-        Thread.Sleep(AppState.DisplayClearPeriod);
+        await Task.Delay(AppState.DisplayPeriod);       
+        bool res = SoftataLib.Display.Clear(displayLinkedListIndex);
+        await Task.Delay(AppState.DisplayClearPeriod);
+        bool res2 = SoftataLib.Display.WriteString(displayLinkedListIndex, 0, 0, "Hello Joe 2!");
+        await Task.Delay(AppState.DisplayPeriod);
         RunMsg = new MarkupString("<h4>Done.</h4>");
         Busy = false;
         AppState.Running = false;

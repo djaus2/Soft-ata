@@ -1038,41 +1038,42 @@ void loop() {
                   Grove_Display * grove_Display = GetDisplayFromList(index);
                   if(otherData[0]<2)
                   {
+                    Serial.print("Fail:SetCursor-WriteString needs (x,y)");
                     client.print("Fail:SetCursor-WriteString needs (x,y)");
                   }
                   else
                   {
                     byte x = otherData[1];
                     byte y = otherData[2];
-                    if(grove_Display->SetCursor(x,y))
+                    String msgStr =String("");
+                    if(otherData[0]>2)
                     {
-                      String msgStr =String("");
-                      if(otherData[0]>2)
+                      char * msg = (char *) (otherData + 3);
+                      msgStr = String(msg);
+                    }
+                    // Nb: Use blank string if there is an issue.
+                    Serial.print("Message:");
+                    Serial.println(msgStr);
+                    if(!grove_Display->CursorWriteStringAvailable())
+                    {
+                      if(grove_Display->SetCursor(x,y))
                       {
-                        char * msg = (char *) (otherData + 3);
-                        msgStr = String(msg);
-                      }
-                      Serial.print("Message:");
-                      Serial.println(msgStr);
-                      if(grove_Display->WriteString(msgStr))
-                      {
-                        client.print("OK:SetCursor-then-WriteString");
+                        if(grove_Display->WriteString(msgStr))
+                        {
+                          client.print("OK:SetCursor-then-WriteString");
+                        }
+                        else
+                        {
+                          client.print("Fail:SetCursor-then-WriteString-at-WriteString");
+                        }
                       }
                       else
                       {
-                        client.print("Fail:SetCursor-then-WriteString");
+                        client.print("Fail:SetCursor-then-WriteString-at-SetCursor");
                       }
                     }
                     else 
                     {
-                      String msgStr =String("");
-                      if(otherData[0]>2)
-                      {
-                        char * msg = (char *) (otherData + 3);
-                        msgStr = String(msg);
-                      }
-                      Serial.print("Message:");
-                      Serial.println(msgStr);
                       if(grove_Display->WriteString(x,y,msgStr))
                       {
                         client.print("OK:Cursor_WriteString");
