@@ -12,12 +12,12 @@
   - _Note:_ Software bargraphs in app for Analog data.
   - Sensors incomplete _(No trests yet.)_
   - Neopixel and Grove LCD16x2 RGB Display work with default setiings.
-  - OLED096 now partially works. Simple test _(Now in both apps)_.
+  - V4.12 OLED096 now **FULLY** works. __Extended tests now_.
     - V4.11 Softata checks if is can directly write Cursor and string  as one method
     ... or if it has to do as 2 methods. Uses ```grove_Display->CursorWriteStringAvailable()``` method to check.. 
     - **Hint:** I'm using the OLED display in [Grove Beginner Kit for Arduino](https://wiki.seeedstudio.com/Grove-Beginner-Kit-For-Arduino/) connected to Pico without removing it as it's I2C  
      _Just need to have kit powered and not using I2C._
-  - Note also added Home method to Display API.
+  - Note also added Home method to Display API. __Retu text to start of line.__
 
 <hr/>
 

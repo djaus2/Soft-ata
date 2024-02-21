@@ -703,8 +703,37 @@ namespace FirmataBasic
                                     break;
                                 case DisplayDevice.OLEDSO096:
                                     SoftataLib.Display.Clear(displayLinkedListIndex);
-                                    Thread.Sleep(2000);
+                                    Thread.Sleep(500);
+                                    //Dummy test to see if simple Misc test works (with no date).
+                                    SoftataLib.Display.Oled096.misctest(displayLinkedListIndex);
+                                    Thread.Sleep(1000);
+                                    SoftataLib.Display.Oled096.drawFrame(displayLinkedListIndex);
+                                    Thread.Sleep(1000);
+                                    SoftataLib.Display.Oled096.drawCircle(displayLinkedListIndex);
+                                    Thread.Sleep(2500);
+                                    SoftataLib.Display.Clear(displayLinkedListIndex);
+                                    Thread.Sleep(500);
                                     SoftataLib.Display.WriteString(displayLinkedListIndex,0,0,  "Hello Joe!");
+                                    Thread.Sleep(2500);
+                                    SoftataLib.Display.WriteString(displayLinkedListIndex, 1, 1, "Hi there!");
+                                    Thread.Sleep(2500);
+                                    SoftataLib.Display.Clear(displayLinkedListIndex);
+                                    Thread.Sleep(500);
+                                    int numbr = 10;
+                                    for (int i = 0; i < numbr; i++)
+                                    {
+                                        DateTime now = DateTime.Now;
+                                        string format = "HH:mm:ss";
+                                        string time = now.ToString(format);
+                                        string msg = $"{i + 1}/{numbr} {time}";
+                                        SoftataLib.Display.WriteString(displayLinkedListIndex, 0, 1, msg);
+                                        Thread.Sleep(2000);
+                                    }
+                                    SoftataLib.Display.Clear(displayLinkedListIndex);
+                                    SoftataLib.Display.Home(displayLinkedListIndex);
+                                    SoftataLib.Display.WriteString(displayLinkedListIndex, 0, 1, "Done");
+                                    Thread.Sleep(500);
+
                                     break;
                             }
                         }

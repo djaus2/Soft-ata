@@ -128,7 +128,20 @@ void loop() {
     }
     while (client.available() && (count != length)) {
       msg[count] = client.read();
-      Serial.print(msg[count], HEX);
+      if(msg[0]<0xD0) 
+      {
+        if(count==0)
+        {
+          Serial.print((char)msg[count]);
+          Serial.print(' ');
+        }
+      }
+      else 
+      {
+        Serial.print(msg[count], HEX);
+        if(count<2)
+          Serial.print(' ');
+      }
       watchdog_update();
       count++;
     }
@@ -846,7 +859,7 @@ void loop() {
               //#define G_DISPLAYS C(OLED096)C(LCD1602)C(NEOPIXEL)
               // enum GroveDisplayCmds{
               // d_getpinsCMD, d_tbdCMD, d_setupDefaultCMD, d_setupCMD, 
-              // d_clearCMD,d_backlightCND,d_setCursorCMD,d_miscCMD, d_getDisplaysCMD=255 
+              // d_clearCMD,d_backlightCND,d_setCursorCMD,homeCMD,d_miscCMD, d_getDisplaysCMD=255 
               // }
               GroveDisplay display = (GroveDisplay)other;
               switch (param)
@@ -1096,7 +1109,7 @@ void loop() {
                     else
                     {
                       int index=other;
-                      Serial.println("Misc other");
+                      Serial.println("Display->Misc cmd");
                       Grove_Display * grove_Display = GetDisplayFromList(index);
                       if(grove_Display==NULL)
                       {
@@ -1105,12 +1118,16 @@ void loop() {
                       else
                       {
                         byte miscCMD = otherData[1];
+                        Serial.print("miscCMD:");
+                        Serial.println(miscCMD);
                         byte * miscData = NULL;
                         byte miscDataLength = otherData[0]-1;
                         if (miscDataLength>0)
                         {
                           miscData = otherData +2;
                         }
+                        Serial.println("miscDataLength:");
+                        Serial.println(miscDataLength);
                         if(grove_Display->Misc(miscCMD,miscData,miscDataLength))
                         {
                           Serial.println("Misc OK");
@@ -1126,6 +1143,7 @@ void loop() {
                   }                                
                 case d_getDisplaysCMD:
                   {
+                    Serial.println("Get Displays.");
                     String msg = String("OK:");
                     msg.concat(Grove_Display::GetListof());
                     client.print(msg);

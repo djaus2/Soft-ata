@@ -117,18 +117,23 @@ bool Grove_OLED096::Misc(byte cmd, byte * data, byte length)
   OLEDMiscCmds Cmd = (OLEDMiscCmds)cmd;
   switch (Cmd)
   {
-    drawCircle:
+    case drawCircle:
       u8g2.drawCircle(60,32,20);
       u8g2.sendBuffer();
       break;
-    drawFrame:
+    case drawFrame:;
       u8g2.drawFrame(30,5,60,55);
       u8g2.sendBuffer();
       break;
-    OLEDMiscCmds_MAX:
+    case test:
+      //Dummy test to see that Misc commands can be reached.
+      break;
+    case OLEDMiscCmds_MAX:
+      Serial.println("MAX");
       return false;
       break;
     default:
+    Serial.println("DEFAULT");
       return false;
       break;
   }

@@ -73,6 +73,14 @@ namespace Softata
                 else
                     return false;
             }
+            public static bool Home(byte linkedListNo)
+            {
+                string result = SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.homeCMD, "OK:", linkedListNo);
+                if (true) //TBD
+                    return true;
+                else
+                    return false;
+            }
 
             public static bool Backlight(byte linkedListNo, byte property)
             {
@@ -125,9 +133,14 @@ namespace Softata
 
             public static class Oled096
             { 
-                enum OLEDMiscCmds { drawCircle, drawFrame, OLEDMiscCmds_MAX };
+                enum OLEDMiscCmds { drawCircle, drawFrame, test, OLEDMiscCmds_MAX };
 
-
+                public static bool misctest(byte displayLinkedListIndex)
+                {
+                    byte[] data = new byte[] { 0x4, (byte)OLEDMiscCmds.test, 0, 0, 0 };
+                    string result = SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", displayLinkedListIndex, data);
+                    return true;
+                }
 
                 public static bool drawCircle(byte displayLinkedListIndex)
                 {
