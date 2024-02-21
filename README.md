@@ -10,11 +10,13 @@
     - Some overlap of test types between categories.
   - Added Analog Pot-Sound-Sound sensors test _(Works)_
   - _Note:_ Software bargraphs in app for Analog data.
-  - Sensors and Displays incomplete.
-    - Neopixel and Grove LCD16x2 RGB Display work with default setiings.
+  - Sensors incomplete _(No trests yet.)_
+  - Neopixel and Grove LCD16x2 RGB Display work with default setiings.
   - OLED096 now partially works. Simple test _(Now in both apps)_.
-    - V4.11 Softata checks if its can directly write Cursor and string  
+    - V4.11 Softata checks if is can directly write Cursor and string  as one method
     ... or if it has to do as 2 methods. Uses ```grove_Display->CursorWriteStringAvailable()``` method to check.. 
+   - **Hint:** I'm using OLED display in Grove Beginners Kit connected to Pico without removing it as its I2C  
+     _Just need to have Kit powered and not using I2C._
   - Note also added Home method to Display API.
 
 <hr/>
