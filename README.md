@@ -13,6 +13,7 @@
   - Sensors incomplete _(No trests yet.)_
   - Neopixel and Grove LCD16x2 RGB Display work with default setiings.
   - V4.12 OLED096 now **FULLY** works. _Extended tests now_.
+    - [u8g2 reference](https://github.com/olikraus/u8g2/wiki/u8g2reference)
     - V4.11 Softata checks if is can directly write Cursor and string  as one method
     ... or if it has to do as 2 methods. Uses ```grove_Display->CursorWriteStringAvailable()``` method to check.. 
     - **Hint:** I'm using the OLED display in [Grove Beginner Kit for Arduino](https://wiki.seeedstudio.com/Grove-Beginner-Kit-For-Arduino/) connected to Pico without removing it as it's I2C  
