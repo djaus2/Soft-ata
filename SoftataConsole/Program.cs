@@ -708,9 +708,11 @@ namespace FirmataBasic
                                     SoftataLib.Display.Oled096.misctest(displayLinkedListIndex);
                                     Thread.Sleep(1000);
                                     SoftataLib.Display.Oled096.drawFrame(displayLinkedListIndex);
-                                    Thread.Sleep(1000);
+                                    Thread.Sleep(4000);
                                     SoftataLib.Display.Oled096.drawCircle(displayLinkedListIndex);
-                                    Thread.Sleep(2500);
+                                    Thread.Sleep(4000);
+                                    SoftataLib.Display.Oled096.drawCircle(displayLinkedListIndex, 60, 32, 10);
+                                    Thread.Sleep(4000);
                                     SoftataLib.Display.Clear(displayLinkedListIndex);
                                     Thread.Sleep(500);
                                     SoftataLib.Display.WriteString(displayLinkedListIndex,0,0,  "Hello Joe!");

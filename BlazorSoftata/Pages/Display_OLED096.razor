@@ -234,22 +234,24 @@ else if(AppState.Running)
 
         /////////////////////////// T E S T S /////////////////////////////
         SoftataLib.Display.Clear(displayLinkedListIndex);
-        Thread.Sleep(500);
+        Thread.Sleep(AppState.DisplayClearPeriod);
         //Dummy test to see if simple Misc test works (with no date).
         SoftataLib.Display.Oled096.misctest(displayLinkedListIndex);
-        Thread.Sleep(1000);
+        Thread.Sleep(AppState.DisplayPeriod);
         SoftataLib.Display.Oled096.drawFrame(displayLinkedListIndex);
-        Thread.Sleep(1000);
+        Thread.Sleep(AppState.DisplayPeriod);
         SoftataLib.Display.Oled096.drawCircle(displayLinkedListIndex);
-        Thread.Sleep(2500);
+        Thread.Sleep(AppState.DisplayPeriod);
+        SoftataLib.Display.Oled096.drawCircle(displayLinkedListIndex, 60, 32, 10);
+        Thread.Sleep(AppState.DisplayPeriod);
         SoftataLib.Display.Clear(displayLinkedListIndex);
-        Thread.Sleep(500);
+        Thread.Sleep(AppState.DisplayClearPeriod);
         SoftataLib.Display.WriteString(displayLinkedListIndex, 0, 0, "Hello Joe!");
-        Thread.Sleep(2500);
+        Thread.Sleep(AppState.DisplayPeriod);
         SoftataLib.Display.WriteString(displayLinkedListIndex, 1, 1, "Hi there!");
-        Thread.Sleep(2500);
+        Thread.Sleep(AppState.DisplayPeriod);
         SoftataLib.Display.Clear(displayLinkedListIndex);
-        Thread.Sleep(500);
+        Thread.Sleep(AppState.DisplayClearPeriod);
         int numbr = 10;
         for (int i = 0; i < numbr; i++)
         {
@@ -261,9 +263,10 @@ else if(AppState.Running)
             Thread.Sleep(2000);
         }
         SoftataLib.Display.Clear(displayLinkedListIndex);
+        Thread.Sleep(AppState.DisplayClearPeriod);
         SoftataLib.Display.Home(displayLinkedListIndex);
         SoftataLib.Display.WriteString(displayLinkedListIndex, 0, 1, "Done");
-        Thread.Sleep(500);
+        Thread.Sleep(AppState.DisplayClearPeriod);
 
         /////////////////////////// T E S T S /////////////////////////////
 

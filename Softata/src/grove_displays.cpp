@@ -118,12 +118,36 @@ bool Grove_OLED096::Misc(byte cmd, byte * data, byte length)
   switch (Cmd)
   {
     case drawCircle:
-      u8g2.drawCircle(60,32,20);
+    {
+      byte x = 60;
+      byte y = 32;
+      byte r = 20;
+      if(length>2)
+      {
+        x = data[0];
+        y = data[1];
+        r = data[2];
+      }
+      u8g2.drawCircle(x,y,r);
       u8g2.sendBuffer();
+    }
       break;
-    case drawFrame:;
-      u8g2.drawFrame(30,5,60,55);
+    case drawFrame:
+    {
+      byte x = 30;
+      byte y = 5;
+      byte w = 60;
+      byte h = 55;
+      if(length>3)
+      {
+        x = data[0];
+        y = data[1];
+        w = data[2];
+        h = data[3];
+      }
+      u8g2.drawFrame(x,y,w,h);
       u8g2.sendBuffer();
+    }
       break;
     case test:
       //Dummy test to see that Misc commands can be reached.

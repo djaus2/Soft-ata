@@ -142,16 +142,18 @@ namespace Softata
                     return true;
                 }
 
-                public static bool drawCircle(byte displayLinkedListIndex)
+               
+                public static bool drawCircle(byte displayLinkedListIndex, byte x = 60, byte y = 32, byte radius = 20)
                 {
-                    byte[] data = new byte[] { 0x4, (byte)OLEDMiscCmds.drawCircle, 0, 0, 0 };
+                    byte[] data = new byte[] { 0x4, (byte)OLEDMiscCmds.drawCircle, x, y, radius };
                     string result = SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", displayLinkedListIndex, data);
                     return true;
                 }
 
-                public static bool drawFrame(byte displayLinkedListIndex)
+               
+                public static bool drawFrame(byte displayLinkedListIndex, byte x = 30, byte y = 5, byte w = 60, byte h = 55)
                 {
-                    byte[] data = new byte[] { 0x4, (byte)OLEDMiscCmds.drawFrame, 0, 0, 0 };
+                    byte[] data = new byte[] { 0x5, (byte)OLEDMiscCmds.drawFrame, x, y, w, h };
                     string result = SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", displayLinkedListIndex, data);
                     return true;
                 }
