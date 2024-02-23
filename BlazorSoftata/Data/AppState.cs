@@ -1,6 +1,7 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Components;
+using System;
 using System.Globalization;
-using static Softata.SoftataLib;
+using Softata.Enums;
 
 
 namespace BlazorSoftata
@@ -50,8 +51,8 @@ namespace BlazorSoftata
 
         public List<string> Displays { get => displays; set { displays = value; NotifyStateChanged(); } }
 
-        public int DisplayPeriod { get => neoperiod; set { neoperiod = value; NotifyStateChanged(); } }
-        public int DisplayClearPeriod { get => neoclearperiod; set { neoclearperiod = value; NotifyStateChanged(); } }
+        public int TestStepPeriod { get => neoperiod; set { neoperiod = value; NotifyStateChanged(); } }
+        public int TestClearPeriod { get => neoclearperiod; set { neoclearperiod = value; NotifyStateChanged(); } }
 
         public List<string> Sensors { get => sensors; set { sensors = value; NotifyStateChanged(); } }
 
@@ -113,6 +114,14 @@ namespace BlazorSoftata
                 return (DisplayDevice)IDisplay;
             }
         }
+        
+        public SensorDevice SensorDevice
+        {
+            get
+            {
+                return (SensorDevice)ISensor;
+            }
+        }
 
         public byte IDisplay
         {
@@ -120,7 +129,7 @@ namespace BlazorSoftata
             set
             {
                 TestCategory = DeviceCategory.display;
-                //if (Displays != null)
+                //if (DisplayDevice != null)
                 //{
                     if (value < Displays.Count())
                         GetPins = true;
@@ -145,6 +154,17 @@ namespace BlazorSoftata
                 NotifyStateChanged();
             }
         }
+
+        private int sensorMode { get; set; } = 0xff;
+        public int SensorMode
+        {
+            get => sensorMode; set
+            {
+                sensorMode = value; NotifyStateChanged();
+            }
+        }
+
+        public MarkupString Data { get => data; set { data = value; NotifyStateChanged(); } }
         public string AppVersion { get => appVersion; set { appVersion = value; NotifyStateChanged(); } }
         public string Connected { get => connected; set { connected = value; NotifyStateChanged(); } }
         public string DevicesCSV { get => devicesCSV; set { devicesCSV = value; NotifyStateChanged(); }
@@ -187,6 +207,7 @@ public byte I2C { get => i2C; set { if ((value < 0) || (value > 1)) return; i2C 
         private List<CommandType> lDisplays;
         private List<CommandType> lSensors;
         private List<CommandType> lActuators;
+        private MarkupString data = new MarkupString("");
 
         public AppState()
         {

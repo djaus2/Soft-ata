@@ -2,7 +2,7 @@
 
 
 @using Softata;
-@using static Softata.SoftataLib;
+@using Softata.Enums
 @inject AppState AppState
 @using BlazorPro.Spinkit
 
@@ -90,7 +90,7 @@ else if(AppState.Running)
         <div class="form-group">
             @switch (AppState.TestType)
             {
-                case Softata.SoftataLib.CommandType.PotServo:
+                case Softata.Enums.CommandType.PotServo:
                     {
                         <h2>Rotate the potentiometer slowly to change the brightness of the LED.</h2>
                         <ul>
@@ -309,12 +309,12 @@ else if(AppState.Running)
         byte id = 0;
         if (AppState.DefaultSettings)
         {
-            id = (byte)SoftataLib.Actuator.SetupDefault(Actuator.ActuatorDevice.Servo);
+            id = (byte)SoftataLib.Actuator.SetupDefault(SoftataLib.Actuator.ActuatorDevice.Servo);
             SoftataLib.Analog.SetAnalogPin(SoftataLib.Analog.AnalogDevice.Potentiometer, AppState.Potentiometer, 1023);
         }
         else //Alt
         {
-            id = (byte)SoftataLib.Actuator.SetupDefault(Actuator.ActuatorDevice.Servo);
+            id = (byte)SoftataLib.Actuator.SetupDefault(SoftataLib.Actuator.ActuatorDevice.Servo);
             SoftataLib.Analog.SetAnalogPin(SoftataLib.Analog.AnalogDevice.Potentiometer, AppState.Potentiometer, 1023);
         }
         A2DandServoValues a2DandServoValues = new A2DandServoValues();

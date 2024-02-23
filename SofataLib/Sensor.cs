@@ -4,9 +4,11 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using Softata.Enums;
 
 namespace Softata
 {
+
     public enum GroveSensorCmds{getpins, getProperties, setupdefault, setup,  readall, read, getTelemetry, sendTelemetryBT, sendTelemetryToIoTHub, pause_sendTelemetry, continue_sendTelemetry, getSensors =255
       ,
     }
@@ -15,9 +17,16 @@ namespace Softata
     public partial class SoftataLib
     {
 
+
         public static class Sensor
         {
-
+            //Links to info about the Grove Sensors 
+            public static Dictionary<SensorDevice, string> Links = new Dictionary<SensorDevice, string>
+            {
+                {SensorDevice.DHT11,"https://wiki.seeedstudio.com/Grove-TemperatureAndHumidity_Sensor/" },
+                {SensorDevice.BME280,"https://wiki.seeedstudio.com/Grove-Barometer_Sensor-BME280/" },
+                {SensorDevice.UltrasonicRANGER,"https://wiki.seeedstudio.com/Grove-Ultrasonic_Ranger/" }
+            };
             public static string[] GetSensors()
             {
                 string result = SendMessage(Commands.groveSensor, 0, (byte)GroveSensorCmds.getSensors, "OK:", 0);

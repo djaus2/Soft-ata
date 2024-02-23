@@ -4,23 +4,12 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using Softata.Enums;
 
 namespace Softata
 {
     public partial class SoftataLib
     {
-        /*
-        public enum Commands
-        {
-            //DigitalButtonLED IO
-            pinMode = 0xD0,
-            digitalWrite = 0xD1,
-            digitalRead = 0xD2,
-            digitalToggle = 0xD3,
-
-            Undefined = 0xFF
-        }
-        */
 
         public static class Digital
         {

@@ -2,7 +2,7 @@
 
 
 @using Softata;
-@using static Softata.SoftataLib;
+@using Softata.Enums
 @inject AppState AppState
 @using BlazorPro.Spinkit
 
@@ -98,7 +98,7 @@ else if(AppState.Running)
         <div class="form-group">
             @switch (AppState.TestType)
             {
-                case Softata.SoftataLib.CommandType.PotLightSoundAnalog:
+                case Softata.Enums.CommandType.PotLightSoundAnalog:
                     {
                         <h4>Rotate the potentiometer, cover light sensor/shine torch on it,.</h4>
                         <h4>Cover light sensor/shine torch on it,.</h4>

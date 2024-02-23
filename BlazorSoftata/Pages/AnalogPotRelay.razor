@@ -2,7 +2,7 @@
 
 
 @using Softata;
-@using static Softata.SoftataLib;
+@using Softata.Enums
 @inject AppState AppState
 @using BlazorPro.Spinkit
 
@@ -101,7 +101,7 @@ else if(AppState.Running)
         <div class="form-group">
             @switch (AppState.TestType)
             {
-                case Softata.SoftataLib.CommandType.PotRelay:
+                case Softata.Enums.CommandType.PotRelay:
                     {
                         <h2>Rotate the potentiometer slowly. At 50% the Relay turns on..</h2>
                         <ul>

@@ -11,7 +11,7 @@ Grove_URangeSensor::Grove_URangeSensor(int SetupPin)
 {
     ultrasonic = new Ultrasonic(SetupPin);
     Grove_Sensor::num_properties = NUM_URANGE_PROPERTIES;
-    Grove_Sensor::sensorType = URANGE;
+    Grove_Sensor::sensorType = UltrasonicRanger;
 }
 
 bool Grove_URangeSensor::Setup(byte * settings, byte numSettings)

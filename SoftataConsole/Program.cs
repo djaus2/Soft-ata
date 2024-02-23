@@ -9,7 +9,8 @@ using System.Net.Sockets;
 using System.IO;
 using System.Threading;
 using Softata;
-using static Softata.SoftataLib;
+using Softata.Enums;
+
 
 
 namespace FirmataBasic
@@ -36,7 +37,7 @@ namespace FirmataBasic
         //static SoftataLib.CommandType Testtype = CommandType.NeopixelDisplay;
         //static SoftataLib.CommandType Testtype = CommandType.DigitalButtonLED;
         //static SoftataLib.CommandType Testtype = CommandType.Serial;
-        static SoftataLib.CommandType Testtype = CommandType.DigitalButtonLED;
+        static CommandType Testtype = CommandType.DigitalButtonLED;
         //Set Serial1 or Serial2 for send and receive.
         //Nb: If both true or both false then loopback on same serial port.
         //static bool Send1 = true;
@@ -632,7 +633,7 @@ namespace FirmataBasic
                         {
                             switch (displayDevice)
                             {
-                                case DisplayDevice.NeopixelDisplay:
+                                case DisplayDevice.NEOPIXEL:
                                     {
                                         Console.WriteLine($"Instantiated {display} linked at {displayLinkedListIndex}");
                                         SoftataLib.Display.Neopixel.Clear(displayLinkedListIndex); ;
@@ -687,8 +688,8 @@ namespace FirmataBasic
                                         Console.WriteLine("OK");
                                     }
                                     break;
-                                case DisplayDevice.LCD1602Display:
-                                    {
+                                case DisplayDevice.LCD1602:
+                                {
                                         Console.WriteLine($"Instantiated {display} linked at {displayLinkedListIndex}");
                                         SoftataLib.Display.Clear(displayLinkedListIndex);
                                         SoftataLib.Display.SetCursor(displayLinkedListIndex, 0, 0);
@@ -701,7 +702,7 @@ namespace FirmataBasic
                                         SoftataLib.Display.WriteString(displayLinkedListIndex, 2, 1, "(2,1):Write");
                                     }
                                     break;
-                                case DisplayDevice.OLEDSO096:
+                                case DisplayDevice.OLED096:
                                     SoftataLib.Display.Clear(displayLinkedListIndex);
                                     Thread.Sleep(500);
                                     //Dummy test to see if simple Misc test works (with no date).
@@ -741,10 +742,10 @@ namespace FirmataBasic
                         }
                         break;
                     case CommandType.PotLightSoundAnalog:
-                        SoftataLib.Analog.InitAnalogDevicePins(Analog.RPiPicoMode.groveShield);
-                        SoftataLib.Analog.SetAnalogPin(Analog.AnalogDevice.Potentiometer, POTENTIOMETER, 1023);
-                        SoftataLib.Analog.SetAnalogPin(Analog.AnalogDevice.LightSensor, LIGHTSENSOR);
-                        SoftataLib.Analog.SetAnalogPin(Analog.AnalogDevice.SoundSensor, SOUNDSENSOR);
+                        SoftataLib.Analog.InitAnalogDevicePins(SoftataLib.Analog.RPiPicoMode.groveShield);
+                        SoftataLib.Analog.SetAnalogPin(SoftataLib.Analog.AnalogDevice.Potentiometer, POTENTIOMETER, 1023);
+                        SoftataLib.Analog.SetAnalogPin(SoftataLib.Analog.AnalogDevice.LightSensor, LIGHTSENSOR);
+                        SoftataLib.Analog.SetAnalogPin(SoftataLib.Analog.AnalogDevice.SoundSensor, SOUNDSENSOR);
                         for (int i=0;i<100;i++)
                         {
                             double value;
@@ -775,8 +776,8 @@ namespace FirmataBasic
                         Console.WriteLine("Potentiometer-Relay Test");
                         Console.WriteLine("Potentiometer controls relay. On if >50%");
                         Console.WriteLine("Potentiometer connected to A0, Relay to D16");
-                        SoftataLib.Analog.InitAnalogDevicePins(Analog.RPiPicoMode.groveShield);
-                        SoftataLib.Analog.SetAnalogPin(Analog.AnalogDevice.Potentiometer, POTENTIOMETER, 1023);
+                        SoftataLib.Analog.InitAnalogDevicePins(SoftataLib.Analog.RPiPicoMode.groveShield);
+                        SoftataLib.Analog.SetAnalogPin(SoftataLib.Analog.AnalogDevice.Potentiometer, POTENTIOMETER, 1023);
                         Console.WriteLine("Press any key to continue.");
                         Console.ReadLine();
                         SoftataLib.Digital.SetPinMode(RELAY, SoftataLib.PinMode.DigitalOutput);
@@ -855,7 +856,7 @@ namespace FirmataBasic
                                     Console.WriteLine("Connect Servo to D16");
                                     Console.WriteLine("Press any key to continue.");
                                     Console.ReadLine();
-                                    byte id = (byte)SoftataLib.Actuator.SetupDefault(Actuator.ActuatorDevice.Servo);
+                                    byte id = (byte)SoftataLib.Actuator.SetupDefault(SoftataLib.Actuator.ActuatorDevice.Servo);
                                     for (int i = 0; i < 2; i++)
                                     {
                                         SoftataLib.Actuator.ActuatorWrite(id, 90);
@@ -874,15 +875,15 @@ namespace FirmataBasic
                                     Console.WriteLine("Connect Potentiometer to A0.");
                                     Console.WriteLine("Press any key to continue.");
                                     Console.ReadLine();
-                                    SoftataLib.Analog.SetAnalogPin(Analog.AnalogDevice.Potentiometer, POTENTIOMETER, 1023);
+                                    SoftataLib.Analog.SetAnalogPin(SoftataLib.Analog.AnalogDevice.Potentiometer, POTENTIOMETER, 1023);
                                     Console.WriteLine("Turn potetiometer full in one direction.");
                                     Console.WriteLine("Press any key to continue.");
                                     Console.ReadLine();
-                                    double max1 = Softata.SoftataLib.Analog.AnalogReadPotentiometer();
+                                    double max1 = SoftataLib.Analog.AnalogReadPotentiometer();
                                     Console.WriteLine("Turn potetiometer full in other direction.");
                                     Console.WriteLine("Press any key to continue.");
                                     Console.ReadLine();
-                                    double max2 = Softata.SoftataLib.Analog.AnalogReadPotentiometer();
+                                    double max2 = SoftataLib.Analog.AnalogReadPotentiometer();
                                     if (max1>max2)
                                     {
                                         double temp = max2;
@@ -895,7 +896,7 @@ namespace FirmataBasic
                                     Console.WriteLine("Runs for 20 steps.");
                                     for(int i=0; i<20;i++)
                                     {
-                                        double val =Softata.SoftataLib.Analog.AnalogReadPotentiometer();
+                                        double val = SoftataLib.Analog.AnalogReadPotentiometer();
                                         byte angle = (byte)(180 * (val - max1) / (max2 - max1));
                                         Console.WriteLine($"\t\t\t\tAngle: {angle}");
                    

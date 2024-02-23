@@ -25,10 +25,12 @@ class Grove_Sensor: public Grove
         int numSensors = (int) SENSOR_NONE;
         for (int n=0;n<numSensors;n++)
         {
+          Serial.println(sensor_name[n]);
           list.concat(sensor_name[n]);
           if (n != (numSensors-1))
             list.concat(',');
         }
+        Serial.println(list);
         return list;
       }
 

@@ -3,7 +3,7 @@
 
 
 @using Softata;
-@using static Softata.SoftataLib;
+@using Softata.Enums
 @inject AppState AppState
 @inject NavigationManager navigationManager
 @using BlazorPro.Spinkit
@@ -52,6 +52,13 @@
     <tr>
         <td><b>Selected Display: </b></td>
         <td>@AppState.DisplayDevice</td>
+    </tr>
+}
+else @if ((AppState.ISensor != 0xff))
+{
+    <tr>
+        <td><b>Selected Sensor: </b></td>
+        <td>@AppState.SensorDevice</td>
     </tr>
 }
 
@@ -171,16 +178,14 @@
                 break;
             case DeviceCategory.sensor:
                 <div>
-                    <h4>Tests:</h4>
-                    <select @bind=@AppState.ISensor>
-                        <option value=0xff>Select test</option>
+                    <h4>Select</h4>
+                        <select @onchange="OnChangeCommandType">
+                        <option value=0xff>Select Sensor</option>
                         @for (int i = 0; i < ListDeviceTypeTests.Count(); i++)
                         {
                             <option value=@i>@ListDeviceTypeTests[i]</option>
                         }
                     </select>
-                    <br />
-                    <i>Note: Not yet implemented</i>
                 </div>
                 break;
             }
@@ -191,14 +196,16 @@
         <div class="form-group">
             @switch (AppState.TestType)
            {
-                case Softata.SoftataLib.CommandType.Sensors:
+                case Softata.Enums.CommandType.Sensors:
                     {
                         <table>
+                            <tr><td colspan="4">Run an exemplar sequence of tests demonstrating .NET interaction with the Sensor.</td></tr>
+                            <tr colspan="4"><td>Use defaults for now.</td></tr>
                         <tr><td colspan="4"><button class="btn btn-primary" @onclick="SensorsDefaults">Use Defaults</button></td></tr>
                         </table>
                     }
                     break;
-                case Softata.SoftataLib.CommandType.Displays:
+                case Softata.Enums.CommandType.Displays:
                     {
                         <h4>Display Test</h4>
                         <table>
@@ -208,7 +215,7 @@
                         </table>
                     }
                     break;
-                case Softata.SoftataLib.CommandType.Serial:
+                case Softata.Enums.CommandType.Serial:
                     {
                         <table>
                             <tr><td>Serial Tx</td><td>&nbsp;</td><td>Serial Rx</td></tr>
@@ -232,7 +239,7 @@
                         </table>
                     } 
                     break;
-                case Softata.SoftataLib.CommandType.PotServo:
+                case Softata.Enums.CommandType.PotServo:
                     {
                         @if (!AppState.GetPins)
                         {
@@ -286,7 +293,7 @@
                         }
                     }
                     break;
-                case Softata.SoftataLib.CommandType.PotLightSoundAnalog:
+                case Softata.Enums.CommandType.PotLightSoundAnalog:
                     {
                         <h4>Analog Potentiometer-Light-Sound Test</h4>
                         <p>2Do
@@ -326,7 +333,7 @@
                         </table>
                     }
                     break;
-                case Softata.SoftataLib.CommandType.PotRelay:
+                case Softata.Enums.CommandType.PotRelay:
                     {
                         <h4>Potentiometer-Relay Test</h4>
                         <p>
@@ -370,8 +377,8 @@
                         </table>
                     }
                     break;
-                case Softata.SoftataLib.CommandType.PWM:
-                case Softata.SoftataLib.CommandType.AnalogPotLED:
+                case Softata.Enums.CommandType.PWM:
+                case Softata.Enums.CommandType.AnalogPotLED:
                     {
                         <h4>Potentiometer-LED Test</h4>
                         <p>
@@ -407,7 +414,7 @@
                         </table>
                     }
                     break;
-                case Softata.SoftataLib.CommandType.DigitalButtonLED:
+                case Softata.Enums.CommandType.DigitalButtonLED:
                 {
                     <h4>Digital Button-LED Test </h4>
                         <p>
@@ -459,12 +466,17 @@
         <div class="form-group">
             @switch (AppState.TestType)
             {
-                case Softata.SoftataLib.CommandType.Sensors:
+                case Softata.Enums.CommandType.Sensors:
                     {
-                        <p>NOT YET AVAILABLE... Coming!</p>
+                        <h4>Sensor Test</h4>
+                        <p>
+                            Run an exemplar sequence of tests demonstrating .NET interaction with the Sensor.
+                        </p>
+                        <p>Using Default pins for device</p>
+                        <button class="btn btn-primary" @onclick="Start">Go to test</button>
                     }
                     break;
-                case Softata.SoftataLib.CommandType.Displays:
+                case Softata.Enums.CommandType.Displays:
                     {
                         <h4>Display Test</h4>
                         <p>
@@ -474,7 +486,7 @@
                         <button class="btn btn-primary" @onclick="Start">Go to test</button>
                     }
                     break;
-                case Softata.SoftataLib.CommandType.Serial:
+                case Softata.Enums.CommandType.Serial:
                     {
                        <h4>Serial Test</h4>
                        <p>Serial Tx: Serial @AppState.SerialTx</p>
@@ -482,7 +494,7 @@
                         <p>NOT YET AVAILABLE... Coming!</p>
                     }
                     break;
-                case Softata.SoftataLib.CommandType.PotLightSoundAnalog:
+                case Softata.Enums.CommandType.PotLightSoundAnalog:
                     {
                         <h4>Potentiometer-LED Test</h4>
                         <p>
@@ -494,7 +506,7 @@
                     }
                     <button class="btn btn-primary" @onclick="Start">Go to test</button>
                     break;
-                case Softata.SoftataLib.CommandType.PotServo:
+                case Softata.Enums.CommandType.PotServo:
                     {
                         @* //One entry needed here for each actuator *@
                         @if (AppState.IActuator == 0)
@@ -520,7 +532,7 @@
                     }
                     <button class="btn btn-primary" @onclick="Start">Go to test</button>
                     break;
-                case Softata.SoftataLib.CommandType.PotRelay:
+                case Softata.Enums.CommandType.PotRelay:
                     {
                         <h4>Potentiometer-Relay Test</h4>
                         <p>
@@ -543,8 +555,8 @@
                         <button class="btn btn-primary" @onclick="Start">Go to test</button>
                     }
                     break;
-                case Softata.SoftataLib.CommandType.AnalogPotLED:
-                case Softata.SoftataLib.CommandType.PWM:
+                case Softata.Enums.CommandType.AnalogPotLED:
+                case Softata.Enums.CommandType.PWM:
                     {
                         <h4>Potentiometer-LED Test</h4>
     <p>This tests the Analog input(potentiometer) and PWM output to an LED with the  RPi Pico W.
@@ -562,7 +574,7 @@
                     <button class="btn btn-primary" @onclick="Start">Go to test</button>
 
                     break;
-                case Softata.SoftataLib.CommandType.DigitalButtonLED:
+                case Softata.Enums.CommandType.DigitalButtonLED:
                     {
                         <h4>Digital Button-LED Test </h4>
                         <p>
@@ -670,7 +682,8 @@
         var selected = e.Value.ToString();
         if (selected != null)
         {
-            if (AppState.TestCategory != DeviceCategory.display)
+            if ((AppState.TestCategory != DeviceCategory.display) &&
+            (AppState.TestCategory != DeviceCategory.sensor))
             {
                 string TestType = selected;
                 if (Enum.TryParse(TestType, out CommandType _testType))
@@ -686,9 +699,9 @@
                             AppState.GetPins = true;
                             AppState.IActuator = 0;
                             break;
-                        case CommandType.Displays:
+                        @* case CommandType.Displays:
                             AppState.GetPins = true;
-                            break;
+                            break; *@
                     }
                 }
             }
@@ -703,6 +716,14 @@
                         if (byte.TryParse(DisplayType, out byte idisplay))
                         {
                             AppState.IDisplay = idisplay;
+                        }
+                        break;
+                    case DeviceCategory.sensor:
+                        AppState.TestType = CommandType.Sensors;
+                        string SensorType = selected;
+                        if (byte.TryParse(SensorType, out byte iSensor))
+                        {
+                            AppState.ISensor = iSensor;
                         }
                         break;
                 }
@@ -873,18 +894,29 @@
         switch (AppState.TestType)
         {
             case CommandType.Sensors:
-                navigationManager.NavigateTo("/digital");
+                switch((SensorDevice)AppState.ISensor)
+                {
+                    case SensorDevice.DHT11:
+                        navigationManager.NavigateTo("/sensor_run");
+                        break;
+                    case SensorDevice.BME280:
+                        navigationManager.NavigateTo("/sensor_run");
+                        break;
+                    case SensorDevice.UltrasonicRANGER:
+                        navigationManager.NavigateTo("/sensor_run");
+                        break;
+                }
                 break;
             case CommandType.Displays:
                 switch((DisplayDevice)AppState.IDisplay)
                 {
-                    case DisplayDevice.OLEDSO096:
+                    case DisplayDevice.OLED096:
                         navigationManager.NavigateTo("/display_oled096");
                         break;
-                    case DisplayDevice.LCD1602Display:
+                    case DisplayDevice.LCD1602:
                         navigationManager.NavigateTo("/display_lcd1602");
                         break;
-                    case DisplayDevice.NeopixelDisplay:
+                    case DisplayDevice.NEOPIXEL:
                         navigationManager.NavigateTo("/display_neopixel");
                         break;
 

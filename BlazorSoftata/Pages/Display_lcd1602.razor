@@ -2,10 +2,11 @@
 
 
 @using Softata;
-@using static Softata.SoftataLib;
+@using Softata.Enums
 @inject AppState AppState
 @using BlazorPro.Spinkit
 @inject NavigationManager navigationManager
+
 
 <PageTitle>Softata: Grove LCD16x3 RGB Displa</PageTitle>
 <h1>Softata: Grove LCD16x3 RGB Display</h1> 
@@ -77,11 +78,11 @@ else if(AppState.Running)
 <div class="form-group">
     @switch (AppState.TestType)
     {
-        case Softata.SoftataLib.CommandType.Displays:
+        case Softata.Enums.CommandType.Displays:
             {
                 switch (displayDevice)
                 {
-                    case DisplayDevice.LCD1602Display:
+                    case DisplayDevice.LCD1602:
                          @if(RunMsg.Value!="")
                          {
                             <table>
@@ -119,9 +120,9 @@ else if(AppState.Running)
 
         <font color="blue>"><h4>Pins: @pins</h4></font>
         <EditForm Model=@AppState>
-            Test step period (mS): <InputNumber @bind-Value="AppState.DisplayPeriod" />
+            Test step period (mS): <InputNumber @bind-Value="AppState.TestStepPeriod" />
             <br /><br />
-            Delay after Clear period (mS): <InputNumber @bind-Value="AppState.DisplayClearPeriod" />
+            Delay after Clear period (mS): <InputNumber @bind-Value="AppState.TestClearPeriod" />
             <br /><br />
             <button class="btn btn-primary" @onclick="Ready">Is Connected as per default</button>
         </EditForm>
@@ -146,11 +147,11 @@ else if(AppState.Running)
             <div class="form-group">
                 @switch (AppState.TestType)
                 {
-                    case Softata.SoftataLib.CommandType.Displays:
+                    case Softata.Enums.CommandType.Displays:
                         {
                             switch (displayDevice)
                             {
-                                case DisplayDevice.LCD1602Display:
+                                case DisplayDevice.LCD1602:
                                 <table>
                               
                                 </table>
@@ -221,6 +222,21 @@ else if(AppState.Running)
 
     }
 
+    private async void Reconnect()
+    {
+        Busy = true;
+        StateHasChanged();
+        await Task.Delay(100);
+        ReconnectVisible = false;
+        SoftataLib.Reconnect();
+        StateHasChanged();
+        await Task.Delay(1000);
+        Busy = false;
+        StateHasChanged();
+        await Task.Delay(100);
+        await Start();
+    }
+
     private async Task Start()
     {
         AppState.Running = true;
@@ -233,29 +249,29 @@ else if(AppState.Running)
         StateHasChanged();
 
         SoftataLib.Display.Clear(displayLinkedListIndex);
-        Thread.Sleep(AppState.DisplayClearPeriod); 
+        Thread.Sleep(AppState.TestClearPeriod); 
         SoftataLib.Display.SetCursor(displayLinkedListIndex, 0, 0);
         SoftataLib.Display.WriteString(displayLinkedListIndex, "First Line");
-        Thread.Sleep(AppState.DisplayPeriod);
+        Thread.Sleep(AppState.TestStepPeriod);
         if (AppState.Running)
         {
             SoftataLib.Display.SetCursor(displayLinkedListIndex, 0, 1);
             SoftataLib.Display.WriteString(displayLinkedListIndex, "Wait");
-            Thread.Sleep(AppState.DisplayPeriod);
+            Thread.Sleep(AppState.TestStepPeriod);
             if (AppState.Running)
             {
                 SoftataLib.Display.Clear(displayLinkedListIndex);
-                Thread.Sleep(AppState.DisplayClearPeriod);
+                Thread.Sleep(AppState.TestClearPeriod);
                 SoftataLib.Display.WriteString(displayLinkedListIndex, 4, 0, "(4,0):Cursor");
-                Thread.Sleep(AppState.DisplayPeriod);
+                Thread.Sleep(AppState.TestStepPeriod);
                 if (AppState.Running)
                 {
                     SoftataLib.Display.WriteString(displayLinkedListIndex, 2, 1, "(2,1):Write");
-                    Thread.Sleep(AppState.DisplayPeriod);
+                    Thread.Sleep(AppState.TestStepPeriod);
                     if (AppState.Running)
                     {
                         SoftataLib.Display.Clear(displayLinkedListIndex);
-                        Thread.Sleep(AppState.DisplayClearPeriod);
+                        Thread.Sleep(AppState.TestClearPeriod);
                         SoftataLib.Display.SetCursor(displayLinkedListIndex, 0, 0);
 
                         SoftataLib.Display.WriteString(displayLinkedListIndex, "Time:");
@@ -267,7 +283,7 @@ else if(AppState.Running)
                             string time = now.ToString(format);
                             string msg = $"{i + 1}/{num} {time}";
                             SoftataLib.Display.WriteString(displayLinkedListIndex, 0, 1, msg);
-                            Thread.Sleep(AppState.DisplayPeriod);
+                            Thread.Sleep(AppState.TestStepPeriod);
                         }
                     }
                 }
@@ -275,7 +291,7 @@ else if(AppState.Running)
         }
 
         SoftataLib.Display.Clear(displayLinkedListIndex);
-        Thread.Sleep(AppState.DisplayClearPeriod);
+        Thread.Sleep(AppState.TestClearPeriod);
         RunMsg = new MarkupString("<h4>Done.</h4>");
         Busy = false;
         AppState.Running = false;
@@ -331,7 +347,7 @@ else if(AppState.Running)
         {
             switch (displayDevice)
             {
-                case DisplayDevice.NeopixelDisplay:
+                case DisplayDevice.NEOPIXEL:
                     {
                         OKMsg = new MarkupString($"Instantiated {display} linked at {displayLinkedListIndex}");
                     }

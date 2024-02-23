@@ -1,0 +1,487 @@
+﻿@page "/sensor_run"
+
+
+@using Softata;
+@using Softata.Enums
+@using System.Text.Json
+
+@inject AppState AppState
+@using BlazorPro.Spinkit
+@inject NavigationManager navigationManager
+
+<PageTitle>@Title</PageTitle>
+<h1>@Title</h1>
+<p>
+<i><b>Softata:</b> A Firmata like C# library connecting to a RPi Pico  W running Arduino.</i> 
+</p>
+<p>
+    <i>Run an exemplar sequence of tests demonstrating .NET interaction with the Sensor.</i>
+</p>
+<hr/>
+    Hardware: <a href="@SensorLink">Grove - @sensorName Sensor</a>
+<hr/>
+@if (Busy)
+{
+    <Pulse />
+    <p>Please wait ...</p>
+    <hr />
+}
+else if (AppState.Running)
+{
+    <Fold />
+    <p>Running ...</p>
+    <hr />
+}
+
+@if (!string.IsNullOrEmpty(AppState.AppVersion))
+{
+    <tr>
+        <td><b>App Version: </b></td>
+        <td>@AppState.AppVersion</td>
+    </tr>
+}
+@if (!string.IsNullOrEmpty(AppState.Connected))
+{
+    <tr>
+        <td><b>Connected: </b></td>
+        <td>@AppState.Connected</td>
+    </tr>
+}
+@if (!string.IsNullOrEmpty(AppState.DevicesCSV))
+{
+    <tr>
+        <td><b>Device Types: </b></td>
+        <td>@AppState.DevicesCSV.Replace("DEVICES:", "")</td>
+    </tr>
+}
+@if (!(AppState.TestCategory == DeviceCategory.MaxType))
+{
+    <tr>
+        <td><b>Selected Test Category: </b></td>
+        <td>@AppState.TestCategory</td>
+    </tr>
+}
+@if (!(AppState.TestType == CommandType.MaxType))
+{
+    <tr>
+        <td><b>Selected Test Type: </b></td>
+        <td>@AppState.TestType</td>
+    </tr>
+}
+@if ((AppState.ISensor != 0xff))
+{
+    <tr>
+        <td><b>Selected Sensor: </b></td>
+        <td>@sensorName</td>
+    </tr>
+}
+@if ((AppState.SensorMode != 0xff))
+{
+    <tr>
+        <td><b>Sensor Mode:</b></td>
+        <td>@AppState.SensorMode</td>
+    </tr>
+}
+
+@if (AppState.Data.Value == "")
+{
+    @if (properties.Length != 0)
+    {
+        <b>Properties:</b><br/>
+        <ul>
+            @foreach (var prop in @properties)
+            {
+                <li>@prop
+                </li>
+            }
+        </ul>
+    }
+}
+else
+{
+    <hr/>
+    @AppState.Data
+}
+
+<hr />
+
+
+
+
+
+<div class="form-group">
+    <table>
+        @RunMsg
+    </table>
+    <hr />
+</div>
+
+
+@if (AppState.ReadytoRun)
+{
+
+    @if (FailMsg.Value != "")
+    {
+        @FailMsg
+        <hr />
+    }
+    else
+    {
+        @if (OKMsg.Value != "")
+        {
+            @OKMsg
+            <hr />
+        }
+    }
+ 
+    @if (!IsReady)
+   { 
+        <h2>Setup</h2>
+
+        <font color="blue>"><h4>Pins: @pins</h4></font>
+        <EditForm Model=@AppState>
+            Test step period (mS): <InputNumber @bind-Value="AppState.TestStepPeriod" />
+            <br /><br />
+            Delay after Clear period (mS): <InputNumber @bind-Value="AppState.TestClearPeriod" />
+            <br /><br />
+            <button class="btn btn-primary" @onclick="Ready">Is Connected as per default</button>
+        </EditForm>
+    }
+    else
+    {
+        @if (!AppState.Running)
+        { 
+            @if (ReconnectVisible)
+            {
+                <button  class="btn btn-primary" @onclick="Reconnect">Reconnect and run test</button>
+            }
+            else if (RunVisble)
+            { 
+                <br/>
+                <button class="btn btn-primary" @onclick="Start">Run sequence of tests.</button>
+            }
+            <h3>Select Sensor Mode</h3>
+            <select @bind=@AppState.SensorMode>
+                <option selected="selected" value="0xff">Select Sensor Mode</option>
+                <option value="1">Read Sensor Values All</option>
+                <option value="2">Read Sensor Values Individual</option>
+                <option value="3">Get Telemetry json string</option>
+            </select>           
+        }
+        else
+        {
+            <div class="form-group">
+
+                @switch (AppState.TestType)
+                {
+                    case Softata.Enums.CommandType.Sensors:
+                        {
+                            switch (sensorDevice)
+                            {
+                                case SensorDevice.BME280:
+                                    @if (showMenu)
+                                    {
+                                        <br/>
+                                        <select @bind=@AppState.SensorMode>
+                                            <option value= "0xff">Select Sensor Mode</option>
+                                            <option value = "1">Read Sensor Values All</option>
+                                            <option value="2">Read Sensor Values Individual</option>
+                                            <option value = "3">Get Telemetry json string</option>
+                                        </select>
+                                        @*                                            
+                                            <option value="4">Send Telemetry BT</option>
+                                            <option value="5">Send Telemetry IoT Hub</option>                                      
+                                             <option value = "5">Pause BT or IoT Telemetry Stream"</option> P
+                                            <option value = "6"> Continue BT IoT Telemetry Stream</option> P
+                                            <option value = "7">Quit </option> *@
+                                       
+                                    }
+                                    break;
+                            }
+                        }
+                        break;
+                }
+            </div>
+            <br />
+            <br />
+            <button class="btn btn-primary" @onclick="Stop">Cancel</button>
+        }
+    }
+    <br /><br/>
+    @if (!AppState.Running)
+    {
+        <p>Nb: Cancel not working. Threading issues 2Do</p>
+        <button class="btn btn-primary" @onclick="Reset">Restart app.</button>
+    }
+
+}
+
+
+
+
+
+@code {
+    string SensorLink { get; set; } = "";
+    MarkupString Title { get; set; } = new MarkupString($"Softata: Grove -  Sensor");
+    string pins { get; set; } = "";
+    SensorDevice sensorDevice { get; set; }
+    byte sensorLinkedListIndex;
+    MarkupString FailMsg { get; set; } = new MarkupString("");
+    MarkupString OKMsg { get; set; } = new MarkupString("");
+    MarkupString RunMsg { get; set; } = new MarkupString("");
+
+
+
+    string[] properties = new string[0];
+
+    bool busy = false;
+    bool Busy
+    {
+        get => busy;
+        set { busy = value; StateHasChanged(); }
+    }
+
+    bool reconnectable = false;
+    bool RunVisble { get; set; } = false;
+    bool ReconnectVisible { get; set; } = false;
+    bool IsReady = false;
+
+
+    byte isensor = 0;
+    string sensorName = "";
+    string[] SensorList = new string[0];
+
+    protected override void OnInitialized()
+    {
+        AppState.SensorMode = 0xff;
+        AppState.OnChange += StateHasChanged;
+        AppState.ReadytoRun = true; 
+        AppState.Running = false;
+        ReconnectVisible = false;
+        RunVisble = true;
+        IsReady = false;
+        isensor = AppState.ISensor;
+        sensorName = "";
+        SensorList = SoftataLib.Sensor.GetSensors();
+        sensorName = SensorList[isensor];
+        sensorDevice = (SensorDevice)isensor;
+        SensorLink = SoftataLib.Sensor.Links[sensorDevice];
+        Title = new MarkupString($"Softata: Grove - {sensorName} Sensor");
+        pins = SoftataLib.Sensor.GetPins(isensor);
+        StateHasChanged();
+    }
+
+
+
+    bool keepRunning = false;
+    bool KeepRunning
+    {
+        get => keepRunning; set { keepRunning = value; StateHasChanged(); }
+    }
+
+    bool showMenu = false;
+    bool ShowMenu
+    {
+        get => showMenu; set { showMenu = value; StateHasChanged(); }
+    }
+
+    private void OnChangeMode(ChangeEventArgs e)
+    {
+        if (e == null)
+            return;
+        var selected = e.Value.ToString();
+        if (selected != null)
+        {
+            if(int.TryParse(selected, out int  val))
+            {
+                AppState.SensorMode = val;
+            }
+        }
+
+    }
+
+    private async void Reconnect()
+    {
+        Busy = true;
+        StateHasChanged();
+        await Task.Delay(100);
+        ReconnectVisible = false;
+        SoftataLib.Reconnect();
+        StateHasChanged();
+        await Task.Delay(1000);
+        Busy = false;
+        StateHasChanged();
+        await Task.Delay(100);
+        await Start();
+    }
+
+    private async Task Start()
+    {
+        if (AppState.SensorMode == 0xff)
+            return;
+        AppState.Running = true;
+        RunVisble = false;
+        Busy = true;
+        StateHasChanged();
+        await Task.Delay(333);
+
+        RunMsg = new MarkupString($"<h4>Exercising the {sensorName} Sensor.</h4>");
+        StateHasChanged();
+
+        /////////////////////////// T E S T S /////////////////////////////
+        int sensorQuitModeNo = 7;
+        bool debug = false;
+        KeepRunning = true;
+        StateHasChanged();
+        while (KeepRunning)
+        {
+            if (AppState.SensorMode == sensorQuitModeNo)
+            {
+                Console.WriteLine("Quitting app. Please wait.");
+                break;
+            }
+            else if (AppState.SensorMode == 3)
+            {
+                string json = SoftataLib.Sensor.GetTelemetry((byte)sensorLinkedListIndex, debug);
+                string data = $"<h3>{sensorName}</h3>";;
+                data += $"<code>{json}</code>";
+                AppState.Data = new MarkupString(data);
+                StateHasChanged();
+                Console.WriteLine($"\t\t Telemetry: {json}");
+                Thread.Sleep((int)AppState.TestStepPeriod);
+            }
+            else if (AppState.SensorMode == 4)
+            {
+                string indxStr = SoftataLib.Sensor.SendTelemetryBT((byte)sensorLinkedListIndex);
+                if (int.TryParse(indxStr, out int val))
+                    Console.WriteLine($"Streaming to BT started. List No:{val}");
+                else
+                    Console.WriteLine($"Streaming to BT failed to start.");
+                showMenu = true;
+            }
+            else if (AppState.SensorMode == 5)
+            {
+                string indxStr = SoftataLib.Sensor.SendTelemetryToIoTHub((byte)sensorLinkedListIndex);
+                if (int.TryParse(indxStr, out int val))
+                {
+                    Console.WriteLine($"Streaming to Azure IoT Hub started. List No:{val}");
+                }
+                else
+                    Console.WriteLine($"Streaming to Azure IoT Hub failed to start.");
+                showMenu = true;
+            }
+            else if (AppState.SensorMode == 6)
+            {
+                string json = SoftataLib.Sensor.PauseSendTelemetry((byte)sensorLinkedListIndex);
+                Console.WriteLine($"json {json}");
+            }
+            else if (AppState.SensorMode == 7)
+            {
+                string json = SoftataLib.Sensor.ContinueSendTelemetry((byte)sensorLinkedListIndex);
+                Console.WriteLine($"json {json}");
+            }
+
+            else if (AppState.SensorMode == 1)
+            {
+                double[]? values = SoftataLib.Sensor.ReadAll((byte)sensorLinkedListIndex, debug);
+                if (values == null)
+                    Console.WriteLine($"{sensorName} readAll() failed");
+                else
+                {
+                    if (debug)
+                        Console.WriteLine($"{sensorName} readAll() OK");
+                    else
+                        Console.WriteLine("ReadAll():");
+                    string data = $"<h3>{sensorName}</h3><ul>";
+                    for (int p = 0; p < properties.Length; p++)
+                        data += $"<li>{properties[p]} = {values[p]}</li>";
+                    data += "</ul>";
+                    AppState.Data = new MarkupString(data);
+                    StateHasChanged();
+
+                }
+
+                Thread.Sleep((int)AppState.TestStepPeriod);
+            }
+            else if (AppState.SensorMode == 2)
+            {
+                Console.WriteLine("Individual Read():");
+            
+                string data = $"<h3>{sensorName}</h3><ul>";
+                for (byte p = 0; p < properties.Length; p++)
+                {
+                    double? value = SoftataLib.Sensor.Read((byte)sensorLinkedListIndex, p, debug);
+                    if (value == null)
+                        Console.WriteLine($"{sensorName} read() failed");
+                    else
+                        data += $"<li>{properties[p]} = {value}</li>";
+                    Console.WriteLine();
+                }
+                data += "</ul>";
+                AppState.Data = new MarkupString(data);
+                StateHasChanged();
+                Thread.Sleep((int)AppState.TestStepPeriod);
+            }
+
+        }
+
+
+        /////////////////////////// T E S T S /////////////////////////////
+
+
+        RunMsg = new MarkupString("<h4>Done.</h4>");
+        Busy = false;
+        AppState.Running = false;
+        RunVisble = true;
+        StateHasChanged();
+    }
+
+
+    private async Task Reset()
+    {
+        Busy = true;
+        RunMsg = new MarkupString("<h4>Resetting the Pico.. please wait</h4>");
+        StateHasChanged();
+        SoftataLib.SendMessageCmd("End");
+        await Task.Delay(20000);
+        RunMsg = new MarkupString("<h4>Pico should have been reset by about now ...</h4><p>Pico should now slow blink</p>");
+        StateHasChanged();
+        AppState.OnChange -= StateHasChanged;
+        AppState.ReadytoRun = false;
+        AppState.Running = false;
+        AppState.ISensor = 0xff;
+        AppState.Running = false;
+        AppState.TestType = CommandType.MaxType;
+        AppState.TestCategory = DeviceCategory.MaxType;
+        AppState.Connected = "";
+        ReconnectVisible = false;
+        await Task.Delay(3333);
+        busy = false;
+        StateHasChanged();
+        navigationManager.NavigateTo("/");
+    }
+
+    private async Task Stop()
+    {
+        AppState.Running = false;
+        StateHasChanged();
+    }
+
+    private void Ready(MouseEventArgs e)
+    {
+        sensorLinkedListIndex = (byte)SoftataLib.Sensor.SetupDefault(AppState.ISensor);
+        if (sensorLinkedListIndex < 0)
+        {
+            FailMsg = new MarkupString($"<h3>Instantiated {sensorName} not found</h3>");
+            return;
+        }
+        else
+        {
+            OKMsg = new MarkupString($"Instantiated {sensorName} linked at {sensorLinkedListIndex}");
+            properties = SoftataLib.Sensor.GetProperties(isensor);
+        }
+        IsReady = true;
+        StateHasChanged();
+    }
+}
+

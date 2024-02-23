@@ -531,7 +531,7 @@ void loop() {
                   {            
                     switch ((GroveSensor)other)
                     {
-                      //#define SENSORS C(DHT11)C(SWITCH)C(SOUND)C(BME280)
+                      //#define G_SENSORS C(DHT11)C(BME280)C(UltrasonicRanger)
                       case DHT11:
                         {
                           client.print(Grove_DHT11::GetPins());
@@ -542,7 +542,7 @@ void loop() {
                           client.print(Grove_BME280::GetPins());
                         }
                         break;
-                      case URANGE:
+                      case UltrasonicRanger:
                         {
                           client.print(Grove_URangeSensor::GetPins());
                         }
@@ -571,7 +571,7 @@ void loop() {
                           client.print(Grove_BME280::GetListofProperties());
                         }
                         break;
-                      case URANGE:
+                      case UltrasonicRanger:
                         {
                           client.print(Grove_URangeSensor::GetListofProperties());
                         }
@@ -607,7 +607,7 @@ void loop() {
                           _done = true;
                         }
                         break;
-                      case URANGE:
+                      case UltrasonicRanger:
                         {
                           grove_Sensor  = new Grove_URangeSensor(DEFAULT_URANGE_PIN);
                           _done = true;
@@ -848,6 +848,7 @@ void loop() {
                   {
                     String msg = String("OK:");
                     msg.concat(Grove_Sensor::GetListof());
+                    Serial.println(msg);
                     client.print(msg);
                   }
                   break;

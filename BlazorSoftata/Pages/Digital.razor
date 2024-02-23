@@ -2,7 +2,7 @@
 
 
 @using Softata;
-@using static Softata.SoftataLib;
+@using Softata.Enums
 @inject AppState AppState
 @using BlazorPro.Spinkit
 
@@ -83,7 +83,7 @@ else if(AppState.Running)
         <div class="form-group">
             @switch (AppState.TestType)
             {
-                case Softata.SoftataLib.CommandType.DigitalButtonLED:
+                case Softata.Enums.CommandType.DigitalButtonLED:
                     {
                         <h2>Press hardware button to toggle LED.</h2>
                         <h3>Hold until LED changes state = Button here is HIGH</h3>

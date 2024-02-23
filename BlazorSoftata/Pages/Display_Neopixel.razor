@@ -2,7 +2,7 @@
 
 
 @using Softata;
-@using static Softata.SoftataLib;
+@using Softata.Enums
 @inject AppState AppState
 @using BlazorPro.Spinkit
 @inject NavigationManager navigationManager
@@ -79,11 +79,11 @@ else if(AppState.Running)
 <div class="form-group">
     @switch (AppState.TestType)
     {
-        case Softata.SoftataLib.CommandType.Displays:
+        case Softata.Enums.CommandType.Displays:
             {
                 switch (displayDevice)
                 {
-                    case DisplayDevice.NeopixelDisplay:
+                    case DisplayDevice.NEOPIXEL:
                          @if(RunMsg.Value!="")
                          {
                             <table>
@@ -120,9 +120,9 @@ else if(AppState.Running)
 
         <font color="blue>"><h4>Pins: @pins</h4></font>
          <EditForm Model=@AppState>
-            Test step period (mS): <InputNumber  @bind-Value="AppState.DisplayPeriod" />
+            Test step period (mS): <InputNumber  @bind-Value="AppState.TestStepPeriod" />
             <br /><br />
-            Delay after Clear period (mS): <InputNumber @bind-Value="AppState.DisplayClearPeriod" />
+            Delay after Clear period (mS): <InputNumber @bind-Value="AppState.TestClearPeriod" />
             <br /><br />
             <button class="btn btn-primary" @onclick="Ready">Is Connected as per default</button>
         </EditForm>
@@ -147,11 +147,11 @@ else if(AppState.Running)
             <div class="form-group">
                 @switch (AppState.TestType)
                 {
-                    case Softata.SoftataLib.CommandType.Displays:
+                    case Softata.Enums.CommandType.Displays:
                         {
                             switch (displayDevice)
                             {
-                                case DisplayDevice.NeopixelDisplay:
+                                case DisplayDevice.NEOPIXEL:
                                 <table>
                               
                                 </table>
@@ -229,71 +229,71 @@ else if(AppState.Running)
         StateHasChanged();
         await Task.Delay(333);
 
-        RunMsg = new MarkupString("<h4>Exercising the Grove LCD16x2 RGB Display.</h4>");
+        RunMsg = new MarkupString("<h4>Exercising the (Adafruit) Neopixel 8  Display.</h4>");
         StateHasChanged();
 
         SoftataLib.Display.Neopixel.Clear(displayLinkedListIndex); ;
-        Thread.Sleep(AppState.DisplayClearPeriod);
+        Thread.Sleep(AppState.TestClearPeriod);
         SoftataLib.Display.Neopixel.Misc_SetAll(displayLinkedListIndex, 255, 0, 0);
-        Thread.Sleep(AppState.DisplayPeriod);
+        Thread.Sleep(AppState.TestStepPeriod);
         SoftataLib.Display.Neopixel.Misc_SetAll(displayLinkedListIndex, 0xFF, 0xA5, 0);   //Orange
-        Thread.Sleep(AppState.DisplayPeriod);
+        Thread.Sleep(AppState.TestStepPeriod);
         SoftataLib.Display.Neopixel.Misc_SetAll(displayLinkedListIndex, 255, 255, 0);     //Yellow
-        Thread.Sleep(AppState.DisplayPeriod);
+        Thread.Sleep(AppState.TestStepPeriod);
         SoftataLib.Display.Neopixel.Misc_SetAll(displayLinkedListIndex, 0, 255, 0);
-        Thread.Sleep(AppState.DisplayPeriod);
+        Thread.Sleep(AppState.TestStepPeriod);
         if (AppState.Running)
         {
             SoftataLib.Display.Neopixel.Misc_SetAll(displayLinkedListIndex, 0, 0, 255);
-            Thread.Sleep(AppState.DisplayPeriod);
+            Thread.Sleep(AppState.TestStepPeriod);
             SoftataLib.Display.Neopixel.Misc_SetAll(displayLinkedListIndex, 0xA0, 0x20, 0xf0);//Purple
-            Thread.Sleep(AppState.DisplayPeriod);
+            Thread.Sleep(AppState.TestStepPeriod);
             SoftataLib.Display.Neopixel.Misc_SetAll(displayLinkedListIndex, 255, 255, 255);   //White
-            Thread.Sleep(AppState.DisplayPeriod);
+            Thread.Sleep(AppState.TestStepPeriod);
             SoftataLib.Display.Neopixel.Clear(displayLinkedListIndex);
-            Thread.Sleep(AppState.DisplayClearPeriod);
+            Thread.Sleep(AppState.TestClearPeriod);
             if (AppState.Running)
             {
                 SoftataLib.Display.Neopixel.Misc_SetOdd(displayLinkedListIndex, 255, 0, 0);
-                Thread.Sleep(AppState.DisplayPeriod);
+                Thread.Sleep(AppState.TestStepPeriod);
                 SoftataLib.Display.Neopixel.Clear(displayLinkedListIndex);
-                Thread.Sleep(AppState.DisplayClearPeriod);
+                Thread.Sleep(AppState.TestClearPeriod);
                 SoftataLib.Display.Neopixel.Misc_SetEvens(displayLinkedListIndex, 0, 255, 0);
-                Thread.Sleep(AppState.DisplayPeriod);
+                Thread.Sleep(AppState.TestStepPeriod);
                 SoftataLib.Display.Neopixel.Clear(displayLinkedListIndex);
-                Thread.Sleep(AppState.DisplayClearPeriod);
+                Thread.Sleep(AppState.TestClearPeriod);
                 SoftataLib.Display.Neopixel.Misc_SetOdd(displayLinkedListIndex, 0, 0, 255);
-                Thread.Sleep(AppState.DisplayPeriod);
+                Thread.Sleep(AppState.TestStepPeriod);
                 SoftataLib.Display.Neopixel.Clear(displayLinkedListIndex);
-                Thread.Sleep(AppState.DisplayClearPeriod);
+                Thread.Sleep(AppState.TestClearPeriod);
                 if (AppState.Running)
                 {
                     SoftataLib.Display.Neopixel.Misc_SetEvens(displayLinkedListIndex, 255, 255, 0);
-                    Thread.Sleep(AppState.DisplayPeriod);
+                    Thread.Sleep(AppState.TestStepPeriod);
                     SoftataLib.Display.Neopixel.Clear(displayLinkedListIndex);
-                    Thread.Sleep(AppState.DisplayClearPeriod);
+                    Thread.Sleep(AppState.TestClearPeriod);
                     SoftataLib.Display.Neopixel.Misc_SetOdd(displayLinkedListIndex, 0, 255, 255);
-                    Thread.Sleep(AppState.DisplayPeriod);
+                    Thread.Sleep(AppState.TestStepPeriod);
                     SoftataLib.Display.Neopixel.Clear(displayLinkedListIndex);
-                    Thread.Sleep(AppState.DisplayClearPeriod);
+                    Thread.Sleep(AppState.TestClearPeriod);
                     SoftataLib.Display.Neopixel.Misc_SetEvens(displayLinkedListIndex, 255, 255, 255);
-                    Thread.Sleep(AppState.DisplayPeriod / 2);
+                    Thread.Sleep(AppState.TestStepPeriod / 2);
                     SoftataLib.Display.Neopixel.Clear(displayLinkedListIndex);
-                    Thread.Sleep(AppState.DisplayClearPeriod);
+                    Thread.Sleep(AppState.TestClearPeriod);
                     if (AppState.Running)
                     {
                         SoftataLib.Display.Neopixel.Misc_SetEvens(displayLinkedListIndex, 255, 255, 255);
-                        Thread.Sleep(AppState.DisplayPeriod / 2);
+                        Thread.Sleep(AppState.TestStepPeriod / 2);
                         SoftataLib.Display.Neopixel.Clear(displayLinkedListIndex);
-                        Thread.Sleep(AppState.DisplayClearPeriod);
+                        Thread.Sleep(AppState.TestClearPeriod);
                         SoftataLib.Display.Neopixel.Misc_SetEvens(displayLinkedListIndex, 255, 255, 255);
-                        Thread.Sleep(AppState.DisplayPeriod / 2);
+                        Thread.Sleep(AppState.TestStepPeriod / 2);
                     }
                 }
             }
         }
         SoftataLib.Display.Neopixel.Clear(displayLinkedListIndex);
-        Thread.Sleep(AppState.DisplayClearPeriod);
+        Thread.Sleep(AppState.TestClearPeriod);
         /*RunMsg = new MarkupString("<h3>Done. Resetting the Pico..</h3>");
         StateHasChanged();
         //SoftataLib.SendMessageCmd("End");      
@@ -369,7 +369,7 @@ else if(AppState.Running)
         {
             switch (displayDevice)
             {
-                case DisplayDevice.NeopixelDisplay:
+                case DisplayDevice.NEOPIXEL:
                     {
                         OKMsg = new MarkupString($"Instantiated {display} linked at {displayLinkedListIndex}");
                     }

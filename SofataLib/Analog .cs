@@ -3,22 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static Softata.SoftataLib;
+using Softata.Enums;
 
 namespace Softata
 {
     public partial class SoftataLib
     {
-        /*
-        public enum Commands
-        {      
-            //AnalogPotLED/PWM
-            analogRead = 0xA2,
-            pwmWrite = 0xB1,
-
-            Undefined = 0xFF
-        }
-        */
         public static class Analog
         {
 

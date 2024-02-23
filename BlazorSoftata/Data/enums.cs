@@ -3,17 +3,17 @@
     enum LCD1602MiscCmds : byte { home, autoscroll, noautoscroll, blink, noblink, LCD1602MiscCmds_MAX }
     enum NEOPIXELMiscCmds : byte { setpixelcolor, setpixelcolorAll, setpixelcolorOdds, setpixelcolorEvens, setBrightness, NEOPIXELMiscCmds_MAX }
     enum OLEDMiscCmds : byte { drawCircle, drawFrame, OLEDMiscCmds_MAX }
-    public enum Sensors : byte { DHT11, BME280, URANGE, Undefined = 0xFF }
-    public enum Displays : byte { OLED096, LCD1602, NEOPIXEL, Undefined = 0xFF }
-    public enum Servos : byte { Servo }
+    public enum SensorDevice : byte { DHT11, BME280, UltrasonicRanger, Undefined = 0xFF }
+    public enum DisplayDevice : byte { OLED096, LCD1602, NEOPIXEL, Undefined = 0xFF }
+    public enum ServoDevice : byte { Servo }
    /* public enum CommandType : byte
     {
         DigitalButtonLED = 0,
         AnalogPotLED = 1,
         PWM = 2,
         Servo = 3,
-        Sensors = 4,
-        Displays = 0x5,
+        SensorDevice = 4,
+        DisplayDevice = 0x5,
         Serial = 6,
         PotLightSoundAnalog = 0x7,
         USonicRange = 0x8,

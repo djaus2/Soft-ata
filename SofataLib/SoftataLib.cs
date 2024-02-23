@@ -9,7 +9,8 @@ using System.Net.Sockets;
 using System.IO;
 using System.Threading;
 using System.Net.NetworkInformation;
-using static Softata.SoftataLib;
+using Softata.Enums;
+
 
 namespace Softata
 {
@@ -115,64 +116,7 @@ namespace Softata
         private static List<Commands> WritingCmds = new List<Commands> { Commands.pwmWrite, Commands.serialWriteChar};
 
 
-        public enum Commands
-        {
-            //DigitalButtonLED IO
-            pinMode = 0xD0,
-            digitalWrite = 0xD1,
-            digitalRead = 0xD2,
-            digitalToggle = 0xD3,
-        
-            //AnalogPotLED/PWM
-            analogRead = 0xA2,
-            pwmWrite = 0xB1,
 
-            //Serial
-            serialSetup = 0xE0, // Setup Serial1/2
-            serialGetChar = 0xE1, // Get a char
-            serialGetString = 0xE2, // Get a string
-            serialGetStringUntil = 0xE3, // Get a string until char
-            serialWriteChar = 0xE4, // Write a char
-            serialGetFloat = 0xE5, // Get Flost
-            serialGetInt = 0xE6, // Get Int
-            serialReadLine = 0xE7, 
-
-            groveSensor = 0xF0, 
-            groveDisplay = 0xF1,
-            groveActuator = 0xF2,
-
-            Undefined = 0xFF
-        }
-
-        public enum CommandType : byte
-        {
-            DigitalButtonLED = 0,
-            AnalogPotLED = 1,
-            PWM = 2,
-            Servo = 3,
-            Sensors = 4,
-            Displays = 0x5,
-            Serial = 6,
-            PotLightSoundAnalog = 0x7,
-            USonicRange = 0x8,
-            PotRelay = 0x9,
-            PotServo = 0xA,
-            MaxType = 0xB,
-
-            Undefined = 0xFF
-        }
-
-        public enum DeviceCategory: byte
-        {
-            digital=0,
-            analog=0x1,
-            sensor=0x2,
-            actuator=0x3,
-            display=0x4,
-            MaxType = 0x5,
-            //communication,
-            Undefined = 0xFF
-        }
 
         // For simplicity add items to lists below using their ordinal:
         public static Dictionary<DeviceCategory, List<byte>> DeviceCategoryMembers = new Dictionary<DeviceCategory, List<byte>>()
@@ -186,7 +130,7 @@ namespace Softata
 
     //////////////////////////////////////////
     // NOTE enum order of DisplayDevice must match that returned by GroveDisplayCmds.getDisplays()
-        public enum DisplayDevice { OLEDSO096, LCD1602Display, NeopixelDisplay }
+        //public enum DisplayDevice { OLEDSO096, LCD1602Display, NeopixelDisplay }
         //////////////////////////////////////////
 
         public enum PinMode
@@ -358,36 +302,5 @@ namespace Softata
             }
         }
 
-
-        public static class Servo
-        {
-
-        }
-
-        public static class I2C
-        {
-
-        }
-
-        public static class SPI
-        {
-
-        }
-
-
-        public static class Encoder
-        {
-
-        }   
-
-        public static class Stepper
-        {
-
-        }
-
-        public static class OneWire
-        {
-
-        }
     }
 }

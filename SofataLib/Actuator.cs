@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static Softata.SoftataLib;
+using Softata.Enums;
 
 namespace Softata
 {
@@ -15,7 +15,7 @@ namespace Softata
         {
 
 
-            public enum ActuatorDevice { Servo = 0, Undefined = 255 };
+            public enum ActuatorDevice { Servo = 0, Undefined = 0xff };
 
 
             public enum RPiPicoMode { groveShield,defaultMode, Undefined = 255 };
