@@ -5,13 +5,16 @@
 
 - Inbuilt LED flash rate: Slow if not connected, fast if connected. _(Done)_
   - NB: This runs on the second core.
+- Major rework for clarity with enums.
 - Blazor App:
   - Change UI to start with test Categories selection _(Working)_
     - Some overlap of test types between categories.
   - Added Analog Pot-Sound-Sound sensors test _(Works)_
   - _Note:_ Software bargraphs in app for Analog data.
-  - Sensors incomplete _(No trests yet.)_
-      - Available this weekend.
+  - Sensors
+      - The 3 sensors now available in Blazor app
+        - Read and generate json string only
+        - Telemetry to IoT Hub soon 
   - Displays
     - Neopixel and Grove LCD16x2 RGB Display work with default setiings.
     - V4.12 OLED096 now **FULLY** works. _Extended tests now_.
