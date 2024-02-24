@@ -685,6 +685,14 @@ namespace FirmataBasic
                                         SoftataLib.Display.Neopixel.Misc_SetEvens(displayLinkedListIndex, 255, 255, 255);
                                         Thread.Sleep(2000);
                                         SoftataLib.Display.Neopixel.Clear(displayLinkedListIndex);
+                                        Thread.Sleep(500);
+                                        for (byte n = 0; n < 9; n++)
+                                        {
+                                            SoftataLib.Display.Neopixel.Misc_SetN(displayLinkedListIndex, 255, 255, 255, n);
+                                            Thread.Sleep(1000);
+                                        }
+                                        SoftataLib.Display.Neopixel.Clear(displayLinkedListIndex);
+                                        Thread.Sleep(500);
                                         Console.WriteLine("OK");
                                     }
                                     break;
@@ -700,7 +708,32 @@ namespace FirmataBasic
                                         SoftataLib.Display.Clear(displayLinkedListIndex);
                                         SoftataLib.Display.WriteString(displayLinkedListIndex, 4, 0, "(4,0):Cursor");
                                         SoftataLib.Display.WriteString(displayLinkedListIndex, 2, 1, "(2,1):Write");
+                                        Thread.Sleep(5000);
+                                        {
+                                            SoftataLib.Display.WriteString(displayLinkedListIndex, 2, 1, "(2,1):Write");
+                                            Thread.Sleep(1000);
+                                            if (true)
+                                            {
+                                                SoftataLib.Display.Clear(displayLinkedListIndex);
+                                                Thread.Sleep(1000);
+                                                SoftataLib.Display.SetCursor(displayLinkedListIndex, 0, 0);
+
+                                                SoftataLib.Display.WriteString(displayLinkedListIndex, "Time:");
+                                                int numTimes = 10;
+                                                for (int i = 0; i < numTimes; i++)
+                                                {
+                                                    DateTime now = DateTime.Now;
+                                                    string format = "HH:mm:ss";
+                                                    string time = now.ToString(format);
+                                                    string msg = $"{i + 1}/{numTimes} {time}";
+                                                    SoftataLib.Display.WriteString(displayLinkedListIndex, 0, 1, msg);
+                                                    Thread.Sleep(1000);
+                                                }
+                                            }
+                                        }
                                     }
+                                    SoftataLib.Display.Clear(displayLinkedListIndex);
+                                    Thread.Sleep(1000);
                                     break;
                                 case DisplayDevice.OLED096:
                                     SoftataLib.Display.Clear(displayLinkedListIndex);

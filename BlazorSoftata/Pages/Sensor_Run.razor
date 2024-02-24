@@ -3,7 +3,6 @@
 
 @using Softata;
 @using Softata.Enums
-@using System.Text.Json
 
 @inject AppState AppState
 @using BlazorPro.Spinkit
@@ -12,13 +11,13 @@
 <PageTitle>@Title</PageTitle>
 <h1>@Title</h1>
 <p>
-<i><b>Softata:</b> A Firmata like C# library connecting to a RPi Pico  W running Arduino.</i> 
+<i><b>Softata:</b> A Firmata like C# library connecting to a RPi Pico W running Arduino.</i> 
 </p>
 <p>
     <i>Run an exemplar sequence of tests demonstrating .NET interaction with the Sensor.</i>
 </p>
 <hr/>
-    Hardware: <a href="@SensorLink">Grove - @sensorName Sensor</a>
+    Hardware: <a href="@DeviceHTMLLink">Grove - @sensorName Sensor</a>
 <hr/>
 @if (Busy)
 {
@@ -123,14 +122,14 @@ else
     @if (FailMsg.Value != "")
     {
         @FailMsg
-        <hr />
+        <hr/>
     }
     else
     {
         @if (OKMsg.Value != "")
         {
             @OKMsg
-            <hr />
+            <hr/>
         }
     }
  
@@ -141,9 +140,11 @@ else
         <font color="blue>"><h4>Pins: @pins</h4></font>
         <EditForm Model=@AppState>
             Test step period (mS): <InputNumber @bind-Value="AppState.TestStepPeriod" />
-            <br /><br />
+            <br/>
+            <br/>
             Delay after Clear period (mS): <InputNumber @bind-Value="AppState.TestClearPeriod" />
-            <br /><br />
+            <br/>
+            <br/>
             <button class="btn btn-primary" @onclick="Ready">Is Connected as per default</button>
         </EditForm>
     }
@@ -202,12 +203,12 @@ else
                         break;
                 }
             </div>
-            <br />
-            <br />
+            <br/>
+            <br/>
             <button class="btn btn-primary" @onclick="Stop">Cancel</button>
         }
     }
-    <br /><br/>
+    <br/><br/>
     @if (!AppState.Running)
     {
         <p>Nb: Cancel not working. Threading issues 2Do</p>
@@ -221,11 +222,11 @@ else
 
 
 @code {
-    string SensorLink { get; set; } = "";
-    MarkupString Title { get; set; } = new MarkupString($"Softata: Grove -  Sensor");
-    string pins { get; set; } = "";
     SensorDevice sensorDevice { get; set; }
-    byte sensorLinkedListIndex;
+    byte deviceLinkedListIndex;
+    string DeviceHTMLLink { get; set; } = "";
+    string pins { get; set; } = "";
+    MarkupString Title { get; set; } = new MarkupString($"Softata: Grove -  Sensor");
     MarkupString FailMsg { get; set; } = new MarkupString("");
     MarkupString OKMsg { get; set; } = new MarkupString("");
     MarkupString RunMsg { get; set; } = new MarkupString("");
@@ -265,7 +266,7 @@ else
         SensorList = SoftataLib.Sensor.GetSensors();
         sensorName = SensorList[isensor];
         sensorDevice = (SensorDevice)isensor;
-        SensorLink = SoftataLib.Sensor.Links[sensorDevice];
+        DeviceHTMLLink = SoftataLib.Sensor.Links[sensorDevice];
         Title = new MarkupString($"Softata: Grove - {sensorName} Sensor");
         pins = SoftataLib.Sensor.GetPins(isensor);
         StateHasChanged();
@@ -342,7 +343,7 @@ else
             }
             else if (AppState.SensorMode == 3)
             {
-                string json = SoftataLib.Sensor.GetTelemetry((byte)sensorLinkedListIndex, debug);
+                string json = SoftataLib.Sensor.GetTelemetry((byte)deviceLinkedListIndex, debug);
                 string data = $"<h3>{sensorName}</h3>";;
                 data += $"<code>{json}</code>";
                 AppState.Data = new MarkupString(data);
@@ -352,7 +353,7 @@ else
             }
             else if (AppState.SensorMode == 4)
             {
-                string indxStr = SoftataLib.Sensor.SendTelemetryBT((byte)sensorLinkedListIndex);
+                string indxStr = SoftataLib.Sensor.SendTelemetryBT((byte)deviceLinkedListIndex);
                 if (int.TryParse(indxStr, out int val))
                     Console.WriteLine($"Streaming to BT started. List No:{val}");
                 else
@@ -361,7 +362,7 @@ else
             }
             else if (AppState.SensorMode == 5)
             {
-                string indxStr = SoftataLib.Sensor.SendTelemetryToIoTHub((byte)sensorLinkedListIndex);
+                string indxStr = SoftataLib.Sensor.SendTelemetryToIoTHub((byte)deviceLinkedListIndex);
                 if (int.TryParse(indxStr, out int val))
                 {
                     Console.WriteLine($"Streaming to Azure IoT Hub started. List No:{val}");
@@ -372,18 +373,18 @@ else
             }
             else if (AppState.SensorMode == 6)
             {
-                string json = SoftataLib.Sensor.PauseSendTelemetry((byte)sensorLinkedListIndex);
+                string json = SoftataLib.Sensor.PauseSendTelemetry((byte)deviceLinkedListIndex);
                 Console.WriteLine($"json {json}");
             }
             else if (AppState.SensorMode == 7)
             {
-                string json = SoftataLib.Sensor.ContinueSendTelemetry((byte)sensorLinkedListIndex);
+                string json = SoftataLib.Sensor.ContinueSendTelemetry((byte)deviceLinkedListIndex);
                 Console.WriteLine($"json {json}");
             }
 
             else if (AppState.SensorMode == 1)
             {
-                double[]? values = SoftataLib.Sensor.ReadAll((byte)sensorLinkedListIndex, debug);
+                double[]? values = SoftataLib.Sensor.ReadAll((byte)deviceLinkedListIndex, debug);
                 if (values == null)
                     Console.WriteLine($"{sensorName} readAll() failed");
                 else
@@ -410,7 +411,7 @@ else
                 string data = $"<h3>{sensorName}</h3><ul>";
                 for (byte p = 0; p < properties.Length; p++)
                 {
-                    double? value = SoftataLib.Sensor.Read((byte)sensorLinkedListIndex, p, debug);
+                    double? value = SoftataLib.Sensor.Read((byte)deviceLinkedListIndex, p, debug);
                     if (value == null)
                         Console.WriteLine($"{sensorName} read() failed");
                     else
@@ -422,12 +423,8 @@ else
                 StateHasChanged();
                 Thread.Sleep((int)AppState.TestStepPeriod);
             }
-
         }
-
-
         /////////////////////////// T E S T S /////////////////////////////
-
 
         RunMsg = new MarkupString("<h4>Done.</h4>");
         Busy = false;
@@ -444,7 +441,7 @@ else
         StateHasChanged();
         SoftataLib.SendMessageCmd("End");
         await Task.Delay(20000);
-        RunMsg = new MarkupString("<h4>Pico should have been reset by about now ...</h4><p>Pico should now slow blink</p>");
+        RunMsg = new MarkupString("<h4>Pico should have reset by about now ...</h4><p>Pico should now slow blink</p>");
         StateHasChanged();
         AppState.OnChange -= StateHasChanged;
         AppState.ReadytoRun = false;
@@ -469,15 +466,15 @@ else
 
     private void Ready(MouseEventArgs e)
     {
-        sensorLinkedListIndex = (byte)SoftataLib.Sensor.SetupDefault(AppState.ISensor);
-        if (sensorLinkedListIndex < 0)
+        deviceLinkedListIndex = (byte)SoftataLib.Sensor.SetupDefault(AppState.ISensor);
+        if (deviceLinkedListIndex < 0)
         {
             FailMsg = new MarkupString($"<h3>Instantiated {sensorName} not found</h3>");
             return;
         }
         else
         {
-            OKMsg = new MarkupString($"Instantiated {sensorName} linked at {sensorLinkedListIndex}");
+            OKMsg = new MarkupString($"Instantiated {sensorName} linked at {deviceLinkedListIndex}");
             properties = SoftataLib.Sensor.GetProperties(isensor);
         }
         IsReady = true;

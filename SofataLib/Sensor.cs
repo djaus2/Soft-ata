@@ -23,9 +23,10 @@ namespace Softata
             //Links to info about the Grove Sensors 
             public static Dictionary<SensorDevice, string> Links = new Dictionary<SensorDevice, string>
             {
-                {SensorDevice.DHT11,"https://wiki.seeedstudio.com/Grove-TemperatureAndHumidity_Sensor/" },
-                {SensorDevice.BME280,"https://wiki.seeedstudio.com/Grove-Barometer_Sensor-BME280/" },
-                {SensorDevice.UltrasonicRANGER,"https://wiki.seeedstudio.com/Grove-Ultrasonic_Ranger/" }
+                {SensorDevice.DHT11,"https://wiki.seeedstudio.com/Grove-TemperatureAndHumidity_Sensor/" }
+                ,{SensorDevice.BME280,"https://wiki.seeedstudio.com/Grove-Barometer_Sensor-BME280/" }
+                ,{SensorDevice.UltrasonicRANGER,"https://wiki.seeedstudio.com/Grove-Ultrasonic_Ranger/" }
+                /* ,Add here */
             };
             public static string[] GetSensors()
             {

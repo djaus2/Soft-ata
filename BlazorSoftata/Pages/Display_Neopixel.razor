@@ -7,13 +7,30 @@
 @using BlazorPro.Spinkit
 @inject NavigationManager navigationManager
 
-<PageTitle>Softata: Neopixel Display</PageTitle>
-<h1>Softata: Neopixel Display</h1> 
-<i><b>Softata:</b> A Firmata like C# library connecting to a RPi Pico  W running Arduino.</i> 
-<hr />
-<a href="https://www.adafruit.com/product/1643">An Adafruit Neopixel 12x Ring</a>
-<p>Code if for an 8 ring device</p>
-<hr />
+<PageTitle>@Title</PageTitle>
+    <h1>@Title</h1>
+<p>
+    <i><b>Softata:</b> A Firmata like C# library connecting to a RPi Pico W running Arduino.</i>
+</p>
+<p>
+    <i>Run an exemplar sequence of tests demonstrating .NET interaction with the Display.</i>
+</p>
+<hr/>
+    Hardware: <a href="@DeviceHTMLLink">Grove - @displayName Sensor</a>
+<hr/>
+@if (Busy)
+{
+    <Pulse />
+    <p>Please wait ...</p>
+    <hr />
+}
+else if (AppState.Running)
+{
+    <Fold />
+    <p>Running ...</p>
+    <hr />
+}
+
 @if (!string.IsNullOrEmpty(AppState.AppVersion))
 {
     <tr>
@@ -53,48 +70,23 @@
 {
     <tr>
         <td><b>Selected Display: </b></td>
-        <td>@display</td>
+        <td>@displayName</td>
     </tr>
 }
 
 <hr />
-<h4>Displays: Test Neopixel</h4>
-<p>
-    Run an exemplar sequence of tests demonstrating .NET interaction with the Display.
-</p>
-<hr/>
 
-@if (Busy)
-{
-    <Pulse />
-    <p>Please wait ...</p>
-}
-else if(AppState.Running)
-{
-    <Fold />
-    <p>Running ...</p>
-}
+
 
 <hr />
 <div class="form-group">
-    @switch (AppState.TestType)
-    {
-        case Softata.Enums.CommandType.Displays:
-            {
-                switch (displayDevice)
-                {
-                    case DisplayDevice.NEOPIXEL:
-                         @if(RunMsg.Value!="")
-                         {
-                            <table>
-                                @RunMsg
-                            </table>
-                         }
-                        break;
-                }
-            }
-            break;
-    }
+    
+	 @if(RunMsg.Value!="")
+	 {
+	    <table>
+	        @RunMsg
+	    </table>
+	 } 
 
 </div>
 <hr />
@@ -104,18 +96,19 @@ else if(AppState.Running)
     @if (FailMsg.Value != "")
     {
         @FailMsg
+        <hr/>
     }
     else
     {
         @if (OKMsg.Value != "")
         {
             @OKMsg
+            <hr/>
         }
     }
-<hr /> 
 
     @if (!IsReady)
-    { 
+   { 
         <h2>Setup</h2>
 
         <font color="blue>"><h4>Pins: @pins</h4></font>
@@ -129,7 +122,6 @@ else if(AppState.Running)
     }
     else
     {
-
         @if (!AppState.Running)
         { 
             @if (ReconnectVisible)
@@ -145,31 +137,19 @@ else if(AppState.Running)
         else
         {
             <div class="form-group">
-                @switch (AppState.TestType)
-                {
-                    case Softata.Enums.CommandType.Displays:
-                        {
-                            switch (displayDevice)
-                            {
-                                case DisplayDevice.NEOPIXEL:
-                                <table>
+	        <table>
                               
-                                </table>
-                                break;
-                            }
-                        }
-                        break;
-                }
-
+	        </table>
             </div>
-            <br/><br/>
+            <br/>
+            <br/>
             <button class="btn btn-primary" @onclick="Stop">Cancel</button>
-
         }
     }
-    <br /><br/>
+    <br/><br/>
     @if (!AppState.Running)
     {
+        <p>Nb: Cancel not working. Threading issues 2Do</p>
         <button class="btn btn-primary" @onclick="Reset">Restart app.</button>
     }
 
@@ -180,9 +160,11 @@ else if(AppState.Running)
 
 
 @code {
-    string pins { get; set; } = "";
     DisplayDevice displayDevice { get; set; }
-    byte displayLinkedListIndex;
+    byte deviceLinkedListIndex;
+    string DeviceHTMLLink { get; set; } = "";
+    string pins { get; set; } = "";
+    MarkupString Title { get; set; } = new MarkupString($"Softata: Grove -  Display");
     MarkupString FailMsg { get; set; } = new MarkupString("");
     MarkupString OKMsg { get; set; } = new MarkupString("");
     MarkupString RunMsg { get; set; } = new MarkupString("");
@@ -201,7 +183,7 @@ else if(AppState.Running)
 
 
     byte idisplay = 0;
-    string display = "";
+    string displayName = "";
     string[] Displays = new string[0];
 
     protected override void OnInitialized()
@@ -213,129 +195,13 @@ else if(AppState.Running)
         RunVisble = true;
         IsReady = false;
         idisplay = AppState.IDisplay;
-        display = "";
+        displayName = "";
         Displays = SoftataLib.Display.GetDisplays();
-        display = Displays[idisplay];
+        displayName = Displays[idisplay];
         displayDevice = (DisplayDevice)idisplay;
+        DeviceHTMLLink = SoftataLib.Display.Links[displayDevice];
+        Title = new MarkupString($"Softata: Grove - {displayName} Display");
         pins = Softata.SoftataLib.Display.GetPins(idisplay);
-
-    }
-
-    private async Task Start()
-    {
-        AppState.Running = true;
-        RunVisble = false;
-        Busy = true;
-        StateHasChanged();
-        await Task.Delay(333);
-
-        RunMsg = new MarkupString("<h4>Exercising the (Adafruit) Neopixel 8  Display.</h4>");
-        StateHasChanged();
-
-        SoftataLib.Display.Neopixel.Clear(displayLinkedListIndex); ;
-        Thread.Sleep(AppState.TestClearPeriod);
-        SoftataLib.Display.Neopixel.Misc_SetAll(displayLinkedListIndex, 255, 0, 0);
-        Thread.Sleep(AppState.TestStepPeriod);
-        SoftataLib.Display.Neopixel.Misc_SetAll(displayLinkedListIndex, 0xFF, 0xA5, 0);   //Orange
-        Thread.Sleep(AppState.TestStepPeriod);
-        SoftataLib.Display.Neopixel.Misc_SetAll(displayLinkedListIndex, 255, 255, 0);     //Yellow
-        Thread.Sleep(AppState.TestStepPeriod);
-        SoftataLib.Display.Neopixel.Misc_SetAll(displayLinkedListIndex, 0, 255, 0);
-        Thread.Sleep(AppState.TestStepPeriod);
-        if (AppState.Running)
-        {
-            SoftataLib.Display.Neopixel.Misc_SetAll(displayLinkedListIndex, 0, 0, 255);
-            Thread.Sleep(AppState.TestStepPeriod);
-            SoftataLib.Display.Neopixel.Misc_SetAll(displayLinkedListIndex, 0xA0, 0x20, 0xf0);//Purple
-            Thread.Sleep(AppState.TestStepPeriod);
-            SoftataLib.Display.Neopixel.Misc_SetAll(displayLinkedListIndex, 255, 255, 255);   //White
-            Thread.Sleep(AppState.TestStepPeriod);
-            SoftataLib.Display.Neopixel.Clear(displayLinkedListIndex);
-            Thread.Sleep(AppState.TestClearPeriod);
-            if (AppState.Running)
-            {
-                SoftataLib.Display.Neopixel.Misc_SetOdd(displayLinkedListIndex, 255, 0, 0);
-                Thread.Sleep(AppState.TestStepPeriod);
-                SoftataLib.Display.Neopixel.Clear(displayLinkedListIndex);
-                Thread.Sleep(AppState.TestClearPeriod);
-                SoftataLib.Display.Neopixel.Misc_SetEvens(displayLinkedListIndex, 0, 255, 0);
-                Thread.Sleep(AppState.TestStepPeriod);
-                SoftataLib.Display.Neopixel.Clear(displayLinkedListIndex);
-                Thread.Sleep(AppState.TestClearPeriod);
-                SoftataLib.Display.Neopixel.Misc_SetOdd(displayLinkedListIndex, 0, 0, 255);
-                Thread.Sleep(AppState.TestStepPeriod);
-                SoftataLib.Display.Neopixel.Clear(displayLinkedListIndex);
-                Thread.Sleep(AppState.TestClearPeriod);
-                if (AppState.Running)
-                {
-                    SoftataLib.Display.Neopixel.Misc_SetEvens(displayLinkedListIndex, 255, 255, 0);
-                    Thread.Sleep(AppState.TestStepPeriod);
-                    SoftataLib.Display.Neopixel.Clear(displayLinkedListIndex);
-                    Thread.Sleep(AppState.TestClearPeriod);
-                    SoftataLib.Display.Neopixel.Misc_SetOdd(displayLinkedListIndex, 0, 255, 255);
-                    Thread.Sleep(AppState.TestStepPeriod);
-                    SoftataLib.Display.Neopixel.Clear(displayLinkedListIndex);
-                    Thread.Sleep(AppState.TestClearPeriod);
-                    SoftataLib.Display.Neopixel.Misc_SetEvens(displayLinkedListIndex, 255, 255, 255);
-                    Thread.Sleep(AppState.TestStepPeriod / 2);
-                    SoftataLib.Display.Neopixel.Clear(displayLinkedListIndex);
-                    Thread.Sleep(AppState.TestClearPeriod);
-                    if (AppState.Running)
-                    {
-                        SoftataLib.Display.Neopixel.Misc_SetEvens(displayLinkedListIndex, 255, 255, 255);
-                        Thread.Sleep(AppState.TestStepPeriod / 2);
-                        SoftataLib.Display.Neopixel.Clear(displayLinkedListIndex);
-                        Thread.Sleep(AppState.TestClearPeriod);
-                        SoftataLib.Display.Neopixel.Misc_SetEvens(displayLinkedListIndex, 255, 255, 255);
-                        Thread.Sleep(AppState.TestStepPeriod / 2);
-                    }
-                }
-            }
-        }
-        SoftataLib.Display.Neopixel.Clear(displayLinkedListIndex);
-        Thread.Sleep(AppState.TestClearPeriod);
-        /*RunMsg = new MarkupString("<h3>Done. Resetting the Pico..</h3>");
-        StateHasChanged();
-        //SoftataLib.SendMessageCmd("End");      
-        await Task.Delay(20000);
-        RunMsg = new MarkupString("<h3>Pico should have resetted by about now ...</h3><p>Pico should now slow blink</p>");
-        StateHasChanged();*/
-        RunMsg = new MarkupString("<h4>Done.</h4>");
-        Busy = false;
-        AppState.Running = false;
-        RunVisble = true;
-        //ReconnectVisible = true;
-        StateHasChanged();
-    }
-
-
-    private async Task Reset()
-    {
-        Busy = true;
-        RunMsg = new MarkupString("<h4>Resetting the Pico.. please wait</h4>");
-        StateHasChanged();
-        SoftataLib.SendMessageCmd("End");
-        await Task.Delay(20000);
-        RunMsg = new MarkupString("<h4>Pico should have resetted by about now ...</h4><p>Pico should now slow blink</p>");
-        StateHasChanged();
-        AppState.OnChange -= StateHasChanged;
-        AppState.ReadytoRun = false;
-        AppState.Running = false;
-        AppState.IDisplay = 0xff;
-        AppState.Running = false;
-        AppState.TestType = CommandType.MaxType;
-        AppState.TestCategory = DeviceCategory.MaxType;
-        AppState.Connected = "";
-        ReconnectVisible = false;
-        await Task.Delay(3333);
-        busy = false;
-        StateHasChanged();
-        navigationManager.NavigateTo("/");
-    }
-
-    private void Stop()
-    {
-        AppState.Running = false;
         StateHasChanged();
     }
 
@@ -354,27 +220,144 @@ else if(AppState.Running)
         await Start();
     }
 
+    private async Task Start()
+    {
+        AppState.Running = true;
+        RunVisble = false;
+        Busy = true;
+        StateHasChanged();
+        await Task.Delay(333);
+
+        RunMsg = new MarkupString("<h4>Exercising the {displayName} Display.</h4>");
+        StateHasChanged();
+
+        /////////////////////////// T E S T S /////////////////////////////
+        SoftataLib.Display.Neopixel.Clear(deviceLinkedListIndex); ;
+        Thread.Sleep(AppState.TestClearPeriod);
+        SoftataLib.Display.Neopixel.Misc_SetAll(deviceLinkedListIndex, 255, 0, 0);
+        Thread.Sleep(AppState.TestStepPeriod);
+        SoftataLib.Display.Neopixel.Misc_SetAll(deviceLinkedListIndex, 0xFF, 0xA5, 0);   //Orange
+        Thread.Sleep(AppState.TestStepPeriod);
+        SoftataLib.Display.Neopixel.Misc_SetAll(deviceLinkedListIndex, 255, 255, 0);     //Yellow
+        Thread.Sleep(AppState.TestStepPeriod);
+        SoftataLib.Display.Neopixel.Misc_SetAll(deviceLinkedListIndex, 0, 255, 0);
+        Thread.Sleep(AppState.TestStepPeriod);
+        if (AppState.Running)
+        {
+            SoftataLib.Display.Neopixel.Misc_SetAll(deviceLinkedListIndex, 0, 0, 255);
+            Thread.Sleep(AppState.TestStepPeriod);
+            SoftataLib.Display.Neopixel.Misc_SetAll(deviceLinkedListIndex, 0xA0, 0x20, 0xf0);//Purple
+            Thread.Sleep(AppState.TestStepPeriod);
+            SoftataLib.Display.Neopixel.Misc_SetAll(deviceLinkedListIndex, 255, 255, 255);   //White
+            Thread.Sleep(AppState.TestStepPeriod);
+            SoftataLib.Display.Neopixel.Clear(deviceLinkedListIndex);
+            Thread.Sleep(AppState.TestClearPeriod);
+            if (AppState.Running)
+            {
+                SoftataLib.Display.Neopixel.Misc_SetOdd(deviceLinkedListIndex, 255, 0, 0);
+                Thread.Sleep(AppState.TestStepPeriod);
+                SoftataLib.Display.Neopixel.Clear(deviceLinkedListIndex);
+                Thread.Sleep(AppState.TestClearPeriod);
+                SoftataLib.Display.Neopixel.Misc_SetEvens(deviceLinkedListIndex, 0, 255, 0);
+                Thread.Sleep(AppState.TestStepPeriod);
+                SoftataLib.Display.Neopixel.Clear(deviceLinkedListIndex);
+                Thread.Sleep(AppState.TestClearPeriod);
+                SoftataLib.Display.Neopixel.Misc_SetOdd(deviceLinkedListIndex, 0, 0, 255);
+                Thread.Sleep(AppState.TestStepPeriod);
+                SoftataLib.Display.Neopixel.Clear(deviceLinkedListIndex);
+                Thread.Sleep(AppState.TestClearPeriod);
+                if (AppState.Running)
+                {
+                    SoftataLib.Display.Neopixel.Misc_SetEvens(deviceLinkedListIndex, 255, 255, 0);
+                    Thread.Sleep(AppState.TestStepPeriod);
+                    SoftataLib.Display.Neopixel.Clear(deviceLinkedListIndex);
+                    Thread.Sleep(AppState.TestClearPeriod);
+                    SoftataLib.Display.Neopixel.Misc_SetOdd(deviceLinkedListIndex, 0, 255, 255);
+                    Thread.Sleep(AppState.TestStepPeriod);
+                    SoftataLib.Display.Neopixel.Clear(deviceLinkedListIndex);
+                    Thread.Sleep(AppState.TestClearPeriod);
+                    SoftataLib.Display.Neopixel.Misc_SetEvens(deviceLinkedListIndex, 255, 255, 255);
+                    Thread.Sleep(AppState.TestStepPeriod / 2);
+                    SoftataLib.Display.Neopixel.Clear(deviceLinkedListIndex);
+                    Thread.Sleep(AppState.TestClearPeriod);
+                    if (AppState.Running)
+                    {
+                        SoftataLib.Display.Neopixel.Misc_SetEvens(deviceLinkedListIndex, 255, 255, 255);
+                        Thread.Sleep(AppState.TestStepPeriod / 2);
+                        SoftataLib.Display.Neopixel.Clear(deviceLinkedListIndex);
+                        Thread.Sleep(AppState.TestClearPeriod);
+                        SoftataLib.Display.Neopixel.Misc_SetEvens(deviceLinkedListIndex, 255, 255, 255);
+                        Thread.Sleep(AppState.TestStepPeriod / 2);
+                    }
+                    if (AppState.Running)
+                    {
+                        SoftataLib.Display.Neopixel.Clear(deviceLinkedListIndex);
+                        Thread.Sleep(AppState.TestClearPeriod);
+                        for (byte n = 0; n < 9; n++)
+                        {
+                            SoftataLib.Display.Neopixel.Misc_SetN(deviceLinkedListIndex,255, 255, 255, n);
+                            Thread.Sleep(AppState.TestStepPeriod);
+                        }
+                    }
+                    SoftataLib.Display.Neopixel.Clear(deviceLinkedListIndex);
+                    Thread.Sleep(AppState.TestClearPeriod);
+                }
+            }
+        }
+        SoftataLib.Display.Neopixel.Clear(deviceLinkedListIndex);
+        Thread.Sleep(AppState.TestClearPeriod);
+	/////////////////////////// T E S T S /////////////////////////////
+	
+       
+        RunMsg = new MarkupString("<h4>Done.</h4>");
+        Busy = false;
+        AppState.Running = false;
+        RunVisble = true;
+        StateHasChanged();
+    }
 
 
+    private async Task Reset()
+    {
+        Busy = true;
+        RunMsg = new MarkupString("<h4>Resetting the Pico.. please wait</h4>");
+        StateHasChanged();
+        SoftataLib.SendMessageCmd("End");
+        await Task.Delay(20000);
+        RunMsg = new MarkupString("<h4>Pico should have reset by about now ...</h4><p>Pico should now slow blink</p>");
+        StateHasChanged();
+        AppState.OnChange -= StateHasChanged;
+        AppState.ReadytoRun = false;
+        AppState.Running = false;
+        AppState.IDisplay = 0xff;
+        AppState.Running = false;
+        AppState.TestType = CommandType.MaxType;
+        AppState.TestCategory = DeviceCategory.MaxType;
+        AppState.Connected = "";
+        ReconnectVisible = false;
+        await Task.Delay(3333);
+        busy = false;
+        StateHasChanged();
+        navigationManager.NavigateTo("/");
+    }
+
+    private async Task Stop()
+    {
+        AppState.Running = false;
+        StateHasChanged();
+    }
 
     private void Ready(MouseEventArgs e)
     {
-        displayLinkedListIndex = (byte)SoftataLib.Display.SetupDefault(idisplay);
-        if (displayLinkedListIndex < 0)
+        deviceLinkedListIndex = (byte)SoftataLib.Display.SetupDefault(idisplay);
+        if (deviceLinkedListIndex < 0)
         {
-            FailMsg = new MarkupString($"<h3>Instantiated {display} not found</h3>");
+            FailMsg = new MarkupString($"<h3>Instantiated {displayName} not found</h3>");
             return;
         }
         else
         {
-            switch (displayDevice)
-            {
-                case DisplayDevice.NEOPIXEL:
-                    {
-                        OKMsg = new MarkupString($"Instantiated {display} linked at {displayLinkedListIndex}");
-                    }
-                    break;
-            }
+           OKMsg = new MarkupString($"Instantiated {displayName} linked at {deviceLinkedListIndex}");
         }
         IsReady = true;
         StateHasChanged();

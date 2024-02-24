@@ -3,16 +3,35 @@
 
 @using Softata;
 @using Softata.Enums
+
 @inject AppState AppState
 @using BlazorPro.Spinkit
 @inject NavigationManager navigationManager
 
-<PageTitle>Softata: Grove - OLED Display 0.96 inch Display</PageTitle>
-<h1>Softata: Grove - OLED Display 0.96 inch Display</h1> 
-<i><b>Softata:</b> A Firmata like C# library connecting to a RPi Pico  W running Arduino.</i> 
+<PageTitle>@Title</PageTitle>
+    <h1>@Title</h1>
+<p>
+    <i><b>Softata:</b> A Firmata like C# library connecting to a RPi Pico W running Arduino.</i>
+</p>
+<p>
+    <i>Run an exemplar sequence of tests demonstrating .NET interaction with the Display.</i>
+</p>
 <hr/>
-<a href="https://wiki.seeedstudio.com/Grove-OLED_Display_0.96inch/">Grove - OLED Display 0.96 inch</a>
+    Hardware: <a href="@DeviceHTMLLink">Grove - @displayName Sensor</a>
 <hr/>
+@if (Busy)
+{
+    <Pulse />
+    <p>Please wait ...</p>
+    <hr />
+}
+else if (AppState.Running)
+{
+    <Fold />
+    <p>Running ...</p>
+    <hr />
+}
+
 @if (!string.IsNullOrEmpty(AppState.AppVersion))
 {
     <tr>
@@ -52,66 +71,42 @@
 {
     <tr>
         <td><b>Selected Display: </b></td>
-        <td>@display</td>
+        <td>@displayName</td>
     </tr>
 }
 
 <hr />
-<h4>Displays: Grove - OLED Display 0.96 inch</h4>
-<p>
-    Run an exemplar sequence of tests demonstrating .NET interaction with the Display.
-</p>
 
-@if (Busy)
-{
-    <Pulse />
-    <p>Please wait ...</p>
-}
-else if(AppState.Running)
-{
-    <Fold />
-    <p>Running ...</p>
-}
+
 
 <hr />
 <div class="form-group">
-    @switch (AppState.TestType)
-    {
-        case Softata.Enums.CommandType.Displays:
-            {
-                switch (displayDevice)
-                {
-                    case DisplayDevice.OLED096:
-                         @if(RunMsg.Value!="")
-                         {
-                            <table>
-                                @RunMsg
-                            </table>
-                         }
-                        break;
-                }
-            }
-            break;
-    }
+    
+	 @if(RunMsg.Value!="")
+	 {
+	    <table>
+	        @RunMsg
+	    </table>
+	 } 
 
 </div>
 <hr />
 
 @if (AppState.ReadytoRun)
 {
-
     @if (FailMsg.Value != "")
     {
         @FailMsg
+        <hr/>
     }
     else
     {
         @if (OKMsg.Value != "")
         {
             @OKMsg
+            <hr/>
         }
     }
-<hr /> 
 
     @if (!IsReady)
    { 
@@ -120,9 +115,9 @@ else if(AppState.Running)
         <font color="blue>"><h4>Pins: @pins</h4></font>
         <EditForm Model=@AppState>
             Test step period (mS): <InputNumber @bind-Value="AppState.TestStepPeriod" />
-            <br /><br />
+            <br/><br/>
             Delay after Clear period (mS): <InputNumber @bind-Value="AppState.TestClearPeriod" />
-            <br /><br />
+            <br/><br/>
             <button class="btn btn-primary" @onclick="Ready">Is Connected as per default</button>
         </EditForm>
     }
@@ -143,27 +138,17 @@ else if(AppState.Running)
         else
         {
             <div class="form-group">
-                @switch (AppState.TestType)
-                {
-                    case Softata.Enums.CommandType.Displays:
-                        {
-                            switch (displayDevice)
-                            {
-                                case DisplayDevice.OLED096:
-                                <table>
+	        <table>
                               
-                                </table>
-                                break;
-                            }
-                        }
-                        break;
-                }
+	        </table>
+  
             </div>
-            <br/><br/>
+            <br/>
+            <br/>
             <button class="btn btn-primary" @onclick="Stop">Cancel</button>
         }
     }
-    <br /><br/>
+    <br/><br/>
     @if (!AppState.Running)
     {
         <p>Nb: Cancel not working. Threading issues 2Do</p>
@@ -177,9 +162,11 @@ else if(AppState.Running)
 
 
 @code {
-    string pins { get; set; } = "";
     DisplayDevice displayDevice { get; set; }
-    byte displayLinkedListIndex;
+    byte deviceLinkedListIndex;
+    string DeviceHTMLLink { get; set; } = "";
+    string pins { get; set; } = "";
+    MarkupString Title { get; set; } = new MarkupString($"Softata: Grove -  Display");
     MarkupString FailMsg { get; set; } = new MarkupString("");
     MarkupString OKMsg { get; set; } = new MarkupString("");
     MarkupString RunMsg { get; set; } = new MarkupString("");
@@ -198,7 +185,7 @@ else if(AppState.Running)
 
 
     byte idisplay = 0;
-    string display = "";
+    string displayName = "";
     string[] Displays = new string[0];
 
     protected override void OnInitialized()
@@ -210,12 +197,14 @@ else if(AppState.Running)
         RunVisble = true;
         IsReady = false;
         idisplay = AppState.IDisplay;
-        display = "";
+        displayName = "";
         Displays = SoftataLib.Display.GetDisplays();
-        display = Displays[idisplay];
+        displayName = Displays[idisplay];
         displayDevice = (DisplayDevice)idisplay;
+        DeviceHTMLLink = SoftataLib.Display.Links[displayDevice];
+        Title = new MarkupString($"Softata: Grove - {displayName} Display");
         pins = Softata.SoftataLib.Display.GetPins(idisplay);
-
+        StateHasChanged();
     }
 
     private async void Reconnect()
@@ -241,28 +230,28 @@ else if(AppState.Running)
         StateHasChanged();
         await Task.Delay(333);
 
-        RunMsg = new MarkupString("<h4>Exercising the Grove OLED096\" RGB Display.</h4>");
+        RunMsg = new MarkupString("<h4>Exercising the {displayName} Display.</h4>");
         StateHasChanged();
 
         /////////////////////////// T E S T S /////////////////////////////
-        SoftataLib.Display.Clear(displayLinkedListIndex);
+        SoftataLib.Display.Clear(deviceLinkedListIndex);
         Thread.Sleep(AppState.TestClearPeriod);
         //Dummy test to see if simple Misc test works (with no date).
-        SoftataLib.Display.Oled096.misctest(displayLinkedListIndex);
+        SoftataLib.Display.Oled096.misctest(deviceLinkedListIndex);
         Thread.Sleep(AppState.TestStepPeriod);
-        SoftataLib.Display.Oled096.drawFrame(displayLinkedListIndex);
+        SoftataLib.Display.Oled096.drawFrame(deviceLinkedListIndex);
         Thread.Sleep(AppState.TestStepPeriod);
-        SoftataLib.Display.Oled096.drawCircle(displayLinkedListIndex);
+        SoftataLib.Display.Oled096.drawCircle(deviceLinkedListIndex);
         Thread.Sleep(AppState.TestStepPeriod);
-        SoftataLib.Display.Oled096.drawCircle(displayLinkedListIndex, 60, 32, 10);
+        SoftataLib.Display.Oled096.drawCircle(deviceLinkedListIndex, 60, 32, 10);
         Thread.Sleep(AppState.TestStepPeriod);
-        SoftataLib.Display.Clear(displayLinkedListIndex);
+        SoftataLib.Display.Clear(deviceLinkedListIndex);
         Thread.Sleep(AppState.TestClearPeriod);
-        SoftataLib.Display.WriteString(displayLinkedListIndex, 0, 0, "Hello Joe!");
+        SoftataLib.Display.WriteString(deviceLinkedListIndex, 0, 0, "Hello Joe!");
         Thread.Sleep(AppState.TestStepPeriod);
-        SoftataLib.Display.WriteString(displayLinkedListIndex, 1, 1, "Hi there!");
+        SoftataLib.Display.WriteString(deviceLinkedListIndex, 1, 1, "Hi there!");
         Thread.Sleep(AppState.TestStepPeriod);
-        SoftataLib.Display.Clear(displayLinkedListIndex);
+        SoftataLib.Display.Clear(deviceLinkedListIndex);
         Thread.Sleep(AppState.TestClearPeriod);
         int numbr = 10;
         for (int i = 0; i < numbr; i++)
@@ -271,13 +260,13 @@ else if(AppState.Running)
             string format = "HH:mm:ss";
             string time = now.ToString(format);
             string msg = $"{i + 1}/{numbr} {time}";
-            SoftataLib.Display.WriteString(displayLinkedListIndex, 0, 1, msg);
+            SoftataLib.Display.WriteString(deviceLinkedListIndex, 0, 1, msg);
             Thread.Sleep(2000);
         }
-        SoftataLib.Display.Clear(displayLinkedListIndex);
+        SoftataLib.Display.Clear(deviceLinkedListIndex);
         Thread.Sleep(AppState.TestClearPeriod);
-        SoftataLib.Display.Home(displayLinkedListIndex);
-        SoftataLib.Display.WriteString(displayLinkedListIndex, 0, 1, "Done");
+        SoftataLib.Display.Home(deviceLinkedListIndex);
+        SoftataLib.Display.WriteString(deviceLinkedListIndex, 0, 1, "Done");
         Thread.Sleep(AppState.TestClearPeriod);
 
         /////////////////////////// T E S T S /////////////////////////////
@@ -298,7 +287,7 @@ else if(AppState.Running)
         StateHasChanged();
         SoftataLib.SendMessageCmd("End");
         await Task.Delay(20000);
-        RunMsg = new MarkupString("<h4>Pico should have resetted by about now ...</h4><p>Pico should now slow blink</p>");
+        RunMsg = new MarkupString("<h4>Pico should have reset by about now ...</h4><p>Pico should now slow blink</p>");
         StateHasChanged();
         AppState.OnChange -= StateHasChanged;
         AppState.ReadytoRun = false;
@@ -321,29 +310,17 @@ else if(AppState.Running)
         StateHasChanged();
     }
 
-
-
-
-
-
     private void Ready(MouseEventArgs e)
     {
-        displayLinkedListIndex = (byte)SoftataLib.Display.SetupDefault(idisplay);
-        if (displayLinkedListIndex < 0)
+        deviceLinkedListIndex = (byte)SoftataLib.Display.SetupDefault(idisplay);
+        if (deviceLinkedListIndex < 0)
         {
-            FailMsg = new MarkupString($"<h3>Instantiated {display} not found</h3>");
+            FailMsg = new MarkupString($"<h3>Instantiated {displayName} not found</h3>");
             return;
         }
         else
         {
-            switch (displayDevice)
-            {
-                case DisplayDevice.OLED096:
-                    {
-                        OKMsg = new MarkupString($"Instantiated {display} linked at {displayLinkedListIndex}");
-                    }
-                    break;
-            }
+           OKMsg = new MarkupString($"Instantiated {displayName} linked at {deviceLinkedListIndex}");
         }
         IsReady = true;
         StateHasChanged();

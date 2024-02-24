@@ -89,6 +89,22 @@ bool Adafruit_NeoPixel8::Misc(byte cmd, byte * data, byte length)
             pixels->setBrightness((byte)data[0]);
             pixels->show(); 
             break;
+        case setN: 
+            //Display a 0..8 level:
+            if (length<4)
+                return false;
+            // On
+            for(int i=0;i<data[3];i++)
+            {
+                pixels->setPixelColor(i, pixels->Color(data[0], data[1], data[2]));
+            }
+            // Off
+            for(int i=data[3];i<numPixels;i++)
+            {
+                pixels->setPixelColor(i, pixels->Color(0, 0, 0));
+            }
+            pixels->show(); 
+            break;
     }
     return true;
 }

@@ -3,17 +3,35 @@
 
 @using Softata;
 @using Softata.Enums
+
 @inject AppState AppState
 @using BlazorPro.Spinkit
 @inject NavigationManager navigationManager
 
+<PageTitle>@Title</PageTitle>
+    <h1>@Title</h1>
+<p>
+    <i><b>Softata:</b> A Firmata like C# library connecting to a RPi Pico W running Arduino.</i>
+</p>
+<p>
+    <i>Run an exemplar sequence of tests demonstrating .NET interaction with the Display.</i>
+</p>
+<hr/>
+    Hardware: <a href="@DeviceHTMLLink">Grove - @displayName Sensor</a>
+<hr/>
+@if (Busy)
+{
+    <Pulse />
+    <p>Please wait ...</p>
+    <hr />
+}
+else if (AppState.Running)
+{
+    <Fold />
+    <p>Running ...</p>
+    <hr />
+}
 
-<PageTitle>Softata: Grove LCD16x3 RGB Displa</PageTitle>
-<h1>Softata: Grove LCD16x3 RGB Display</h1> 
-<i><b>Softata:</b> A Firmata like C# library connecting to a RPi Pico  W running Arduino.</i> 
-<hr/>
-<a href="https://wiki.seeedstudio.com/Grove-LCD_RGB_Backlight/">Grove LCD 16x2 RGB Display</a>
-<hr/>
 @if (!string.IsNullOrEmpty(AppState.AppVersion))
 {
     <tr>
@@ -53,66 +71,42 @@
 {
     <tr>
         <td><b>Selected Display: </b></td>
-        <td>@display</td>
+        <td>@displayName</td>
     </tr>
 }
 
 <hr />
-<h4>Displays: Grove 16x2 RGB Display</h4>
-<p>
-    Run an exemplar sequence of tests demonstrating .NET interaction with the Display.
-</p>
 
-@if (Busy)
-{
-    <Pulse />
-    <p>Please wait ...</p>
-}
-else if(AppState.Running)
-{
-    <Fold />
-    <p>Running ...</p>
-}
+
 
 <hr />
 <div class="form-group">
-    @switch (AppState.TestType)
-    {
-        case Softata.Enums.CommandType.Displays:
-            {
-                switch (displayDevice)
-                {
-                    case DisplayDevice.LCD1602:
-                         @if(RunMsg.Value!="")
-                         {
-                            <table>
-                                @RunMsg
-                            </table>
-                         }
-                        break;
-                }
-            }
-            break;
-    }
+    
+	 @if(RunMsg.Value!="")
+	 {
+	    <table>
+	        @RunMsg
+	    </table>
+	 } 
 
 </div>
 <hr />
 
 @if (AppState.ReadytoRun)
 {
-
     @if (FailMsg.Value != "")
     {
         @FailMsg
+        <hr/>
     }
     else
     {
         @if (OKMsg.Value != "")
         {
             @OKMsg
+            <hr/>
         }
     }
-<hr /> 
 
     @if (!IsReady)
    { 
@@ -121,15 +115,14 @@ else if(AppState.Running)
         <font color="blue>"><h4>Pins: @pins</h4></font>
         <EditForm Model=@AppState>
             Test step period (mS): <InputNumber @bind-Value="AppState.TestStepPeriod" />
-            <br /><br />
+            <br/><br/>
             Delay after Clear period (mS): <InputNumber @bind-Value="AppState.TestClearPeriod" />
-            <br /><br />
+            <br/><br/>
             <button class="btn btn-primary" @onclick="Ready">Is Connected as per default</button>
         </EditForm>
     }
     else
     {
-
         @if (!AppState.Running)
         { 
             @if (ReconnectVisible)
@@ -145,29 +138,16 @@ else if(AppState.Running)
         else
         {
             <div class="form-group">
-                @switch (AppState.TestType)
-                {
-                    case Softata.Enums.CommandType.Displays:
-                        {
-                            switch (displayDevice)
-                            {
-                                case DisplayDevice.LCD1602:
-                                <table>
+	        <table>
                               
-                                </table>
-                                break;
-                            }
-                        }
-                        break;
-                }
-
+	        </table>
             </div>
-            <br/><br/>
+            <br/>
+            <br/>
             <button class="btn btn-primary" @onclick="Stop">Cancel</button>
-
         }
     }
-    <br /><br/>
+    <br/><br/>
     @if (!AppState.Running)
     {
         <p>Nb: Cancel not working. Threading issues 2Do</p>
@@ -181,9 +161,11 @@ else if(AppState.Running)
 
 
 @code {
-    string pins { get; set; } = "";
     DisplayDevice displayDevice { get; set; }
-    byte displayLinkedListIndex;
+    byte deviceLinkedListIndex;
+    string DeviceHTMLLink { get; set; } = "";
+    string pins { get; set; } = "";
+    MarkupString Title { get; set; } = new MarkupString($"Softata: Grove -  Display");
     MarkupString FailMsg { get; set; } = new MarkupString("");
     MarkupString OKMsg { get; set; } = new MarkupString("");
     MarkupString RunMsg { get; set; } = new MarkupString("");
@@ -202,7 +184,7 @@ else if(AppState.Running)
 
 
     byte idisplay = 0;
-    string display = "";
+    string displayName = "";
     string[] Displays = new string[0];
 
     protected override void OnInitialized()
@@ -214,12 +196,14 @@ else if(AppState.Running)
         RunVisble = true;
         IsReady = false;
         idisplay = AppState.IDisplay;
-        display = "";
+        displayName = "";
         Displays = SoftataLib.Display.GetDisplays();
-        display = Displays[idisplay];
+        displayName = Displays[idisplay];
         displayDevice = (DisplayDevice)idisplay;
+        DeviceHTMLLink = SoftataLib.Display.Links[displayDevice];
+        Title = new MarkupString($"Softata: Grove - {displayName} Display");
         pins = Softata.SoftataLib.Display.GetPins(idisplay);
-
+        StateHasChanged();
     }
 
     private async void Reconnect()
@@ -245,36 +229,37 @@ else if(AppState.Running)
         StateHasChanged();
         await Task.Delay(333);
 
-        RunMsg = new MarkupString("<h4>Exercising the Grove LCD 16x2 RGB Display.</h4>");
+        RunMsg = new MarkupString("<h4>Exercising the {displayName} Display.</h4>");
         StateHasChanged();
 
-        SoftataLib.Display.Clear(displayLinkedListIndex);
+        /////////////////////////// T E S T S /////////////////////////////
+        SoftataLib.Display.Clear(deviceLinkedListIndex);
         Thread.Sleep(AppState.TestClearPeriod); 
-        SoftataLib.Display.SetCursor(displayLinkedListIndex, 0, 0);
-        SoftataLib.Display.WriteString(displayLinkedListIndex, "First Line");
+        SoftataLib.Display.SetCursor(deviceLinkedListIndex, 0, 0);
+        SoftataLib.Display.WriteString(deviceLinkedListIndex, "First Line");
         Thread.Sleep(AppState.TestStepPeriod);
         if (AppState.Running)
         {
-            SoftataLib.Display.SetCursor(displayLinkedListIndex, 0, 1);
-            SoftataLib.Display.WriteString(displayLinkedListIndex, "Wait");
+            SoftataLib.Display.SetCursor(deviceLinkedListIndex, 0, 1);
+            SoftataLib.Display.WriteString(deviceLinkedListIndex, "Wait");
             Thread.Sleep(AppState.TestStepPeriod);
             if (AppState.Running)
             {
-                SoftataLib.Display.Clear(displayLinkedListIndex);
+                SoftataLib.Display.Clear(deviceLinkedListIndex);
                 Thread.Sleep(AppState.TestClearPeriod);
-                SoftataLib.Display.WriteString(displayLinkedListIndex, 4, 0, "(4,0):Cursor");
+                SoftataLib.Display.WriteString(deviceLinkedListIndex, 4, 0, "(4,0):Cursor");
                 Thread.Sleep(AppState.TestStepPeriod);
                 if (AppState.Running)
                 {
-                    SoftataLib.Display.WriteString(displayLinkedListIndex, 2, 1, "(2,1):Write");
+                    SoftataLib.Display.WriteString(deviceLinkedListIndex, 2, 1, "(2,1):Write");
                     Thread.Sleep(AppState.TestStepPeriod);
                     if (AppState.Running)
                     {
-                        SoftataLib.Display.Clear(displayLinkedListIndex);
+                        SoftataLib.Display.Clear(deviceLinkedListIndex);
                         Thread.Sleep(AppState.TestClearPeriod);
-                        SoftataLib.Display.SetCursor(displayLinkedListIndex, 0, 0);
+                        SoftataLib.Display.SetCursor(deviceLinkedListIndex, 0, 0);
 
-                        SoftataLib.Display.WriteString(displayLinkedListIndex, "Time:");
+                        SoftataLib.Display.WriteString(deviceLinkedListIndex, "Time:");
                         int num = 10;
                         for (int i = 0; i < num; i++)
                         {
@@ -282,7 +267,7 @@ else if(AppState.Running)
                             string format = "HH:mm:ss";
                             string time = now.ToString(format);
                             string msg = $"{i + 1}/{num} {time}";
-                            SoftataLib.Display.WriteString(displayLinkedListIndex, 0, 1, msg);
+                            SoftataLib.Display.WriteString(deviceLinkedListIndex, 0, 1, msg);
                             Thread.Sleep(AppState.TestStepPeriod);
                         }
                     }
@@ -290,8 +275,10 @@ else if(AppState.Running)
             }
         }
 
-        SoftataLib.Display.Clear(displayLinkedListIndex);
+        SoftataLib.Display.Clear(deviceLinkedListIndex);
         Thread.Sleep(AppState.TestClearPeriod);
+        /////////////////////////// T E S T S /////////////////////////////
+        
         RunMsg = new MarkupString("<h4>Done.</h4>");
         Busy = false;
         AppState.Running = false;
@@ -307,7 +294,7 @@ else if(AppState.Running)
         StateHasChanged();
         SoftataLib.SendMessageCmd("End");
         await Task.Delay(20000);
-        RunMsg = new MarkupString("<h4>Pico should have resetted by about now ...</h4><p>Pico should now slow blink</p>");
+        RunMsg = new MarkupString("<h4>Pico should have reset by about now ...</h4><p>Pico should now slow blink</p>");
         StateHasChanged();
         AppState.OnChange -= StateHasChanged;
         AppState.ReadytoRun = false;
@@ -330,29 +317,17 @@ else if(AppState.Running)
         StateHasChanged();
     }
 
-
-
-
-
-
     private void Ready(MouseEventArgs e)
     {
-        displayLinkedListIndex = (byte)SoftataLib.Display.SetupDefault(idisplay);
-        if (displayLinkedListIndex < 0)
+        deviceLinkedListIndex = (byte)SoftataLib.Display.SetupDefault(idisplay);
+        if (deviceLinkedListIndex < 0)
         {
-            FailMsg = new MarkupString($"<h3>Instantiated {display} not found</h3>");
+            FailMsg = new MarkupString($"<h3>Instantiated {displayName} not found</h3>");
             return;
         }
         else
         {
-            switch (displayDevice)
-            {
-                case DisplayDevice.NEOPIXEL:
-                    {
-                        OKMsg = new MarkupString($"Instantiated {display} linked at {displayLinkedListIndex}");
-                    }
-                    break;
-            }
+           OKMsg = new MarkupString($"Instantiated {displayName} linked at {deviceLinkedListIndex}");
         }
         IsReady = true;
         StateHasChanged();

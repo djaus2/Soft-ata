@@ -1,11 +1,11 @@
 ﻿namespace Softata.Enums
 {
-    enum LCD1602MiscCmds : byte { home, autoscroll, noautoscroll, blink, noblink, LCD1602MiscCmds_MAX }
-    enum NEOPIXELMiscCmds : byte { setpixelcolor, setpixelcolorAll, setpixelcolorOdds, setpixelcolorEvens, setBrightness, NEOPIXELMiscCmds_MAX }
-    enum OLEDMiscCmds : byte { drawCircle, drawFrame, OLEDMiscCmds_MAX }
-    public enum SensorDevice : byte { DHT11, BME280, UltrasonicRANGER, Undefined = 0xFF }
-    public enum DisplayDevice : byte { OLED096, LCD1602, NEOPIXEL, Undefined = 0xFF }
-    public enum ServoDevice : byte { Servo }
+    enum LCD1602MiscCmds : byte { home, autoscroll, noautoscroll, blink, noblink,/* Add Here, */ LCD1602MiscCmds_MAX }
+    enum NEOPIXELMiscCmds : byte { setpixelcolor, setpixelcolorAll, setpixelcolorOdds, setpixelcolorEvens, setBrightness, /* Add Here, */NEOPIXELMiscCmds_MAX }
+    enum OLEDMiscCmds : byte { drawCircle, drawFrame, /* Add Here, */ OLEDMiscCmds_MAX }
+    public enum SensorDevice : byte { DHT11, BME280, UltrasonicRANGER,/* Add Here, */  Undefined = 0xFF }
+    public enum DisplayDevice : byte { OLED096, LCD1602, NEOPIXEL, /* Add Here, */ Undefined = 0xFF }
+    public enum ServoDevice : byte { Servo, /* Add Here, */ Undefined = 0xFF }
 
     public enum Commands
     {
@@ -50,7 +50,6 @@
         PotRelay = 0x9,
         PotServo = 0xA,
         MaxType = 0xB,
-
         Undefined = 0xFF
     }
 

@@ -3,15 +3,15 @@
 
 
 
-#define APP_VERSION "4.90"
+#define APP_VERSION "4.95"
 
 //#define RPI_PICO_DEFAULT
 #define GROVE_RPI_PICO_SHIELD
 
 //WiFi
 #ifndef STASSID
-#define STASSID "APQLZM"
-#define STAPSK "silly1371"
+#define STASSID "<wifi-nw>"
+#define STAPSK "<pwd>"
 #endif
 
 #define IOT_CONFIG_WIFI_SSID STASSID
@@ -145,7 +145,7 @@ enum GroveDisplayCmds{d_getpinsCMD, d_tbdCMD, d_setupDefaultCMD, d_setupCMD, d_c
 // Add Misc commands to list here, before last one.
 // Implement in Grove_XXXX::Misc(int cmd, int * data, int length)
 enum LCD1602MiscCmds {home,autoscroll,noautoscroll,blink,noblink,LCD1602MiscCmds_MAX};
-enum NEOPIXELMiscCmds {setpixelcolor,setpixelcolorAll,setpixelcolorOdds,setpixelcolorEvens,setBrightness,NEOPIXELMiscCmds_MAX};
+enum NEOPIXELMiscCmds {setpixelcolor,setpixelcolorAll,setpixelcolorOdds,setpixelcolorEvens,setBrightness,setN,NEOPIXELMiscCmds_MAX};
 enum OLEDMiscCmds {drawCircle,drawFrame,test,OLEDMiscCmds_MAX};
 
 enum range_units {mm,cm,inch};
