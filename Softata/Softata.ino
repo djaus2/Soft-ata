@@ -139,7 +139,7 @@ void loop() {
       else 
       {
         Serial.print(msg[count], HEX);
-        if(count<2)
+        //if(count<2)
           Serial.print(' ');
       }
       watchdog_update();
@@ -212,7 +212,7 @@ void loop() {
         String str;
         byte vaue;
         Serial.print("cmd:");
-        Serial.print(cmd);
+        Serial.print(cmd, HEX);
         Serial.print(' ');
         if (pin != 0xff) {
           Serial.print("pin:");
@@ -220,12 +220,25 @@ void loop() {
           Serial.print(' ');
           if (param != 0xff) {
             Serial.print("param:");
-            Serial.print(param);
+            Serial.print(param,HEX);
             Serial.print(' ');
             if (other != 0xff) {
               Serial.print("other:");
-              Serial.print(other);
+              Serial.print(other,HEX);
             }
+          }
+        }
+        Serial.print(' ');
+        if(otherData!= NULL)
+        {
+          Serial.print(" otherData:[");
+          for(int i=0; i<=otherData[0];i++)
+          {
+            Serial.print(otherData[i],HEX);
+            if(i<otherData[0])
+              Serial.print(',');
+            else
+              Serial.print(']');
           }
         }
         Serial.println();
@@ -950,9 +963,21 @@ void loop() {
                         }
                       else
                       {
-                        byte settings[1];
+
+                        byte settings[maxNumDisplaySettings]; // Allow 4 settings for nw.
                         settings[0] = pin;
-                        if(grove_Display->Setup(settings,1))
+                        int numSettings=1;
+                        Serial.print("Settings non default pin:");
+                        Serial.println(pin);
+                        if (otherData!= NULL)
+                        {
+                          for (int i=0; ((i< otherData[0]) &&(i<=maxNumDisplaySettings));i++)
+                          {
+                            settings[i+1] = otherData[i+1];
+                            numSettings++;
+                          }
+                        }
+                        if(grove_Display->Setup(settings,numSettings))
                         {
                           int index = AddDisplayToList(grove_Display);
                           String msgSettingsD2 = "OK";
@@ -1141,7 +1166,15 @@ void loop() {
                         }
                       }
                     }
-                  }                                
+                  }  
+                  break;
+                case d_dispose:
+                  {
+                    int index=other;
+                    Grove_Display * grove_Display = GetDisplayFromList(index);
+                    RemoveDisplayFromList(index);
+                  } 
+                  break;                             
                 case d_getDisplaysCMD:
                   {
                     Serial.println("Get Displays.");

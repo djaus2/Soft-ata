@@ -10,20 +10,28 @@
 
 Adafruit_NeoPixel * pixels;
 
+
 bool Adafruit_NeoPixel8::Setup() {
   pixels = new Adafruit_NeoPixel(numPixels, grovePin, NEO_GRB + NEO_KHZ800);
+  
   pixels->begin(); // This initializes the NeoPixel library.
   return true;
 }
 
 bool Adafruit_NeoPixel8::Setup(byte * settings, byte numSettings)
 {
+    Serial.print("Pixel numSettings:");
+    Serial.println(numSettings);
     if (numSettings > 0)
     {
-        numPixels = settings[0];
+        grovePin = settings[0];
+        Serial.print("Pixel grovePin:");
+        Serial.println(grovePin);
         if (numSettings > 1)
         {
-            grovePin = settings[1];
+            numPixels = settings[1];
+            Serial.print("Pixel numPixels:");
+            Serial.println(numPixels);
         }
     }
     return Setup();
@@ -93,13 +101,17 @@ bool Adafruit_NeoPixel8::Misc(byte cmd, byte * data, byte length)
             //Display a 0..8 level:
             if (length<4)
                 return false;
+            int num = data[3];
+            // Truncate "over value rather than fail."
+            if(num>numPixels)
+                num = numPixels;
             // On
-            for(int i=0;i<data[3];i++)
+            for(int i=0;i<num;i++)
             {
                 pixels->setPixelColor(i, pixels->Color(data[0], data[1], data[2]));
             }
             // Off
-            for(int i=data[3];i<numPixels;i++)
+            for(int i=num;i<numPixels;i++)
             {
                 pixels->setPixelColor(i, pixels->Color(0, 0, 0));
             }

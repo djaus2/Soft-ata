@@ -233,6 +233,18 @@ namespace Softata
             sendmsg[0] = (byte)(sendmsg.Count-1);
             // Get bytes from list.
             byte[] sendBytes = sendmsg.ToArray<byte>();
+            /* If msg is Display setup nondefault:
+             * =======================================
+             * msg should now be:
+             * number of bytes -1 eg 6 (if total num bytes is7)
+             * 241, 0xf1 = Displays                 ... maps to cmd in Arduino
+             * pin  (eg 16)                         ... maps to pin in Arduino
+             * subcommand = 3  for nondefault setup ... maps toparam in Arduino
+             * enum index of display (eg 2 for Neopixel) ... maps to other in Arduino
+             *     Nb: Once instatiated, other is its index in the display list as returned from setup() 
+             * Length of otherData                  ... maps to otherData in Arduino
+             * other data                           ...
+             */
             if(debug)
                 Console.WriteLine($"Sending {sendBytes.Length} data bytes");
 

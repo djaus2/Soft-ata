@@ -16,7 +16,7 @@ protected:
 
 class DisplayListNode
 {
-public:
+public: 
     Grove_Display * Display=NULL;
 protected:
 };
@@ -129,7 +129,10 @@ bool RemoveDisplayFromList(int index)
 {
   if(index < MAX_DISPLAYS)
   {
-    DisplayList[index]->Display= NULL;
+    delete DisplayList[index]->Display;
+    DisplayList[index]->Display= NULL; //nullptr;
+    if (index == displaycount-1)
+      displaycount--;
     return true;
   }
   else

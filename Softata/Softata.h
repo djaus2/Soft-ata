@@ -3,15 +3,15 @@
 
 
 
-#define APP_VERSION "4.95"
+#define APP_VERSION "4.96"
 
 //#define RPI_PICO_DEFAULT
 #define GROVE_RPI_PICO_SHIELD
 
 //WiFi
 #ifndef STASSID
-#define STASSID "<wifi-nw>"
-#define STAPSK "<pwd>"
+#define STASSID "APQLZM"
+#define STAPSK "silly1371"
 #endif
 
 #define IOT_CONFIG_WIFI_SSID STASSID
@@ -114,7 +114,7 @@ enum GroveSensorCmds{s_getpinsCMD, s_getPropertiesCMD, s_setupdefaultCMD, s_setu
 ///////////////////////// D I S P L A Y S /////////////////////////////////////////////////
 
 enum GroveDisplayCmds{d_getpinsCMD, d_tbdCMD, d_setupDefaultCMD, d_setupCMD, d_clearCMD,d_backlightCMD,d_setCursorCMD,
-                                    d_writestrngCMD,d_cursor_writestringCMD, d_home, d_miscCMD, d_getDisplaysCMD=255 };
+                                    d_writestrngCMD,d_cursor_writestringCMD, d_home, d_miscCMD, d_dispose, d_getDisplaysCMD=255 };
 //enum GroveDisplayCmds{d_getpinsCMD=0, d_tbdCMD=1, d_setupDefaultCMD=2, d_setupCMD=3, d_clearCMD=4,d_backlightCMD=5,d_setCursorCMD=6, d_writestrngCMD=7,d_cursor_writestringCMD=8,d_miscCMD=9, d_getDisplaysCMD=255 }
 
 // Note: Adresses are typically defined in the device library which typically use I2C0
@@ -128,6 +128,8 @@ enum GroveDisplayCmds{d_getpinsCMD, d_tbdCMD, d_setupDefaultCMD, d_setupCMD, d_c
 #elif defined(GROVE_RPI_PICO_SHIELD)
 #define NEOPIXEL_PIN 16 //18,20 (Grove yellow cable).. 17,19,21 (Grove white cable)
 #endif
+
+#define maxNumDisplaySettings 4
 
 //Display connections
 

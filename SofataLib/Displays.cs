@@ -9,7 +9,7 @@ using Softata.Enums;
 
 namespace Softata
 {
-    public enum GroveDisplayCmds{getpins=0, tbd=1, setupDefault=2, setup=3, clear=4,backlight=5,setCursor=6, writestrngCMD=7,cursor_writestringCMD=8,homeCMD=9, misc=10, getDisplays=255 }
+    public enum GroveDisplayCmds{getpins=0, tbd=1, setupDefault=2, setup=3, clear=4,backlight=5,setCursor=6, writestrngCMD=7,cursor_writestringCMD=8,homeCMD=9, misc=10,dispose=11, getDisplays=255 }
     public partial class SoftataLib
     {
 
@@ -48,7 +48,7 @@ namespace Softata
                 return result;
             }
 
-
+            // Default display setup (no data)
             public static int SetupDefault(byte displayType)
             {
                 //if (pinNumber <= 0 || pinNumber >= PinMax)
@@ -61,17 +61,33 @@ namespace Softata
                     return -1;
             }
 
-
-            //2DO:
-            /*
-            public static int Setup(byte displayType, byte pin)
+            public static int Dispose(byte displayType, byte linkedListNo)
             {
-                string result = SendMessage(Commands.groveDisplay, pin, (byte)GroveDisplayCmds.setup, "OK:", displayType);
+                string result = SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.dispose, "OK:");
+                if (int.TryParse(result, out int res))
+                    return res;
+                else
+                    return -1;
+            }
+
+            // Single data display setup
+            public static int Setup(byte displayType, byte pin, byte datum)
+            {
+                List<byte> data = new List<byte> {datum };
+                return Setup(displayType, pin, data);
+            }
+
+            // Multi data display setup
+            public static int Setup(byte displayType, byte pin, List<byte> ldata)
+            {   
+                var data2 = ldata.Prepend((byte)ldata.Count()); 
+                byte[] data = data2.ToArray<byte>();
+                string result = SendMessage(Commands.groveDisplay, pin, (byte)GroveDisplayCmds.setup, "OK:", displayType, data);
                 if (int.TryParse(result, out int linkedListNo))
                     return linkedListNo;
                 else
                     return -1;
-            }*/
+            }
 
             public static bool Clear(byte linkedListNo)
             {
@@ -171,6 +187,7 @@ namespace Softata
                 // Misc commands
                 enum NEOPIXELMiscCmds { setpixelcolor, setpixelcolorAll, setpixelcolorOdds, setpixelcolorEvens, setBrightness, setN, NEOPIXELMiscCmds_MAX };
 
+                public static byte MaxNumPixels = 8;
                 public static bool Clear(byte displayLinkedListIndex)
                 {
                     byte[] data = new byte[] { 0x4, (byte)NEOPIXELMiscCmds.setpixelcolorAll, 0, 0, 0 };

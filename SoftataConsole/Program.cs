@@ -30,6 +30,8 @@ namespace FirmataBasic
         static byte SOUNDSENSOR = 28;  //A2 
         static byte RELAY = 16;
 
+        static byte MAX_NUM_NEOPIXEL_PIXELS = 8;
+
         // Choose test DEFAULT type (There is now a menu to select from)
         //static SoftataLib.CommandType Testtype = CommandType.Sensors;
         //static SoftataLib.CommandType Testtype = CommandType.PotLightSoundAnalog;
@@ -625,7 +627,39 @@ namespace FirmataBasic
                         DisplayDevice displayDevice = (DisplayDevice)idisplay;
                         //////////////////////////////////////////
 
-                        displayLinkedListIndex = (byte)SoftataLib.Display.SetupDefault(idisplay);
+                        byte numPixels = SoftataLib.Display.Neopixel.MaxNumPixels;
+
+                        // Only do non-default setup for Neopixel
+                        if (displayDevice == DisplayDevice.NEOPIXEL)
+                        {
+                            Console.WriteLine($"Select number of Pixels:");
+                            for (byte i = 1; i <= SoftataLib.Display.Neopixel.MaxNumPixels; i++)
+                            {
+                                Console.WriteLine($"{i} Pixels");
+                            }
+                            Console.WriteLine($"Default: {numPixels}.");
+                            bool found = false;
+                            do
+                            {
+                                string? s = Console.ReadLine();
+                                if (byte.TryParse(s, out byte idis))
+                                {
+                                    if ((idis > 0) && (idis <= MAX_NUM_NEOPIXEL_PIXELS)) 
+                                    {
+                                        numPixels = idis;
+                                        found = true;
+                                    }
+                                    else if (string.IsNullOrEmpty(s))
+                                    {
+                                        found = true;
+                                    }
+                                }
+                            } while (!found);
+                            displayLinkedListIndex = (byte)SoftataLib.Display.Setup(idisplay, 16, numPixels);
+                        }
+                        else
+                            displayLinkedListIndex = (byte)SoftataLib.Display.SetupDefault(idisplay);
+
                         Console.WriteLine($"displayLinkedListIndex: {displayLinkedListIndex}");
                         if (displayLinkedListIndex < 0)
                             Console.WriteLine($"Instantiated sensor {display} not found");
@@ -686,7 +720,7 @@ namespace FirmataBasic
                                         Thread.Sleep(2000);
                                         SoftataLib.Display.Neopixel.Clear(displayLinkedListIndex);
                                         Thread.Sleep(500);
-                                        for (byte n = 0; n < 9; n++)
+                                        for (byte n = 0; n <= SoftataLib.Display.Neopixel.MaxNumPixels; n++)
                                         {
                                             SoftataLib.Display.Neopixel.Misc_SetN(displayLinkedListIndex, 255, 255, 255, n);
                                             Thread.Sleep(1000);
@@ -697,7 +731,7 @@ namespace FirmataBasic
                                     }
                                     break;
                                 case DisplayDevice.LCD1602:
-                                {
+                                    {
                                         Console.WriteLine($"Instantiated {display} linked at {displayLinkedListIndex}");
                                         SoftataLib.Display.Clear(displayLinkedListIndex);
                                         SoftataLib.Display.SetCursor(displayLinkedListIndex, 0, 0);
@@ -749,7 +783,7 @@ namespace FirmataBasic
                                     Thread.Sleep(4000);
                                     SoftataLib.Display.Clear(displayLinkedListIndex);
                                     Thread.Sleep(500);
-                                    SoftataLib.Display.WriteString(displayLinkedListIndex,0,0,  "Hello Joe!");
+                                    SoftataLib.Display.WriteString(displayLinkedListIndex, 0, 0, "Hello Joe!");
                                     Thread.Sleep(2500);
                                     SoftataLib.Display.WriteString(displayLinkedListIndex, 1, 1, "Hi there!");
                                     Thread.Sleep(2500);
