@@ -3,7 +3,11 @@
 <hr/>
 <h2>Project is being updated:</h2>
 
--  Nearly compolete Azure IOT hub in Blazor app 2Do
+- V4.96 Can set number of Pixels in Neopixel display
+  - In Console app get menu to select num
+  - Max(default) defined on Softata.SoftataLib.Displays.Neopixel as MaxNumPixels=8  
+  And in Arduino app in Softata.h as NEOPIXEL_NUMPIXELS = 8
+-  Nearly complete: Azure IOT hub in Blazor app 2Do
 - V4.95 Mainly just code improvement. Neopixel test extended
 - Inbuilt LED flash rate: Slow if not connected, fast if connected. _(Done)_
   - NB: This runs on the second core.
