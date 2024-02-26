@@ -164,14 +164,18 @@ else @if ((AppState.ISensor != 0xff))
                     <h4>Display Tests</h4>
                     <table>
                         <tr><td colspan="4">Run an exemplar sequence of tests demonstrating .NET interaction with the Display.</td></tr>
+                        <tr>
+                            <td colspan="4">
+                                <select @onchange="OnChangeCommandType">
+                                    <option value=0xff>Select Display</option>
+                                    @for (int i = 0; i < ListDeviceTypeTests.Count(); i++)
+                                    {
+                                        <option value=@i>@ListDeviceTypeTests[i]</option>
+                                    }
+                                </select>
+                            </td>
+                        </tr>
                     </table>
-                    <select @onchange="OnChangeCommandType">
-                        <option value=0xff>Select test</option>
-                        @for (int i = 0; i < ListDeviceTypeTests.Count(); i++)
-                        {
-                            <option value=@i>@ListDeviceTypeTests[i]</option>
-                        }
-                    </select>
                     <br/>
                 </div>
                 break;
@@ -187,7 +191,7 @@ else @if ((AppState.ISensor != 0xff))
                     </select>
                 </div>
                 break;
-            }
+        }
     }
     else if (!AppState.ReadytoRun)
     {
@@ -206,11 +210,41 @@ else @if ((AppState.ISensor != 0xff))
                     break;
                 case Softata.Enums.CommandType.Displays:
                     {
-                        <h4>Display Test</h4>
+                        <h4>Display Connection for @AppState.Displays[AppState.IDisplay]</h4>
                         <table>
-                            <tr><td colspan="4">Run an exemplar sequence of tests demonstrating .NET interaction with the Display.</td></tr>
-                            <tr colspan="4"><td>Use defaults for now.</td></tr>
+                            <tr><td colspan="2">Run an exemplar sequence of tests demonstrating .NET interaction with the Display.</td></tr>
+                            @if ( DisplayDevice.NEOPIXEL == (DisplayDevice)AppState.IDisplay)
+                            {
+                                @if (@AppState.DisplayPin != 0xff)
+                                {
+
+                                    <tr>
+                                        <td>
+                                            <button class="btn btn-primary" @onclick="Ready">Use this:</button>&nbsp;
+                                    <b>GPIO Pin:</b>@AppState.DisplayPin</td><td>&nbsp;</td></tr>
+                                }
+                                <tr>
+                                     <td><b>Select GPIO Pin Connection:</b>&nbsp;  
+                                         <select @bind=@AppState.DisplayPin>
+                                            <option value=0xff>Select</option>
+                                            @foreach (var value in AppState.GPIOPins)
+                                            {             
+                                                <option value=@value>@value</option>
+                                            }
+                                        </select>
+                                    </td>
+                                    <td>&nbsp;</td>
+                                </tr>
+                                <tr>
+                                    <td ><button class="btn btn-primary" @onclick="DisplaysDefaults">Or Use Defaults</button></td>
+                                    <td>&nbsp;</td>
+                                </tr>
+                            }
+                            else
+                            {
+                            <tr colspan="4"><td>Use defaults</td></tr>
                             <tr><td colspan="4"><button class="btn btn-primary" @onclick="DisplaysDefaults">Use Defaults</button></td></tr>
+                            }
                         </table>
                     }
                     break;
@@ -279,7 +313,7 @@ else @if ((AppState.ISensor != 0xff))
                                         </td>
                                         <td>&nbsp;</td>
                                         <td>
-                                            <select @bind=@AppState.Servo>
+                                            <select @bind=@AppState.ServoPin>
                                                 @foreach (var value in AppState.GPIOPins)
                                                 {
                                                     <option value=@value>@value</option>
@@ -421,8 +455,8 @@ else @if ((AppState.ISensor != 0xff))
                             Runs the digital test as per the Console app without user web page interaction<br /> but requires a button press to toggle the LED.
                         </p>
                     <table>
+                            <tr><td colspan="3">Select pins:</td></tr>
                             <tr><td>Button Pin</td><td>&nbsp;</td><td>LED Pin</td></tr>
-                            <tr><td colspan="3"><button class="btn btn-primary" @onclick="LEDButtonDefaults">Use Defaults</button></td></tr>
                         <tr>
                             <td>
                                 <select @bind=@AppState.Button>
@@ -442,6 +476,8 @@ else @if ((AppState.ISensor != 0xff))
                                 </select>
                             </td>
                         </tr>
+                        <tr><td colspan="3">&nbsp;</td></tr>
+                        <tr><td colspan="3"><button class="btn btn-primary" @onclick="LEDButtonDefaults">Use Defaults</button></td></tr>
                     </table> 
                 }
                 break;
@@ -481,7 +517,20 @@ else @if ((AppState.ISensor != 0xff))
                         <p>
                             Run an exemplar sequence of tests demonstrating .NET interaction with the Display.
                         </p>
-                        <p>Using Default pins for device</p>
+                        @if (@AppState.DisplayPin != 0xff)
+                        {
+
+                            <tr>
+                                <td>
+                                    <b>GPIO Pin:</b>@AppState.DisplayPin
+                                </td>
+                                <td>&nbsp;</td>
+                            </tr>
+                        }
+                        else
+                        {
+                            <p>Using Default pins for device</p>
+                        }
                         <button class="btn btn-primary" @onclick="Start">Go to test</button>
                     }
                     break;
@@ -523,7 +572,7 @@ else @if ((AppState.ISensor != 0xff))
                                     </td>
                                     <td>&nbsp;</td>
                                     <td>
-                                        @AppState.Servo
+                                        @AppState.ServoPin
                                     </td>
                                 </tr>
                             </table>
@@ -601,6 +650,40 @@ else @if ((AppState.ISensor != 0xff))
     const int port = 4242;
     const string ipaddressStr = "192.168.0.9";
 
+    bool busy = false;
+    bool Busy
+    {
+        get => busy;
+        set { busy = value; StateHasChanged(); }
+    }
+
+    List<CommandType> CurrentTypes { get; set; } = new List<CommandType>();
+    List<string> ListDeviceTypeTests { get; set; } = new List<string>();
+    string TestCategory = "";
+
+    public async Task Connect()
+    {
+        Busy = true;
+        StateHasChanged();
+        await Task.Delay(333);
+        SoftataLib.Init(ipaddressStr, port);
+        AppState.Connected = "Connected";
+        await Task.Delay(333);
+        SoftataLib.SendMessageCmd("Begin");
+        await Task.Delay(333);
+        AppState.AppVersion = SoftataLib.SendMessageCmd("Version");
+        Console.WriteLine($"Softata Version: {AppState.AppVersion}");
+        await Task.Delay(333);
+        AppState.DevicesCSV = SoftataLib.SendMessageCmd("Devices");
+        Console.WriteLine($"{AppState.DevicesCSV}");
+        await Task.Delay(333);
+        Busy = false;
+        StateHasChanged();
+        AppState.Connected = "IsConnected";
+        AppState.TestCategory = DeviceCategory.MaxType;
+        await Task.Delay(333);
+    }
+
     private void Reset()
     {
         AppState.TestCategory = DeviceCategory.MaxType;
@@ -615,13 +698,9 @@ else @if ((AppState.ISensor != 0xff))
     }
 
 
-    bool busy = false;
-    bool Busy { get => busy; 
-        set { busy = value; StateHasChanged(); } }
 
-    List<CommandType> CurrentTypes { get; set; } = new List<CommandType>();
-    List<string> ListDeviceTypeTests { get; set; } = new List<string>();
-    string TestCategory = "";
+
+   
 
     private void OnChangeDeviceType(ChangeEventArgs e)
     {
@@ -679,7 +758,7 @@ else @if ((AppState.ISensor != 0xff))
         if (e == null)
             return;
         var selected = e.Value.ToString();
-        if (selected != null)
+        if (!string.IsNullOrEmpty(selected ))
         {
             if ((AppState.TestCategory != DeviceCategory.display) &&
             (AppState.TestCategory != DeviceCategory.sensor))
@@ -732,31 +811,6 @@ else @if ((AppState.ISensor != 0xff))
     }
 
 
-
-
-    public async Task Connect()
-    {
-        Busy = true;
-        StateHasChanged();
-        await Task.Delay(333);
-        SoftataLib.Init(ipaddressStr, port);
-        AppState.Connected = "Connected";
-        await Task.Delay(333);
-        SoftataLib.SendMessageCmd("Begin");
-        await Task.Delay(333);
-        AppState.AppVersion = SoftataLib.SendMessageCmd("Version");
-        Console.WriteLine($"Softata Version: {AppState.AppVersion}");
-        await Task.Delay(333);
-        AppState.DevicesCSV = SoftataLib.SendMessageCmd("Devices");
-        Console.WriteLine($"{AppState.DevicesCSV}");
-        await Task.Delay(333);
-        Busy = false;
-        StateHasChanged();
-        AppState.Connected = "IsConnected";
-        AppState.TestCategory = DeviceCategory.MaxType;
-        await Task.Delay(333);
-    }
-
     public void Select()
     {
         var commandsArray = Enum.GetValues(typeof(CommandType));
@@ -800,7 +854,7 @@ else @if ((AppState.ISensor != 0xff))
     private void ServoDefaults()
     {
         AppState.Potentiometer = 26;
-        AppState.Servo = 16;
+        AppState.ServoPin = 16;
         Ready();
     }
 
@@ -837,11 +891,11 @@ else @if ((AppState.ISensor != 0xff))
             case CommandType.Displays:
                 break;;
             case CommandType.PotServo:
-                if (!AppState.GPIOPins.Contains(AppState.Servo))
+                if (!AppState.GPIOPins.Contains(AppState.ServoPin))
                     return;
-                if (AppState.Potentiometer == AppState.Servo)
+                if (AppState.Potentiometer == AppState.ServoPin)
                     return;
-                if ((AppState.Potentiometer == 26) && (AppState.Servo == 16))
+                if ((AppState.Potentiometer == 26) && (AppState.ServoPin == 16))
                     AppState.DefaultSettings = true;
                 else
                     AppState.DefaultSettings = false;

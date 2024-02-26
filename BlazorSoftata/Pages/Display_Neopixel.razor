@@ -110,20 +110,57 @@ else if (AppState.Running)
     @if (!IsReady)
    { 
         <h2>Setup</h2>
-
-        <font color="blue>"><h4>Pins: @pins</h4></font>
+        <hr />
+        <table>
+  
+        @if (@AppState.DisplayPin != 0xff)
+        {
+            <tr>
+                <td>
+                        <font color="purple"><b>Selected GPIO Pin:</b>&nbsp;@AppState.DisplayPin</font>
+                </td>
+            </tr>
+        }
+        else
+        {
+            <tr>
+                <td>
+                    <font color="purple>"><h4><b>Pins:</b> @pins</h4></font>
+                </td>
+            </tr>
+        }
+        </table>
+        <hr />
+        <table>
+            <tr><td>Select number of Pixels:</td></tr>
+            <tr>
+                <td>
+                    <select @bind=@numPixels>
+                        <option value=0xff>Select</option>
+                        @for (byte i = 1; i <= SoftataLib.Display.Neopixel.MaxNumPixels; i++)
+                        {
+                            <option value=@i>@i Pixels</option>
+                        }
+                    </select>  <br />
+                </td>
+            </tr>
+            <tr><td><b>Default:</b> @SoftataLib.Display.Neopixel.MaxNumPixels</td></tr>
+            <tr><td><font color="purple"><b>Selected:</b>&nbsp @numPixels</font></td></tr>
+        </table>
+        <hr />
          <EditForm Model=@AppState>
             Test step period (mS): <InputNumber  @bind-Value="AppState.TestStepPeriod" />
             <br /><br />
             Delay after Clear period (mS): <InputNumber @bind-Value="AppState.TestClearPeriod" />
             <br /><br />
-            <button class="btn btn-primary" @onclick="Ready">Is Connected as per default</button>
+            <button class="btn btn-primary" @onclick="Ready">Is configured</button>
         </EditForm>
     }
     else
     {
         @if (!AppState.Running)
         { 
+
             @if (ReconnectVisible)
             {
                 <button  class="btn btn-primary" @onclick="Reconnect">Reconnect and run test</button>
@@ -169,6 +206,8 @@ else if (AppState.Running)
     MarkupString OKMsg { get; set; } = new MarkupString("");
     MarkupString RunMsg { get; set; } = new MarkupString("");
 
+    byte numPixels { get; set; } = 8;
+
     bool busy = false;
     bool Busy
     {
@@ -188,6 +227,7 @@ else if (AppState.Running)
 
     protected override void OnInitialized()
     {
+        numPixels = SoftataLib.Display.Neopixel.MaxNumPixels;
         AppState.OnChange += StateHasChanged;
         AppState.ReadytoRun = true; 
         AppState.Running = false;
@@ -228,11 +268,12 @@ else if (AppState.Running)
         StateHasChanged();
         await Task.Delay(333);
 
-        RunMsg = new MarkupString("<h4>Exercising the {displayName} Display.</h4>");
+
+        RunMsg = new MarkupString($"<h4>Exercising the {displayName} Display.</h4>");
         StateHasChanged();
 
         /////////////////////////// T E S T S /////////////////////////////
-        SoftataLib.Display.Neopixel.Clear(deviceLinkedListIndex); ;
+        SoftataLib.Display.Neopixel.Clear(deviceLinkedListIndex); 
         Thread.Sleep(AppState.TestClearPeriod);
         SoftataLib.Display.Neopixel.Misc_SetAll(deviceLinkedListIndex, 255, 0, 0);
         Thread.Sleep(AppState.TestStepPeriod);
@@ -349,7 +390,14 @@ else if (AppState.Running)
 
     private void Ready(MouseEventArgs e)
     {
-        deviceLinkedListIndex = (byte)SoftataLib.Display.SetupDefault(idisplay);
+        if (AppState.DisplayPin!= 0xff)
+        {
+            var displayLinkedListIndex = (byte)SoftataLib.Display.Setup(idisplay, AppState.DisplayPin, numPixels);
+        }
+        else
+        {
+            var displayLinkedListIndex2 = (byte)SoftataLib.Display.SetupDefault(idisplay);
+        }
         if (deviceLinkedListIndex < 0)
         {
             FailMsg = new MarkupString($"<h3>Instantiated {displayName} not found</h3>");

@@ -17,7 +17,8 @@ namespace BlazorSoftata
         private byte potentiometer = 0xff;
         private byte lightsensor = 0xff;
         private byte soundsensor = 0xff;
-        private byte servo = 0xff;
+        private byte servopin = 0xff;
+        private byte displaypin = 0xff;
         private bool readytoRun = false;
         private bool running = false;
         private byte i2C;
@@ -39,7 +40,9 @@ namespace BlazorSoftata
         public byte LightSensor { get => lightsensor; set { lightsensor = value; NotifyStateChanged(); } }
 
         public byte Potentiometer { get => potentiometer; set { potentiometer = value; NotifyStateChanged(); } }
-        public byte Servo { get => servo; set { servo = value; NotifyStateChanged(); } }
+        public byte ServoPin { get => servopin; set { servopin = value; NotifyStateChanged(); } }
+
+        public byte DisplayPin { get => displaypin; set { displaypin = value; NotifyStateChanged(); } }
         public CommandType TestType { get => testType; set { testType = value; NotifyStateChanged(); } }
         public bool ReadytoRun { get => readytoRun; set { readytoRun = value; NotifyStateChanged(); } }
         public bool Running { get => running; set { running = value; NotifyStateChanged(); } }

@@ -4,7 +4,7 @@
 <h2>Project is being updated:</h2>
 
 - V4.96 Can set number of Pixels in Neopixel display
-  - In Console app get menu to select num
+  - In both apps get menu to select number of pixels. Can set pin.
   - Max(default) defined on Softata.SoftataLib.Displays.Neopixel as MaxNumPixels=8  
   And in Arduino app in Softata.h as NEOPIXEL_NUMPIXELS = 8
 -  Nearly complete: Azure IOT hub in Blazor app 2Do
