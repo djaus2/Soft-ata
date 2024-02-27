@@ -1412,7 +1412,7 @@ void setup1() {
   // Defined in Softata.h
   // Perhaps make software setable??
   // App starts quicker if not defined
-  #if USINGIOTHUB
+  #ifdef USINGIOTHUB
     doingIoTHub = true;
   #else
     doingIoTHub = false;

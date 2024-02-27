@@ -514,6 +514,10 @@ namespace FirmataBasic
                                         if (int.TryParse(indxStr, out int val))
                                         { 
                                             Console.WriteLine($"Streaming to Azure IoT Hub started. List No:{val}");
+                                            Console.WriteLine("Nb: Observe Telemetry in Device Explorer:");
+                                            Console.WriteLine("https://github.com/Azure/azure-iot-explorer/");
+                                            Console.WriteLine("--------------------------------------------");
+                                            Console.WriteLine();
                                         }
                                             else
                                             Console.WriteLine($"Streaming to Azure IoT Hub failed to start.");
@@ -522,12 +526,14 @@ namespace FirmataBasic
                                     else if (sensorMode == 5)
                                     {
                                         string json = SoftataLib.Sensor.PauseSendTelemetry((byte)sensorLinkedListIndex);
-                                        Console.WriteLine($"json {json}");
+                                        if (!string.IsNullOrEmpty(json))
+                                            Console.WriteLine($"json {json}");
                                     }
                                     else if (sensorMode == 6)
                                     {
                                         string json = SoftataLib.Sensor.ContinueSendTelemetry((byte)sensorLinkedListIndex);
-                                        Console.WriteLine($"json {json}");
+                                        if(!string.IsNullOrEmpty(json))
+                                            Console.WriteLine($"json {json}");
                                     }
                 
                                     else if (sensorMode == 1)

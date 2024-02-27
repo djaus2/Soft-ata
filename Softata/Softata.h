@@ -3,15 +3,15 @@
 
 
 
-#define APP_VERSION "4.96"
+#define APP_VERSION "4.97"
 
 //#define RPI_PICO_DEFAULT
 #define GROVE_RPI_PICO_SHIELD
 
 //WiFi
 #ifndef STASSID
-#define STASSID "APQLZM"
-#define STAPSK "silly1371"
+#define STASSID "<wifi-nw>"
+#define STAPSK "<pwd>"
 #endif
 
 #define IOT_CONFIG_WIFI_SSID STASSID
@@ -19,10 +19,10 @@
 
 // Azure IoT
 // Uncomment following if using Azure IoT Hub
-//#define USINGIOTHUB
-#define IOT_CONFIG_IOTHUB_FQDN  "<Hub name>.azure-devices.net"
-#define IOT_CONFIG_DEVICE_ID  "<Device name>"
-#define IOT_CONFIG_DEVICE_KEY  "<Device key>" 
+#define USINGIOTHUB
+#define IOT_CONFIG_IOTHUB_FQDN  "<hubname>.azure-devices.net"
+#define IOT_CONFIG_DEVICE_ID  "<devicename>"
+#define IOT_CONFIG_DEVICE_KEY  "<device-key>" 
 
 //Server Port
 #define PORT 4242
