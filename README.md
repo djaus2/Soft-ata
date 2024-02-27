@@ -3,6 +3,8 @@
 <hr/>
 <h2>Project is being updated:</h2>
 
+- V4.97 Fixed small error in Arduino wrt Azure IoT Hub enabling
+    - Also added some text messages when running Console in IoT Hub mode, wrt Device Explorer.
 - V4.96 Can set number of Pixels in Neopixel display
   - In both apps get menu to select number of pixels. Can set pin.
   - Max(default) defined on Softata.SoftataLib.Displays.Neopixel as MaxNumPixels=8  
