@@ -142,9 +142,9 @@ else
             Test step period (mS): <InputNumber @bind-Value="AppState.TestStepPeriod" />
             <br/>
             <br/>
-            Delay after Clear period (mS): <InputNumber @bind-Value="AppState.TestClearPeriod" />
+@*             Delay after Clear period (mS): <InputNumber @bind-Value="AppState.TestClearPeriod" />
             <br/>
-            <br/>
+            <br/> *@
             <button class="btn btn-primary" @onclick="Ready">Is Connected as per default</button>
         </EditForm>
     }
@@ -167,6 +167,9 @@ else
                 <option value="1">Read Sensor Values All</option>
                 <option value="2">Read Sensor Values Individual</option>
                 <option value="3">Get Telemetry json string</option>
+                <option value="4">Send Telemetry BT</option>
+                <option value="5">Send Telemetry IoT Hub</option>
+                <option value="7">Quit </option>
             </select>           
         }
         else
@@ -185,9 +188,9 @@ else
                                         <br/>
                                         <select @bind=@AppState.SensorMode>
                                             <option value= "0xff">Select Sensor Mode</option>
-                                            <option value = "1">Read Sensor Values All</option>
-                                            <option value="2">Read Sensor Values Individual</option>
-                                            <option value = "3">Get Telemetry json string</option>
+                                            <option value="5">Pause BT or IoT Telemetry Stream"</option> P
+                                            <option value="6"> Continue BT IoT Telemetry Stream</option> P
+                                            <option value="7">Quit </option>
                                         </select>
                                         @*                                            
                                             <option value="4">Send Telemetry BT</option>
@@ -230,7 +233,7 @@ else
     MarkupString FailMsg { get; set; } = new MarkupString("");
     MarkupString OKMsg { get; set; } = new MarkupString("");
     MarkupString RunMsg { get; set; } = new MarkupString("");
-
+    byte pin = 0;
 
 
     string[] properties = new string[0];
@@ -336,6 +339,11 @@ else
         StateHasChanged();
         while (KeepRunning)
         {
+            if(showMenu)
+            {
+                Thread.Sleep(1000);
+                continue;
+            }
             if (AppState.SensorMode == sensorQuitModeNo)
             {
                 Console.WriteLine("Quitting app. Please wait.");
@@ -353,7 +361,13 @@ else
             }
             else if (AppState.SensorMode == 4)
             {
-                string indxStr = SoftataLib.Sensor.SendTelemetryBT((byte)deviceLinkedListIndex);
+                byte period = 2;
+                if (AppState.TestStepPeriod > 1000)
+                {
+                    // In case entered as millisec:
+                    period = (byte)(AppState.TestStepPeriod / 1000);
+                }
+                string indxStr = SoftataLib.Sensor.StartSendingTelemetryBT((byte)deviceLinkedListIndex,period);
                 if (int.TryParse(indxStr, out int val))
                     Console.WriteLine($"Streaming to BT started. List No:{val}");
                 else
@@ -362,7 +376,15 @@ else
             }
             else if (AppState.SensorMode == 5)
             {
-                string indxStr = SoftataLib.Sensor.SendTelemetryToIoTHub((byte)deviceLinkedListIndex);
+                byte period = 2;
+                if (AppState.TestStepPeriod > 1000)
+                {
+                    // In case entered as millisec:
+                    period = (byte)(AppState.TestStepPeriod / 1000);
+                }
+
+
+                string indxStr = SoftataLib.Sensor.StartSendingTelemetryToIoTHub((byte)deviceLinkedListIndex, period);
                 if (int.TryParse(indxStr, out int val))
                 {
                     Console.WriteLine($"Streaming to Azure IoT Hub started. List No:{val}");

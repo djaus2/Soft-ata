@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using Softata.Enums;
 
 namespace Softata
@@ -53,9 +54,28 @@ namespace Softata
                     return new string[0];
             }
 
+
+
             public static int SetupDefault(byte sensorType, bool debug = true)
             {
                 string result = SendMessage(Commands.groveSensor, 0, (byte)GroveSensorCmds.setupdefault, "OK:", sensorType, null, debug);
+                if (int.TryParse(result, out int linkedListNo))
+                    return linkedListNo;
+                else
+                    return -1;
+            }
+
+            public static int Setup(byte sensorType, byte pin, byte datum)
+            {
+                List<byte> data = new List<byte> { datum };
+                return Setup(sensorType, pin, data);
+            }
+
+            public static int Setup(byte sensorType, byte pin, List<byte> ldata)
+            {
+                var data2 = ldata.Prepend((byte)ldata.Count());
+                byte[] data = data2.ToArray<byte>();
+                string result = SendMessage(Commands.groveSensor, pin, (byte)GroveSensorCmds.setup, "OK:", sensorType, data);
                 if (int.TryParse(result, out int linkedListNo))
                     return linkedListNo;
                 else
@@ -102,24 +122,38 @@ namespace Softata
                 }
             }
 
-            public static string SendTelemetryBT(byte linkedListNo, bool debug=true)
+            public static string StartSendingTelemetryBT(byte linkedListNo, byte period = 5, bool debug =true)
             {
-                string result = SendMessage(Commands.groveSensor, 0, (byte)GroveSensorCmds.sendTelemetryBT, "OK:", linkedListNo, null, debug);
+                var data1 = new List<byte> { period };
+                var data2 = data1.Prepend((byte)data1.Count());
+                byte[] data = data2.ToArray<byte>();
+                string result = SendMessage(Commands.groveSensor, 0, (byte)GroveSensorCmds.sendTelemetryBT, "OK:", linkedListNo, data, debug);
                 if(int.TryParse(result, out int value))
                 {
-                   
+                    return result;
                 }
-                return result;
+                return "-1";
             }
 
-            public static string SendTelemetryToIoTHub(byte linkedListNo, bool debug = true)
+            /// <summary>
+            /// Start telemetry transmission
+            /// </summary>
+            /// <param name="linkedListNo">As returned from sensor instantiation [ ie from Setup()]</param>
+            /// <param name="period">(Optional)Telemetry period in seconds [Default=5 sec]</param>
+            /// <param name="debug">(Optional)Extram msgs diplayed</param>
+            /// <returns>SensorListIndex as string (1..10) if all OK, "-1" otherwise</returns>
+            public static string StartSendingTelemetryToIoTHub(byte linkedListNo, byte period = 5, bool debug = true)
             {
-                string result = SendMessage(Commands.groveSensor, 0, (byte)GroveSensorCmds.sendTelemetryToIoTHub, "OK:", linkedListNo, null, debug);
+                var data1 = new List<byte> { period };
+                var data2 = data1.Prepend((byte)data1.Count());
+                byte[] data = data2.ToArray<byte>();
+
+                string result = SendMessage(Commands.groveSensor, 0, (byte)GroveSensorCmds.sendTelemetryToIoTHub, "OK:", linkedListNo,data, debug);
                 if (int.TryParse(result, out int value))
                 {
-
+                    return result;
                 }
-                return result;
+                return "-1";              
             }
 
             public static string PauseSendTelemetry(byte linkedListNo, bool debug = true)

@@ -312,8 +312,6 @@ static void sendTelemetry(String jsonStr)
   char * json = const_cast<char*>(jsonStr.c_str());
   mqtt_client.publish(telemetry_topic, getTelemetryPayload(json), false);
   Serial.println("OK");
-  delay(100);
-  digitalWrite(LED_BUILTIN, LOW);
 }
 
 #endif

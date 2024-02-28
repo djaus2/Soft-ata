@@ -745,20 +745,42 @@ void loop() {
 
                       }
 
-                      info->period=5000;
+                      unsigned long period=5000l;
+                      byte settings[maxNumDisplaySettings]; 
+                      int numSettings=0;
+                      if (otherData!= NULL)
+                      {
+                        for (int i=0; ((i< otherData[0]) &&(i<=maxNumDisplaySettings));i++)
+                        {
+                          settings[i] = otherData[i+1];
+                          numSettings++;
+                        }
+#ifdef TELEMETRY_DOUBLE_FLASH_INBUILT_LED
+                        // Double flash takes about 1 sec of processing, in second core
+                        if (settings[0]<2)
+                          settings[0] = 2;
+#endif 
+                        period = settings[0] * 1000l; // Milliseconds
+                      }
+
+                      Serial.print("period BT");
+                      Serial.println(period);
+
+                      info->period=period;
                       info->isSensor=true;
                       info->sendBT=true;
                       info->SensorIndex = index;
-                      int LEDListIndex = AddCallBack(info);
-                      node->TelemetryStreamNo = LEDListIndex;
+                      int SensorListIndex = AddCallBack(info);
+                      node->TelemetryStreamNo = SensorListIndex;
                       msg = String("OK:");
-                      msg.concat(LEDListIndex);
+                      msg.concat(SensorListIndex);
                     }
                     else
                     {
                       msg=String("Fail:SendTelemetryBT-Sensor not found.");
                     }
                     client.print(msg);
+                    Serial.println(msg);
                   }
                   break; 
                 case s_sendTelemetryToIoTHub:
@@ -771,19 +793,38 @@ void loop() {
                       Grove_Sensor * grove_Sensor  = node->Sensor;
                       // Note: Each sensor instance has a private CallbackInfo property
                       CallbackInfo * info = grove_Sensor->GetCallbackInfo();
-                      info->period=5000;
+
+                      unsigned long period=5000l;
+                      byte settings[maxNumDisplaySettings]; // Allow 4 settings for nw.
+                      int numSettings=0;
+                      if (otherData!= NULL)
+                      {
+                        for (int i=0; ((i< otherData[0]) &&(i<=maxNumDisplaySettings));i++)
+                        {
+                          settings[i] = otherData[i+1];
+                          numSettings++;
+                        }
+#ifdef TELEMETRY_DOUBLE_FLASH_INBUILT_LED
+                        // Double flash takes about 1 sec of processing in second core
+                        if (settings[0]<2)
+                          settings[0] = 2;
+#endif                       
+                        period = settings[0]  * 1000l; // Milliseconds
+                      }
+
+                      info->period=period;
                       info->isSensor=true;
                       info->sendBT=false;
                       info->SensorIndex = index;
 
                       // Lock around Callbacks
                       rp2040.idleOtherCore();
-                      int LEDListIndex = AddCallBack(info);
-                      node->TelemetryStreamNo = LEDListIndex;
+                      int SensorListIndex = AddCallBack(info);
+                      node->TelemetryStreamNo = SensorListIndex;
                       rp2040.resumeOtherCore();
 
                       msg = String("OK:");
-                      msg.concat(LEDListIndex);
+                      msg.concat(SensorListIndex);
                     }
                     else
                     {
@@ -1419,7 +1460,13 @@ void setup1() {
   #endif
   ////////////////////////////////////////////////
 
+
+  while(!Serial);
+  Serial.println("==== 2nd Core Started ====");
   SerialBT.begin();
+  while (!SerialBT) ;
+  Serial.println("SerialBT Started in 2nd Core");
+
 
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, LOW);
@@ -1432,7 +1479,6 @@ void setup1() {
   InbuiltLED.back = Toggle_InbuiltLED;
   int LEDListIndex = AddCallBack(&InbuiltLED);
 
-  while(!Serial);
 
   // Wait for other Setup to finish
   uint32_t sync = rp2040.fifo.pop();
@@ -1440,6 +1486,7 @@ void setup1() {
   {
     establishConnection();
   }
+  Serial.println("==== 2nd Core Ready ====");
   rp2040.fifo.push(sync);
 }
 
@@ -1483,22 +1530,42 @@ void loop1() {
         continue;
       if(!info->isSensor)
       {
+        // Toggle the inbuilt LED
         String res = call_callback_func(info->back);
         if(!(res == String("")))
         {
-          //Fwd json
-          SerialBT.println(res);
+          //SerialBT.println(res);
         }
       }
       else if (info->sendBT)
       {
-        int index = info->SensorIndex;
-        Grove_Sensor * grove_Sensor = GetSensorFromList(index);
-        String res = grove_Sensor->GetTelemetry();
-        if(!(res == String("")))
+        int cntr=0;
+        if (SerialBT) 
         {
-          //Fwd json
-          SerialBT.println(res);
+          int index = info->SensorIndex;
+          Grove_Sensor * grove_Sensor = GetSensorFromList(index);
+          String res = grove_Sensor->GetTelemetry();
+          if(!(res == String("")))
+          {
+            //Fwd json
+            SerialBT.println(res);
+            Serial.println(res);
+#ifdef TELEMETRY_DOUBLE_FLASH_INBUILT_LED
+            // 1s delay with double flash with transmit
+            delay(100);
+            digitalWrite(LED_BUILTIN, LOW);
+            delay(200);
+            digitalWrite(LED_BUILTIN, HIGH);
+            delay(200);
+            digitalWrite(LED_BUILTIN, LOW);
+            delay(200);
+            digitalWrite(LED_BUILTIN, HIGH);
+            delay(200);
+            digitalWrite(LED_BUILTIN, LOW);
+#endif
+            delay(100);
+          }
+          
         }
       }
       else if (!info->sendBT) 
@@ -1514,6 +1581,20 @@ void loop1() {
           }
           // Send Telemetry to IoT Hub
           sendTelemetry(res);
+  #ifdef TELEMETRY_DOUBLE_FLASH_INBUILT_LED
+        // 1s delay with double flash with transmit
+        delay(100);
+        digitalWrite(LED_BUILTIN, LOW);
+        delay(200);
+        digitalWrite(LED_BUILTIN, HIGH);
+        delay(200);
+        digitalWrite(LED_BUILTIN, LOW);
+        delay(200);
+        digitalWrite(LED_BUILTIN, HIGH);
+        delay(200);
+        digitalWrite(LED_BUILTIN, LOW);
+#endif
+        delay(100);
         }
       }
     }

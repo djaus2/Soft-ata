@@ -501,7 +501,7 @@ namespace FirmataBasic
                                     }
                                     else if (sensorMode == 3)
                                     {
-                                        string indxStr = SoftataLib.Sensor.SendTelemetryBT((byte)sensorLinkedListIndex);
+                                        string indxStr = SoftataLib.Sensor.StartSendingTelemetryBT((byte)sensorLinkedListIndex);
                                         if (int.TryParse(indxStr, out int val))
                                             Console.WriteLine($"Streaming to BT started. List No:{val}");
                                         else
@@ -510,7 +510,7 @@ namespace FirmataBasic
                                     }
                                     else if (sensorMode == 4)
                                     {
-                                        string indxStr = SoftataLib.Sensor.SendTelemetryToIoTHub((byte)sensorLinkedListIndex);
+                                        string indxStr = SoftataLib.Sensor.StartSendingTelemetryToIoTHub((byte)sensorLinkedListIndex);
                                         if (int.TryParse(indxStr, out int val))
                                         { 
                                             Console.WriteLine($"Streaming to Azure IoT Hub started. List No:{val}");

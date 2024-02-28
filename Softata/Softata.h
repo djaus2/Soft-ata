@@ -10,8 +10,8 @@
 
 //WiFi
 #ifndef STASSID
-#define STASSID "<wifi-nw>"
-#define STAPSK "<pwd>"
+#define STASSID "APQLZM"
+#define STAPSK "silly1371"
 #endif
 
 #define IOT_CONFIG_WIFI_SSID STASSID
@@ -19,10 +19,11 @@
 
 // Azure IoT
 // Uncomment following if using Azure IoT Hub
-#define USINGIOTHUB
-#define IOT_CONFIG_IOTHUB_FQDN  "<hubname>.azure-devices.net"
-#define IOT_CONFIG_DEVICE_ID  "<devicename>"
-#define IOT_CONFIG_DEVICE_KEY  "<device-key>" 
+//#define USINGIOTHUB
+// For Bluetooth do not define USINGIOTHUB
+#define IOT_CONFIG_IOTHUB_FQDN  "DjzHub137.azure-devices.net"
+#define IOT_CONFIG_DEVICE_ID  "DjzDevice137"
+#define IOT_CONFIG_DEVICE_KEY  "gmgSfLmTClqzAfA6wxSO1oxDmlgJzALjBAIoTD0qMFQ=" 
 
 //Server Port
 #define PORT 4242
@@ -81,6 +82,9 @@ enum GroveActuatorCmds{a_getpinsCMD, a_tbdCMD, a_setupDefaultCMD, a_setupCMD, a_
 ///////////////////////// S E N S O R S /////////////////////////////////////////////////
 
 enum GroveSensorCmds{s_getpinsCMD, s_getPropertiesCMD, s_setupdefaultCMD, s_setupCMD, s_readallCMD, s_readCMD, s_getTelemetry,s_sendTelemetryBT, s_sendTelemetryToIoTHub, s_pause_sendTelemetry, s_continue_sendTelemetry, s_getSensorsCMD=255 };
+
+// Adds about 1sec to telemtry transmit (in second core).
+#define TELEMETRY_DOUBLE_FLASH_INBUILT_LED
 
 #define DHT11_PROPERTIES "Temperature,Humidity"
 #define BME280_PROPERTIES "Temperature,Pressure,Humidity"
