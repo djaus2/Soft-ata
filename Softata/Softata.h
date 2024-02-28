@@ -3,7 +3,7 @@
 
 
 
-#define APP_VERSION "4.98"
+#define APP_VERSION "4.985"
 
 //#define RPI_PICO_DEFAULT
 #define GROVE_RPI_PICO_SHIELD
@@ -19,7 +19,7 @@
 
 // Azure IoT
 // Uncomment following if using Azure IoT Hub
-//#define USINGIOTHUB
+#define USINGIOTHUB
 // For Bluetooth do not define USINGIOTHUB
 #define IOT_CONFIG_IOTHUB_FQDN  "DjzHub137.azure-devices.net"
 #define IOT_CONFIG_DEVICE_ID  "DjzDevice137"

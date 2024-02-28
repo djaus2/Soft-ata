@@ -1463,9 +1463,9 @@ void setup1() {
 
   while(!Serial);
   Serial.println("==== 2nd Core Started ====");
-  SerialBT.begin();
+  /*SerialBT.begin();
   while (!SerialBT) ;
-  Serial.println("SerialBT Started in 2nd Core");
+  Serial.println("SerialBT Started in 2nd Core");*/
 
 
   pinMode(LED_BUILTIN, OUTPUT);
@@ -1539,9 +1539,15 @@ void loop1() {
       }
       else if (info->sendBT)
       {
-        int cntr=0;
-        if (SerialBT) 
+        if(!SerialBT)
         {
+          Serial.println("Starting SerialBT in 2nd Core");
+          SerialBT.begin();
+          while (!SerialBT);// Perhaps a timeout??
+          Serial.println("SerialBT Started in 2nd Core");
+        }
+        if (SerialBT) 
+        {      
           int index = info->SensorIndex;
           Grove_Sensor * grove_Sensor = GetSensorFromList(index);
           String res = grove_Sensor->GetTelemetry();
