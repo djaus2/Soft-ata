@@ -4,7 +4,7 @@
 <h2>Project is being updated:</h2>
 
 - V4.985 Bluetooth Sensor send and Az IoT Hub work for BME280 in Blazor
-  - HINT: Define ```USINGIOTHUB``` for IoT Hub Telemetry
+  - HINT: Define  ```USINGIOTHUB``` for IoT Hub Telemetry in ```softata.h``` in Arduino app
     - Now not an issue with it being defined with Blutooth as per V4.98
 - V4.97 Fixed small error in Arduino wrt Azure IoT Hub enabling
     - Also added some text messages when running Console in IoT Hub mode, wrt Device Explorer.
