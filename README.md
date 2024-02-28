@@ -2,6 +2,7 @@
 
 <hr/>
 <h2>Project is being updated:</h2>
+
 - V4.98 BT SDensor send and Az IoT Hub work for BME280 in Blazor
   - HINT: Define ```USINGIOTHUB``` for IoT Hub Telemetry but UNDEFINE for Bluetooth
 - V4.97 Fixed small error in Arduino wrt Azure IoT Hub enabling
