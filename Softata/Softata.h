@@ -5,7 +5,7 @@
 enum SyncedCommands : byte {pauseTelemetryorBT=0,continueTelemetryorBT=1,stopTelemetryorBT=2,svrConnected=10, initialSynch=137};
 #define SynchMultiplier 1000
 
-#define APP_VERSION "5.00"
+#define APP_VERSION "4.99"
 
 //#define RPI_PICO_DEFAULT
 #define GROVE_RPI_PICO_SHIELD

@@ -2,6 +2,8 @@
 // Code run in second Core //
 /////////////////////////////
 
+//enum SyncedCommands : byte {pauseTelemetryorBT=0,continueTelemetryorBT=1,stopTelemetryorBT=2,svrConnected=10, initialSynch=137};
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <SerialBT.h>
@@ -117,23 +119,27 @@ void setup1() {
 
 /*
 rp2040.fifo:
-
+enum SyncedCommands : byte {pauseTelemetryorBT=0,continueTelemetryorBT=1,stopTelemetryorBT=2,svrConnected=10, initialSynch=137};
 START:
-- At start push 137 from Setup() (near end) in Core1 and wait
-- Core2 in Setup1() waits for that before establishing connection to IoT Hub if required
+- At start push 137 [initialSynch] from Setup() (near end) in Core1 and wait
+- Core2 in Setup1() waits for that before establishing connection to MQTT if required
 - Core2 pushes it back and completes Setup1().
 - Core1 completes Setup()
 
 Synched commands from Core1 to Core2
-- 10: Service in Core1 has been connected:
+- svrConnected: Service in Core1 has been connected:
+  - Cmd passed is 137
   - Remove LED from list
   - Init Sensor list
   - Set blink rate 1/4 of long rate
   - Add LED back into list
   - In built LED now flashes quicker to indicate connected
-- 0: Pause indexed Telemetry or BT
-- 1: Continue Telemetry of BT
-- 3: Stop Telemetry or BT 
+- pauseTelemetryorBT: Pause indexed Telemetry or BT
+  - Cmd passed 0
+- continueTelemetryorBT: Continue indexed Telemetry of BT
+  - Cmd passed 1
+- stopTelemetryorBT: Stop indexed Telemetry or BT 
+  - Cmd passed 2
 
 */
 void loop1() {
