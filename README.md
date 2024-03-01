@@ -26,8 +26,6 @@
   - _Note:_ Software bargraphs in app for Analog data.
   - Sensors
       - The 3 sensors now available in Blazor app
-        - Read and generate json string only
-        - Telemetry to IoT Hub soon 
   - Displays
     - Neopixel and Grove LCD16x2 RGB Display work with default setiings.
     - V4.12 OLED096 now **FULLY** works. _Extended tests now_.
