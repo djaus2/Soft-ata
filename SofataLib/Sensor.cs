@@ -10,7 +10,7 @@ using Softata.Enums;
 namespace Softata
 {
 
-    public enum GroveSensorCmds{getpins, getProperties, setupdefault, setup,  readall, read, getTelemetry, sendTelemetryBT, sendTelemetryToIoTHub, pause_sendTelemetry, continue_sendTelemetry, getSensors =255
+    public enum GroveSensorCmds{getpins, getProperties, setupdefault, setup,  readall, read, getTelemetry, sendTelemetryBT, sendTelemetryToIoTHub, pause_sendTelemetry, continue_sendTelemetry, stop_sendTelemetry, getSensors =255
       ,
     }
     // getpins, getProperties are specific sensor class static commands so send sensor type as other rather than linkedListNo
@@ -129,6 +129,16 @@ namespace Softata
                 byte[] data = data2.ToArray<byte>();
                 string result = SendMessage(Commands.groveSensor, 0, (byte)GroveSensorCmds.sendTelemetryBT, "OK:", linkedListNo, data, debug);
                 if(int.TryParse(result, out int value))
+                {
+                    return result;
+                }
+                return "-1";
+            }
+
+            public static string StopSendingTelemetry(byte linkedListNo,  bool debug = true)
+            {;
+                string result = SendMessage(Commands.groveSensor, 0, (byte)GroveSensorCmds.stop_sendTelemetry, "OK:", linkedListNo, null, debug);
+                if (int.TryParse(result, out int value))
                 {
                     return result;
                 }

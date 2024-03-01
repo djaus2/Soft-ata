@@ -62,14 +62,15 @@ void setup() {
   InitActuatorList();  
   first = false;
   // Just to be safe don't simulataneously setup server and client
-  uint32_t val = 137;
+  uint32_t val = initialSynch;
+  Serial.print("Initial Core1-Core2 Synch value:");
   Serial.println(val);
   rp2040.fifo.push(val);
   uint32_t sync = rp2040.fifo.pop();
   if(val==sync)
-    Serial.println("Core1 and Core2 Setup Sync OK");
+    Serial.println("Core1-Core2 Setup Sync OK");
   else
-    Serial.println("Core1 and Core2 Setup Sync Fail");
+    Serial.println("Core1-Core2 Setup Sync Fail");
   watchdog_enable(WATCHDOG_SECS * 1000, false);
 }
 
@@ -111,7 +112,7 @@ void loop() {
     if(!hasConnected)
     {
       hasConnected = true;
-      rp2040.fifo.push(10010); //Make Inbuilt LED flash faster
+      rp2040.fifo.push( SynchMultiplier + (int)svrConnected); //Make Inbuilt LED flash faster
       while (!rp2040.fifo.available())
       {
           watchdog_update();
@@ -841,8 +842,8 @@ void loop() {
                     String msg;
                     if(node != NULL)
                     {
-                      // Encapsulate the TelemetryStreamNo and oause (ie 9) in one value
-                      int num = node->TelemetryStreamNo*1000 + 0;
+                      // Encapsulate the TelemetryStreamNo and oause (ie 0) in one value
+                      int num = node->TelemetryStreamNo*SynchMultiplier + pauseTelemetryorBT;
                       rp2040.fifo.push(num);
                       while (!rp2040.fifo.available())
                       {
@@ -874,7 +875,9 @@ void loop() {
                     if(node != NULL)
                     {
                       // Encapsulate the TelemetryStreamNo and run/continue (ie 1) in one value
-                      int num = node->TelemetryStreamNo*1000 + 1;
+                      int num = node->TelemetryStreamNo*1000 + continueTelemetryorBT;
+                      Serial.print("s_continue_sendTelemetry num:");
+                      Serial.println(num);
                       rp2040.fifo.push(num);
                       while (!rp2040.fifo.available())
                       {
@@ -897,7 +900,41 @@ void loop() {
                     Serial.println(msg);
                     client.print(msg);
                   } 
-                  break;         
+                  break; 
+                case s_stop_sendTelemetry:
+                  {
+                    int index = other;
+                    SensorListNode * node = GetNode(index);
+                    String msg;
+                    if(node != NULL)
+                    {
+                      // Encapsulate the TelemetryStreamNo and oause (ie 0) in one value
+                      int num = node->TelemetryStreamNo*SynchMultiplier + stopTelemetryorBT;
+                      Serial.print("Stop Telemetry num:");
+                      Serial.println(num);
+                      rp2040.fifo.push(num);
+                      while (!rp2040.fifo.available())
+                      {
+                          watchdog_update();
+                      }
+                      uint32_t sync = rp2040.fifo.pop();
+                      if(sync == 1)
+                      {
+                        msg = String("OK:Stop Telemtry");
+                      }
+                      else
+                      {
+                        msg = String("Fail:Stop_sendTelemetry()-Pause error");
+                      }
+                    }
+                    else
+                    {
+                      msg = String("Fail:Pause_sendTelemetry()-Sensor not found");
+                    }
+                    Serial.println(msg);
+                    client.print(msg);
+                  }
+                  break;        
                 case s_getSensorsCMD:
                   {
                     String msg = String("OK:");
@@ -1377,240 +1414,8 @@ void loop() {
   client.flush();
 }
 
-///////////////////////////
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <SerialBT.h>
-#include "iothub.h"
-
-bool Led_State = false;
-bool doingIoTHub = false;
-
-
-String call_callback_func(String(*call_back)(void))
-{
-    return call_back();
-}
-
-int numSensors =0;
-int AddCallBack(CallbackInfo * info)
-{
-  info->isRunning = true;
-  info->next = millis() + info->period;;
-  int LEDListIndex=AddSensorToCore2List(info);
-  numSensors = LEDListIndex +1;
-  // Turn on mqtt loop if IoT Hub Sends
-  if((info->isSensor)&&(!info->sendBT))
-  {
-    doingIoTHub=true;
-  }
-  return LEDListIndex;
-}
-
-bool PauseTelemetrySend(int index)
-{
-  CallbackInfo * info = GetCallbackInfoFromCore2List(index);
-  if (info!= NULL)
-  {
-    info->isRunning = false;
-    return true;
-  }
-  else
-    return false;
-}
-
-bool ContinueTelemetrySend(int index)
-{
-  CallbackInfo * info = GetCallbackInfoFromCore2List(index);
-  if (info!= NULL)
-  {
-    info->isRunning = true;
-    return true;
-  }
-  else
-    return false;
-}
-
-String Toggle_InbuiltLED()
-{
-    Led_State = !Led_State;
-    digitalWrite(LED_BUILTIN, (PinStatus)Led_State);
-    if(Led_State)
-      return "ON";
-    else
-      return "OFF";
-}
-
-struct CallbackInfo InbuiltLED;
-
-int LEDListIndex = -1;
-
-void setup1() {
-  numSensors=0;
-
-  /////////////////////////////////////////////////
-  // Defined in Softata.h
-  // Perhaps make software setable??
-  // App starts quicker if not defined
-  #ifdef USINGIOTHUB
-    doingIoTHub = true;
-  #else
-    doingIoTHub = false;
-  #endif
-  ////////////////////////////////////////////////
-
-
-  while(!Serial);
-  Serial.println("==== 2nd Core Started ====");
-  /*SerialBT.begin();
-  while (!SerialBT) ;
-  Serial.println("SerialBT Started in 2nd Core");*/
-
-
-  pinMode(LED_BUILTIN, OUTPUT);
-  digitalWrite(LED_BUILTIN, LOW);
-  Led_State = false;
-
-  InitCore2SensorList();
-  InbuiltLED.period = UNCONNECTED_BLINK_ON_PERIOD;
-  InbuiltLED.isRunning = true;
-  InbuiltLED.isSensor = false;
-  InbuiltLED.back = Toggle_InbuiltLED;
-  int LEDListIndex = AddCallBack(&InbuiltLED);
-
-
-  // Wait for other Setup to finish
-  uint32_t sync = rp2040.fifo.pop();
-  if(doingIoTHub)
-  {
-    establishConnection();
-  }
-  Serial.println("==== 2nd Core Ready ====");
-  rp2040.fifo.push(sync);
-}
-
-void loop1() {
-  if (rp2040.fifo.available())
-  {
-    uint32_t val = rp2040.fifo.pop();
-    int index = val / 1000;
-    int state = val % 1000;
-    bool res = false;
-    if (state ==0)
-      res =  PauseTelemetrySend(index);
-    else if(state==10)
-    {
-      // Double LED blink speed if connected
-      // should be done before any sensors etc added
-      RemoveSensorFromCore2List(LEDListIndex);
-      InitCore2SensorList();
-      InbuiltLED.period = InbuiltLED.period /4;
-      LEDListIndex = AddCallBack(&InbuiltLED);
-      res = true;
-    }
-    else
-      res =  ContinueTelemetrySend(index);
-    if(res)
-      rp2040.fifo.push(1);
-    else
-      rp2040.fifo.push(0);
-  }
-  for (int i=0; i< numSensors;i++)
-  {
-    CallbackInfo * info = GetCallbackInfoFromCore2List(i);
-    if (info == NULL)
-      continue;
-
-    unsigned long currentTime = millis();             
-    if ( currentTime > info->next )
-    {
-      info->next = millis() + info->period;
-      if(!info->isRunning)
-        continue;
-      if(!info->isSensor)
-      {
-        // Toggle the inbuilt LED
-        String res = call_callback_func(info->back);
-        if(!(res == String("")))
-        {
-          //SerialBT.println(res);
-        }
-      }
-      else if (info->sendBT)
-      {
-        if(!SerialBT)
-        {
-          Serial.println("Starting SerialBT in 2nd Core");
-          SerialBT.begin();
-          while (!SerialBT);// Perhaps a timeout??
-          Serial.println("SerialBT Started in 2nd Core");
-        }
-        if (SerialBT) 
-        {      
-          int index = info->SensorIndex;
-          Grove_Sensor * grove_Sensor = GetSensorFromList(index);
-          String res = grove_Sensor->GetTelemetry();
-          if(!(res == String("")))
-          {
-            //Fwd json
-            SerialBT.println(res);
-            Serial.println(res);
-#ifdef TELEMETRY_DOUBLE_FLASH_INBUILT_LED
-            // 1s delay with double flash with transmit
-            delay(100);
-            digitalWrite(LED_BUILTIN, LOW);
-            delay(200);
-            digitalWrite(LED_BUILTIN, HIGH);
-            delay(200);
-            digitalWrite(LED_BUILTIN, LOW);
-            delay(200);
-            digitalWrite(LED_BUILTIN, HIGH);
-            delay(200);
-            digitalWrite(LED_BUILTIN, LOW);
-#endif
-            delay(100);
-          }
-          
-        }
-      }
-      else if (!info->sendBT) 
-      {
-        int index = info->SensorIndex;
-        Grove_Sensor * grove_Sensor = GetSensorFromList(index);
-        String res = grove_Sensor->GetTelemetry();
-        if(!(res == String("")))
-        {
-          if (!mqtt_client.connected())
-          {
-            establishConnection();
-          }
-          // Send Telemetry to IoT Hub
-          sendTelemetry(res);
-  #ifdef TELEMETRY_DOUBLE_FLASH_INBUILT_LED
-        // 1s delay with double flash with transmit
-        delay(100);
-        digitalWrite(LED_BUILTIN, LOW);
-        delay(200);
-        digitalWrite(LED_BUILTIN, HIGH);
-        delay(200);
-        digitalWrite(LED_BUILTIN, LOW);
-        delay(200);
-        digitalWrite(LED_BUILTIN, HIGH);
-        delay(200);
-        digitalWrite(LED_BUILTIN, LOW);
-#endif
-        delay(100);
-        }
-      }
-    }
-    if(doingIoTHub)
-    {
-       // MQTT loop must be called to process Device-to-Cloud and Cloud-to-Device.
-      mqtt_client.loop();
-    }
-  }
-}
+// Core2 code moved from here to:
+#include "SoftataCore2.h"
 
 
 

@@ -1,9 +1,11 @@
 #ifndef SOFTATAH
 #define SOFTATAH
 
+// Core1 -> Core2 Synched Commands
+enum SyncedCommands : byte {pauseTelemetryorBT=0,continueTelemetryorBT=1,stopTelemetryorBT=2,svrConnected=10, initialSynch=137};
+#define SynchMultiplier 1000
 
-
-#define APP_VERSION "4.985"
+#define APP_VERSION "5.00"
 
 //#define RPI_PICO_DEFAULT
 #define GROVE_RPI_PICO_SHIELD
@@ -21,9 +23,9 @@
 // Uncomment following if using Azure IoT Hub
 #define USINGIOTHUB
 // For Bluetooth do not define USINGIOTHUB
-#define IOT_CONFIG_IOTHUB_FQDN  "DjzHub137.azure-devices.net"
-#define IOT_CONFIG_DEVICE_ID  "DjzDevice137"
-#define IOT_CONFIG_DEVICE_KEY  "gmgSfLmTClqzAfA6wxSO1oxDmlgJzALjBAIoTD0qMFQ=" 
+#define IOT_CONFIG_IOTHUB_FQDN  "hub137.azure-devices.net"
+#define IOT_CONFIG_DEVICE_ID  "dev137"
+#define IOT_CONFIG_DEVICE_KEY  "bkN4hdz/SGVPuBQl3hPyT9Z8+OD0A7qDvAIoTDYIq5o=" 
 
 //Server Port
 #define PORT 4242
@@ -81,7 +83,9 @@ enum GroveActuatorCmds{a_getpinsCMD, a_tbdCMD, a_setupDefaultCMD, a_setupCMD, a_
 
 ///////////////////////// S E N S O R S /////////////////////////////////////////////////
 
-enum GroveSensorCmds{s_getpinsCMD, s_getPropertiesCMD, s_setupdefaultCMD, s_setupCMD, s_readallCMD, s_readCMD, s_getTelemetry,s_sendTelemetryBT, s_sendTelemetryToIoTHub, s_pause_sendTelemetry, s_continue_sendTelemetry, s_getSensorsCMD=255 };
+enum GroveSensorCmds{s_getpinsCMD, s_getPropertiesCMD, s_setupdefaultCMD, s_setupCMD, s_readallCMD, s_readCMD,
+                     s_getTelemetry,s_sendTelemetryBT, s_sendTelemetryToIoTHub, s_pause_sendTelemetry, s_continue_sendTelemetry,
+                     s_stop_sendTelemetry, s_getSensorsCMD=255 };
 
 // Adds about 1sec to telemtry transmit (in second core).
 #define TELEMETRY_DOUBLE_FLASH_INBUILT_LED

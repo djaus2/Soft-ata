@@ -105,8 +105,8 @@ else @if ((AppState.ISensor != 0xff))
                 <td>Port:</td>
                 <td><input type="text" value="@port" /></td>
             </tr>
-            <button class="btn btn-primary" @onclick="Connect">Connect</button>
-
+            <tr><td colspan="2">Wait until Inbuilt LED flashes slowly.</td></tr>
+            <tr><td><button class="btn btn-primary" @onclick="Connect">Connect</button></td></tr>
         </table>
     }
     else if (AppState.TestCategory == DeviceCategory.MaxType)

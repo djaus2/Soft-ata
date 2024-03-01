@@ -27,9 +27,17 @@
 }
 else if (AppState.Running)
 {
-    <Fold />
-    <p>Running ...</p>
-    <hr />
+    @if(!pause)
+    {
+        <Fold />
+        <p>Running ...</p>
+            <hr />
+    }
+    else
+    {
+        <p>Paused ...</p>
+        <hr />
+    }
 }
 
 @if (!string.IsNullOrEmpty(AppState.AppVersion))
@@ -157,9 +165,20 @@ else
                 <button  class="btn btn-primary" @onclick="Reconnect">Reconnect and run test</button>
             }
             else if (RunVisble)
-            { 
+            {
                 <br/>
-                <button class="btn btn-primary" @onclick="Start">Run sequence of tests.</button>
+                @if(AppState.SensorMode!= 0xff)
+                {
+                    @if (@AppState.SensorMode > 3)
+                    {
+                        <button class="btn btn-primary" @onclick="Start">Start sequence of tests.</button>
+                    }
+                    else 
+                    {
+                        <button class="btn btn-primary" @onclick="@(async () => await Run())">Run sequence of tests.</button>
+
+                    }
+                }
             }
             <h3>Select Sensor Mode</h3>
             <select @bind=@AppState.SensorMode>
@@ -174,37 +193,42 @@ else
         }
         else
         {
+            <h3>Sensor Mode: @SensorModes[AppState.SensorMode]</h3>
             <div class="form-group">
-
-                @switch (AppState.TestType)
-                {
-                    case Softata.Enums.CommandType.Sensors:
-                        {
-                            switch (sensorDevice)
-                            {
-                                case SensorDevice.BME280:
-                                    @if (showMenu)
-                                    {
-                                        <br/>
-                                        <select @bind=@AppState.SensorMode>
-                                            <option value= "0xff">Select Sensor Mode</option>
-                                            <option value="5">Pause BT or IoT Telemetry Stream"</option> P
-                                            <option value="6"> Continue BT IoT Telemetry Stream</option> P
-                                            <option value="7">Quit </option>
-                                        </select>
-                                        @*                                            
-                                            <option value="4">Send Telemetry BT</option>
-                                            <option value="5">Send Telemetry IoT Hub</option>                                      
-                                             <option value = "5">Pause BT or IoT Telemetry Stream"</option> P
-                                            <option value = "6"> Continue BT IoT Telemetry Stream</option> P
-                                            <option value = "7">Quit </option> *@
-                                       
-                                    }
-                                    break;
-                            }
-                        }
-                        break;
-                }
+            @if (ShowMenu)
+            {
+                <table>
+                    <tr>
+                        <td>
+                            <button class="btn btn-primary" @onclick="Pause">Pause</button>
+                        </td>
+                        <td>
+                            <button class="btn btn-secondary" @onclick="Continue">Continue</button>
+                        </td>
+                        <td>
+                            <button class="btn btn-primary" @onclick="StopT">Stop</button>
+                        </td>
+                        <td> 
+                            <button class="btn btn-secondary" @onclick="Quit">Quit</button>
+                        </td>
+                    </tr>
+                    </table>
+                    }
+            else @if(KeepRunning)
+            {
+                    <td>
+                        <button class="btn btn-primary" @onclick="Pause">Pause</button>
+                    </td>
+                    <td>
+                        <button class="btn btn-secondary" @onclick="Continue">Continue</button>
+                    </td>
+                    <td>
+                        <button class="btn btn-primary" @onclick="StopT">Stop</button>
+                    </td>
+                    <td>
+                        <button class="btn btn-secondary" @onclick="Quit">Quit</button>
+                    </td>                                    
+            }
             </div>
             <br/>
             <br/>
@@ -234,6 +258,17 @@ else
     MarkupString OKMsg { get; set; } = new MarkupString("");
     MarkupString RunMsg { get; set; } = new MarkupString("");
     byte pin = 0;
+
+    string[] SensorModes = new string[]
+    {
+        "",
+        "Read Sensor Values All",
+        "Read Sensor Values Individual",
+        ">Get Telemetry json string",
+        "Send Telemetry BT",
+        "Send Telemetry IoT Hub",
+        "Quit"
+    };
 
 
     string[] properties = new string[0];
@@ -304,6 +339,89 @@ else
 
     }
 
+    int previousMode = -1;
+    private void NextAction(ChangeEventArgs e)
+    {
+        if (e == null)
+            return;
+        var selected = e.Value.ToString();
+        if (selected != null)
+        {
+            if (int.TryParse(selected, out int val))
+            {
+                AppState.SensorMode = val;
+                Start();
+            }
+        }
+
+    }
+
+    bool pause = false;
+    private void Pause()
+    {
+        pause = true;
+        if(ShowMenu)
+        {
+            AppState.Data = new MarkupString($"Telemetry Pausing");
+            string json = SoftataLib.Sensor.PauseSendTelemetry((byte)deviceLinkedListIndex);
+            AppState.Data = new MarkupString($"Telemetry Paused");
+            Console.WriteLine($"json {json}");
+        }
+        else if(KeepRunning)
+        {
+
+        }
+    }
+
+    private void Continue()
+    {
+        pause = false;
+        if (ShowMenu)
+        {
+            AppState.Data = new MarkupString($"Telemetry Continuing");
+            string json = SoftataLib.Sensor.ContinueSendTelemetry((byte)deviceLinkedListIndex);
+            AppState.Data = new MarkupString($"Telemetry Continued");
+            Console.WriteLine($"json {json}");
+        }
+        else if (KeepRunning)
+        {
+
+        }
+    }
+
+    private void StopT()
+    {
+        if (ShowMenu)
+        {
+            AppState.Data = new MarkupString($"Telemetry Stopping");
+            string json = SoftataLib.Sensor.StopSendingTelemetry((byte)deviceLinkedListIndex);
+            AppState.Data = new MarkupString($"Telemetry Stopped");
+            ShowMenu = false;
+            RunVisble = true;
+        }
+        else if (KeepRunning)
+        {
+            KeepRunning = false;
+        }
+        AppState.Running = false;
+        StateHasChanged();
+    }
+
+    private void Quit()
+    {
+        if (ShowMenu)
+        {
+            StopT();
+        }
+        else if (KeepRunning)
+        {
+            KeepRunning = false;
+        }
+        SoftataLib.SendMessageCmd("End"); ;
+    }
+
+
+
     private async void Reconnect()
     {
         Busy = true;
@@ -316,16 +434,73 @@ else
         Busy = false;
         StateHasChanged();
         await Task.Delay(100);
-        await Start();
+        //await Start();
     }
 
-    private async Task Start()
+
+
+    private void Start()
     {
         if (AppState.SensorMode == 0xff)
             return;
+        AppState.Data = new MarkupString("");
+        previousMode = AppState.SensorMode;
         AppState.Running = true;
         RunVisble = false;
-        Busy = true;
+
+
+        RunMsg = new MarkupString($"<h4>Exercising the {sensorName} Sensor.</h4>");
+        StateHasChanged();
+
+        /////////////////////////// T E S T S /////////////////////////////
+        ShowMenu = true; ;
+        StateHasChanged();
+        if (AppState.SensorMode == 4)
+        {
+            byte period = 2;
+            if (AppState.TestStepPeriod > 1000)
+            {
+                // In case entered as millisec:
+                period = (byte)(AppState.TestStepPeriod / 1000);
+            }
+            string indxStr = SoftataLib.Sensor.StartSendingTelemetryBT((byte)deviceLinkedListIndex,period);
+            if (int.TryParse(indxStr, out int val))
+                AppState.Data = new MarkupString($"Streaming to BT started. List No:{val}");
+            else
+                AppState.Data = new MarkupString($"Streaming to BT failed to start.");
+        }
+        else if (AppState.SensorMode == 5)
+        {
+            byte period = 2;
+            if (AppState.TestStepPeriod > 1000)
+            {
+                // In case entered as millisec:
+                period = (byte)(AppState.TestStepPeriod / 1000);
+            }
+
+
+            string indxStr = SoftataLib.Sensor.StartSendingTelemetryToIoTHub((byte)deviceLinkedListIndex, period);
+            if (int.TryParse(indxStr, out int val))
+            {
+                AppState.Data = new MarkupString($"Streaming to Azure IoT Hub started. List No:{val}");
+            }
+            else
+                AppState.Data = new MarkupString($"Streaming to Azure IoT Hub failed to start.");
+        }
+
+        /////////////////////////// T E S T S /////////////////////////////
+        StateHasChanged();
+    }
+
+
+    private async Task Run()
+    {
+        if (AppState.SensorMode == 0xff)
+            return;
+        pause= false;
+        AppState.Running = true;
+        RunVisble = false;
+        Busy = false;
         StateHasChanged();
         await Task.Delay(333);
 
@@ -333,77 +508,28 @@ else
         StateHasChanged();
 
         /////////////////////////// T E S T S /////////////////////////////
-        int sensorQuitModeNo = 7;
+        int sensorQuitModeNo = 8;
         bool debug = false;
         KeepRunning = true;
         StateHasChanged();
         while (KeepRunning)
         {
-            if(showMenu)
+            while(pause)
             {
-                Thread.Sleep(1000);
-                continue;
+                await Task.Delay(500);
             }
-            if (AppState.SensorMode == sensorQuitModeNo)
-            {
-                Console.WriteLine("Quitting app. Please wait.");
+            if (!KeepRunning)
                 break;
-            }
-            else if (AppState.SensorMode == 3)
+            if (AppState.SensorMode == 3)
             {
                 string json = SoftataLib.Sensor.GetTelemetry((byte)deviceLinkedListIndex, debug);
-                string data = $"<h3>{sensorName}</h3>";;
+                string data = $"<h3>{sensorName}</h3>"; ;
                 data += $"<code>{json}</code>";
                 AppState.Data = new MarkupString(data);
                 StateHasChanged();
                 Console.WriteLine($"\t\t Telemetry: {json}");
-                Thread.Sleep((int)AppState.TestStepPeriod);
+                await Task.Delay((int)AppState.TestStepPeriod);
             }
-            else if (AppState.SensorMode == 4)
-            {
-                byte period = 2;
-                if (AppState.TestStepPeriod > 1000)
-                {
-                    // In case entered as millisec:
-                    period = (byte)(AppState.TestStepPeriod / 1000);
-                }
-                string indxStr = SoftataLib.Sensor.StartSendingTelemetryBT((byte)deviceLinkedListIndex,period);
-                if (int.TryParse(indxStr, out int val))
-                    Console.WriteLine($"Streaming to BT started. List No:{val}");
-                else
-                    Console.WriteLine($"Streaming to BT failed to start.");
-                showMenu = true;
-            }
-            else if (AppState.SensorMode == 5)
-            {
-                byte period = 2;
-                if (AppState.TestStepPeriod > 1000)
-                {
-                    // In case entered as millisec:
-                    period = (byte)(AppState.TestStepPeriod / 1000);
-                }
-
-
-                string indxStr = SoftataLib.Sensor.StartSendingTelemetryToIoTHub((byte)deviceLinkedListIndex, period);
-                if (int.TryParse(indxStr, out int val))
-                {
-                    Console.WriteLine($"Streaming to Azure IoT Hub started. List No:{val}");
-                }
-                else
-                    Console.WriteLine($"Streaming to Azure IoT Hub failed to start.");
-                showMenu = true;
-            }
-            else if (AppState.SensorMode == 6)
-            {
-                string json = SoftataLib.Sensor.PauseSendTelemetry((byte)deviceLinkedListIndex);
-                Console.WriteLine($"json {json}");
-            }
-            else if (AppState.SensorMode == 7)
-            {
-                string json = SoftataLib.Sensor.ContinueSendTelemetry((byte)deviceLinkedListIndex);
-                Console.WriteLine($"json {json}");
-            }
-
             else if (AppState.SensorMode == 1)
             {
                 double[]? values = SoftataLib.Sensor.ReadAll((byte)deviceLinkedListIndex, debug);
@@ -424,12 +550,12 @@ else
 
                 }
 
-                Thread.Sleep((int)AppState.TestStepPeriod);
+                await Task.Delay((int)AppState.TestStepPeriod);
             }
             else if (AppState.SensorMode == 2)
             {
                 Console.WriteLine("Individual Read():");
-            
+
                 string data = $"<h3>{sensorName}</h3><ul>";
                 for (byte p = 0; p < properties.Length; p++)
                 {
@@ -443,14 +569,18 @@ else
                 data += "</ul>";
                 AppState.Data = new MarkupString(data);
                 StateHasChanged();
-                Thread.Sleep((int)AppState.TestStepPeriod);
+                await Task.Delay((int)AppState.TestStepPeriod);
             }
         }
         /////////////////////////// T E S T S /////////////////////////////
 
         RunMsg = new MarkupString("<h4>Done.</h4>");
-        Busy = false;
-        AppState.Running = false;
+        if (!ShowMenu)
+        {
+            Busy = false;
+            AppState.Running = false;
+        }
+        AppState.Data = new MarkupString("");
         RunVisble = true;
         StateHasChanged();
     }

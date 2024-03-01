@@ -244,8 +244,14 @@ bool RemoveSensorFromCore2List(int index)
 {
   if((index>=0) && (index < MAX_SENSORS))
   {
-    Core2SensorList[index]->callbackInfo= NULL;
-    return true;
+    CallbackInfo * info = Core2SensorList[index]->callbackInfo;
+    if(Core2SensorList[index]->callbackInfo != NULL)
+    {
+      Core2SensorList[index]->callbackInfo= NULL;
+      return true;
+    }
+    else
+      return false;
   }
   else
     return false;
