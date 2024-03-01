@@ -12,8 +12,8 @@ enum SyncedCommands : byte {pauseTelemetryorBT=0,continueTelemetryorBT=1,stopTel
 
 //WiFi
 #ifndef STASSID
-#define STASSID "APQLZM"
-#define STAPSK "silly1371"
+#define STASSID "<nw>>"
+#define STAPSK "<pwd>"
 #endif
 
 #define IOT_CONFIG_WIFI_SSID STASSID
@@ -23,9 +23,9 @@ enum SyncedCommands : byte {pauseTelemetryorBT=0,continueTelemetryorBT=1,stopTel
 // Uncomment following if using Azure IoT Hub
 #define USINGIOTHUB
 // For Bluetooth do not define USINGIOTHUB
-#define IOT_CONFIG_IOTHUB_FQDN  "hub137.azure-devices.net"
-#define IOT_CONFIG_DEVICE_ID  "dev137"
-#define IOT_CONFIG_DEVICE_KEY  "bkN4hdz/SGVPuBQl3hPyT9Z8+OD0A7qDvAIoTDYIq5o=" 
+#define IOT_CONFIG_IOTHUB_FQDN  "<hubname>.azure-devices.net"
+#define IOT_CONFIG_DEVICE_ID  "<devicename>"
+#define IOT_CONFIG_DEVICE_KEY  "<device connection key>" 
 
 //Server Port
 #define PORT 4242
