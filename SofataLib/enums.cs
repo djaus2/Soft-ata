@@ -6,6 +6,7 @@
     public enum SensorDevice : byte { DHT11, BME280, UltrasonicRANGER,/* Add Here, */  Undefined = 0xFF }
     public enum DisplayDevice : byte { OLED096, LCD1602, NEOPIXEL, /* Add Here, */ Undefined = 0xFF }
     public enum ServoDevice : byte { Servo, /* Add Here, */ Undefined = 0xFF }
+    public enum SerialDevice : byte { Loopback, GPS, Undefined = 0xFF }
 
     public enum Commands
     {
@@ -44,12 +45,13 @@
         Servo = 3,
         Sensors = 4,
         Displays = 0x5,
-        Serial = 6,
+        Loopback = 6,
         PotLightSoundAnalog = 0x7,
         USonicRange = 0x8,
         PotRelay = 0x9,
         PotServo = 0xA,
-        MaxType = 0xB,
+        GPSSerial = 0xB,
+        MaxType = 0xC,
         Undefined = 0xFF
     }
 
@@ -60,7 +62,9 @@
         sensor = 0x2,
         actuator = 0x3,
         display = 0x4,
-        MaxType = 0x5,
+        serial = 0x5,
+        MaxType = 0x6,
+
         //communication,
         Undefined = 0xFF
     }

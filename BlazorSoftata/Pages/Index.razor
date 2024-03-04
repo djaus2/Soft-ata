@@ -138,6 +138,7 @@ else @if ((AppState.ISensor != 0xff))
             case DeviceCategory.digital:
             case DeviceCategory.analog:
             case DeviceCategory.actuator:
+            case DeviceCategory.serial:
             @if(CurrentTypes != null)
                 {
                     <div class="form-group">
@@ -248,9 +249,10 @@ else @if ((AppState.ISensor != 0xff))
                         </table>
                     }
                     break;
-                case Softata.Enums.CommandType.Serial:
+                case Softata.Enums.CommandType.Loopback:
                     {
                         <table>
+                            <tr><td colspan="3">Select Connections</td></tr>
                             <tr><td>Serial Tx</td><td>&nbsp;</td><td>Serial Rx</td></tr>
                              <tr>
                                 <td>
@@ -271,6 +273,22 @@ else @if ((AppState.ISensor != 0xff))
                             </tr> 
                         </table>
                     } 
+                    break;
+                case Softata.Enums.CommandType.GPSSerial:
+                    {
+                        <table>
+                            <tr><td>Serial: Select Port</td></tr>
+                            <tr>
+                                <td>
+                                    <select @bind=@AppState.SerialTx>
+                                        <option value=null>Select Port</option>
+                                        <option value=1>Serial 1</option>
+                                        <option value=2>Serial 2</option>
+                                    </select>
+                                </td>
+                            </tr>
+                        </table>
+                    }
                     break;
                 case Softata.Enums.CommandType.PotServo:
                     {
@@ -485,6 +503,21 @@ else @if ((AppState.ISensor != 0xff))
             <br />
             @switch (AppState.TestType)
             {
+                case CommandType.Loopback:
+                    @if ((@AppState.SerialRx == 1) && (@AppState.SerialRx == 2))
+                    {
+                        @if ((@AppState.SerialTx != 1) && (@AppState.SerialTx != 2))
+                        {
+                            <button class="btn btn-primary" @onclick="Ready">Test is configured</button>
+                        }
+                    }
+                    break;
+                case CommandType.GPSSerial:
+                    @if ((@AppState.SerialTx == 1) || (@AppState.SerialTx == 2))
+                    {
+                        <button class="btn btn-primary" @onclick="Ready">Test is configured</button>
+                    }
+                    break;
                 case CommandType.Sensors:
                 case CommandType.Displays:
                 // Only used defaults for now
@@ -534,12 +567,26 @@ else @if ((AppState.ISensor != 0xff))
                         <button class="btn btn-primary" @onclick="Start">Go to test</button>
                     }
                     break;
-                case Softata.Enums.CommandType.Serial:
+                case Softata.Enums.CommandType.Loopback:
                     {
                        <h4>Serial Test</h4>
                        <p>Serial Tx: Serial @AppState.SerialTx</p>
                        <p>Serial Rx: Serial @AppState.SerialRx</p>
-                        <p>NOT YET AVAILABLE... Coming!</p>
+                        <button class="btn btn-primary" @onclick="Start">Go to test</button>
+                    }
+                    break;
+                case Softata.Enums.CommandType.GPSSerial:
+                    {
+                        <h4>GPS Test</h4>
+                        @if (@AppState.SerialTx==1)
+                        {
+                            <p>Serial Port: Serial1"</p>
+                        }
+                        else if (@AppState.SerialTx == 2)
+                        {
+                            <p>Serial Port: Serial2"</p>
+                        }
+                        <button class="btn btn-primary" @onclick="Start">Go to test</button>
                     }
                     break;
                 case Softata.Enums.CommandType.PotLightSoundAnalog:
@@ -723,6 +770,12 @@ else @if ((AppState.ISensor != 0xff))
                         CurrentTypes = AppState.LDigitals;
                         AppState.IDigital = 0xff;
                         break;
+                    case DeviceCategory.serial:
+                        acts = SoftataLib.DeviceCategoryMembers[DeviceCategory.serial];
+                        AppState.LSerial = (from a in acts select (CommandType)a).ToList<CommandType>();
+                        CurrentTypes = AppState.LSerial;
+                        AppState.ISerial = 0xff;
+                        break;
                     case DeviceCategory.analog:
                         acts = SoftataLib.DeviceCategoryMembers[DeviceCategory.analog];
                         AppState.LAnalogs = (from a in acts select (CommandType)a).ToList<CommandType>();
@@ -769,6 +822,10 @@ else @if ((AppState.ISensor != 0xff))
                     AppState.TestType = _testType;
                     switch (AppState.TestType)
                     {
+                        case CommandType.Loopback:
+                        case CommandType.GPSSerial:
+                            //AppState = new DigitalButtonLED();
+                            break;
                         case CommandType.DigitalButtonLED:
                             //AppState = new DigitalButtonLED();
                             break;
@@ -777,9 +834,6 @@ else @if ((AppState.ISensor != 0xff))
                             AppState.GetPins = true;
                             AppState.IActuator = 0;
                             break;
-                        @* case CommandType.Displays:
-                            AppState.GetPins = true;
-                            break; *@
                     }
                 }
             }
@@ -900,7 +954,7 @@ else @if ((AppState.ISensor != 0xff))
                 else
                     AppState.DefaultSettings = false;
                 break;
-            case CommandType.Serial:
+            case CommandType.Loopback:
                 break;
             case CommandType.PotRelay:
                 if (!AppState.GPIOPins.Contains(AppState.Relay))
@@ -979,8 +1033,9 @@ else @if ((AppState.ISensor != 0xff))
             case CommandType.PotServo:
                 navigationManager.NavigateTo("/potservo");
                 break;
-            case CommandType.Serial:
-                navigationManager.NavigateTo("/digital");
+            case CommandType.Loopback:
+            case CommandType.GPSSerial:
+                navigationManager.NavigateTo("/serial");
                 break;
             case CommandType.PotRelay:
                 navigationManager.NavigateTo("/potrelay");

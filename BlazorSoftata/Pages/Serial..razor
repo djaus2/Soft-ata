@@ -1,0 +1,525 @@
+﻿@page "/serial"
+@page "/serial/Subdevice"
+
+
+@using Softata;
+@using Softata.Enums
+@inject AppState AppState
+@using BlazorPro.Spinkit
+
+<PageTitle>@Title</PageTitle>
+    <h1>@Title</h1>
+<p>
+    <i><b>Softata:</b> A Firmata like C# library connecting to a RPi Pico W running Arduino.</i>
+</p>
+<p>
+    <i>Run an exemplar sequence of tests demonstrating .NET interaction testing serial transmission..</i>
+</p>
+<table>
+@if (!string.IsNullOrEmpty(AppState.AppVersion))
+{
+    <tr>
+        <td><b>App Version: </b></td>
+        <td>@AppState.AppVersion</td>
+    </tr>
+}
+@if (!string.IsNullOrEmpty(AppState.Connected))
+{
+    <tr>
+        <td><b>Connected: </b></td>
+        <td>@AppState.Connected</td>
+    </tr>
+}
+@if (!string.IsNullOrEmpty(AppState.DevicesCSV))
+{
+    <tr>
+        <td><b>Device Types: </b></td>
+        <td>@AppState.DevicesCSV.Replace("DEVICES:", "")</td>
+    </tr>
+}
+@if (!(AppState.TestCategory == DeviceCategory.MaxType))
+{
+    <tr>
+        <td><b>Selected Test Category: </b></td>
+        <td>@AppState.TestCategory</td>
+    </tr>
+}
+@if (!(AppState.TestType == CommandType.MaxType))
+{
+    <tr>
+        <td><b>Selected Test Type: </b></td>
+        <td>@AppState.TestType</td>
+    </tr>
+}
+@if ((ComPortTx!=0) &&(ComportRx!=0))
+{
+    <tr>
+        <td><b>Pins: </b></td>
+        <td>&nbsp;</td>
+    </tr>
+    @if(!string.IsNullOrEmpty(coms))
+    {
+        <tr><td colspan="2">@coms</td></tr>
+    }
+    <tr>
+        <td>Tx: @ComPortTx</td>
+        <td>Rx: @ComportRx</td>
+    </tr>
+    @if((TxPin!= 0xff) &&(RxPin!=0xff))
+    {
+        <tr>
+            <td>Tx Pin: @TxPin</td>
+            <td>Rx Pin: @RxPin</td>
+        </tr>
+    }
+
+
+
+
+
+}
+    @switch(AppState.TestType)
+    {
+        case CommandType.Loopback:
+            @if (datamodeASCII != null)
+            {
+                @if ((bool)datamodeASCII)
+                {
+                    <tr>
+                        <td ><b>Loopback Data Mode:</b></td><td>ASCII</td>
+                    </tr>
+                }
+                else
+                {
+                    <tr>
+                        <td ><b>Loopback Data Mode:</b></td><td>Raw bytes </td>
+                    </tr>
+                }
+            }
+            break;
+        case CommandType.GPSSerial:
+            break;
+    }
+    </table>
+
+<hr />
+
+
+@if (Busy)
+{
+    <Pulse />
+    <p>Please wait ...</p>
+}
+else if(AppState.Running)
+{
+    <Fold />
+    <p>Running ...</p>
+}
+
+@if (!AppState.Running)
+{
+<div>
+        @switch (AppState.TestType)
+        {
+            case CommandType.Loopback:
+                <h4>Data Mode</h4>
+                <select @onchange="OnChangeDataMode">
+                    <option value="null">Select Transmission Mode</option>
+                    <option value="1">ASCII</option>
+                    <option value="2">Raw Bytes</option>
+                </select>
+                break;
+            case CommandType.GPSSerial:
+                break;
+        }
+        <h4>Enter Baudrate:</h4>
+        <EditForm Model=@BRate> 
+            <p><InputNumber @bind-Value=@BRate.Rate /></p>
+        </EditForm>
+        <h4><i>Press enter to accept/change</i></h4>
+
+        @if (BRate.Found)
+        {
+            <h4>Baudrate: @BRate.Rate</h4>
+            @if (ReconnectVisible)
+            {
+                <button class="btn btn-primary" @onclick="Reconnect">Reconnect and run test</button>
+            }
+            else if (RunVisble)
+            {
+                <button class="btn btn-primary" @onclick="Start">Run test</button>
+            }
+
+        }
+        else
+        {
+            @if (BRate.Rate != 0)
+            {
+                <p>Invalid</p>
+            }
+        }
+</div>
+}
+else if (AppState.ReadytoRun)
+{
+    @if (!AppState.Running)
+    {
+        <h4>Serial Test Ready </h4>
+        @switch (AppState.TestType)
+        {
+            case CommandType.Loopback:
+                break;
+            case CommandType.GPSSerial:
+                break;
+        }
+
+    }
+    else
+    {
+        <h4>Baudrate: @BRate.Rate</h4>
+        <h4>Serial Test Running</h4>
+
+        <button class="btn btn-primary" @onclick="Stop">Stop</button>
+    }
+}
+<hr/>
+@if (OKMsg.Value != "")
+{
+    <div>
+        @OKMsg
+    </div>
+}
+<hr/>
+
+
+
+
+
+@code {
+
+    MarkupString Title { get; set; } = new MarkupString($"Softata: Grove -  Serial");
+    MarkupString FailMsg { get; set; } = new MarkupString("");
+    MarkupString OKMsg { get; set; } = new MarkupString("");
+    MarkupString RunMsg { get; set; } = new MarkupString("");
+
+    public class Baud
+    {
+        public int Rate { get; set; } = 9600;
+
+        public bool Found
+        {
+            get
+            {
+                if (SoftataLib.Baudrates.Contains(Rate))
+                    return true;
+                return false;
+            }
+        }
+    }
+
+    Baud BRate { get; set; } = new Baud();
+
+    bool busy = false;
+    bool Busy
+    {
+        get => busy;
+        set { busy = value; StateHasChanged(); }
+    }
+
+    byte TxPin = 0xff;
+    byte RxPin = 0xff;
+
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            if (AppState.TestType == CommandType.Loopback)
+            {
+                Title = new MarkupString($"Softata: Grove -  Serial Loopback");
+                ComportRx = AppState.SerialRx;
+                ComPortTx = AppState.SerialTx;
+            }
+            else if (AppState.TestType == CommandType.GPSSerial)
+            {
+                Title = new MarkupString($"Softata: Grove -  Serial GPS");
+                ComportRx = AppState.SerialTx;
+                ComPortTx = AppState.SerialTx;
+            }
+            int tr = 1;
+            if (ComportRx == ComPortTx)
+            {
+                tr = ComPortTx; ;
+            }
+            else
+            {
+                tr = ComPortTx + 2;
+            }
+            switch (tr)
+            {
+                case 1:
+                    TxPin = 0;
+                    RxPin = (byte)(TxPin + 1);
+                    coms = "Using Serial 1";
+                    break;
+                case 2:
+                    TxPin = 4;
+                    RxPin = (byte)(TxPin + 1);
+                    coms = "Using Serial 2";
+                    break;
+                case 3:
+                    coms = "(Tx)Serial 1 -> (Rx)Serial 2";
+                    TxPin = 0;
+                    RxPin = 5;
+                    break;
+                case 4:
+                    coms = "(Tx)Serial 2 -> (Rx)Serial 1";
+                    TxPin = 4;
+                    RxPin = 1;
+                    break;
+            }
+            StateHasChanged();
+        }
+    }
+
+
+    protected override void OnInitialized()
+    {
+        AppState.Lat = "lat";
+        BRate = new Baud();
+        BRate.Rate = 0;
+        AppState.OnChange += StateHasChanged;
+        AppState.ReadytoRun = true; ;
+        AppState.Running = false;
+        ReconnectVisible = false;
+        RunVisble = true;
+    }
+
+
+
+    bool RunVisble { get; set; } = false;
+    bool ReconnectVisible  { get; set; } = false;
+
+    private async Task Stop()
+    {
+        Busy = false;
+        AppState.Running = false;
+        StateHasChanged();
+        await Task.Delay(100);
+    }
+
+    private void Reconnect()
+    {
+
+    }
+
+    private void Run()
+    {
+
+    }
+
+    string GetAnglefromNMEA(string num)
+    {
+        try
+        {
+            for (int i = 0; i < num.Length; ++i)
+            {
+                char c = num[i];
+
+                if (c == '.')
+                {
+                    String degrees = num.Substring(0, i - 2);
+                    double deg = double.Parse(degrees);
+                    String part = num.Substring(i - 2);
+                    double dPart = double.Parse(part);
+                    double sixty = 60.0;
+                    dPart = dPart / sixty;
+                    deg += dPart;
+                    String degrees2 = deg.ToString("N7");
+                    return degrees2;
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            return "Not Available";
+        }
+        return "Not Available";
+    }
+
+    private async Task Start()
+    {
+        AppState.Running = true;
+        StateHasChanged();
+        await Task.Delay(100);
+
+        if (AppState.TestType == CommandType.Loopback)
+        {
+            if (datamodeASCII == null)
+                return;
+            SoftataLib.Serial.serialSetup(TxPin, BRate.Rate, ComPortTx);
+            if (ComPortTx != ComportRx)
+                SoftataLib.Serial.serialSetup((byte)(RxPin-1), BRate.Rate, ComPortTx);
+            if ((bool)datamodeASCII) // ASCII test
+            {
+                for (char sendCh = ' '; sendCh <= '~'; sendCh++)
+                {
+                    char recvCh;
+                    SoftataLib.Serial.serialWriteChar(ComPortTx, sendCh);
+                    Thread.Sleep(100);
+                    recvCh = SoftataLib.Serial.serialGetChar(ComportRx);
+                    if (recvCh == sendCh)
+                    {
+                        Console.WriteLine($"Serial{ComPortTx} Sent {sendCh} Got {recvCh} on Serial{ComportRx},OK");
+                        OKMsg = new MarkupString("$<p>Serial{ComPortTx} Sent {sendCh} Got {recvCh} on Serial{ComportRx},OK</p>");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Serial{ComPortTx} Sent {sendCh} Got {recvCh} on Serial{ComportRx},NOK!");
+                        OKMsg = new MarkupString("$<p>Serial{ComPortTx} Sent {sendCh} Got {recvCh} on Serial{ComportRx},OK</p>");
+                    }
+                    Thread.Sleep(200);
+                }
+            }
+            else   // Byte test
+            {
+                for (byte sendByte = 0x00; sendByte <= 0xff; sendByte++)
+                {
+                    byte recvByte;
+                    SoftataLib.Serial.serialWriteByte(ComPortTx, sendByte);
+                    recvByte = SoftataLib.Serial.serialGetByte(ComportRx);
+                    if (recvByte == sendByte)
+                    {
+                        Console.WriteLine($"Serial{ComPortTx} Sent {sendByte} Got {recvByte} on Serial{ComportRx},OK");
+                        OKMsg = new MarkupString("$<p>Serial{ComPortTx} Sent {sendByte} Got {recvByte} on Serial{ComportRx},OK</p>");
+                    }
+                    else
+                        Console.WriteLine($"Serial{ComPortTx} Sent {sendByte} Got {recvByte} on Serial{ComportRx},NOK!");
+
+                    Thread.Sleep(200);
+                    if (sendByte == 0xff)
+                        break;
+                }
+            }
+        }
+        else if (AppState.TestType == CommandType.GPSSerial)
+        {
+            Busy = true;
+            SoftataLib.Serial.serialSetup(TxPin, BRate.Rate, ComPortTx);
+
+            Console.WriteLine();
+            Console.WriteLine("Reading GPS");
+            Console.WriteLine("Press [Esc] to stop");
+            Thread.Sleep(500);
+            while (AppState.Running)
+            {
+                /*
+                GGA - Global Positioning System Fix Data
+                Ref: https://opencpn.org/wiki/dokuwiki/doku.php?id=opencpn:opencpn_user_manual:advanced_features:nmea_sentences
+                =========================================1.
+                1.  Universal Time Coordinated (UTC)
+                2.  Latitude
+                3.  Longitude
+                4.  GPS Quality Indicator
+                5.  Number of satellites in view, 00 - 12
+                6.  Horizontal Dilution of Precision (HDOP)
+                7.  Antenna altitude above/below mean-sea-level (geoid)
+                8.  Units of antenna altitude, meters
+                9.  Geoidal separation, the vertical difference between the WGS-84 elipsoid and the geoid
+                10. Units of geoidal separation, meters
+                11. Age of differential GPS data, time in seconds since last SC104
+                12. Differential reference station ID, 0000-102
+                GGA data is used to indicate the quality and number of satellites to fix the position. The boat becomes red and the 3 green bars when at maximum.
+                */
+                string msg = SoftataLib.Serial.readLine(ComportRx, false);
+                //Console.WriteLine($"\t{msg}");
+                if(!string.IsNullOrEmpty(msg))
+                {
+                    if (msg.Contains("$GNGGA"))
+                    {
+                        msg = msg.Substring(msg.IndexOf("$GNGGA"));
+                    }
+                    else if(msg.Contains("$GPGGA"))
+                    {
+                        msg = msg.Substring(msg.IndexOf("$GPGGA"));
+                    }
+                    else
+                        continue;
+
+                    string[] parts = msg.Split(',', StringSplitOptions.TrimEntries);
+                    /*
+                    #define lattIndex 2
+                    #define longIndex 4
+                    #define heightIndex 9
+                    */
+                    if (parts[0].Length == 6)
+                    {
+                        if ((parts[0].Substring(3) == "GGA")) //|| (parts[0] == "$GNGGA"))
+                        {
+                            //Console.WriteLine($"\t{parts[0]}");
+                            if (parts.Length > 10)
+                            {
+                                busy = false;
+                                Console.WriteLine(msg);
+                                AppState.Lat = parts[2];
+                                Console.WriteLine($"\t\t\tLat{parts[2]} {parts[3]} Lon{parts[4]} {parts[5]} Alt{parts[9]}");
+                                //lat = $"{parts[2]} {parts[3]";
+                                //int ilat = parts[2] / 1000;
+                                string lat = GetAnglefromNMEA(parts[2]);
+                                string lon = GetAnglefromNMEA(parts[4]);
+                                if ((lat != "Not available") || (lon != "Not available"))
+                                {
+                                    Busy = false;
+                                    OKMsg = new MarkupString($"<h4>GPS Date:</h4><table><tr><td><b>Latitude:</b></td><td>{lat} {parts[3]}</td></tr><tr><td><b>Longitude:</b></td><td>{lon}</td><td>{parts[5]}</td></tr><tr><td><b>Altitude:</b></td><td>{parts[9]}m</td></tr></table>");
+                                }
+                                else
+                                {
+                                    Busy = true;
+                                    OKMsg = new MarkupString("<h4>Data not available. Please wait.</h4>");
+                                }
+                                StateHasChanged();
+                                await Task.Delay(100);
+                            }
+                            else
+                                Console.WriteLine("Incomplete GPGGA/GNGGA");
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
+
+    byte ComPortTx { get; set; } = 0;
+    byte ComportRx { get; set; } = 0;
+    string coms { get; set; } = "";
+
+
+    bool? datamodeASCII = null;
+    private void OnChangeDataMode(ChangeEventArgs e)
+    {
+        if (e == null)
+            return;
+        var selected = e.Value?.ToString();
+        if (!string.IsNullOrEmpty(selected))
+        {
+            if (int.TryParse(selected, out int mode))
+            {
+                switch (mode)
+                {
+                    case 1:
+                        datamodeASCII = true;
+                        break;
+                    case 2:
+                        datamodeASCII = false;
+                        break;
+                }
+            }
+        }
+    }
+  
+
+
+}
+

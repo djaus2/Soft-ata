@@ -139,7 +139,7 @@ namespace FirmataBasic
                             Thread.Sleep(500);
                         }
                         break;
-                    case CommandType.Serial:
+                    case CommandType.Loopback:
                         byte[] txPins = new byte[] { 0, 0, 4 }; //Nb: Recv are Tx+1
 
 

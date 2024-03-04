@@ -125,7 +125,8 @@ namespace Softata
             { DeviceCategory.analog,new List<byte>(){1,7,9,0xA }},
             { DeviceCategory.sensor,new List<byte>(){4} },
             { DeviceCategory.actuator,new List<byte>(){9,0xA}},
-            { DeviceCategory.display,new List<byte>(){5}}
+            { DeviceCategory.display,new List<byte>(){5}},
+            { DeviceCategory.serial,new List<byte>(){6,0xB}}
         };
 
     //////////////////////////////////////////

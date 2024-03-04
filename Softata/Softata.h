@@ -5,15 +5,15 @@
 enum SyncedCommands : byte {pauseTelemetryorBT=0,continueTelemetryorBT=1,stopTelemetryorBT=2,svrConnected=10, initialSynch=137};
 #define SynchMultiplier 1000
 
-#define APP_VERSION "4.99"
+#define APP_VERSION "4.995"
 
 //#define RPI_PICO_DEFAULT
 #define GROVE_RPI_PICO_SHIELD
 
 //WiFi
 #ifndef STASSID
-#define STASSID "<nw>>"
-#define STAPSK "<pwd>"
+#define STASSID "APQLZM"
+#define STAPSK "silly1371"
 #endif
 
 #define IOT_CONFIG_WIFI_SSID STASSID
@@ -21,7 +21,7 @@ enum SyncedCommands : byte {pauseTelemetryorBT=0,continueTelemetryorBT=1,stopTel
 
 // Azure IoT
 // Uncomment following if using Azure IoT Hub
-#define USINGIOTHUB
+//#define USINGIOTHUB
 // For Bluetooth do not define USINGIOTHUB
 #define IOT_CONFIG_IOTHUB_FQDN  "<hubname>.azure-devices.net"
 #define IOT_CONFIG_DEVICE_ID  "<devicename>"
@@ -69,12 +69,13 @@ enum SyncedCommands : byte {pauseTelemetryorBT=0,continueTelemetryorBT=1,stopTel
 // Max number of bytes in msgs from client to service here
 #define maxRecvdMsgBytes 32
 
-#define G_DEVICETYPES C(sensor)C(actuator)C(communication)C(display)
+#define G_DEVICETYPES C(sensor)C(actuator)C(communication)C(display)C(serial)
 
 //Add other sensors/actuators here C bracketed, on end.
 #define G_SENSORS C(DHT11)C(BME280)C(UltrasonicRanger)
 #define G_ACTUATORS C(SERVO)
 #define G_DISPLAYS C(OLED096)C(LCD1602)C(NEOPIXEL)
+#define G_SERIAL C(LOOPBACK)C(GPS)
 
 ///////////////////////// A C T U A T O R S /////////////////////////////////////////////////
 

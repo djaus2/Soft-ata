@@ -31,6 +31,8 @@ namespace BlazorSoftata
         private byte serialTx;
         private byte serialRx;
 
+        public string Lat { get => lat; set { lat = value; NotifyStateChanged(); }
+}
         public byte Button { get => button; set { button = value; NotifyStateChanged(); } }
         public byte LED { get => lED; set { lED = value; NotifyStateChanged(); } }
         public byte Relay { get => relay; set { relay = value; NotifyStateChanged(); } }
@@ -43,7 +45,8 @@ namespace BlazorSoftata
         public byte ServoPin { get => servopin; set { servopin = value; NotifyStateChanged(); } }
 
         public byte DisplayPin { get => displaypin; set { displaypin = value; NotifyStateChanged(); } }
-        public CommandType TestType { get => testType; set { testType = value; NotifyStateChanged(); } }
+        public CommandType TestType { get => testType; 
+            set { testType = value; NotifyStateChanged(); } }
         public bool ReadytoRun { get => readytoRun; set { readytoRun = value; NotifyStateChanged(); } }
         public bool Running { get => running; set { running = value; NotifyStateChanged(); } }
         public bool DefaultSettings { get => defaultSettings; set { NotifyStateChanged(); } }
@@ -73,6 +76,9 @@ namespace BlazorSoftata
 
         public List<CommandType> LDisplays { get => lActuators; set { lActuators = value; NotifyStateChanged(); } }
 
+
+        public List<CommandType> LSerial{ get => lSerial; set { lSerial = value; NotifyStateChanged(); } }
+
         public byte IDigital
         {
             get => idigital;
@@ -83,6 +89,20 @@ namespace BlazorSoftata
                 else
                     GetPins = false;
                 idigital = value;
+                NotifyStateChanged();
+            }
+        }
+
+        public byte ISerial
+        {
+            get => iserial;
+            set
+            {
+                if (value < LSerial.Count())
+                    GetPins = true;
+                else
+                    GetPins = false;
+                iserial = value;
                 NotifyStateChanged();
             }
         }
@@ -200,6 +220,7 @@ public byte I2C { get => i2C; set { if ((value < 0) || (value > 1)) return; i2C 
         private byte iactuator;
         private byte idisplay = 0xff;
         private byte isensor = 0xff;
+        private byte iserial = 0xff;
         private int neoperiod = 2000;
         private int neoclearperiod = 100;
         private bool servoGetPins;
@@ -210,7 +231,9 @@ public byte I2C { get => i2C; set { if ((value < 0) || (value > 1)) return; i2C 
         private List<CommandType> lDisplays;
         private List<CommandType> lSensors;
         private List<CommandType> lActuators;
+        private List<CommandType> lSerial;
         private MarkupString data = new MarkupString("");
+        private string lat;
 
         public AppState()
         {
