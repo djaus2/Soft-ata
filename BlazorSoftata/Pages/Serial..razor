@@ -141,13 +141,16 @@ else if(AppState.Running)
         @if (BRate.Found)
         {
             <h4>Baudrate: @BRate.Rate</h4>
-            @if (ReconnectVisible)
+            @if (datamodeASCII != null)
             {
-                <button class="btn btn-primary" @onclick="Reconnect">Reconnect and run test</button>
-            }
-            else if (RunVisble)
-            {
-                <button class="btn btn-primary" @onclick="Start">Run test</button>
+                @if (ReconnectVisible)
+                {
+                    <button class="btn btn-primary" @onclick="Reconnect">Reconnect and run test</button>
+                }
+                else if (RunVisble)
+                {
+                    <button class="btn btn-primary" @onclick="Start">Run test</button>
+                }
             }
 
         }
@@ -366,19 +369,21 @@ else if (AppState.ReadytoRun)
                 {
                     char recvCh;
                     SoftataLib.Serial.serialWriteChar(ComPortTx, sendCh);
-                    Thread.Sleep(100);
+                    await Task.Delay(100);
                     recvCh = SoftataLib.Serial.serialGetChar(ComportRx);
+                    string msg = "";
                     if (recvCh == sendCh)
                     {
-                        Console.WriteLine($"Serial{ComPortTx} Sent {sendCh} Got {recvCh} on Serial{ComportRx},OK");
-                        OKMsg = new MarkupString("$<p>Serial{ComPortTx} Sent {sendCh} Got {recvCh} on Serial{ComportRx},OK</p>");
+                        msg = $"<h4>Serial{ComPortTx} Sent <font color=\"blue\">{sendCh}</font> Got <font color=\"blue\">{recvCh}</font> on Serial{ComportRx},OK</h4>";
                     }
                     else
                     {
-                        Console.WriteLine($"Serial{ComPortTx} Sent {sendCh} Got {recvCh} on Serial{ComportRx},NOK!");
-                        OKMsg = new MarkupString("$<p>Serial{ComPortTx} Sent {sendCh} Got {recvCh} on Serial{ComportRx},OK</p>");
+                        msg = $"<h4>Serial{ComPortTx} Sent <font color=\"red\">{sendCh} Got <font color=\"red\">{recvCh}</font> on Serial{ComportRx}</font>,NOK!</h4>";
                     }
-                    Thread.Sleep(200);
+                    OKMsg = new MarkupString(msg);
+                    Console.WriteLine(msg);
+                    StateHasChanged();
+                    await Task.Delay(100);
                 }
             }
             else   // Byte test
@@ -388,7 +393,7 @@ else if (AppState.ReadytoRun)
                     byte recvByte;
                     SoftataLib.Serial.serialWriteByte(ComPortTx, sendByte);
                     recvByte = SoftataLib.Serial.serialGetByte(ComportRx);
-                    if (recvByte == sendByte)
+                    if (sendByte == recvByte)
                     {
                         Console.WriteLine($"Serial{ComPortTx} Sent {sendByte} Got {recvByte} on Serial{ComportRx},OK");
                         OKMsg = new MarkupString("$<p>Serial{ComPortTx} Sent {sendByte} Got {recvByte} on Serial{ComportRx},OK</p>");
@@ -396,7 +401,19 @@ else if (AppState.ReadytoRun)
                     else
                         Console.WriteLine($"Serial{ComPortTx} Sent {sendByte} Got {recvByte} on Serial{ComportRx},NOK!");
 
-                    Thread.Sleep(200);
+                    string msg = "";
+                    if (sendByte == recvByte)
+                    {
+                        msg = $"<h4>Serial{ComPortTx} Sent <font color=\"blue\">{sendByte}</font> Got <font color=\"blue\">{recvByte}</font> on Serial{ComportRx},OK</h4>";
+                    }
+                    else
+                    {
+                        msg = $"<h4>Serial{ComPortTx} Sent <font color=\"red\">{sendByte} Got <font color=\"red\">{recvByte}</font> on Serial{ComportRx}</font>,NOK!</h4>";
+                    }
+                    OKMsg = new MarkupString(msg);
+                    Console.WriteLine(msg);
+                    await Task.Delay(100);
+                    StateHasChanged();
                     if (sendByte == 0xff)
                         break;
                 }

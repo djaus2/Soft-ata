@@ -504,9 +504,9 @@ else @if ((AppState.ISensor != 0xff))
             @switch (AppState.TestType)
             {
                 case CommandType.Loopback:
-                    @if ((@AppState.SerialRx == 1) && (@AppState.SerialRx == 2))
+                    @if ((@AppState.SerialRx == 1) || (@AppState.SerialRx == 2))
                     {
-                        @if ((@AppState.SerialTx != 1) && (@AppState.SerialTx != 2))
+                        @if ((@AppState.SerialTx == 1) || (@AppState.SerialTx == 2))
                         {
                             <button class="btn btn-primary" @onclick="Ready">Test is configured</button>
                         }

@@ -75,12 +75,8 @@ namespace Softata
                 if (serialportNo <1 || serialportNo >2)
                     throw new ArgumentOutOfRangeException(nameof(serialportNo), "Messages.ArgumentEx_SerialPortRange1or2");
                 string state = SendMessage(Commands.serialGetChar, nullData, nullData, expect, serialportNo);
-                if (!(state.Length > expect.Length))
-                {
-                    Console.WriteLine($"Got {state} expected {expect}");
-                    throw new Exception($"serialGetChar({serialportNo}):InvalidResult");
-                }
-                else if (byte.TryParse(state.Substring(expect.Length), out byte b))
+               
+                if (byte.TryParse(state, out byte b))
                     return (char)b;
                 else
                     throw new Exception($"serialGetChar({serialportNo}):InvalidResult");
@@ -93,12 +89,7 @@ namespace Softata
                     throw new ArgumentOutOfRangeException(nameof(serialportNo), "Messages.ArgumentEx_SerialPortRange1or2");
                 string state = SendMessage(Commands.serialGetChar, nullData, nullData, expect, serialportNo);
  
-                if (!(state.Length > expect.Length))
-                {
-                    Console.WriteLine($"Got {state} expected {expect}");
-                    throw new Exception($"serialGetByte({serialportNo}):InvalidResult");
-                }
-                else if (byte.TryParse(state.Substring(expect.Length), out byte b))
+                if (byte.TryParse(state, out byte b))
                     return b;
                 else
                     throw new Exception($"serialGetByte({serialportNo}):InvalidResult");
@@ -113,7 +104,7 @@ namespace Softata
                 if (serialportNo < 1 || serialportNo > 2)
                     throw new ArgumentOutOfRangeException(nameof(serialportNo), "Messages.ArgumentEx_SerialPortRange1or2");
                 string state = SendMessage(Commands.serialWriteChar, nullData, (byte)value, expect, serialportNo);
-                if (state != expect)
+                if (state != "")
                     throw new Exception($"serialWriteChar({serialportNo}):InvalidOutcome");
                 return;;
             }
@@ -124,7 +115,7 @@ namespace Softata
                 if (serialportNo < 1 || serialportNo > 2)
                     throw new ArgumentOutOfRangeException(nameof(serialportNo), "Messages.ArgumentEx_SerialPortRange1or2");
                 string state = SendMessage(Commands.serialWriteChar, nullData, value, expect, serialportNo);
-                if (state != expect)
+                if (state != "")
                     throw new Exception($"serialWriteByte({serialportNo}):InvalidOutcome");
                 return; ;
             }

@@ -3,7 +3,7 @@
 <hr/>
 <h2>Project is being updated:</h2>
 
-- V4.995 GPS Serial test works in Blazor app. Loopbacks coming.
+- V4.995 GPS Serial test works in Blazor app. Loopbacks NOW work.
 - V4.99 Blazor: The 3 sensors work. Also UI improved:  Can pause, continue stop telemetry
   - Intercore comms formalised and Core2 code in separate file.
 - With each Telemetry sends (IoT Hub/BT) inbuilt LED douible flashes.
