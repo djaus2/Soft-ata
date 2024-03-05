@@ -1,56 +1,67 @@
 # Soft-ata
 
+<hr/>
+<h2>Project is being updated:</h2>
+
+- V4.995 GPS Serial test works in Blazor app. Loopbacks NOW work.
+- V4.99 Blazor: The 3 sensors work. Also UI improved:  Can pause, continue stop telemetry
+  - Intercore comms formalised and Core2 code in separate file.
+- With each Telemetry sends (IoT Hub/BT) inbuilt LED douible flashes.
+- V4.985 Bluetooth Sensor send and Az IoT Hub work for BME280 in Blazor
+  - HINT: Define  ```USINGIOTHUB``` for IoT Hub Telemetry in ```softata.h``` in Arduino app
+    - Now not an issue with it being defined with Blutooth as per V4.98
+- V4.97 Fixed small error in Arduino wrt Azure IoT Hub enabling
+    - Also added some text messages when running Console in IoT Hub mode, wrt Device Explorer.
+- V4.96 Can set number of Pixels in Neopixel display
+  - In both apps get menu to select number of pixels. Can set pin.
+  - Max(default) defined on Softata.SoftataLib.Displays.Neopixel as MaxNumPixels=8  
+  And in Arduino app in Softata.h as NEOPIXEL_NUMPIXELS = 8
+-  Nearly complete: Azure IOT hub in Blazor app 2Do
+- V4.95 Mainly just code improvement. Neopixel test extended
+- Inbuilt LED flash rate: Slow if not connected, fast if connected. _(Done)_
+  - NB: This runs on the second core.
+- Major rework for clarity with enums.
+- Blazor App:
+  - Change UI to start with test Categories selection _(Working)_
+    - Some overlap of test types between categories.
+  - Added Analog Pot-Sound-Sound sensors test _(Works)_
+  - _Note:_ Software bargraphs in app for Analog data.
+  - Sensors
+      - The 3 sensors now available in Blazor app
+  - Displays
+    - Neopixel and Grove LCD16x2 RGB Display work with default setiings.
+    - V4.12 OLED096 now **FULLY** works. _Extended tests now_.
+      - And parameters can now be sent (position radius etc.)
+      - [u8g2 reference](https://github.com/olikraus/u8g2/wiki/u8g2reference)
+      - V4.11 Softata checks if is can directly write Cursor and string  as one method
+      ... or if it has to do as 2 methods. Uses ```grove_Display->CursorWriteStringAvailable()``` method to check.. 
+      - **Hint:** I'm using the OLED display in [Grove Beginner Kit for Arduino](https://wiki.seeedstudio.com/Grove-Beginner-Kit-For-Arduino/) connected to Pico without removing it as it's I2C  
+     _Just need to have kit powered and not using I2C._  
+    **AND with the connecting Grove cable, DISCONNECT the RED power wire** to avoid power clashes between the devices.
+    - Note also added Home method to Display API. _Return text to start of line._
+
+<hr/>
 
 ## In Brief
 **An Arduino app _LIKE_ Firmata for RPI Pico W running Arduino.**
-Includes a .NET package so that you can write your own client in C# to remotely control Pico devices. 
-Console and Blazor app examples included with MAUI possible later..
+Includes a .NET package so that you can write your own client in C#. 
+Console app included with Blazor and MAUI apps coming soon.
   
 _Soft-ata rather than firm-ata!_ 
 
-## About.
+## About
 
-The Pico app runs as a TCPIP Service taking commands, running them and returning the result to the client. 
-For setups, displays and actuators, the expected result is simply an acknowledgement "OK:" string.
-For sensor reads, a data string is returned with an "OK:" prefix. The SoftaLib checks and consumes the acknowledgments 
- data before it is forwarded to the client app.
-
-The RPi Pico W has two procressing cores. Whilst most interactions occur via the first core, 
-some functionality is built into the second core. 
-Firstly, the inbuilt LED flashes under control by the second core. 
-When the Pico app first boots and both cores are ready, it blinks at a slow rate. 
-_(4s on/4s off)_. Once a connection is made, it blinks at 4x this rate. So the client app should try connecting until then. 
-Communication between the two cores is generally from core one to core two and is done in a synchronised manner.
-
-The second core is also used for automous streaming of Sensor Telemetry data over Bluetooth and to an Azure IoT Hub.
-Once started, it runs with periodic transmissions without futher interaction until a **Pause** or **Stop** command is sent.
-When paused, the transmission continues after reception of a **Continue** command. 
-For every transmission, there is also a quick double flash by the inbuilt LED.
-
-Whereas Firmata is implemented form the ground up, implemented in terms of protocols with ddevices being added interms of those implementations
-Softata is implemented in terms of existing spcific Arduino device libaries. 
-To add a device you include its Arduino library and then slot it into the 
-Softata app infrastructure. That code is, in the main, polymorphic. To add for example, a sensor
-you copy you copy the template sensor.cpp file and implement the methods in it
-according to the devices library samples. You also create header code for it largely by copying an existing sensor's header.
-Within the Softata app and SoftataLib code there ar then some specific hooks to add for the device.
-This process is documented [here](https://davidjones.sportronics.com.au/softata/Softata-Adding_a_new_device-softata.html). _This needs some updating._
-
-## History
-
-The plan was to implement an Arduino app to run on a [RPi Pico W](https://www.raspberrypi.com/documentation/microcontrollers/raspberry-pi-pico.html) placed in a [Grove Shield for Pi Pico](https://www.seeedstudio.com/Grove-Shield-for-Pi-Pico-v1-0-p-4846.html). 
+***The plan was to implement an Arduino app to run on a [RPi Pico W](https://www.raspberrypi.com/documentation/microcontrollers/raspberry-pi-pico.html) placed in a [Grove Shield for Pi Pico](https://www.seeedstudio.com/Grove-Shield-for-Pi-Pico-v1-0-p-4846.html).  
 The Pico W has onboard Arduino implemented using the [earlephilhowe BSP implementation](https://github.com/earlephilhower/arduino-pico). 
 The Grove instructure being used because of it's simple standardised connectivity between devices and the shield at both ends.
-Rather than implement a general purpose interface for devices in One Wire, I2C or SPI, etc, 
-use is made of existing Arduino libraries for Grove devices.  
-
-The intention was also to implement a class for each device type (sensor display, actuator etc) such
+Rather than impelement a general purpose interface for devices in One Wire, I2C or SPI, etc, 
+make use of existing Arduino libraries for Grove devices. 
+Also implement a class for each device type (sensor display, actuator etc) such
 that the class can be extended for each actual device of that type by implementing the base methods. 
 That way, the functionality of the app for a device type needs no modification for any additions. 
-Additional non Grove devices can be added by connecting to a Grove cable.  
-
+Additional non Grove devices can be added by connecting to a Grove cable.   
 Ultimately the intention was to stream Telemetry from sensors to an Azure IoT Hub  
-Communication with a host app using a client service model with the service running on the Arduino app connected to by clients running on a host. 
+Communication with a host app uses a client service model with the service running on the Arduino app connected to by clients running on a host. 
 This is all now functional. 
 
 A .NET library was built that communicates to the service as a mirror of the Arduino functionality. 
@@ -60,26 +71,36 @@ Similarly a .NET MAUI app is envisaged. Finally, a port of the .NET library to t
 
 # API Documentation
 
-The full API documentation is [here](https://davidjones.sportronics.com.au/cats/softata/) __(Extended/updated)__
+[Full API documentation](https://davidjones.sportronics.com.au/cats/softata/) __(Extended/updated)__
+
+- Coming: How to add devices, and a call-to-arms!
 
 ## Local Docs
 
 - [ReadMe .. this](./README.md)
 - [Softata API](./SoftataAPI.md)
 - [Repository History](./RepositoryHistory.md)
-- [Original ReadMe](./README_V1.md)
-- [Second ReadMe version](./README_V2.md)
+- [Original ReadMe](./OldREADME.md)
 
 ## Latest
 
-- V5.00: Completion of Blazor app Tests
+_See **Repository Status** below._
+- MQTT etc (and IoT turned off by default): Faster Blazor app start.
+  - #define in Softata.h
+- Extending Blazor app to match the Console app. Digital Button-LED,Analog Pot-LED, Pot-Relay and Pot-Servo tests migrated.  _More to come._
+  - Added a custom Bar Graph for analog value display in Blazor app.
+  - Also introducing default pin settings for Analog tests 
+- Azure IoT Hub telemtry streaming
+  - Uses the implementation on GitHub at [djaus2/Azure_IoT_Hub_Arduino_RPI_Pico_Telemetry](https://github.com/djaus2/Azure_IoT_Hub_Arduino_RPI_Pico_Telemetry)
+- _More:_ See Repository Status
 
 ## Background
 I wanted to use a RPI Pico W with Arduino installed controlled by .NET apps. Drilling deeper, 
-I wanted to make the Pico coding available with a Blockly style UI as per 
+I wanted to make the Pico coding available to my grandkids with a Blockly style UI as per 
 [CodeCraft](https://ide.tinkergen.com/). There is also [BlocklyDuino](https://blocklyduino.github.io/BlocklyDuino/). 
 
-After some consideration Firmata was considered. But this lacks a simple .NET (not UWP) interface.
+After some consideration I had a back-to-the-future moment. What about Firmata? Alas ...
+
 
 ## Firmata
 
@@ -146,14 +167,11 @@ The Console test app has multiple options:
 - 10  PotRelay
 - 11  PotServo
 
-The Blazor app has similar functionality.
-
 ------
 
 ## Roadmap
 
-- Add more devices: __Please submit.__
-- Azure IoT C2D commands (Control actuators etc)
+- Completed
 - _Please leave suggestions in Issues or Discussions,thx_
 - _More:_ See the Blog post 
 
