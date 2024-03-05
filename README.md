@@ -1,45 +1,5 @@
 # Soft-ata
 
-
-- V4.995 GPS Serial test works in Blazor app. Loopbacks NOW work.
-- V4.99 Blazor: The 3 sensors work. Also UI improved:  Can pause, continue stop telemetry
-  - Intercore comms formalised and Core2 code in separate file.
-- With each Telemetry sends (IoT Hub/BT) inbuilt LED douible flashes.
-- V4.985 Bluetooth Sensor send and Az IoT Hub work for BME280 in Blazor
-  - HINT: Define  ```USINGIOTHUB``` for IoT Hub Telemetry in ```softata.h``` in Arduino app
-    - Now not an issue with it being defined with Blutooth as per V4.98
-- V4.97 Fixed small error in Arduino wrt Azure IoT Hub enabling
-    - Also added some text messages when running Console in IoT Hub mode, wrt Device Explorer.
-- V4.96 Can set number of Pixels in Neopixel display
-  - In both apps get menu to select number of pixels. Can set pin.
-  - Max(default) defined on Softata.SoftataLib.Displays.Neopixel as MaxNumPixels=8  
-  And in Arduino app in Softata.h as NEOPIXEL_NUMPIXELS = 8
--  Nearly complete: Azure IOT hub in Blazor app 2Do
-- V4.95 Mainly just code improvement. Neopixel test extended
-- Inbuilt LED flash rate: Slow if not connected, fast if connected. _(Done)_
-  - NB: This runs on the second core.
-- Major rework for clarity with enums.
-- Blazor App:
-  - Change UI to start with test Categories selection _(Working)_
-    - Some overlap of test types between categories.
-  - Added Analog Pot-Sound-Sound sensors test _(Works)_
-  - _Note:_ Software bargraphs in app for Analog data.
-  - Sensors
-      - The 3 sensors now available in Blazor app
-  - Displays
-    - Neopixel and Grove LCD16x2 RGB Display work with default setiings.
-    - V4.12 OLED096 now **FULLY** works. _Extended tests now_.
-      - And parameters can now be sent (position radius etc.)
-      - [u8g2 reference](https://github.com/olikraus/u8g2/wiki/u8g2reference)
-      - V4.11 Softata checks if is can directly write Cursor and string  as one method
-      ... or if it has to do as 2 methods. Uses ```grove_Display->CursorWriteStringAvailable()``` method to check.. 
-      - **Hint:** I'm using the OLED display in [Grove Beginner Kit for Arduino](https://wiki.seeedstudio.com/Grove-Beginner-Kit-For-Arduino/) connected to Pico without removing it as it's I2C  
-     _Just need to have kit powered and not using I2C._  
-    **AND with the connecting Grove cable, DISCONNECT the RED power wire** to avoid power clashes between the devices.
-    - Note also added Home method to Display API. _Return text to start of line._
-
-<hr/>
-
 ## In Brief
 **An Arduino app _LIKE_ Firmata for RPI Pico W running Arduino.**
 Includes a .NET package so that you can write your own client in C# to remotely control Pico devices. 
