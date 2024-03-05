@@ -154,7 +154,7 @@ The Blazor app has similar functionality.
 - Add more devices: __Please submit.__
 - Azure IoT C2D commands (Control actuators etc)
 - _Please leave suggestions in Issues or Discussions,thx_
-- _More:_ See the Blog post 
+- _More:_ See the Blog post _(See API Documentation link above)_
 
 ------
 
