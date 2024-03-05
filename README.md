@@ -125,7 +125,7 @@ This requires a setup as per previous repositories here as well as in some blog 
   - Direct library install from Arduino. Search for **PubSubClient**
 - [Azure SDK for C - Arduino](https://github.com/Azure/azure-sdk-for-c-arduino)
   - Direct library install from Arduino. Search for **Azure SDK for C** b Microsoft.
-  - Zip install from (azure-sdk-for-c-arduino/releases)[https://github.com/Azure/azure-sdk-for-c-arduino/releases]
+  - Zip install from [azure-sdk-for-c-arduino/releases](https://github.com/Azure/azure-sdk-for-c-arduino/releases)
 ------
 
 ## Usage
