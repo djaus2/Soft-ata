@@ -22,6 +22,7 @@ namespace Softata
                 {DisplayDevice.OLED096,"https://wiki.seeedstudio.com/Grove-OLED_Display_0.96inch/" }
                 ,{DisplayDevice.LCD1602,"https://wiki.seeedstudio.com/Grove-LCD_RGB_Backlight/" }
                 ,{DisplayDevice.NEOPIXEL,"https://www.adafruit.com/category/184" } //Nb 8 Pixel version used
+                ,{DisplayDevice.BARGRAPH,"" }
                 /* ,Add here */
             };
             public static string[] GetDisplays()
@@ -266,6 +267,20 @@ namespace Softata
                 public static bool NoBlink(byte displayLinkedListIndex)
                 {
                     byte[] data = new byte[] { 0x1, (byte)LCD1602MiscCmds.noblink };
+                    string result = SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", displayLinkedListIndex, data);
+                    return true;
+                }
+
+            }
+
+            public static class BARGRAPHDisplay
+            {
+                // Misc commands
+                enum BARGRAPHMiscCmds { flow };
+
+                public static bool Flow(byte displayLinkedListIndex)
+                {
+                    byte[] data = new byte[] { 0x1, (byte)BARGRAPHMiscCmds.flow };
                     string result = SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", displayLinkedListIndex, data);
                     return true;
                 }

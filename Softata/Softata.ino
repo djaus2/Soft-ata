@@ -969,6 +969,9 @@ void loop() {
                     case NEOPIXEL:
                       client.print(Adafruit_NeoPixel8::GetPins());
                       break;
+                    case BARGRAPH:
+                      client.print(Custom_Bargraph::GetPins());
+                      break;
                     default:
                       client.print("Fail:Not a display");
                       break;                 }
@@ -986,6 +989,9 @@ void loop() {
                       break;
                     case NEOPIXEL:
                       //Adafruit_NeoPixel8 cc;
+                      break;
+                    case BARGRAPH:
+                      //Custom_Bargraph dd;
                       break;
                     default:
                         client.print("Fail:Not a display");
@@ -1016,6 +1022,12 @@ void loop() {
                       case NEOPIXEL:
                         {
                           grove_Display  = new Adafruit_NeoPixel8();
+                          _done = true;
+                        }
+                        break;
+                      case BARGRAPH:
+                        {
+                          grove_Display  = new Custom_Bargraph();
                           _done = true;
                         }
                         break;

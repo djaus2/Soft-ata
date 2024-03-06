@@ -7,6 +7,11 @@ Console and Blazor app examples included with MAUI possible later..
   
 _Soft-ata rather than firm-ata!_ 
 
+---
+V5.01 Dummy (for now) new Display BARGRAPH
+- Pico App runs OK, Console App can select it OK.
+- _Just needs implementation code. 2Do_
+
 ## About.
 
 The Pico app runs as a TCPIP Service taking commands, running them and returning the result to the client. 
