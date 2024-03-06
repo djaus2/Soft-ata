@@ -22,7 +22,7 @@ int numSensors =0;
 int AddCallBack(CallbackInfo * info)
 {
   info->isRunning = true;
-  info->next = millis() + info->period;;
+  info->next = millis() + info->period;
   int LEDListIndex=AddSensorToCore2List(info);
   numSensors = LEDListIndex +1;
   // Turn on mqtt loop if IoT Hub Sends

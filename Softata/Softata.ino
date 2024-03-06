@@ -305,7 +305,7 @@ void loop() {
               continue;
             } else {
               if (cmd == 0xA2) {              
-                value = analogRead(pin);;
+                value = analogRead(pin);
                 String msgAD = "AD:";
                 msgAD += value;
                 Serial.println(msgAD);
@@ -617,7 +617,7 @@ void loop() {
                         break;
                       case BME280:
                         {
-                          grove_Sensor  = new Grove_BME280();;
+                          grove_Sensor  = new Grove_BME280();
                           _done = true;
                         }
                         break;
@@ -1018,7 +1018,7 @@ void loop() {
                           grove_Display  = new Adafruit_NeoPixel8();
                           _done = true;
                         }
-                        break;;
+                        break;
                       // Add more here
                       default:
                         client.print("Fail:Not a display");
