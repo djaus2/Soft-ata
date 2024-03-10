@@ -8,10 +8,10 @@ Console and Blazor app examples included with MAUI possible later..
 _Soft-ata rather than firm-ata!_ 
 
 ---
-V5.01 Dummy (for now) new Display BARGRAPH
-- Pico App runs OK, Console App can select it OK.
-- _Just needs implementation code. 2Do_
-- [See Diffs](https://github.com/djaus2/Soft-ata/commit/77f363043c146b77bb31d49f9ffc9c732b6ab0d2?diff=split&w=1)
+
+- Latest V5.10:
+  - LED Bargraph display
+  - Nb: Well documented  [here](https://davidjones.sportronics.com.au/cats/softata/)
 
 ## About.
 
