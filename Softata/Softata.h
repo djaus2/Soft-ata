@@ -5,7 +5,7 @@
 enum SyncedCommands : byte {pauseTelemetryorBT=0,continueTelemetryorBT=1,stopTelemetryorBT=2,svrConnected=10, initialSynch=137};
 #define SynchMultiplier 1000
 
-#define APP_VERSION "5.01"  //Nb: As SoftataLib is updated, this is incremented even if no changes to Arduino code.
+#define APP_VERSION "5.10"  //Nb: As SoftataLib is updated, this is incremented even if no changes to Arduino code.
 
 //#define RPI_PICO_DEFAULT
 #define GROVE_RPI_PICO_SHIELD
@@ -150,7 +150,7 @@ enum GroveDisplayCmds{d_getpinsCMD, d_tbdCMD, d_setupDefaultCMD, d_setupCMD, d_c
 #define OLED096_PINNOUT  "I2C0 (Pins8/9 (SDA/SCL)fixed): Address 0x78. Embedded in driver though."
 #define LCD1602_PINNOUT  "I2C0 (Pins8/9 (SDA/SCL) fixed): Addresses (LCD)0X3E and (RGB)0X62. Embedded in driver though."
 #define NEOPIXEL_PINNOUT "OneWire: Pin 16 (default) Alt 18 or 20 (Grove yellow cable).. 17,19,21 (Grove white cable)"
-#define BARGRAPH_PINNOUT "16 (DS of 74HC595-Pin14),18 (ST_CP of 74HC595-Pin12),20 (SH_CP of 74HC595-Pin11)(default)"
+#define BARGRAPH_PINNOUT "16 (DS of 74HC595-Pin14),20 (ST_CP of 74HC595-Pin12),21 (SH_CP of 74HC595-Pin11)(default)"
 #endif
 
 

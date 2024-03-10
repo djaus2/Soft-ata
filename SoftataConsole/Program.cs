@@ -13,14 +13,14 @@ using Softata.Enums;
 
 
 
-namespace FirmataBasic
+namespace SoftataBasic
 {
     internal class Program
     {
 
         // Set the same as Arduino:
         const int port = 4242;
-        const string ipaddressStr = "192.168.0.9";
+        const string ipaddressStr = "192.168.0.16";
 
         // Configure hardware pin connections thus:
         static byte LED = 12;
@@ -52,6 +52,8 @@ namespace FirmataBasic
         {
 
             Console.WriteLine("Hello from Soft-ata!");
+            Console.WriteLine();
+            Console.WriteLine("For details see https://davidjones.sportronics.com.au/cats/softata/");
             Console.WriteLine();
             Console.WriteLine("TESTS");
             try
@@ -650,7 +652,7 @@ namespace FirmataBasic
                                 string? s = Console.ReadLine();
                                 if (byte.TryParse(s, out byte idis))
                                 {
-                                    if ((idis > 0) && (idis <= MAX_NUM_NEOPIXEL_PIXELS)) 
+                                    if ((idis > 0) && (idis <= MAX_NUM_NEOPIXEL_PIXELS))
                                     {
                                         numPixels = idis;
                                         found = true;
@@ -662,6 +664,15 @@ namespace FirmataBasic
                                 }
                             } while (!found);
                             displayLinkedListIndex = (byte)SoftataLib.Display.Setup(idisplay, 16, numPixels);
+                        }
+                        else if (displayDevice == DisplayDevice.BARGRAPH)
+                        {
+
+                            // Use default settings
+                            //displayLinkedListIndex = (byte)SoftataLib.Display.SetupDefault(idisplay); 
+                            //Or use custom settings: {data,latch,clock} GPIO Pins
+                            List<byte> settings = new List<byte> {20,21}; // Send the  data pin as 16
+                            displayLinkedListIndex = (byte)SoftataLib.Display.Setup(idisplay, 16, settings);
                         }
                         else
                             displayLinkedListIndex = (byte)SoftataLib.Display.SetupDefault(idisplay);
@@ -810,6 +821,29 @@ namespace FirmataBasic
                                     SoftataLib.Display.WriteString(displayLinkedListIndex, 0, 1, "Done");
                                     Thread.Sleep(500);
 
+                                    break;
+                                case DisplayDevice.BARGRAPH:
+                                    Console.WriteLine($"Instantiated {display} linked at {displayLinkedListIndex}");
+                                    SoftataLib.Display.Clear(displayLinkedListIndex);
+                                    Thread.Sleep(1000);
+                                    SoftataLib.Display.WriteString(displayLinkedListIndex, "1");
+                                    Thread.Sleep(1000);
+                                    SoftataLib.Display.WriteString(displayLinkedListIndex, "2");
+                                    Thread.Sleep(1000);
+                                    SoftataLib.Display.WriteString(displayLinkedListIndex, "4");
+                                    Thread.Sleep(1000);
+                                    SoftataLib.Display.WriteString(displayLinkedListIndex, "8");
+                                    Thread.Sleep(1000);
+                                    SoftataLib.Display.WriteString(displayLinkedListIndex, "16");
+                                    Thread.Sleep(1000);
+                                    SoftataLib.Display.WriteString(displayLinkedListIndex, "32");
+                                    Thread.Sleep(1000);
+                                    SoftataLib.Display.WriteString(displayLinkedListIndex, "64");
+                                    Thread.Sleep(1000);
+                                    SoftataLib.Display.WriteString(displayLinkedListIndex, "128");
+                                    Thread.Sleep(1000);
+                                    SoftataLib.Display.Clear(displayLinkedListIndex);
+                                    Thread.Sleep(1000);
                                     break;
                             }
                         }
