@@ -977,26 +977,30 @@ void loop() {
                       break;                 }
                 }
                   break;
-                case d_tbdCMD: //TBD
+                case d_tbdCMD: //Get list of Msic commands for device
                 {
+                  Serial.println("Get Display.Miscs.");
+                  String msg ="";
                   switch (display)
                   {
                     case OLED096:
-                      //Grove_OLED096 aa;
+                      msg = "OK:Misc:drawCircle,drawFrame,test";
                       break;
                     case LCD1602:
-                      //Grove_LCD1602 bb;
+                      msg = "OK:Misc:home,autoscroll,noautoscroll,blink,noblink";
                       break;
                     case NEOPIXEL:
-                      //Adafruit_NeoPixel8 cc;
+                      msg = "OK:Misc:setpixelcolor,setpixelcolorAll,setpixelcolorOdds,setpixelcolorEvens,setBrightness,setN";
                       break;
                     case BARGRAPH:
-                      //Custom_Bargraph dd;
+                      msg = "OK:Misc:flow,flow2";
                       break;
                     default:
-                        client.print("Fail:Not a display");
+                        msg = "Fail:Not a display";
                         break;
                   }
+                  Serial.println(msg);
+                  client.print(msg);              
                 }
                   break;
                 case d_setupDefaultCMD: //Setupdefault
@@ -1270,6 +1274,7 @@ void loop() {
                     Serial.println("Get Displays.");
                     String msg = String("OK:");
                     msg.concat(Grove_Display::GetListof());
+                    Serial.println(msg);
                     client.print(msg);
                   }
                   break;

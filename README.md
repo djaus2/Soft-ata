@@ -8,10 +8,18 @@ Console and Blazor app examples included with MAUI possible later..
 _Soft-ata rather than firm-ata!_ 
 
 ---
-
-- Latest V5.10:
+- Latest V5.15
+  - Can request list of Misc commands for a display from Pico
+  - Misc commands menu in Console app
+    - Can select an Misc command and run it
+-  V5.10:
   - LED Bargraph display
   - Nb: Well documented  [here](https://davidjones.sportronics.com.au/cats/softata/)
+
+- Coming
+  - WebApp API for Softata
+  - Can run individual commands using **Swagger** interface
+  - After that Blockly!
 
 ## About.
 

@@ -10,6 +10,7 @@ using System.IO;
 using System.Threading;
 using Softata;
 using Softata.Enums;
+using System.Collections.Generic;
 
 
 
@@ -20,7 +21,7 @@ namespace SoftataBasic
 
         // Set the same as Arduino:
         const int port = 4242;
-        const string ipaddressStr = "192.168.0.16";
+        const string ipaddressStr = "192.168.0.9";
 
         // Configure hardware pin connections thus:
         static byte LED = 12;
@@ -86,7 +87,7 @@ namespace SoftataBasic
 
                 Console.WriteLine($"Testtype: {Testtype}");
 
-                SoftataLib.Init(ipaddressStr, port);
+                SoftataLib.Connect(ipaddressStr, port);
 
                 SoftataLib.SendMessageCmd("Begin");
                 Thread.Sleep(500);
@@ -581,6 +582,7 @@ namespace SoftataBasic
                     case CommandType.Displays:
                         byte idisplay = 0;
                         string display = "";
+                        string[] Miscs = new string[0];
                         string[] Displays = SoftataLib.Display.GetDisplays();
                         if (Displays.Length == 0)
                             Console.WriteLine($"No displays found");
@@ -623,6 +625,20 @@ namespace SoftataBasic
                             {
                                 Console.WriteLine($"{display} getPins OK");
                                 Console.WriteLine($"{display} Pins = {pins}");
+                            }
+
+                            Miscs = SoftataLib.Display.GetMiscCmds(idisplay);
+                            if (Miscs == null)
+                                Console.WriteLine($"{display} getMiscCmds() failed");
+                            else
+                            {
+                                Console.WriteLine($"{display} getMiscCmds OK");
+                                Console.WriteLine($"{display} Misc Cmds:");
+                                for (byte i = 0; i < Miscs.Length; i++)
+                                {
+                                    string misc = Miscs[i];
+                                    Console.WriteLine($"{misc}");
+                                }
                             }
                         }
                         byte displayLinkedListIndex;
@@ -682,6 +698,58 @@ namespace SoftataBasic
                             Console.WriteLine($"Instantiated sensor {display} not found");
                         else
                         {
+                            if (Miscs.Length > 0)
+                            {
+                                int imisc = 0xff;
+                                do
+                                {           
+                                    string misc = "";
+                                    Console.WriteLine($"Select a Display Misc Cmd to run:");
+                                    Console.WriteLine($"{0}.\t\tSkip/Done");
+                                    for (byte i = 0; i < Miscs.Length; i++)
+                                    {
+                                        misc = Miscs[i];
+                                        Console.WriteLine($"{i + 1}.\t\t{misc}");
+                                    }
+                                    Console.WriteLine("Default: 0.");
+                                    Console.Write("Selection:");
+                                    bool found = false;
+
+                                    do
+                                    {
+                                        string? s = Console.ReadLine();
+                                        if (byte.TryParse(s, out byte imis))
+                                        {
+                                            if ((imis >= 0) && (imis <= Miscs.Length)) // && (idis != 1))
+                                            {
+                                                if (imis == 0)
+                                                    imisc = 0xff;
+                                                else
+                                                    imisc = (byte)(imis - 1);
+                                                found = true;
+                                            }
+                                            else if (string.IsNullOrEmpty(s))
+                                            {
+                                                found = true;
+                                            }
+                                        }
+                                    } while (!found);
+                                    if (imisc < Miscs.Length)
+                                    {
+                                        misc = Miscs[imisc];
+                                        Console.WriteLine($"Selected {misc} Misc command");
+                                        Console.WriteLine("Note: Not passing any params to Misc command at this stage.");
+                                        bool result = SoftataLib.Display.Misc(displayLinkedListIndex, (byte)imisc);
+                                        if (result)
+                                            Console.WriteLine($"Misc command {misc} ran OK");
+                                        else
+                                            Console.WriteLine($"Misc command {misc} failed");
+                                    }
+                                    else
+                                        Console.WriteLine($"Skipping/Exiting Misc command/s");
+                                } while (imisc != 0xff);
+                            }
+                        
                             switch (displayDevice)
                             {
                                 case DisplayDevice.NEOPIXEL:

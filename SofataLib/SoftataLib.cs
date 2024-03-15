@@ -60,9 +60,9 @@ namespace Softata
             }
             catch (Exception ex) { }
 
-            Init(ipAddresStr, port);
+            Connect(ipAddresStr, port);
         }
-        public  static void Init(string _ipAddresStr, int _port)
+        public  static bool Connect(string _ipAddresStr, int _port)
         {
             ipAddresStr = _ipAddresStr;
             port = _port;
@@ -94,6 +94,10 @@ namespace Softata
                 }
                 Client = null;
             }
+            if (Client == null)
+                return false;
+            else
+                return true;;
         }
 
 
@@ -183,6 +187,7 @@ namespace Softata
             switch (cmd)
             {
                 case "Begin":
+                    return result;
                     break;
                 case "Version":
                     return result;

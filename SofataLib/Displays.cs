@@ -9,7 +9,7 @@ using Softata.Enums;
 
 namespace Softata
 {
-    public enum GroveDisplayCmds{getpins=0, tbd=1, setupDefault=2, setup=3, clear=4,backlight=5,setCursor=6, writestrngCMD=7,cursor_writestringCMD=8,homeCMD=9, misc=10,dispose=11, getDisplays=255 }
+    public enum GroveDisplayCmds{getpins=0, getMiscCmds=1, setupDefault=2, setup=3, clear=4,backlight=5,setCursor=6, writestrngCMD=7,cursor_writestringCMD=8,homeCMD=9, misc=10,dispose=11, getDisplays=255 }
     public partial class SoftataLib
     {
 
@@ -74,14 +74,14 @@ namespace Softata
             // Single data display setup
             public static int Setup(byte displayType, byte pin, byte datum)
             {
-                List<byte> data = new List<byte> {datum };
+                List<byte> data = new List<byte> { datum };
                 return Setup(displayType, pin, data);
             }
 
             // Multi data display setup
             public static int Setup(byte displayType, byte pin, List<byte> ldata)
-            {   
-                var data2 = ldata.Prepend((byte)ldata.Count()); 
+            {
+                var data2 = ldata.Prepend((byte)ldata.Count());
                 byte[] data = data2.ToArray<byte>();
                 string result = SendMessage(Commands.groveDisplay, pin, (byte)GroveDisplayCmds.setup, "OK:", displayType, data);
                 if (int.TryParse(result, out int linkedListNo))
@@ -155,7 +155,34 @@ namespace Softata
                     return false;
             }
 
+            public static bool Misc(byte linkedListNo, byte cmd, byte[]? _data = null)
+            {
+                byte[] data = new byte[] { 0x4, cmd, 0, 0, 0 };
+                if(_data != null)
+                {
+                    if (_data.Length > 0)
+                    {
+                        for (int i = 0; (i < _data.Length)&& (i<3); i++)
+                            data[i + 2] = _data[i];
+                    }
+                }
+                string result = SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", linkedListNo, data);
+                return true;
+            }
 
+            public static string[] GetMiscCmds(byte displayType)
+            {
+
+                //if (pinNumber <= 0 || pinNumber >= PinMax)
+                //    throw new ArgumentOutOfRangeException(nameof(pinNumber), "Messages.ArgumentEx_PinRange0_127");
+
+                string result = SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.getMiscCmds, "OK:", displayType);
+                result = result.Replace("Misc:", "");
+                if (!string.IsNullOrEmpty(result))
+                    return result.Split(',');
+                else
+                    return new string[0];
+            }
             public static class Oled096
             { 
                 enum OLEDMiscCmds { drawCircle, drawFrame, test, OLEDMiscCmds_MAX };

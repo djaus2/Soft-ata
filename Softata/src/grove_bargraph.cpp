@@ -86,6 +86,15 @@ bool Custom_Bargraph::Misc(byte cmd, byte * data, byte length)
   switch(Cmd)
   {
     case flow:
+      //Just set every odd segment for now.
+      writeTo595(LSBFIRST, (byte)85);
+      Serial.println("flow()");
+      return true;
+      break;
+    case flow2:
+      //Just set even  segment for now.
+      writeTo595(LSBFIRST, (byte)170);
+      Serial.println("flow()");
       return true;
       break;
     default:
