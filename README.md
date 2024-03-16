@@ -8,6 +8,12 @@ Console and Blazor app examples included with MAUI possible later..
 _Soft-ata rather than firm-ata!_ 
 
 ---
+
+- LATEST V5.81 (towards V6.00)
+  - Added SoftataWebApp
+  - A Web API to Softata
+  - **Includes Swagger interface**
+  - _Not yet complete_
 - Latest V5.15
   - Can request list of Misc commands for a display from Pico
   - Misc commands menu in Console app
