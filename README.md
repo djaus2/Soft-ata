@@ -8,8 +8,10 @@ Console and Blazor app examples included with MAUI possible later..
 _Soft-ata rather than firm-ata!_ 
 
 ---
-
-- LATEST V5.81 (towards V6.00)
+- Latest V5.82  (towards V6.00)
+  - Sensor reads added to Swagger
+  - 2Do: BT and IOT Hub sensor data streams
+- V5.81
   - Added SoftataWebApp
   - A Web API to Softata
   - **Includes Swagger interface**

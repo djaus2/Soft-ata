@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Softata;
+using System.Diagnostics;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -37,6 +38,8 @@ namespace SoftataWebAPI.Controllers
             string value = SoftataLib.Sensor.GetPins((byte)isensor);
             return value;
         }
+
+
         /// <summary>
         /// Get list of properties for a specific sensor
         /// </summary>
@@ -50,6 +53,7 @@ namespace SoftataWebAPI.Controllers
             string[] properties = SoftataLib.Sensor.GetProperties((byte)isensor);
             return properties;
         }
+
 
         /// <summary>
         /// Setup a sensor with default connection settings
@@ -89,10 +93,57 @@ namespace SoftataWebAPI.Controllers
             return Ok($"{sensorListIndex}");
         }
 
-        //////////////////////////////////
-        ///  Not fully implemented yet ///  
-        //////////////////////////////////
+        /// <summary>
+        /// Read all properties of sensor
+        /// </summary>
+        /// <param name="sensorListIndex">Sensor instance index</param>
+        /// <returns>Values as a list</returns>
+        [Route("ReadAll")]
+        [HttpGet]  //Get properties for sensor
+        public IEnumerable<double> ReadAll(int sensorListIndex)
+        {
+            double[]? values = SoftataLib.Sensor.ReadAll((byte)sensorListIndex);
+            if (values != null)
+                return (double[])values;
+            else
+                return new double[0];
+        }
 
+        /// <summary>
+        /// Read all pne property of sensor
+        /// </summary>
+        /// <param name="sensorListIndex">Sensor instance index</param>
+        /// <returns>The value</returns>
+        [Route("Read")]
+        [HttpGet]  //Get properties for sensor
+        public double Read(int sensorListIndex, int property)
+        {
+            double? value = SoftataLib.Sensor.Read((byte)sensorListIndex, (byte)property);
+            if (value != null)
+                return (double)value;
+            else
+                return (double)137137;
+        }
+
+        /// <summary>
+        /// Read all properties of sensor as a json string
+        /// </summary>
+        /// <param name="sensorListIndex">Sensor instance index</param>
+        /// <returns>Values as json string</returns>
+        [Route("ReadTelemetry")]
+        [HttpGet]
+        public string ReadTelemetry(int sensorListIndex)
+        {
+            string json = SoftataLib.Sensor.GetTelemetry((byte)sensorListIndex);
+            return json;
+        }
+
+        /////////////////////////////////////////////
+        /// 2Do 
+        /// - Stream sensor data over Bluetooth
+        /// - Stream sensor data to Azure IoT Hub
+        /// - Implement Actuator Controller
+        ///////////////////////////////////////////// 
         /*
         [HttpPut("{id}")]
         public void Put(int id, [FromBody] string value)
