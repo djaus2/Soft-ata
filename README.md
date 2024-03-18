@@ -113,6 +113,7 @@ So if there a Firmata app running on a device, a host computrer can interact dir
 - SoftataLib: The. NET Library
 - SoftataConsole: A simple .NET Console demo app
 - BlazorSoftata: Blazor Web Server App, some tests as Console app.
+- SoftataWebAPI: Swagger interface to SoftataLib
 
 ## RPi Pico W Arduino
 
