@@ -45,7 +45,9 @@ class Grove_Actuator: public Grove
         return Grove_Actuator::GetListof();
       }
 
-      //static virtual arduino::String GetPins();
+
+      //static virtual arduino::String GetPins();;
+      //static virtual arduino::String GetValueRange()
       virtual bool Setup();
       virtual bool Setup(byte * settings, byte numSettings);
       // Index for if there are an array of actuators here.
@@ -65,7 +67,6 @@ class Grove_Actuator: public Grove
 
 #include <Servo.h>
 
-#define DEFAULT_SERVO_PIN 16
 #define MAX_PW 2400
 #define MIN_PW 544
 #define PERIOD 20000
@@ -77,7 +78,15 @@ class Grove_Servo: public Grove_Actuator
       Grove_Servo(int pin);
       static arduino::String GetPins()
       {
-        return "16";
+        String msg = "OK:";
+        msg.concat(SERVO_PINNOUT);
+        return msg;
+      }
+      static arduino::String GetValueRange()
+      {
+        String msg = "OK:";
+        msg.concat(SERVO_RANGE);
+        return msg;
       }
       virtual bool Setup();
       virtual bool Setup(byte * settings, byte numSettings);

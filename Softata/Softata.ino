@@ -1299,15 +1299,15 @@ void loop() {
                       break;                 }
                   }
                   break;
-                case a_tbdCMD: //TBD
+                case a_getValueRangeCMD:
                 {
                   switch (actuator)
                   {
                     case SERVO:
-                      //Grove_Servo aa;
+                      client.print(Grove_Servo::GetValueRange());
                       break;
                     default:
-                        client.print("Fail:Not a display");
+                        client.print("Fail:Not an actuator");
                         break;
                   }
                 }

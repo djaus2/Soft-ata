@@ -27,7 +27,7 @@ namespace SoftataWebAPI.Controllers
         // GET: api/<Softata>
         [Route("GetDevices")]
         [HttpGet]
-        public IEnumerable<string> GetDevices()
+        public IEnumerable<string> Get()
         {
             string value = SoftataLib.SendMessageCmd("Devices");
             return value.Split(',',':').ToList();

@@ -5,7 +5,7 @@
 enum SyncedCommands : byte {pauseTelemetryorBT=0,continueTelemetryorBT=1,stopTelemetryorBT=2,svrConnected=10, initialSynch=137};
 #define SynchMultiplier 1000
 
-#define APP_VERSION "5.82"  //Nb: As SoftataLib is updated, this is incremented even if no changes to Arduino code.
+#define APP_VERSION "5.85"  //Nb: As SoftataLib is updated, this is incremented even if no changes to Arduino code.
 
 //#define RPI_PICO_DEFAULT
 #define GROVE_RPI_PICO_SHIELD
@@ -79,8 +79,16 @@ enum SyncedCommands : byte {pauseTelemetryorBT=0,continueTelemetryorBT=1,stopTel
 
 ///////////////////////// A C T U A T O R S /////////////////////////////////////////////////
 
-enum GroveActuatorCmds{a_getpinsCMD, a_tbdCMD, a_setupDefaultCMD, a_setupCMD, a_writeDoubleValueCMD, a_writeByteValueCMD, a_getActuatorsCMD=255 };
+enum GroveActuatorCmds{a_getpinsCMD, a_getValueRangeCMD, a_setupDefaultCMD, a_setupCMD, a_writeDoubleValueCMD, a_writeByteValueCMD, a_getActuatorsCMD=255 };
 
+#ifdef RPI_PICO_DEFAULT
+#define SERVO_PINNOUT "GPIO: Pin 11 or whatever 0 to 26"
+#elif defined(GROVE_RPI_PICO_SHIELD)
+#define SERVO_PINNOUT "Pin 16 (default), 18 or 20"
+#endif
+
+#define DEFAULT_SERVO_PIN 16
+#define SERVO_RANGE "0...180 Angle" 
 
 ///////////////////////// S E N S O R S /////////////////////////////////////////////////
 

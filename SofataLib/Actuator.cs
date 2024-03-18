@@ -9,7 +9,7 @@ namespace Softata
 {
     public partial class SoftataLib
     {
-        public enum GroveActuatorCmds { a_getpinsCMD, a_tbdCMD, a_setupDefaultCMD, a_setupCMD, a_writeDoubleValueCMD, a_writeByteValueCMD, a_getActuatorsCMD = 255 };
+        public enum GroveActuatorCmds { a_getpinsCMD, a_getValueRange, a_setupDefaultCMD, a_setupCMD, a_writeDoubleValueCMD, a_writeByteValueCMD, a_getActuatorsCMD = 255 };
 
         public static class Actuator
         {
@@ -41,6 +41,18 @@ namespace Softata
                     return result.Split(',');
                 else
                     return new string[0];
+            }
+
+            public static string GetPins(ActuatorDevice deviceType, bool debug = true)
+            {
+                string result = SendMessage(Commands.groveActuator, 0, (byte)GroveActuatorCmds.a_getpinsCMD, "OK:", (byte)deviceType, null, debug = true);
+                return result;
+            }
+
+            public static string GetValueRange(ActuatorDevice deviceType, bool debug = true)
+            {
+                string result = SendMessage(Commands.groveActuator, 0, (byte)GroveActuatorCmds.a_getValueRange, "OK:", (byte)deviceType, null, debug = true);
+                return result;
             }
 
             public static int Setup(ActuatorDevice deviceType, byte pinNumber)
