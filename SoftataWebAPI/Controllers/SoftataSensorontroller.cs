@@ -7,7 +7,7 @@ using System.Diagnostics;
 namespace SoftataWebAPI.Controllers
 {
     /// <summary>
-    /// The Sensor Controller
+    /// The Softata Sensor Controller
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
@@ -30,7 +30,7 @@ namespace SoftataWebAPI.Controllers
         /// </summary>
         /// <param name="isensor">The enum ord of the sensor in the list of sensors</param>
         /// <returns>Statement of default and optional connections to sensor</returns>
-        // GET api/<Softata>/5
+        // GET api/<SoftataController>/5
         [Route("GetPins")]
         [HttpGet]  //Get pins for display
         public string GetPins(int isensor)
@@ -45,7 +45,7 @@ namespace SoftataWebAPI.Controllers
         /// </summary>
         /// <param name="isensor">The enum ord of the sensor in the list of sensors</param>
         /// <returns>List of properties</returns>
-        // GET api/<Softata>/5
+        // GET api/<SoftataController>/5
         [Route("GetProperties")]
         [HttpGet]  //Get properties for sensor
         public IEnumerable<string> GetProperties(int isensor)
@@ -60,7 +60,7 @@ namespace SoftataWebAPI.Controllers
         /// </summary>
         /// <param name="isensor">The enum ord of the sensor in the list of sensors</param>
         /// <returns>OK with instance index or Fail</returns>
-        // POST api/<Softata>
+        // POST api/<SoftataController>
         [Route("SetupDefault")]
         [HttpPost] // Default setup for sensor
         public IActionResult SetupDefault(int isensor)

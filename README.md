@@ -8,16 +8,15 @@ Console and Blazor app examples included with MAUI possible later..
 _Soft-ata rather than firm-ata!_ 
 
 ---
-- Latest V5.85  (towards V6.00) _(WebAPI)_
-  - Actuator (Servo) added to Swagger
-    - Also additional static method input GetValueRange() added to Servo
-    -   - Eg "0...180 Angle" for Servo
-  - Sensor, Display and Actuator using Swagger
-  - 2Do: BT and IOT Hub sensor data streams
-- Latest V5.15
-  - Can request list of Misc commands for a display from Pico
-  - Misc commands menu in Console app
-    - Can select an Misc command and run it
+- Latest V5.95  (towards V6.00) _(WebAPI)_
+  - WebAPI with Swagger
+  - Can exercise Softata API method indivually over web using Swagger
+  - Controllers
+    - Softata
+    - Actuators
+    - Displays
+    - Sensors
+    - Telemetry
 - V5.10:
   - LED Bargraph display
 
@@ -86,10 +85,6 @@ The full API documentation is [here](https://davidjones.sportronics.com.au/cats/
 - [Repository History](./RepositoryHistory.md)
 - [Original ReadMe](./README_V1.md)
 - [Second ReadMe version](./README_V2.md)
-
-## Latest
-
-- V5.00: Completion of Blazor app Tests
 
 ## Background
 I wanted to use a RPI Pico W with Arduino installed controlled by .NET apps. Drilling deeper, 

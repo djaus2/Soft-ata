@@ -8,7 +8,7 @@ using static Softata.SoftataLib.Actuator;
 namespace SoftataWebAPI.Controllers
 {
     /// <summary>
-    /// The Actuator Controller
+    /// The Softata Actuator Controller
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
@@ -31,7 +31,7 @@ namespace SoftataWebAPI.Controllers
         /// </summary>
         /// <param name="iactuator">The enum ord of the actuator in the list of sensors</param>
         /// <returns>Statement of default and optional connections to sensor</returns>
-        // GET api/<Softata>/5
+        // GET api/<SoftataController>/5
         [Route("GetPins")]
         [HttpGet]
         public string GetPins(int iactuator)
@@ -45,7 +45,7 @@ namespace SoftataWebAPI.Controllers
         /// </summary>
         /// <param name="iactuator">The enum ord of the actuator in the list of sensors</param>
         /// <returns>Valid range of values to write as a string</returns>
-        // GET api/<Softata>/5
+        // GET api/<SoftataController>/5
         [Route("GetValueRange")]
         [HttpGet]
         public string GetValueRange(int iactuator)
@@ -60,7 +60,7 @@ namespace SoftataWebAPI.Controllers
         /// </summary>
         /// <param name="iactuator">The enum ord of the actuator in the list of actuators</param>
         /// <returns>OK with instance index or Fail</returns>
-        // POST api/<Softata>
+        // POST api/<SoftataController>
         [Route("SetupDefault")]
         [HttpPost] // Default setup for actuator
         public IActionResult SetupDefault(int iactuator)
@@ -99,7 +99,7 @@ namespace SoftataWebAPI.Controllers
         /// <param name="displayLinkedListIndex">Display Instance index</param>
         /// <param name="value">Value to set</param>
         /// <returns>OK or Fail</returns>
-        // POST api/<Softata>
+        // POST api/<SoftataController>
         [Route("WriteByte")]
         [HttpPost]
         public IActionResult WriteByte(int displayLinkedListIndex, int value)

@@ -10,7 +10,7 @@ namespace SoftataWebAPI.Controllers
     [Route("api/[controller]")]
     [ApiController]
     /// <summary>
-    /// The Softata Devices Controller
+    /// The SoftataController Display Controller
     /// </summary>
     public class SoftataDisplayController : ControllerBase
     {
@@ -20,7 +20,7 @@ namespace SoftataWebAPI.Controllers
         /// Get a list of implemented displays
         /// </summary>
         /// <returns>List of displays</returns>
-        // GET: api/<Softata>
+        // GET: api/<SoftataController>
         [Route("GetDisplays")]
         [HttpGet] //Get displays
         public IEnumerable<string> GetDisplays()
@@ -34,7 +34,7 @@ namespace SoftataWebAPI.Controllers
         /// </summary>
         /// <param name="idisplay">The enum ord of the display in the list of displays</param>
         /// <returns>Statement of default and optional connections to the display.</returns>
-        // GET api/<Softata>/5
+        // GET api/<SoftataController>/5
         [Route("GetPins")]
         [HttpGet]  //Get pins for display
         public string GetPins(int idisplay)
@@ -48,7 +48,7 @@ namespace SoftataWebAPI.Controllers
         /// </summary>
         /// <param name="idisplay">The enum ord of the display in the list of displays</param>
         /// <returns>OK with instance index or Fail</returns>
-        // POST api/<Softata>
+        // POST api/<SoftataController>
         [Route("SetupDefault")]
         [HttpPost] // Default setup for display
         public IActionResult SetupDefault(int idisplay)
@@ -86,7 +86,7 @@ namespace SoftataWebAPI.Controllers
         /// </summary>
         /// <param name="displayLinkedListIndex">Display instance index</param>
         /// <returns>Ok or fail</returns>
-        // POST api/<Softata>
+        // POST api/<SoftataController>
         [Route("Clear")]
         [HttpPost] // Default setup for display
         public IActionResult Clear(int displayLinkedListIndex)
@@ -104,7 +104,7 @@ namespace SoftataWebAPI.Controllers
         /// </summary>
         /// <param name="displayLinkedListIndex">Display instance index</param>
         /// <returns></returns>
-        // POST api/<Softata>
+        // POST api/<SoftataController>
         [Route("Home")]
         [HttpPost] // Default setup for display
         public IActionResult Home(int displayLinkedListIndex)
@@ -123,7 +123,7 @@ namespace SoftataWebAPI.Controllers
         /// <param name="displayLinkedListIndex">Display Instance index</param>
         /// <param name="value">Value as a string</param>
         /// <returns>OK or Fail</returns>
-        // POST api/<Softata>
+        // POST api/<SoftataController>
         [Route("WriteIntString")]
         [HttpPost] // Default setup for display
         public IActionResult WriteIntString(int displayLinkedListIndex, int value)
@@ -142,7 +142,7 @@ namespace SoftataWebAPI.Controllers
         /// <param name="displayLinkedListIndex">Display Instance index</param>
         /// <param name="value">Value to write</param>
         /// <returns>OK or Fail</returns>
-        // POST api/<Softata>
+        // POST api/<SoftataController>
         [Route("WriteString")]
         [HttpPost] 
         public IActionResult WriteString(int displayLinkedListIndex, string value)
@@ -164,7 +164,7 @@ namespace SoftataWebAPI.Controllers
         /// <param name="x">Position in row</param>
         /// <param name="y">Row</param>
         /// <returns>OK or Fail</returns>
-        // POST api/<Softata>
+        // POST api/<SoftataController>
         [Route("WriteStringXY")]
         [HttpPost] // Default setup for display
         public IActionResult WriteStringXY(int displayLinkedListIndex,int x, int y, string value)
@@ -184,7 +184,7 @@ namespace SoftataWebAPI.Controllers
         /// <param name="x">Position in row</param>
         /// <param name="y">Row</param>
         /// <returns></returns>
-        // POST api/<Softata>
+        // POST api/<SoftataController>
         [Route("SetCursor")]
         [HttpPost] // Default setup for display
         public IActionResult SetCursor(int displayLinkedListIndex, int x, int y)
@@ -203,7 +203,7 @@ namespace SoftataWebAPI.Controllers
         /// <param name="displayLinkedListIndex">Display instance index</param>
         /// <param name="miscCmndIndex">Misc Command</param>
         /// <returns>OK or fail</returns>
-        // POST api/<Softata>
+        // POST api/<SoftataController>
         [Route("Misc")]
         [HttpPost] // Default setup for display
         public IActionResult Misc(int displayLinkedListIndex, int miscCmndIndex)
@@ -217,13 +217,13 @@ namespace SoftataWebAPI.Controllers
         }
 
         /*
-        // PUT api/<Softata>/5
+        // PUT api/<SoftataController>/5
         [HttpPut("{id}")]
         public void Put(int id, [FromBody] string value)
         {
         }
 
-        // DELETE api/<Softata>/5
+        // DELETE api/<SoftataController>/5
         [HttpDelete("{id}")]
         public void Delete(int id)
         {

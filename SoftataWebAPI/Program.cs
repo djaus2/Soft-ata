@@ -19,7 +19,7 @@ namespace SoftataWebAPI
             //Swagger Documentation Section
             var info = new OpenApiInfo()
             {
-                Title = "Softata",
+                Title = "SoftataController",
                 Version = "v5.15",
                 Description = "An Arduino API LIKE Firmata for RPI Pico W running Arduino. Includes a .NET package so that you can write your own client in C# to remotely control Pico W devices.",
                 Contact = new OpenApiContact()

@@ -15,16 +15,16 @@ namespace SoftataWebAPI.Controllers
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
-    public class Softata : ControllerBase
+    public class SoftataController : ControllerBase
     {
 
         const int port = 4242;
-        const string ipaddressStr = "192.168.0.16";
+        const string ipaddressStr = "192.168.0.12";
         /// <summary>
         /// Get a list of Device Types
         /// </summary>
         /// <returns>List of device types</returns>
-        // GET: api/<Softata>
+        // GET: api/<SoftataController>
         [Route("GetDevices")]
         [HttpGet]
         public IEnumerable<string> Get()
@@ -78,7 +78,7 @@ namespace SoftataWebAPI.Controllers
         /// <param name="ipAddress"></param>
         /// <param name="_port"></param>
         /// <returns></returns>
-        // POST api/<Softata>
+        // POST api/<SoftataController>
         [Route("Connect")]
         [HttpPost]
         public IActionResult Connect(string ipAddress = "192.168.0.16", int _port = port)
@@ -98,7 +98,7 @@ namespace SoftataWebAPI.Controllers
             return BadRequest("Server not available or invalid IPAdress");
         }
 
-        // POST api/<Softata>
+        // POST api/<SoftataController>
         /// <summary>
         /// Connect to the Pico W Server and send the Begin command
         /// </summary>
@@ -144,7 +144,7 @@ namespace SoftataWebAPI.Controllers
         /// <param name="other"></param>
         /// <param name="Data"></param>
         /// <returns></returns>
-        // POST api/<Softata>
+        // POST api/<SoftataController>
         [Route("SendMessage")]
         [HttpPost]
         public IActionResult SendMessage(int msgOrDeviceType, int pin = 0xff,int state = 0xff  , string expect="OK:", int other = 0xff, byte[]? Data = null)
@@ -161,13 +161,13 @@ namespace SoftataWebAPI.Controllers
         }
 
         /*
-        // PUT api/<Softata>/5
+        // PUT api/<SoftataController>/5
         [HttpPut("{id}")]
         public void Put(int id, [FromBody] string value)
         {
         }
 
-        // DELETE api/<Softata>/5
+        // DELETE api/<SoftataController>/5
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
