@@ -21,7 +21,7 @@ namespace SoftataWebAPI.Controllers
         // GET: api/<SoftataSensorontroller>
         [HttpGet]
         public IEnumerable<string> Get()
-        { 
+        {
             string[] actuators = SoftataLib.Actuator.GetActuators();
             return actuators;
         }
@@ -96,84 +96,20 @@ namespace SoftataWebAPI.Controllers
         /// <summary>
         /// Write a byte to Actuator
         /// </summary>
-        /// <param name="displayLinkedListIndex">Display Instance index</param>
+        /// <param name="actuatorListIndex">Display Instance index</param>
         /// <param name="value">Value to set</param>
         /// <returns>OK or Fail</returns>
         // POST api/<SoftataController>
         [Route("WriteByte")]
         [HttpPost]
-        public IActionResult WriteByte(int displayLinkedListIndex, int value)
+        public IActionResult WriteByte(int actuatorListIndex, int value)
         {
-            bool result = SoftataLib.Actuator.ActuatorWrite((byte)displayLinkedListIndex, (byte)value);
+            bool result = SoftataLib.Actuator.ActuatorWrite((byte)actuatorListIndex, (byte)value);
             if (!result)
             {
                 return BadRequest("Actuator:WriteByte fail.");
             }
             return Ok($"Actuator:WriteByte");
         }
-
-        /*
-        /// <summary>
-        /// Read all properties of sensor
-        /// </summary>
-        /// <param name="sensorListIndex">Sensor instance index</param>
-        /// <returns>Values as a list</returns>
-        [Route("ReadAll")]
-        [HttpGet]  //Get properties for sensor
-        public IEnumerable<double> ReadAll(int sensorListIndex)
-        {
-            double[]? values = SoftataLib.Sensor.ReadAll((byte)sensorListIndex);
-            if (values != null)
-                return (double[])values;
-            else
-                return new double[0];
-        }
-
-        /// <summary>
-        /// Read all pne property of sensor
-        /// </summary>
-        /// <param name="sensorListIndex">Sensor instance index</param>
-        /// <returns>The value</returns>
-        [Route("Read")]
-        [HttpGet]  //Get properties for sensor
-        public double Read(int sensorListIndex, int property)
-        {
-            double? value = SoftataLib.Sensor.Read((byte)sensorListIndex, (byte)property);
-            if (value != null)
-                return (double)value;
-            else
-                return (double)137137;
-        }
-
-        /// <summary>
-        /// Read all properties of sensor as a json string
-        /// </summary>
-        /// <param name="sensorListIndex">Sensor instance index</param>
-        /// <returns>Values as json string</returns>
-        [Route("ReadTelemetry")]
-        [HttpGet]
-        public string ReadTelemetry(int sensorListIndex)
-        {
-            string json = SoftataLib.Sensor.GetTelemetry((byte)sensorListIndex);
-            return json;
-        }
-        */
-        /////////////////////////////////////////////
-        /// 2Do 
-        /// - Stream sensor data over Bluetooth
-        /// - Stream sensor data to Azure IoT Hub
-        /// - Implement Actuator Controller
-        ///////////////////////////////////////////// 
-        /*
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/<SoftataSensorontroller>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }*/
     }
 }
