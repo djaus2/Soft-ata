@@ -159,18 +159,5 @@ namespace SoftataWebAPI.Controllers
                 return BadRequest(result);
             }
         }
-
-        /*
-        // PUT api/<SoftataController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/<SoftataController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }*/
     }
 }

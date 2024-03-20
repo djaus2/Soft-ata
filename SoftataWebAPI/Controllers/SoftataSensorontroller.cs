@@ -137,23 +137,5 @@ namespace SoftataWebAPI.Controllers
             string json = SoftataLib.Sensor.GetTelemetry((byte)sensorListIndex);
             return json;
         }
-
-        /////////////////////////////////////////////
-        /// 2Do 
-        /// - Stream sensor data over Bluetooth
-        /// - Stream sensor data to Azure IoT Hub
-        /// - Implement Actuator Controller
-        ///////////////////////////////////////////// 
-        /*
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/<SoftataSensorontroller>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }*/
     }
 }

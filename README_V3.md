@@ -1,15 +1,27 @@
-# Soft-ata V6.00
+# Soft-ata V5.00
 
 ## In Brief
 **An Arduino app _LIKE_ Firmata for RPI Pico W running Arduino.**
 Includes a .NET package so that you can write your own client in C# to remotely control Pico devices. 
-Console, Blazor and WebAPI app examples included with MAUI possible later..
+Console and Blazor app examples included with MAUI possible later..
   
 _Soft-ata rather than firm-ata!_ 
 
 ---
+- Latest V5.95  (towards V6.00) _(WebAPI)_
+  - WebAPI with Swagger
+  - Can exercise Softata API method indivually over web using Swagger
+  - Controllers
+    - Softata
+    - Actuators
+    - Displays
+    - Sensors
+    - Telemetry
+- V5.10:
+  - LED Bargraph display
 
-- Documentation:  [here](https://davidjones.sportronics.com.au/cats/softata/)
+
+- Nb: Well documented  [here](https://davidjones.sportronics.com.au/cats/softata/)
 
 
 ## About.
@@ -148,8 +160,6 @@ The Console test app has multiple options:
 - 11  PotServo
 
 The Blazor app has similar functionality.
-
-The SoftataWebAPI is an ASP.NET Core API app presents a Swagger interafce to all of the SoftataLib (.NET) API commands
 
 ------
 

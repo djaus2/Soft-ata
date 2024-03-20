@@ -11,7 +11,7 @@ namespace SoftataWebAPI.Controllers
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
-    public class SoftataTelemtryController : ControllerBase
+    public class SoftataTelemetryController : ControllerBase
     {
         /// <summary>
         /// One read of all properties of sensor as a json string

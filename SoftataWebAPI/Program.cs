@@ -15,12 +15,14 @@ namespace SoftataWebAPI
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
+            // Including dox:  https://medium.com/@egwudaujenyuojo/implement-api-documentation-in-net-7-swagger-openapi-and-xml-comments-214caf53eece;
+
 
             //Swagger Documentation Section
             var info = new OpenApiInfo()
             {
                 Title = "SoftataController",
-                Version = "v5.15",
+                Version = "v6.00",
                 Description = "An Arduino API LIKE Firmata for RPI Pico W running Arduino. Includes a .NET package so that you can write your own client in C# to remotely control Pico W devices.",
                 Contact = new OpenApiContact()
                 {
@@ -41,29 +43,9 @@ namespace SoftataWebAPI
             }); 
 
 
-            ///builder.Services.AddSwaggerGen();
-            //// https://github.com/domaindrivendev/Swashbuckle/issues/1083#issuecomment-530471158
-            /// https://medium.com/@egwudaujenyuojo/implement-api-documentation-in-net-7-swagger-openapi-and-xml-comments-214caf53eece
-            //builder.Services.AddSwaggerGen(c =>
-            //{
-
-            //    Set the comments path for the Swagger JSON and UI.
-
-            //   var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-            //    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-            //    c.IncludeXmlComments(xmlPath, includeControllerXmlComments: true);
-            //});
 
             var app = builder.Build();
 
-            //// Configure the HTTP request pipeline.
-            //if (app.Environment.IsDevelopment())
-            //{
-            //    app.UseSwagger();
-            //    app.UseSwaggerUI();
-            //}
-
-            // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger(u =>
