@@ -372,3 +372,6 @@ FodyWeavers.xsd
 /NetStandardSoftata/Serial.cs
 /NetStandardSoftata/SofataDeviceInterface.cs
 /NetStandardSoftata/SoftataLib.cs
+/SoftataWebAPI/Properties/serviceDependencies.json
+/SoftataWebAPI/Properties/serviceDependencies.SoftataWebAPI - Web Deploy.json
+/SoftataWebAPI/Properties/serviceDependencies.SoftataWebAPIAppSvc - Web Deploy.json
