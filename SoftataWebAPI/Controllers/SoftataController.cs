@@ -13,7 +13,8 @@ namespace SoftataWebAPI.Controllers
     /// <summary>
     /// The Base Controller
     /// </summary>
-    [Route("api/[controller]")]
+    [Route("/")]
+    ///[Route("api/[controller]")]
     [ApiController]
     public class SoftataController : ControllerBase
     {
@@ -25,7 +26,7 @@ namespace SoftataWebAPI.Controllers
         /// </summary>
         /// <returns>List of device types</returns>
         // GET: api/<SoftataController>
-        [Route("GetDevices")]
+        [Route("Get")]
         [HttpGet]
         public IEnumerable<string> Get()
         {

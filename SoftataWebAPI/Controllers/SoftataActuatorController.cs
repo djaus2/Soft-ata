@@ -10,7 +10,7 @@ namespace SoftataWebAPI.Controllers
     /// <summary>
     /// The Softata Actuator Controller
     /// </summary>
-    [Route("api/[controller]")]
+    [Route("/Actuator")]
     [ApiController]
     public class SoftataActuatorController : ControllerBase
     {
@@ -19,6 +19,7 @@ namespace SoftataWebAPI.Controllers
         /// </summary>
         /// <returns>List of sensors</returns>
         // GET: api/<SoftataSensorontroller>
+        [Route("Get")]
         [HttpGet]
         public IEnumerable<string> Get()
         {

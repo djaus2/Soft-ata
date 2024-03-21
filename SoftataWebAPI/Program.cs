@@ -40,25 +40,37 @@ namespace SoftataWebAPI
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
-            }); 
+            });
+
+            //builder.Services.ConfigureSwaggerGen(setup =>
+            //{
+            //    setup.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+            //    {
+            //        Title = "Softata",
+            //        Version = "v1"
+            //    });
+            //});
 
 
 
             var app = builder.Build();
 
-            if (app.Environment.IsDevelopment())
+
+            //if (app.Environment.IsDevelopment())
+            //{
+
+            app.UseSwagger(u =>
             {
-                app.UseSwagger(u =>
-                {
-                    u.RouteTemplate = "swagger/{documentName}/swagger.json";
-                });
+                u.RouteTemplate = "swagger/{documentName}/swagger.json";
+            });
+
 
                 app.UseSwaggerUI(c =>
                 {
                     c.RoutePrefix = "swagger";
                     c.SwaggerEndpoint(url: "/swagger/v1/swagger.json", name: "Your API Title or Version");
                 });
-            }
+            //}
 
             app.UseHttpsRedirection();
 

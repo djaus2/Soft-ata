@@ -7,7 +7,7 @@ using static Softata.SoftataLib;
 namespace SoftataWebAPI.Controllers
 {
 
-    [Route("api/[controller]")]
+    [Route("/Display")]
     [ApiController]
     /// <summary>
     /// The SoftataController Display Controller
@@ -21,9 +21,9 @@ namespace SoftataWebAPI.Controllers
         /// </summary>
         /// <returns>List of displays</returns>
         // GET: api/<SoftataController>
-        [Route("GetDisplays")]
+        [Route("Get")]
         [HttpGet] //Get displays
-        public IEnumerable<string> GetDisplays()
+        public IEnumerable<string> Get()
         {
             string[] Displays = SoftataLib.Display.GetDisplays();
             return Displays;

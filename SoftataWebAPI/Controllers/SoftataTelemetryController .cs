@@ -9,7 +9,7 @@ namespace SoftataWebAPI.Controllers
     /// <summary>
     /// The Softata Telemetry Controller
     /// </summary>
-    [Route("api/[controller]")]
+    [Route("/Telemetry")]
     [ApiController]
     public class SoftataTelemetryController : ControllerBase
     {
