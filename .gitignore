@@ -375,3 +375,4 @@ FodyWeavers.xsd
 /SoftataWebAPI/Properties/serviceDependencies.json
 /SoftataWebAPI/Properties/serviceDependencies.SoftataWebAPI - Web Deploy.json
 /SoftataWebAPI/Properties/serviceDependencies.SoftataWebAPIAppSvc - Web Deploy.json
+/SoftataWebAPI/Properties/ServiceDependencies/SoftataWebAPI20240321114706 - Web Deploy/profile.arm.json
