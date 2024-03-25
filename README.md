@@ -11,6 +11,13 @@ _Soft-ata rather than firm-ata!_
 
 - Documentation:  [here](https://davidjones.sportronics.com.au/cats/softata/)
 
+## <font color="red">Hot Press</font>
+
+- V6.10  Can send Telemtry pause continue or stop  as C2D Msg
+  - Eg **Telemetry 0 pause 0** to pause. 
+  - Use Azure IoT Explorer  or VS Code etc to send msg to device
+  - Also can send raw msg commands eg **240 0 9 0** to pause. 
+    - 240 = Sensor(Telemetry) 9 = pause 10=continue.
 
 ## About.
 

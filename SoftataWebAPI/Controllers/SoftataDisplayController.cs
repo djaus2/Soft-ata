@@ -6,16 +6,13 @@ using static Softata.SoftataLib;
 
 namespace SoftataWebAPI.Controllers
 {
-
-    [Route("/Display")]
-    [ApiController]
     /// <summary>
     /// The SoftataController Display Controller
     /// </summary>
+    [Route("/Display")]
+    [ApiController]
     public class SoftataDisplayController : ControllerBase
     {
-
-
         /// <summary>
         /// Get a list of implemented displays
         /// </summary>

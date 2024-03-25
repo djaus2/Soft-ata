@@ -114,6 +114,7 @@ namespace SoftataWebAPI.Controllers
         /// Read all pne property of sensor
         /// </summary>
         /// <param name="sensorListIndex">Sensor instance index</param>
+        /// <param name="property">Index to the property</param>
         /// <returns>The value</returns>
         [Route("Read")]
         [HttpGet]  //Get properties for sensor

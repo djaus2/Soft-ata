@@ -14,7 +14,6 @@ namespace SoftataWebAPI.Controllers
     /// The Base Controller
     /// </summary>
     [Route("/")]
-    ///[Route("api/[controller]")]
     [ApiController]
     public class SoftataController : ControllerBase
     {

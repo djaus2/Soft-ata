@@ -77,11 +77,36 @@ void setup() {
 //Ref: https://www.thegeekpub.com/276838/how-to-reset-an-arduino-using-code/
 void (*resetFunc)(void) = 0;
 
-
+bool RecvdCloud2DeviceMsg = false;
+uint32_t popVal; 
+byte C2DMessage[5];
+int Check4RecvdCloud2DeviceMsg()
+{
+  // Slot Cloud2Device messages in here
+  if(RecvdCloud2DeviceMsg)
+  {
+    Serial.println();
+    RecvdCloud2DeviceMsg = false;
+    if(popVal>0)
+    { 
+      C2DMessage[4] = popVal % (256*256*256);
+      C2DMessage[3] = (popVal/256) % (256*256);
+      C2DMessage[2] = (popVal/(256*256)) % (256);
+      C2DMessage[1] = popVal/(256*256*256);
+      C2DMessage[0] = 4;
+      RecvdCloud2DeviceMsg = false;
+      return C2DMessage[0];
+    }
+  }
+  return 0;
+}
 
 void loop() {
   watchdog_update();
   static int i;
+  int count = 0;
+  byte msg[maxRecvdMsgBytes];
+  /*
   if(first){
                 Serial.println(Grove_Sensor::GetListof());
                 Serial.println(Grove_Actuator::GetListof());
@@ -92,7 +117,7 @@ void loop() {
                     Serial.println(Grove_Display::GetIndexOf("OLED096"));
                     Serial.println(Grove_Display::GetIndexOf("LCD1602")); 
                 first = false;
-  }
+  }*/
                               
   delay(500);
   WiFiClient client = server.available();
@@ -106,48 +131,94 @@ void loop() {
     while (!client.available()) {
       delay(100);
       watchdog_update();
+      if(rp2040.fifo.available())
+        break;
     }
-
-    Serial.println("...Is connected.");
-    if(!hasConnected)
+    if(rp2040.fifo.available())
     {
-      hasConnected = true;
-      rp2040.fifo.push( SynchMultiplier + (int)svrConnected); //Make Inbuilt LED flash faster
-      while (!rp2040.fifo.available())
+      popVal = rp2040.fifo.pop();
+      RecvdCloud2DeviceMsg = true;
+    }
+    byte length=0;
+    count = 0;
+    if(RecvdCloud2DeviceMsg)
+    {
+      count=Check4RecvdCloud2DeviceMsg();
+    }
+    if (count>0)
+    {
+      Serial.print("C2DMsg:");
+      Serial.print("length=0x");
+      Serial.print(C2DMessage[0],HEX);
+      Serial.print(' ');
+      Serial.print("cmd=0x");
+      Serial.print(C2DMessage[1],HEX);
+      Serial.print(' ');
+      Serial.print("pin=0x");
+      Serial.print(C2DMessage[2],HEX);
+      Serial.print(' ');
+      Serial.print("param=0x");
+      Serial.print(C2DMessage[3],HEX);
+      Serial.print(' ');
+      Serial.print("other=0x");
+      Serial.println(C2DMessage[4],HEX);
+      length = C2DMessage[0];
+      for(int i=0; i<C2DMessage[0]; i++)
       {
-          watchdog_update();
+        msg[i] = C2DMessage[i+1];
       }
-      uint32_t sync = rp2040.fifo.pop();
+      //continue;
     }
-    byte length = client.read();
-    Serial.println(length);
-    int count = 0;
-    byte msg[maxRecvdMsgBytes];
-    if (length == 0) {
-      Serial.println("Null msg.");
-      return;
-    }
-    while (client.available() && (count != length)) {
-      msg[count] = client.read();
-      if(msg[0]<0xD0) 
+    else
+    {
+      count = 0;
+      length = 0;
+      Serial.println("...Is connected.");
+      if(!hasConnected)
       {
-        if(count==0)
+        hasConnected = true;
+        rp2040.fifo.push( SynchMultiplier + (int)svrConnected); //Make Inbuilt LED flash faster
+        while (!rp2040.fifo.available())
         {
-          Serial.print((char)msg[count]);
-          Serial.print(' ');
+            watchdog_update();
         }
+        uint32_t sync = rp2040.fifo.pop();
       }
-      else 
-      {
-        Serial.print(msg[count], HEX);
-        //if(count<2)
-          Serial.print(' ');
+      length = client.read();
+      Serial.print(length);
+      Serial.print('-');
+      count = 0;
+      //byte msg[maxRecvdMsgBytes];
+      if (length == 0) {
+        Serial.println("Null msg.");
+        return;
       }
-      watchdog_update();
-      count++;
+      while (client.available() && (count != length)) {
+        msg[count] = client.read();
+        if(msg[0]<0xD0) 
+        {
+          if(count==0)
+          {
+            Serial.print((char)msg[count]);
+            Serial.print(' ');
+          }
+        }
+        else 
+        {
+          Serial.print(msg[count], HEX);
+          //if(count<2)
+            Serial.print(' ');
+        }
+        watchdog_update();
+        count++;
+      }
     }
     Serial.println();
     if (count != length) {
+      Serial.print("count:");
+      Serial.println(count);
+      Serial.print("length:");
+      Serial.println(length);
       Serial.println("Msg invalid.");
       return;
     }
@@ -177,6 +248,7 @@ void loop() {
         client.print("Reset");
         // Force reset
         resetFunc();
+        break;
        case (byte)'V':  //Get Version
         Serial.println(APP_VERSION);
         client.print(APP_VERSION);

@@ -5,7 +5,7 @@
 enum SyncedCommands : byte {pauseTelemetryorBT=0,continueTelemetryorBT=1,stopTelemetryorBT=2,svrConnected=10, initialSynch=137};
 #define SynchMultiplier 1000
 
-#define APP_VERSION "6.00"  //Nb: As SoftataLib is updated, this is incremented even if no changes to Arduino code.
+#define APP_VERSION "6.10"  //Nb: As SoftataLib is updated, this is incremented even if no changes to Arduino code.
 
 //#define RPI_PICO_DEFAULT
 #define GROVE_RPI_PICO_SHIELD
@@ -21,11 +21,22 @@ enum SyncedCommands : byte {pauseTelemetryorBT=0,continueTelemetryorBT=1,stopTel
 
 // Azure IoT
 // Uncomment following if using Azure IoT Hub
-//#define USINGIOTHUB
 // For Bluetooth do not define USINGIOTHUB
+#define USINGIOTHUB
+
+#ifdef USINGIOTHUB
+#define IOT_CONFIG_IOTHUB_FQDN  "hub137.azure-devices.net"
+#define IOT_CONFIG_DEVICE_ID  "dev137"
+#define IOT_CONFIG_DEVICE_KEY  "bkN4hdz/SGVPuBQl3hPyT9Z8+OD0A7qDvAIoTDYIq5o="
+#endif
+
+
+#ifndef USINGIOTHUB
 #define IOT_CONFIG_IOTHUB_FQDN  "<hubname>.azure-devices.net"
 #define IOT_CONFIG_DEVICE_ID  "<devicename>"
 #define IOT_CONFIG_DEVICE_KEY  "<device connection key>" 
+#endif
+
 
 //Server Port
 #define PORT 4242

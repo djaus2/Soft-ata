@@ -1,0 +1,305 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>SoftataWebAPI</name>
+    </assembly>
+    <members>
+        <member name="T:SoftataWebAPI.Controllers.SoftataActuatorController">
+            <summary>
+            The Softata Actuator Controller
+            </summary>
+        </member>
+        <member name="M:SoftataWebAPI.Controllers.SoftataActuatorController.Get">
+            <summary>
+            Get a list of implemented actuators
+            </summary>
+            <returns>List of sensors</returns>
+        </member>
+        <member name="M:SoftataWebAPI.Controllers.SoftataActuatorController.GetPins(System.Int32)">
+            <summary>
+            Get a list of Pins for an actuator
+            </summary>
+            <param name="iactuator">The enum ord of the actuator in the list of sensors</param>
+            <returns>Statement of default and optional connections to sensor</returns>
+        </member>
+        <member name="M:SoftataWebAPI.Controllers.SoftataActuatorController.GetValueRange(System.Int32)">
+            <summary>
+            Get range of valid values for actuator
+            </summary>
+            <param name="iactuator">The enum ord of the actuator in the list of sensors</param>
+            <returns>Valid range of values to write as a string</returns>
+        </member>
+        <member name="M:SoftataWebAPI.Controllers.SoftataActuatorController.SetupDefault(System.Int32)">
+            <summary>
+            Setup a actuator with default connection settings
+            </summary>
+            <param name="iactuator">The enum ord of the actuator in the list of actuators</param>
+            <returns>OK with instance index or Fail</returns>
+        </member>
+        <member name="M:SoftataWebAPI.Controllers.SoftataActuatorController.Setup(System.Int32,System.Int32,System.Collections.Generic.List{System.Byte})">
+            <summary>
+            Setup actuator with custom settings
+            Not fully implemented at this level
+            </summary>
+            <param name="iactuator">The enum ord of the actuator in the list of actuators</param>
+            <param name="pin">GPIO Pin</param>
+            <param name="settings"></param>
+            <returns>OK with instance index or Fail</returns>
+        </member>
+        <member name="M:SoftataWebAPI.Controllers.SoftataActuatorController.WriteByte(System.Int32,System.Int32)">
+            <summary>
+            Write a byte to Actuator
+            </summary>
+            <param name="actuatorListIndex">Display Instance index</param>
+            <param name="value">Value to set</param>
+            <returns>OK or Fail</returns>
+        </member>
+        <member name="T:SoftataWebAPI.Controllers.SoftataController">
+            <summary>
+            The Base Controller
+            </summary>
+        </member>
+        <member name="M:SoftataWebAPI.Controllers.SoftataController.Get">
+            <summary>
+            Get a list of Device Types
+            </summary>
+            <returns>List of device types</returns>
+        </member>
+        <member name="M:SoftataWebAPI.Controllers.SoftataController.Get(System.String)">
+            <summary>
+            Send a simple command to the server
+            </summary>
+            <param name="cmd">Begin, End, Devices, Reset, Version, Null</param>
+            <returns>Result or Acknowledgement</returns>
+        </member>
+        <member name="M:SoftataWebAPI.Controllers.SoftataController.Connect(System.String,System.Int32)">
+            <summary>
+            Connect to the Pico W Server (only). No Begin command is sent.
+            </summary>
+            <param name="ipAddress"></param>
+            <param name="_port"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SoftataWebAPI.Controllers.SoftataController.Start(System.String,System.Int32)">
+            <summary>
+            Connect to the Pico W Server and send the Begin command
+            </summary>
+            <param name="ipAddress"></param>
+            <param name="_port"></param>
+            <returns>IActionResult(Ok or BadRequest)</returns>
+        </member>
+        <member name="M:SoftataWebAPI.Controllers.SoftataController.SendMessage(System.Int32,System.Int32,System.Int32,System.String,System.Int32,System.Byte[])">
+            <summary>
+            Send a "raw" message to the Pico W Server
+            Other controllers use this method to send commands to the server
+            </summary>
+            <param name="msgOrDeviceType"></param>
+            <param name="pin"></param>
+            <param name="state"></param>
+            <param name="expect"></param>
+            <param name="other"></param>
+            <param name="Data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SoftataWebAPI.Controllers.SoftataDisplayController.Get">
+            <summary>
+            Get a list of implemented displays
+            </summary>
+            <returns>List of displays</returns>
+        </member>
+        <member name="M:SoftataWebAPI.Controllers.SoftataDisplayController.GetPins(System.Int32)">
+            <summary>
+            Get a list of pins for a specific display
+            </summary>
+            <param name="idisplay">The enum ord of the display in the list of displays</param>
+            <returns>Statement of default and optional connections to the display.</returns>
+        </member>
+        <member name="M:SoftataWebAPI.Controllers.SoftataDisplayController.SetupDefault(System.Int32)">
+            <summary>
+            Setup a display with default connection settings
+            </summary>
+            <param name="idisplay">The enum ord of the display in the list of displays</param>
+            <returns>OK with instance index or Fail</returns>
+        </member>
+        <member name="M:SoftataWebAPI.Controllers.SoftataDisplayController.Setup(System.Int32,System.Int32,System.Collections.Generic.List{System.Byte})">
+            <summary>
+            Setup display with custom settings
+            Not fully implemented at this level
+            </summary>
+            <param name="idisplay">The enum ord of the display in the list of displays</param>
+            <param name="pin">GPIO Pin</param>
+            <param name="settings"></param>
+            <returns>OK with instance index or Fail</returns>
+        </member>
+        <member name="M:SoftataWebAPI.Controllers.SoftataDisplayController.Clear(System.Int32)">
+            <summary>
+            Clear any display
+            </summary>
+            <param name="displayLinkedListIndex">Display instance index</param>
+            <returns>Ok or fail</returns>
+        </member>
+        <member name="M:SoftataWebAPI.Controllers.SoftataDisplayController.Home(System.Int32)">
+            <summary>
+            Return the cursor to the home position (LCD display)
+            </summary>
+            <param name="displayLinkedListIndex">Display instance index</param>
+            <returns></returns>
+        </member>
+        <member name="M:SoftataWebAPI.Controllers.SoftataDisplayController.WriteIntString(System.Int32,System.Int32)">
+            <summary>
+            Write an int to any display as a string
+            </summary>
+            <param name="displayLinkedListIndex">Display Instance index</param>
+            <param name="value">Value as a string</param>
+            <returns>OK or Fail</returns>
+        </member>
+        <member name="M:SoftataWebAPI.Controllers.SoftataDisplayController.WriteString(System.Int32,System.String)">
+            <summary>
+            Write a string to an LCD display using current cursor.
+            </summary>
+            <param name="displayLinkedListIndex">Display Instance index</param>
+            <param name="value">Value to write</param>
+            <returns>OK or Fail</returns>
+        </member>
+        <member name="M:SoftataWebAPI.Controllers.SoftataDisplayController.WriteStringXY(System.Int32,System.Int32,System.Int32,System.String)">
+            <summary>
+            Write a string to an LCD display
+            ... at a specific location
+            </summary>
+            <param name="displayLinkedListIndex">Display Instance index</param>
+            <param name="value">Value as a string</param>
+            <param name="x">Position in row</param>
+            <param name="y">Row</param>
+            <returns>OK or Fail</returns>
+        </member>
+        <member name="M:SoftataWebAPI.Controllers.SoftataDisplayController.SetCursor(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Set the cursor position on an LCD display.
+            </summary>
+            <param name="displayLinkedListIndex">Display Instance index</param>
+            <param name="x">Position in row</param>
+            <param name="y">Row</param>
+            <returns></returns>
+        </member>
+        <member name="M:SoftataWebAPI.Controllers.SoftataDisplayController.Misc(System.Int32,System.Int32)">
+            <summary>
+            Run a display specific miscellaneous command
+            </summary>
+            <param name="displayLinkedListIndex">Display instance index</param>
+            <param name="miscCmndIndex">Misc Command</param>
+            <returns>OK or fail</returns>
+        </member>
+        <member name="T:SoftataWebAPI.Controllers.SoftataSensorController">
+            <summary>
+            The Softata Sensor Controller
+            </summary>
+        </member>
+        <member name="M:SoftataWebAPI.Controllers.SoftataSensorController.Get">
+            <summary>
+            Get a list of implemented sensors
+            </summary>
+            <returns>List of sensors</returns>
+        </member>
+        <member name="M:SoftataWebAPI.Controllers.SoftataSensorController.GetPins(System.Int32)">
+            <summary>
+            Get a list of Pins for a sensor
+            </summary>
+            <param name="isensor">The enum ord of the sensor in the list of sensors</param>
+            <returns>Statement of default and optional connections to sensor</returns>
+        </member>
+        <member name="M:SoftataWebAPI.Controllers.SoftataSensorController.GetProperties(System.Int32)">
+            <summary>
+            Get list of properties for a specific sensor
+            </summary>
+            <param name="isensor">The enum ord of the sensor in the list of sensors</param>
+            <returns>List of properties</returns>
+        </member>
+        <member name="M:SoftataWebAPI.Controllers.SoftataSensorController.SetupDefault(System.Int32)">
+            <summary>
+            Setup a sensor with default connection settings
+            </summary>
+            <param name="isensor">The enum ord of the sensor in the list of sensors</param>
+            <returns>OK with instance index or Fail</returns>
+        </member>
+        <member name="M:SoftataWebAPI.Controllers.SoftataSensorController.Setup(System.Int32,System.Int32,System.Collections.Generic.List{System.Byte})">
+            <summary>
+            Setup sensor with custom settings
+            Not fully implemented at this level
+            </summary>
+            <param name="isensor">The enum ord of the sensor in the list of sensors</param>
+            <param name="pin">GPIO Pin</param>
+            <param name="settings"></param>
+            <returns>OK with instance index or Fail</returns>
+        </member>
+        <member name="M:SoftataWebAPI.Controllers.SoftataSensorController.ReadAll(System.Int32)">
+            <summary>
+            Read all properties of sensor
+            </summary>
+            <param name="sensorListIndex">Sensor instance index</param>
+            <returns>Values as a list</returns>
+        </member>
+        <member name="M:SoftataWebAPI.Controllers.SoftataSensorController.Read(System.Int32,System.Int32)">
+            <summary>
+            Read all pne property of sensor
+            </summary>
+            <param name="sensorListIndex">Sensor instance index</param>
+            <returns>The value</returns>
+        </member>
+        <member name="M:SoftataWebAPI.Controllers.SoftataSensorController.ReadTelemetry(System.Int32)">
+            <summary>
+            Read all properties of sensor as a json string
+            </summary>
+            <param name="sensorListIndex">Sensor instance index</param>
+            <returns>Values as json string</returns>
+        </member>
+        <member name="T:SoftataWebAPI.Controllers.SoftataTelemetryController">
+            <summary>
+            The Softata Telemetry Controller
+            </summary>
+        </member>
+        <member name="M:SoftataWebAPI.Controllers.SoftataTelemetryController.SingleReadTelemetry(System.Int32)">
+            <summary>
+            One read of all properties of sensor as a json string
+            </summary>
+            <param name="sensorListIndex">Sensor instance index</param>
+            <returns>Values as json string</returns>
+        </member>
+        <member name="M:SoftataWebAPI.Controllers.SoftataTelemetryController.StartSendingTelemetryBT(System.Int32,System.Int32)">
+            <summary>
+            Start sending Sensor Telemetry over Bluetooth
+            </summary>
+            <param name="sensorListIndex">Sensor instance index</param>
+            <param name="period">Period in seconds</param>
+            <returns>Ok or Fail</returns>
+        </member>
+        <member name="M:SoftataWebAPI.Controllers.SoftataTelemetryController.StartSendingTelemetryToIoTHub(System.Int32,System.Int32)">
+            <summary>
+            Start sending Sensor Telemetry to an Azure IoT Hub
+            </summary>
+            <param name="sensorListIndex">Sensor instance index</param>
+            <param name="period">Period in seconds</param>
+            <returns>Ok or Fail</returns>
+        </member>
+        <member name="M:SoftataWebAPI.Controllers.SoftataTelemetryController.PauseSendingTelemetry(System.Int32)">
+            <summary>
+            Pause sending Sensor All Telemetry
+            </summary>
+            <param name="sensorListIndex">Sensor instance index</param>
+            <returns>Ok or Fail</returns>
+        </member>
+        <member name="M:SoftataWebAPI.Controllers.SoftataTelemetryController.ContinueSendingTelemetry(System.Int32)">
+            <summary>
+            Continue sending All Sensor Telemetry
+            </summary>
+            <param name="sensorListIndex">Sensor instance index</param>
+            <returns>Ok or Fail</returns>
+        </member>
+        <member name="M:SoftataWebAPI.Controllers.SoftataTelemetryController.StopSendingTelemetryBT(System.Int32)">
+            <summary>
+            Stop sending All Sensor Telemetry
+            </summary>
+            <param name="sensorListIndex">Sensor instance index</param>
+            <returns>Ok or Fail</returns>
+        </member>
+    </members>
+</doc>
