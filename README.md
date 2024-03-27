@@ -18,6 +18,7 @@ _Soft-ata rather than firm-ata!_
   - Use Azure IoT Explorer  or VS Code etc to send msg to device
   - Also can send raw msg commands eg **240 0 9 0** to pause. 
     - 240 = Sensor(Telemetry) 9 = pause 10=continue.
+    - Further details, take last/latest post [here](https://davidjones.sportronics.com.au/cats/softata/)
 
 ## About.
 
