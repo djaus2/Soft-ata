@@ -22,6 +22,7 @@ _Soft-ata rather than firm-ata!_
   - Can also send raw C2D msg commands to actuator (Servo)
     - eg ```242 0 5 0 1 90``` to move servo to 90 degress.
     - Need to init servo first though.
+    - 
 ## About.
 
 The Pico app runs as a TCPIP Service taking commands, running them and returning the result to the client. 
