@@ -34,7 +34,7 @@ namespace SoftataWebAPI.Controllers
         // GET api/<SoftataController>/5
         [Route("GetPins")]
         [HttpGet]  //Get pins for display
-        public string GetPins(int isensor)
+        public string GetPins(int isensor=0)
         {
             string value = SoftataLib.Sensor.GetPins((byte)isensor);
             return value;
@@ -49,7 +49,7 @@ namespace SoftataWebAPI.Controllers
         // GET api/<SoftataController>/5
         [Route("GetProperties")]
         [HttpGet]  //Get properties for sensor
-        public IEnumerable<string> GetProperties(int isensor)
+        public IEnumerable<string> GetProperties(int isensor=0)
         {
             string[] properties = SoftataLib.Sensor.GetProperties((byte)isensor);
             return properties;
@@ -64,7 +64,7 @@ namespace SoftataWebAPI.Controllers
         // POST api/<SoftataController>
         [Route("SetupDefault")]
         [HttpPost] // Default setup for sensor
-        public IActionResult SetupDefault(int isensor)
+        public IActionResult SetupDefault(int isensor=0)
         {
             int sensorListIndex = SoftataLib.Sensor.SetupDefault((byte)isensor);
             if (sensorListIndex == -1)
@@ -101,7 +101,7 @@ namespace SoftataWebAPI.Controllers
         /// <returns>Values as a list</returns>
         [Route("ReadAll")]
         [HttpGet]  //Get properties for sensor
-        public IEnumerable<double> ReadAll(int sensorListIndex)
+        public IEnumerable<double> ReadAll(int sensorListIndex=0)
         {
             double[]? values = SoftataLib.Sensor.ReadAll((byte)sensorListIndex);
             if (values != null)
@@ -134,7 +134,7 @@ namespace SoftataWebAPI.Controllers
         /// <returns>Values as json string</returns>
         [Route("ReadTelemetry")]
         [HttpGet]
-        public string ReadTelemetry(int sensorListIndex)
+        public string ReadTelemetry(int sensorListIndex=0)
         {
             string json = SoftataLib.Sensor.GetTelemetry((byte)sensorListIndex);
             return json;

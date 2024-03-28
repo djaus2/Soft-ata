@@ -46,6 +46,8 @@ static const char* device_id = IOT_CONFIG_DEVICE_ID;
 static const char* device_key = IOT_CONFIG_DEVICE_KEY;
 static const int mqttPort = 8883;
 
+
+
 // Memory allocated for the sample's variables and structures.
 static WiFiClientSecure secure_wifi_client;
 static X509List cert((const char*)ca_pem);
@@ -133,14 +135,23 @@ void receivedCallback(char* topic, byte* payload, unsigned int length)
   char pin[length+1];
   char param[length+1];
   char other[length+1];
+  char dataLength[length+1];
+  char data1[length+1];
+  char data2[length+1];
   cmd[0] ='\0';
   pin[0] ='\0';
   param[0] = '\0';
   other[0] ='\0';
+  dataLength[0] = '\0';
+  data1[0] = '\0';
+  data2[0] = '\0';
   byte bCmd = 0xff;
   byte bPin = 0xff;
   byte bParam = 0xff;
   byte bOther = 0xff;
+  byte bDataLength = 0;
+  byte bData1 = 0xff;
+  byte bData2 = 0xff;
 
   int state = 0;
   int indx=0;
@@ -157,7 +168,7 @@ void receivedCallback(char* topic, byte* payload, unsigned int length)
       }
       state++;
       indx=0;
-      if(state > 3)
+      if(state > 6)
         break;
     }
     else
@@ -180,6 +191,18 @@ void receivedCallback(char* topic, byte* payload, unsigned int length)
           other[indx] = (char) payload[i];
           other[indx+1]='\0';
           break;
+        case 4:
+          dataLength[indx] = (char) payload[i];
+          dataLength[indx+1]='\0';
+          break;
+        case 5:
+          data1[indx] = (char) payload[i];
+          data1[indx+1]='\0';
+          break;
+        case 6:
+          data2[indx] = (char) payload[i];
+          data2[indx+1]='\0';
+          break;
         default:
           break;
       }
@@ -187,11 +210,14 @@ void receivedCallback(char* topic, byte* payload, unsigned int length)
     }
   }
   Serial.println("");
-  cmd[length] ='\0';
+
   String Cmd = String(cmd);
   String Pin = String(pin);
   String Param = String(param);
   String Other = String(other);
+  String DataLength = String(dataLength);
+  String Data1 = String(data1);
+  String Data2 = String(data2);
 
 
 
@@ -244,8 +270,35 @@ void receivedCallback(char* topic, byte* payload, unsigned int length)
     }
   }
 
+  if(DataLength.length()>0)
+  {
+    if(Data1.length()>0)
+    {
+      bDataLength = DataLength.toInt();
+      if(bDataLength == 1)//Only allowing one byte of data thus
+      {
+        int val =  Data1.toInt();
+        if((val>=0) && (val<=0xff))
+        {
+          bData1 = (byte)val;
+          val =  Data2.toInt();
+          if((val>=0) && (val<=0xff))
+          {
+            bData2 = (byte)val;
+          }
+        }
+        else
+        {
+          bDataLength = 0;
+        }
+      }
+      else
+      {
+        bDataLength = 0;
+      }
+    }
+  }
 
-  uint32_t cdmMsg=0;
   if(Cmd.equalsIgnoreCase(_Telemetry))
   {
     bCmd = 0xf0;
@@ -264,21 +317,17 @@ void receivedCallback(char* topic, byte* payload, unsigned int length)
     return;
   }
 
-  cdmMsg = bCmd;
   Serial.print("cmd:");
   Serial.print(Cmd);
   Serial.print('=');
   Serial.print(bCmd,HEX);
 
-  cdmMsg *=256;
   if (bPin!= 0xff)
   {
-    cdmMsg += bPin;
     Serial.print(" pin=0x");
     Serial.print(bPin,HEX);
   }
 
-  cdmMsg *=256;
   if(!Cmd.equalsIgnoreCase(_Raw))
   {
     bParam=0;
@@ -307,21 +356,61 @@ void receivedCallback(char* topic, byte* payload, unsigned int length)
     }
   }
  
-  cdmMsg += bParam;
   Serial.print(" param:");
   Serial.print(Param);
   Serial.print("=0x");
   Serial.print(bParam,HEX);
 
-  cdmMsg *= 256;
   if (bOther != 0xff)
   {
-    cdmMsg += bOther;
     Serial.print(" other=0x");
     Serial.print(bOther,HEX);
   }
 
+  if ((bDataLength>0) && (bDataLength <3)) //Only allowing one byte of data thus
+  {
+    if(bData1 != 0xff)
+    {
+      Serial.print(" otherData:");
+      Serial.print('[');
+      Serial.print(bDataLength);
+      Serial.print(",");
+      Serial.print(bData1,HEX);
+      if(bData2 != 0xff)
+      {
+        Serial.print(",");
+        Serial.print(bData2,HEX);
+      }
+      Serial.print(']');
+    }
+  }
+
   Serial.println();
+
+  uint32_t cdmMsg=0;
+  if(bDataLength==1)  //Only allow 1  extra bytes for now
+  {
+    if(bData1 != 0xff)
+    {
+      cdmMsg += bData1;
+      cdmMsg *=bitStuffing[e_otherDataCount];
+      cdmMsg += bDataLength;
+    }
+  }
+  cdmMsg *=bitStuffing[e_other];
+  if(bOther != 0xff)
+    cdmMsg += bOther;
+  cdmMsg *=bitStuffing[e_param];
+  if(bParam != 0xff)
+    cdmMsg += bParam;
+  cdmMsg *=bitStuffing[e_pin];
+  if(bParam != 0xff)
+    cdmMsg += bPin;
+  cdmMsg *=bitStuffing[e_cmd];
+  if(bCmd != 0xff)
+    cdmMsg += bCmd; 
+
+  Serial.println(cdmMsg,HEX);
   rp2040.fifo.push(cdmMsg);
 }
 

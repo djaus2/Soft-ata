@@ -35,7 +35,7 @@ namespace SoftataWebAPI.Controllers
         // GET api/<SoftataController>/5
         [Route("GetPins")]
         [HttpGet]
-        public string GetPins(int iactuator)
+        public string GetPins(int iactuator=0)
         {
             string value = SoftataLib.Actuator.GetPins((ActuatorDevice)iactuator);
             return value;
@@ -49,7 +49,7 @@ namespace SoftataWebAPI.Controllers
         // GET api/<SoftataController>/5
         [Route("GetValueRange")]
         [HttpGet]
-        public string GetValueRange(int iactuator)
+        public string GetValueRange(int iactuator=0)
         {
             string value = SoftataLib.Actuator.GetValueRange((ActuatorDevice)iactuator);
             return value;
@@ -64,7 +64,7 @@ namespace SoftataWebAPI.Controllers
         // POST api/<SoftataController>
         [Route("SetupDefault")]
         [HttpPost] // Default setup for actuator
-        public IActionResult SetupDefault(int iactuator)
+        public IActionResult SetupDefault(int iactuator=0)
         {
             int actuatorListIndex = SoftataLib.Actuator.SetupDefault((SoftataLib.Actuator.ActuatorDevice)(byte)iactuator);
             if (actuatorListIndex == -1)

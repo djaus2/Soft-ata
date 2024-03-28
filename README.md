@@ -13,11 +13,14 @@ _Soft-ata rather than firm-ata!_
 
 ## <font color="red">Hot Press</font>
 
-- V6.10  Can send Telemtry pause continue or stop  as C2D Msg
+- V6.20  Can send Telemtry pause continue or stop  as C2D Msg
   - Eg **Telemetry 0 pause 0** to pause. 
   - Use Azure IoT Explorer  or VS Code etc to send msg to device
   - Also can send raw msg commands eg **240 0 9 0** to pause. 
     - 240 = Sensor(Telemetry) 9 = pause 10=continue.
+  - Can also send raw C2D msg commands to actuator (Servo)
+    - eg ```242 0 5 0 1 90``` to move servo to 90 degress.
+    - Need to init servo first though.
 
 ## About.
 

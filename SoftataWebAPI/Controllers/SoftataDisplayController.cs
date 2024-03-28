@@ -34,7 +34,7 @@ namespace SoftataWebAPI.Controllers
         // GET api/<SoftataController>/5
         [Route("GetPins")]
         [HttpGet]  //Get pins for display
-        public string GetPins(int idisplay)
+        public string GetPins(int idisplay=0)
         {
             string value = SoftataLib.Display.GetPins((byte)idisplay);
             return value;
@@ -48,7 +48,7 @@ namespace SoftataWebAPI.Controllers
         // POST api/<SoftataController>
         [Route("SetupDefault")]
         [HttpPost] // Default setup for display
-        public IActionResult SetupDefault(int idisplay)
+        public IActionResult SetupDefault(int idisplay=0)
         {
             int displayListIndex = SoftataLib.Display.SetupDefault((byte)idisplay);
             if (displayListIndex == -1)
@@ -86,7 +86,7 @@ namespace SoftataWebAPI.Controllers
         // POST api/<SoftataController>
         [Route("Clear")]
         [HttpPost] // Default setup for display
-        public IActionResult Clear(int displayLinkedListIndex)
+        public IActionResult Clear(int displayLinkedListIndex=0)
         {
             bool result = SoftataLib.Display.Clear((byte)displayLinkedListIndex);
             if (!result)
@@ -104,7 +104,7 @@ namespace SoftataWebAPI.Controllers
         // POST api/<SoftataController>
         [Route("Home")]
         [HttpPost] // Default setup for display
-        public IActionResult Home(int displayLinkedListIndex)
+        public IActionResult Home(int displayLinkedListIndex=0)
         {
             bool result = SoftataLib.Display.Home((byte)displayLinkedListIndex);
             if (!result)

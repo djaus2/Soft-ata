@@ -61,7 +61,7 @@ namespace SoftataWebAPI.Controllers
         /// <returns>Ok or Fail</returns>
         [Route("PauseSendingTelemetry")]
         [HttpPost]
-        public IActionResult PauseSendingTelemetry(int sensorListIndex)
+        public IActionResult PauseSendingTelemetry(int sensorListIndex=0)
         {
             string result = SoftataLib.Sensor.PauseSendTelemetry((byte)sensorListIndex);
             return Ok($"{sensorListIndex}");
@@ -74,7 +74,7 @@ namespace SoftataWebAPI.Controllers
         /// <returns>Ok or Fail</returns>
         [Route("ContinueSendingTelemetry")]
         [HttpPost]
-        public IActionResult ContinueSendingTelemetry(int sensorListIndex)
+        public IActionResult ContinueSendingTelemetry(int sensorListIndex=0)
         {
             string result = SoftataLib.Sensor.ContinueSendTelemetry((byte)sensorListIndex);
             return Ok($"{sensorListIndex}");
@@ -87,7 +87,7 @@ namespace SoftataWebAPI.Controllers
         /// <returns>Ok or Fail</returns>
         [Route("StopSendingTelemetry")]
         [HttpPost]
-        public IActionResult StopSendingTelemetryBT(int sensorListIndex)
+        public IActionResult StopSendingTelemetryBT(int sensorListIndex=0)
         {
             string result = SoftataLib.Sensor.StopSendingTelemetry((byte)sensorListIndex);
             return Ok($"{sensorListIndex}");

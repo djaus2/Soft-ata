@@ -79,7 +79,7 @@ void (*resetFunc)(void) = 0;
 
 bool RecvdCloud2DeviceMsg = false;
 uint32_t popVal; 
-byte C2DMessage[5];
+byte C2DMessage[e_num+1] ={0};
 int Check4RecvdCloud2DeviceMsg()
 {
   // Slot Cloud2Device messages in here
@@ -89,11 +89,37 @@ int Check4RecvdCloud2DeviceMsg()
     RecvdCloud2DeviceMsg = false;
     if(popVal>0)
     { 
-      C2DMessage[4] = popVal % (256*256*256);
-      C2DMessage[3] = (popVal/256) % (256*256);
-      C2DMessage[2] = (popVal/(256*256)) % (256);
-      C2DMessage[1] = popVal/(256*256*256);
-      C2DMessage[0] = 4;
+      uint32_t PopVal = popVal;
+      Serial.println(PopVal,HEX);
+      int length =0;
+      //enum bitStuffingIndex: byte {e_cmd,e_pin,e_param,e_other,e_otherDataCount,e_data1,e_data2};
+      C2DMessage[1] = PopVal % (bitStuffing[e_cmd]);
+      length++;
+      PopVal /= bitStuffing[e_cmd];
+      C2DMessage[2] = PopVal % (bitStuffing[e_pin]);
+      length++;
+      PopVal /= bitStuffing[e_pin];
+      C2DMessage[3] = PopVal % (bitStuffing[e_param]);
+      length++;
+      PopVal /= bitStuffing[e_param];
+      C2DMessage[4] = PopVal % (bitStuffing[e_other]);
+      length++;
+      PopVal /= bitStuffing[e_other];
+      C2DMessage[5] = PopVal % (bitStuffing[e_otherDataCount]);
+      length++;
+      PopVal /= bitStuffing[e_otherDataCount];
+      if(PopVal>0)
+      {
+        C2DMessage[6] = PopVal % (bitStuffing[e_data1]);
+        length++;
+        PopVal /= bitStuffing[e_data1];
+        if(PopVal>0)
+        {
+          C2DMessage[7] = PopVal % (bitStuffing[e_data2]);
+          length++;
+          PopVal /= bitStuffing[e_data2];
+      } }
+      C2DMessage[0] = length;
       RecvdCloud2DeviceMsg = false;
       return C2DMessage[0];
     }
@@ -147,6 +173,7 @@ void loop() {
     }
     if (count>0)
     {
+      length = C2DMessage[0];
       Serial.print("C2DMsg:");
       Serial.print("length=0x");
       Serial.print(C2DMessage[0],HEX);
@@ -161,9 +188,30 @@ void loop() {
       Serial.print(C2DMessage[3],HEX);
       Serial.print(' ');
       Serial.print("other=0x");
-      Serial.println(C2DMessage[4],HEX);
-      length = C2DMessage[0];
-      for(int i=0; i<C2DMessage[0]; i++)
+      Serial.print(C2DMessage[4],HEX);
+      if(length>5)
+      {
+        Serial.print(" [");
+        Serial.print(C2DMessage[5],HEX);  
+        if(true)
+        {
+          Serial.print(' ');
+          Serial.print(C2DMessage[6],HEX);      
+          if(length>7)
+          {
+            Serial.print(' ');
+            Serial.print(C2DMessage[7],HEX);      
+            if(length>8)
+            {
+              Serial.print(' ');
+              Serial.print(C2DMessage[8],HEX);
+            }
+          }
+        }
+        Serial.print("]");
+      }
+      Serial.println();
+      for(int i=0; i<length; i++)
       {
         msg[i] = C2DMessage[i+1];
       }
