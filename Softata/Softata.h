@@ -22,20 +22,15 @@ enum SyncedCommands : byte {pauseTelemetryorBT=0,continueTelemetryorBT=1,stopTel
 // Azure IoT
 // Uncomment following if using Azure IoT Hub
 // For Bluetooth do not define USINGIOTHUB
-#define USINGIOTHUB
-
-#ifdef USINGIOTHUB
-#define IOT_CONFIG_IOTHUB_FQDN  "hub137.azure-devices.net"
-#define IOT_CONFIG_DEVICE_ID  "dev137"
-#define IOT_CONFIG_DEVICE_KEY  "bkN4hdz/SGVPuBQl3hPyT9Z8+OD0A7qDvAIoTDYIq5o="
-#endif
+//#define USINGIOTHUB
 
 
-#ifndef USINGIOTHUB
+
+
 #define IOT_CONFIG_IOTHUB_FQDN  "<hubname>.azure-devices.net"
 #define IOT_CONFIG_DEVICE_ID  "<devicename>"
 #define IOT_CONFIG_DEVICE_KEY  "<device connection key>" 
-#endif
+
 
 enum bitStuffingIndex: byte {e_cmd,e_pin,e_param,e_other,e_otherDataCount,e_data1,e_data2, e_num};
 static int bitStuffing[] = {256,16,16,16,16,256,16};

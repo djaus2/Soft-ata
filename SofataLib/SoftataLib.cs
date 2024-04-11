@@ -10,6 +10,8 @@ using System.IO;
 using System.Threading;
 using System.Net.NetworkInformation;
 using Softata.Enums;
+using System.Collections.Generic;
+using System.Linq;
 
 
 namespace Softata
@@ -23,6 +25,20 @@ namespace Softata
 
         public static  int port { get; set; } = 4242;
         public static string ipAddresStr { get; set; } = "192.168.0.9";
+
+        private static Socket? _client;
+
+        private static Socket? client
+        {
+            get
+            {
+                if (_client == null)
+                {
+                };
+                return _client;
+            }
+            set => _client = value;
+        }
         public static Socket? Client { get => client; set => client = value; }// { get => Client1; set => Client1 = value; }
         /*public static Socket? Client1 { get => client; set => client = value; }*/
 
@@ -64,6 +80,7 @@ namespace Softata
         }
         public  static bool Connect(string _ipAddresStr, int _port)
         {
+            Console.WriteLine("Connecting to Softata Server from .NET");
             ipAddresStr = _ipAddresStr;
             port = _port;
             //IPHostEntry iphostInfo = Dns.GetHostEntry(Dns.GetHostName());
@@ -101,14 +118,6 @@ namespace Softata
         }
 
 
-        private static Socket? _client;
-
-        private static Socket? client
-         {  get { if (_client == null){
-                }; 
-                return _client;
-            }
-            set => _client = value; }
 
         static SoftataLib()
         {
@@ -162,18 +171,22 @@ namespace Softata
         public static string SendMessageCmd(string cmd)
         {
             if (Client == null)
+                throw new Exception("SendMessageCmd: Client is null");
+
+            else if (!Client.Connected)
                 throw new Exception("SendMessageCmd: Not connected");
 
-            // Construct command and parameters as list of bytes
-            List<byte> sendmsg = new List<byte> { 1, (byte)cmd[0] };
+            string result = "";
+
+
+                // Construct command and parameters as list of bytes
+                List<byte> sendmsg = new List<byte> { 1, (byte)cmd[0] };
 
             byte[] sendBytes = sendmsg.ToArray<byte>();
             Console.WriteLine($"Sending {sendBytes.Length} data bytes");
-            ;
             int sent = Client.Send(sendBytes, 0, sendBytes.Length, SocketFlags.None);
             if (sent != sendBytes.Length)
                 throw new Exception($"SendMessage: Sent {sent} bytes, expected {sendBytes.Length} bytes");
-
             Console.WriteLine($"Sent {sent} bytes");
 
             //Wait for response
@@ -181,7 +194,7 @@ namespace Softata
             byte[] data = new byte[100];
             int recvd = Client.Receive(data);
 
-            string result = Encoding.ASCII.GetString(data).Substring(0, recvd).Trim();
+            result = Encoding.ASCII.GetString(data).Substring(0, recvd).Trim();
             Console.WriteLine($"Received {result} [{recvd}] bytes\n");
 
             switch (cmd)
@@ -212,7 +225,10 @@ namespace Softata
         public static string SendMessage(Commands MsgType, byte pin = 0xff, byte state = 0xff, string expect = "OK", byte other=0xff, byte[]? Data=null, bool debug=true )
         {
             if (Client == null)
+                throw new Exception("SendMessageCmd: Client is null");
+            else if (!Client.Connected)
                 throw new Exception("SendMessageCmd: Not connected");
+
 
             // Construct command and parameters as list of bytes
             List<byte> sendmsg = new List<byte> { 0,(byte)MsgType };
@@ -282,43 +298,43 @@ namespace Softata
                  Console.WriteLine($"Received {result} [{recvd}] bytes\n");
             return result.Replace(expect,"");
         }
-        static void Main(string[] args)
-        {
-            byte[] data = new byte[100];
-            for (int i = 0; i < data.Length; i++)
-            {
-                data[i] = (byte)0;
-            }
+        //static void Main(string[] args)
+        //{
+        //    byte[] data = new byte[100];
+        //    for (int i = 0; i < data.Length; i++)
+        //    {
+        //        data[i] = (byte)0;
+        //    }
 
-            IPHostEntry iphostInfo = Dns.GetHostEntry(Dns.GetHostName());
-            IPAddress ipAdress = IPAddress.Parse(ipAddresStr);
+        //    IPHostEntry iphostInfo = Dns.GetHostEntry(Dns.GetHostName());
+        //    IPAddress ipAdress = IPAddress.Parse(ipAddresStr);
 
-            IPEndPoint ipEndpoint = new IPEndPoint(ipAdress, port);
+        //    IPEndPoint ipEndpoint = new IPEndPoint(ipAdress, port);
 
-            Console.WriteLine("Hello, World!");
-            Client = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            try
-            {
-                Client.Connect(ipEndpoint);
-                while (!Client.Connected)
-                {
-                    Thread.Sleep(500);
-                }
+        //    Console.WriteLine("Hello, World!");
+        //    Client = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        //    try
+        //    {
+        //        Client.Connect(ipEndpoint);
+        //        while (!Client.Connected)
+        //        {
+        //            Thread.Sleep(500);
+        //        }
 
-                Console.WriteLine("Socket created to {0}", Client.RemoteEndPoint?.ToString());
+        //        Console.WriteLine("Socket created to {0}", Client.RemoteEndPoint?.ToString());
 
-                return;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.ToString());
-                if (Client.Connected)
-                {
-                    Client.Shutdown(SocketShutdown.Both);
-                    Client.Close();
-                }
-            }
-        }
+        //        return;
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        Console.WriteLine(e.ToString());
+        //        if (Client.Connected)
+        //        {
+        //            Client.Shutdown(SocketShutdown.Both);
+        //            Client.Close();
+        //        }
+        //    }
+        //}
 
     }
 }

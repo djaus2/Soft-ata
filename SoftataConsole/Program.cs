@@ -21,7 +21,7 @@ namespace SoftataBasic
 
         // Set the same as Arduino:
         const int port = 4242;
-        const string ipaddressStr = "192.168.0.12";
+        const string ipaddressStr = "192.168.0.9";
 
         // Configure hardware pin connections thus:
         static byte LED = 12;
