@@ -12,7 +12,11 @@ _Soft-ata rather than firm-ata!_
 - Documentation:  [here](https://davidjones.sportronics.com.au/cats/softata/)
 
 ## <font color="red">Hot Press</font>
-
+- V6.30 Added MeadowLabs-.NET Standard version of app: **MeadowLab**
+  - Note doesn't work: Get "The descriptor is not a socket" error msg.
+  - Has been logged with Vendor
+  - [Meadow labs on GitHub](https://github.com/WildernessLabs/Meadow_Issues/issues/590) 
+  - Meadow.Windows desktop version of app works though: **MeadowLab.WindowsDesktop** with .NET Standard or .NET lib.
 - V6.20  Can send Telemtry pause continue or stop  as C2D Msg
   - Eg **Telemetry 0 pause 0** to pause. 
   - Use Azure IoT Explorer  or VS Code etc to send msg to device
