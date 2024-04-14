@@ -100,7 +100,7 @@ namespace SoftataWebAPI.Controllers
 
         // POST api/<SoftataController>
         /// <summary>
-        /// Connect to the Pico W Server and send the Begin command
+        /// Connect to the Pico W Server and send the Begin, Version and Devices commands
         /// </summary>
         /// <param name="ipAddress"></param>
         /// <param name="_port"></param>
@@ -117,7 +117,12 @@ namespace SoftataWebAPI.Controllers
                     string beginValue = SoftataLib.SendMessageCmd("Begin");
                     if (beginValue == "Ready")
                     {
-                        return Ok($"Connected to {ipAddress}:{_port} and Ready");
+                        string OKresult = $"Connected to {ipAddress}:{_port} and Ready";
+                        string value = SoftataLib.SendMessageCmd("Version");
+                        OKresult += $"\nSoftata Version:{value}";
+                        value = SoftataLib.SendMessageCmd("Devices");
+                        OKresult += $"\n{value}";
+                        return Ok(OKresult);
                     }
                     else
                     {
