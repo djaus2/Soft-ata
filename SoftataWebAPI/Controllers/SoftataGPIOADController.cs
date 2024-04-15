@@ -9,6 +9,7 @@ using System.Net.NetworkInformation;
 using static Softata.SoftataLib;
 using static Softata.SoftataLib.Analog;
 
+
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace SoftataWebAPI.Controllers

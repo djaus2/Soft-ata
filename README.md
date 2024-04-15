@@ -12,6 +12,10 @@ _Soft-ata rather than firm-ata!_
 - Documentation:  [here](https://davidjones.sportronics.com.au/cats/softata/)
 
 ## <font color="red">Hot Press</font>
+- V6.50 Blockly Added
+  - SoftaWebAPI app now starts in **NetCoreBlockly** mode 
+      - If you want Swagger change **BlocklyAutomation** in Properties/launchsettings.json to **swagger**
+  - For info see [blog post](https://davidjones.sportronics.com.au/softata/Softata-Blockly____The_Holy_Grail-softata.html)
 - V6.30 Added MeadowLabs-.NET Standard version of app: **MeadowLab**
   - Note doesn't work: Get "The descriptor is not a socket" error msg.
   - Has been logged with Vendor
