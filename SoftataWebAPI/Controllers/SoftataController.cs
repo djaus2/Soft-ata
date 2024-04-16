@@ -33,6 +33,8 @@ namespace SoftataWebAPI.Controllers
             return value.Split(',',':').ToList();
         }
 
+        List<string> Commands = new List<string> { "Begin", "End", "Devices", "Reset", "Version", "Null" };
+
         /// <summary>
         /// Send a simple command to the server
         /// </summary>
@@ -43,9 +45,7 @@ namespace SoftataWebAPI.Controllers
         {
             // This is a "fix". The browser is looking for a favicon.ico file
             // There isn't one
-            if (cmd == "favicon.ico")
-                return "";
-            if (cmd == "readme.txt")
+            if (!Commands.Contains(cmd))
                 return "";
             string value = SoftataLib.SendMessageCmd(cmd);
             return value;
