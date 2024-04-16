@@ -41,6 +41,12 @@ namespace SoftataWebAPI.Controllers
         [HttpGet("{cmd}")]
         public string Get(string cmd)
         {
+            // This is a "fix". The browser is looking for a favicon.ico file
+            // There isn't one
+            if (cmd == "favicon.ico")
+                return "";
+            if (cmd == "readme.txt")
+                return "";
             string value = SoftataLib.SendMessageCmd(cmd);
             return value;
         }

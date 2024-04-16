@@ -67,10 +67,12 @@ namespace SoftataWebAPI
 
             app.UseAuthorization();
 
-
             app.MapControllers();
             app.UseBlocklyUI(app.Environment);
             app.UseBlocklyAutomation();
+
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
 
             app.Run();
         }
