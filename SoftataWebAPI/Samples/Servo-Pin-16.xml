@@ -1,0 +1,250 @@
+<xml xmlns="https://developers.google.com/blockly/xml">
+  <variables>
+    <variable id="o3lGDqy73rmA2Uu49Jl5">ipAddress</variable>
+    <variable id="SGa16}b^D_s]=SVKStIU">port</variable>
+    <variable id=";@Gbx]zhy4szf()v9K=b">switchPin</variable>
+    <variable id="#Pd_(dDY2qVJ77{1Vf?j">LEDpin</variable>
+    <variable id="eXOCG(tH,HC{^/vesg$C">i</variable>
+  </variables>
+  <block type="variables_set" x="114" y="59">
+    <field name="VAR" id="o3lGDqy73rmA2Uu49Jl5">ipAddress</field>
+    <value name="VALUE">
+      <block type="text">
+        <field name="TEXT">192.168.0.12</field>
+      </block>
+    </value>
+    <next>
+      <block type="variables_set">
+        <field name="VAR" id="SGa16}b^D_s]=SVKStIU">port</field>
+        <value name="VALUE">
+          <block type="math_number">
+            <field name="NUM">4242</field>
+          </block>
+        </value>
+        <next>
+          <block type="text_print">
+            <value name="TEXT">
+              <block type="post__Start">
+                <value name="val_ipAddress">
+                  <block type="variables_get">
+                    <field name="VAR" id="o3lGDqy73rmA2Uu49Jl5">ipAddress</field>
+                  </block>
+                </value>
+                <value name="val__port">
+                  <block type="variables_get">
+                    <field name="VAR" id="SGa16}b^D_s]=SVKStIU">port</field>
+                  </block>
+                </value>
+                <value name="override_Host">
+                  <block type="text">
+                    <field name="TEXT"> </field>
+                  </block>
+                </value>
+                <value name="override_Port">
+                  <block type="math_number">
+                    <field name="NUM">0</field>
+                  </block>
+                </value>
+              </block>
+            </value>
+            <next>
+              <block type="variables_set">
+                <field name="VAR" id=";@Gbx]zhy4szf()v9K=b">switchPin</field>
+                <value name="VALUE">
+                  <block type="math_number">
+                    <field name="NUM">16</field>
+                  </block>
+                </value>
+                <next>
+                  <block type="variables_set">
+                    <field name="VAR" id="#Pd_(dDY2qVJ77{1Vf?j">LEDpin</field>
+                    <value name="VALUE">
+                      <block type="math_number">
+                        <field name="NUM">18</field>
+                      </block>
+                    </value>
+                    <next>
+                      <block type="text_print">
+                        <value name="TEXT">
+                          <block type="post__Actuator_SetupDefault">
+                            <value name="val_iactuator">
+                              <block type="math_number">
+                                <field name="NUM">0</field>
+                              </block>
+                            </value>
+                            <value name="override_Host">
+                              <block type="text">
+                                <field name="TEXT"> </field>
+                              </block>
+                            </value>
+                            <value name="override_Port">
+                              <block type="math_number">
+                                <field name="NUM">0</field>
+                              </block>
+                            </value>
+                          </block>
+                        </value>
+                        <next>
+                          <block type="wait_seconds">
+                            <field name="SECONDS">1</field>
+                            <next>
+                              <block type="controls_for">
+                                <field name="VAR" id="eXOCG(tH,HC{^/vesg$C">i</field>
+                                <value name="FROM">
+                                  <shadow type="math_number">
+                                    <field name="NUM">1</field>
+                                  </shadow>
+                                  <block type="math_number">
+                                    <field name="NUM">0</field>
+                                  </block>
+                                </value>
+                                <value name="TO">
+                                  <shadow type="math_number">
+                                    <field name="NUM">10</field>
+                                  </shadow>
+                                  <block type="math_number">
+                                    <field name="NUM">180</field>
+                                  </block>
+                                </value>
+                                <value name="BY">
+                                  <shadow type="math_number">
+                                    <field name="NUM">1</field>
+                                  </shadow>
+                                  <block type="math_number">
+                                    <field name="NUM">20</field>
+                                  </block>
+                                </value>
+                                <statement name="DO">
+                                  <block type="text_print">
+                                    <value name="TEXT">
+                                      <block type="post__Actuator_WriteByte">
+                                        <value name="val_actuatorListIndex">
+                                          <block type="math_number">
+                                            <field name="NUM">0</field>
+                                          </block>
+                                        </value>
+                                        <value name="val_value">
+                                          <block type="variables_get">
+                                            <field name="VAR" id="eXOCG(tH,HC{^/vesg$C">i</field>
+                                          </block>
+                                        </value>
+                                        <value name="override_Host">
+                                          <block type="text">
+                                            <field name="TEXT"> </field>
+                                          </block>
+                                        </value>
+                                        <value name="override_Port">
+                                          <block type="math_number">
+                                            <field name="NUM">0</field>
+                                          </block>
+                                        </value>
+                                      </block>
+                                    </value>
+                                    <next>
+                                      <block type="wait_seconds">
+                                        <field name="SECONDS">1</field>
+                                      </block>
+                                    </next>
+                                  </block>
+                                </statement>
+                                <next>
+                                  <block type="controls_for">
+                                    <field name="VAR" id="eXOCG(tH,HC{^/vesg$C">i</field>
+                                    <value name="FROM">
+                                      <shadow type="math_number">
+                                        <field name="NUM">1</field>
+                                      </shadow>
+                                      <block type="math_number">
+                                        <field name="NUM">180</field>
+                                      </block>
+                                    </value>
+                                    <value name="TO">
+                                      <shadow type="math_number">
+                                        <field name="NUM">10</field>
+                                      </shadow>
+                                      <block type="math_number">
+                                        <field name="NUM">0</field>
+                                      </block>
+                                    </value>
+                                    <value name="BY">
+                                      <shadow type="math_number">
+                                        <field name="NUM">1</field>
+                                      </shadow>
+                                      <block type="math_number">
+                                        <field name="NUM">-20</field>
+                                      </block>
+                                    </value>
+                                    <statement name="DO">
+                                      <block type="text_print">
+                                        <value name="TEXT">
+                                          <block type="post__Actuator_WriteByte">
+                                            <value name="val_actuatorListIndex">
+                                              <block type="math_number">
+                                                <field name="NUM">0</field>
+                                              </block>
+                                            </value>
+                                            <value name="val_value">
+                                              <block type="variables_get">
+                                                <field name="VAR" id="eXOCG(tH,HC{^/vesg$C">i</field>
+                                              </block>
+                                            </value>
+                                            <value name="override_Host">
+                                              <block type="text">
+                                                <field name="TEXT"> </field>
+                                              </block>
+                                            </value>
+                                            <value name="override_Port">
+                                              <block type="math_number">
+                                                <field name="NUM">0</field>
+                                              </block>
+                                            </value>
+                                          </block>
+                                        </value>
+                                        <next>
+                                          <block type="wait_seconds">
+                                            <field name="SECONDS">1</field>
+                                          </block>
+                                        </next>
+                                      </block>
+                                    </statement>
+                                    <next>
+                                      <block type="text_print">
+                                        <value name="TEXT">
+                                          <block type="get____cmd">
+                                            <value name="val_cmd">
+                                              <block type="text">
+                                                <field name="TEXT">End</field>
+                                              </block>
+                                            </value>
+                                            <value name="override_Host">
+                                              <block type="text">
+                                                <field name="TEXT"> </field>
+                                              </block>
+                                            </value>
+                                            <value name="override_Port">
+                                              <block type="math_number">
+                                                <field name="NUM">0</field>
+                                              </block>
+                                            </value>
+                                          </block>
+                                        </value>
+                                      </block>
+                                    </next>
+                                  </block>
+                                </next>
+                              </block>
+                            </next>
+                          </block>
+                        </next>
+                      </block>
+                    </next>
+                  </block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </next>
+      </block>
+    </next>
+  </block>
+</xml>
