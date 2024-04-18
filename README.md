@@ -15,7 +15,7 @@ _Soft-ata rather than firm-ata!_
 - V6.70 Blockly Added
   - SoftaWebAPI app now starts with index page
     -  Can choose link to **BlocklyAutomation** or to **Swagger**
-  - Some simple sample Blockly apps under Visual Studio in SoftaWebAPI folder.
+  - Some simple sample Blockly apps in ```SoftaWebAPI/Samples folder```.
     - Load in Blockly Save Local->Load Blocks and browse to folder.
   - For info see [blog post](https://davidjones.sportronics.com.au/softata/Softata-Blockly____The_Holy_Grail-softata.html)
 - V6.30 Added MeadowLabs-.NET Standard version of app: **MeadowLab**
