@@ -74,6 +74,8 @@ namespace SoftataWebAPI
             app.UseDefaultFiles();
             app.UseStaticFiles();
 
+
+
             app.Run();
         }
     }

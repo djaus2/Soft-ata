@@ -1,0 +1,276 @@
+<xml xmlns="https://developers.google.com/blockly/xml">
+  <variables>
+    <variable id="o3lGDqy73rmA2Uu49Jl5">ipAddress</variable>
+    <variable id="SGa16}b^D_s]=SVKStIU">port</variable>
+    <variable id=";@Gbx]zhy4szf()v9K=b">switchPin</variable>
+    <variable id="#Pd_(dDY2qVJ77{1Vf?j">LEDpin</variable>
+    <variable id="NmWB1b}T;~YeV3l=xYkp">pinState</variable>
+  </variables>
+  <block type="variables_set" x="114" y="59">
+    <field name="VAR" id="o3lGDqy73rmA2Uu49Jl5">ipAddress</field>
+    <value name="VALUE">
+      <block type="text">
+        <field name="TEXT">192.168.0.12</field>
+      </block>
+    </value>
+    <next>
+      <block type="variables_set">
+        <field name="VAR" id="SGa16}b^D_s]=SVKStIU">port</field>
+        <value name="VALUE">
+          <block type="math_number">
+            <field name="NUM">4242</field>
+          </block>
+        </value>
+        <next>
+          <block type="variables_set">
+            <field name="VAR" id=";@Gbx]zhy4szf()v9K=b">switchPin</field>
+            <value name="VALUE">
+              <block type="math_number">
+                <field name="NUM">16</field>
+              </block>
+            </value>
+            <next>
+              <block type="variables_set">
+                <field name="VAR" id="#Pd_(dDY2qVJ77{1Vf?j">LEDpin</field>
+                <value name="VALUE">
+                  <block type="math_number">
+                    <field name="NUM">18</field>
+                  </block>
+                </value>
+                <next>
+                  <block type="text_print">
+                    <value name="TEXT">
+                      <block type="post__Start">
+                        <value name="val_ipAddress">
+                          <block type="variables_get">
+                            <field name="VAR" id="o3lGDqy73rmA2Uu49Jl5">ipAddress</field>
+                          </block>
+                        </value>
+                        <value name="val__port">
+                          <block type="variables_get">
+                            <field name="VAR" id="SGa16}b^D_s]=SVKStIU">port</field>
+                          </block>
+                        </value>
+                        <value name="override_Host">
+                          <block type="text">
+                            <field name="TEXT"> </field>
+                          </block>
+                        </value>
+                        <value name="override_Port">
+                          <block type="math_number">
+                            <field name="NUM">0</field>
+                          </block>
+                        </value>
+                      </block>
+                    </value>
+                    <next>
+                      <block type="text_print">
+                        <value name="TEXT">
+                          <block type="post__SetPinMode">
+                            <value name="val_pin">
+                              <block type="variables_get">
+                                <field name="VAR" id=";@Gbx]zhy4szf()v9K=b">switchPin</field>
+                              </block>
+                            </value>
+                            <value name="val_mode">
+                              <block type="math_number">
+                                <field name="NUM">0</field>
+                              </block>
+                            </value>
+                            <value name="override_Host">
+                              <block type="text">
+                                <field name="TEXT"> </field>
+                              </block>
+                            </value>
+                            <value name="override_Port">
+                              <block type="math_number">
+                                <field name="NUM">0</field>
+                              </block>
+                            </value>
+                          </block>
+                        </value>
+                        <next>
+                          <block type="text_print">
+                            <value name="TEXT">
+                              <block type="post__SetPinMode">
+                                <value name="val_pin">
+                                  <block type="variables_get">
+                                    <field name="VAR" id="#Pd_(dDY2qVJ77{1Vf?j">LEDpin</field>
+                                  </block>
+                                </value>
+                                <value name="val_mode">
+                                  <block type="math_number">
+                                    <field name="NUM">1</field>
+                                  </block>
+                                </value>
+                                <value name="override_Host">
+                                  <block type="text">
+                                    <field name="TEXT"> </field>
+                                  </block>
+                                </value>
+                                <value name="override_Port">
+                                  <block type="math_number">
+                                    <field name="NUM">0</field>
+                                  </block>
+                                </value>
+                              </block>
+                            </value>
+                            <next>
+                              <block type="controls_repeat_ext">
+                                <value name="TIMES">
+                                  <shadow type="math_number">
+                                    <field name="NUM">10</field>
+                                  </shadow>
+                                </value>
+                                <statement name="DO">
+                                  <block type="variables_set">
+                                    <field name="VAR" id="NmWB1b}T;~YeV3l=xYkp">pinState</field>
+                                    <value name="VALUE">
+                                      <block type="get__GetPinState">
+                                        <value name="val_pin">
+                                          <block type="variables_get">
+                                            <field name="VAR" id=";@Gbx]zhy4szf()v9K=b">switchPin</field>
+                                          </block>
+                                        </value>
+                                        <value name="override_Host">
+                                          <block type="text">
+                                            <field name="TEXT"> </field>
+                                          </block>
+                                        </value>
+                                        <value name="override_Port">
+                                          <block type="math_number">
+                                            <field name="NUM">0</field>
+                                          </block>
+                                        </value>
+                                      </block>
+                                    </value>
+                                    <next>
+                                      <block type="text_print">
+                                        <value name="TEXT">
+                                          <block type="variables_get">
+                                            <field name="VAR" id="NmWB1b}T;~YeV3l=xYkp">pinState</field>
+                                          </block>
+                                        </value>
+                                        <next>
+                                          <block type="controls_ifelse">
+                                            <value name="IF0">
+                                              <block type="logic_compare">
+                                                <field name="OP">EQ</field>
+                                                <value name="A">
+                                                  <block type="variables_get">
+                                                    <field name="VAR" id="NmWB1b}T;~YeV3l=xYkp">pinState</field>
+                                                  </block>
+                                                </value>
+                                                <value name="B">
+                                                  <block type="math_number">
+                                                    <field name="NUM">1</field>
+                                                  </block>
+                                                </value>
+                                              </block>
+                                            </value>
+                                            <statement name="DO0">
+                                              <block type="text_print">
+                                                <value name="TEXT">
+                                                  <block type="post__SetPinState">
+                                                    <value name="val_pin">
+                                                      <block type="variables_get">
+                                                        <field name="VAR" id="#Pd_(dDY2qVJ77{1Vf?j">LEDpin</field>
+                                                      </block>
+                                                    </value>
+                                                    <value name="val_pinstate">
+                                                      <block type="math_number">
+                                                        <field name="NUM">1</field>
+                                                      </block>
+                                                    </value>
+                                                    <value name="override_Host">
+                                                      <block type="text">
+                                                        <field name="TEXT"> </field>
+                                                      </block>
+                                                    </value>
+                                                    <value name="override_Port">
+                                                      <block type="math_number">
+                                                        <field name="NUM">0</field>
+                                                      </block>
+                                                    </value>
+                                                  </block>
+                                                </value>
+                                              </block>
+                                            </statement>
+                                            <statement name="ELSE">
+                                              <block type="text_print">
+                                                <value name="TEXT">
+                                                  <block type="post__SetPinState">
+                                                    <value name="val_pin">
+                                                      <block type="variables_get">
+                                                        <field name="VAR" id="#Pd_(dDY2qVJ77{1Vf?j">LEDpin</field>
+                                                      </block>
+                                                    </value>
+                                                    <value name="val_pinstate">
+                                                      <block type="math_number">
+                                                        <field name="NUM">0</field>
+                                                      </block>
+                                                    </value>
+                                                    <value name="override_Host">
+                                                      <block type="text">
+                                                        <field name="TEXT"> </field>
+                                                      </block>
+                                                    </value>
+                                                    <value name="override_Port">
+                                                      <block type="math_number">
+                                                        <field name="NUM">0</field>
+                                                      </block>
+                                                    </value>
+                                                  </block>
+                                                </value>
+                                              </block>
+                                            </statement>
+                                            <next>
+                                              <block type="wait_seconds">
+                                                <field name="SECONDS">1</field>
+                                              </block>
+                                            </next>
+                                          </block>
+                                        </next>
+                                      </block>
+                                    </next>
+                                  </block>
+                                </statement>
+                                <next>
+                                  <block type="text_print">
+                                    <value name="TEXT">
+                                      <block type="get____cmd">
+                                        <value name="val_cmd">
+                                          <block type="text">
+                                            <field name="TEXT">End</field>
+                                          </block>
+                                        </value>
+                                        <value name="override_Host">
+                                          <block type="text">
+                                            <field name="TEXT"> </field>
+                                          </block>
+                                        </value>
+                                        <value name="override_Port">
+                                          <block type="math_number">
+                                            <field name="NUM">0</field>
+                                          </block>
+                                        </value>
+                                      </block>
+                                    </value>
+                                  </block>
+                                </next>
+                              </block>
+                            </next>
+                          </block>
+                        </next>
+                      </block>
+                    </next>
+                  </block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </next>
+      </block>
+    </next>
+  </block>
+</xml>

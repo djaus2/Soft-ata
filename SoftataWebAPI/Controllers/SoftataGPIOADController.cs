@@ -22,45 +22,25 @@ namespace SoftataWebAPI.Controllers
     public class SoftataGPIOADCController : ControllerBase
     {
         /// <summary>
-        /// Set pin mode
+        /// Set Digital pin mode
         /// </summary>>
         /// <param name="pin">GPIO Pin</param>
-        /// <param name="mode">0=Input,1=Output,2=ADC,3=PWM</param>
+        /// <param name="mode">0=Input,1=Output</param>
         /// <returns>OK</returns>
         [Route("SetPinMode")]
         [HttpPost]
-        public IActionResult SetPinMode(int pin, int mode)
+        public IActionResult SetDigitalPinMode(int pin, int mode)
         {
             PinMode _mode = (PinMode)mode;
-            if (_mode != PinMode.AnalogInput)
-            {
-                SoftataLib.Analog.SetAnalogPin(AnalogDevice.Undefined, pin);
-            }
-            else if (_mode == PinMode.DigitalInput || _mode == PinMode.DigitalOutput)
+            if (_mode == PinMode.DigitalInput || _mode == PinMode.DigitalOutput)
             {
                 SoftataLib.Digital.SetPinMode(pin, _mode);
             }
-            if (_mode != PinMode.PwmOutput)
-            {
-                SoftataLib.Digital.SetPinMode(pin, PinMode.DigitalOutput);
-            }
             else
-                return BadRequest("Invalid Pin Mode");
-            return Ok($"{pin}");
+                return BadRequest("Invalid Pin:{pin} Mode:{Mode}");
+            return Ok($"Pin:{pin} Mode:{(PinMode)mode}");
         }
 
-        /// <summary>
-        /// Init ADC
-        /// </summary>
-        /// <param name="PicoMode">0=Grove Shield,1=Otherwise</param>>
-        /// <returns>OK</returns>
-        [Route("InitAnalogDevicePins")]
-        [HttpPost]
-        public IActionResult InitADCPins(int PicoMode = 0)
-        {
-            SoftataLib.Analog.InitAnalogDevicePins((RPiPicoMode)PicoMode);
-            return Ok($"{RPiPicoMode.groveShield}");
-        }
 
 
         /// <summary>
@@ -70,10 +50,10 @@ namespace SoftataWebAPI.Controllers
         /// <returns>Pin state</returns>
         [Route("GetPinState")]
         [HttpGet]
-        public bool GetPinState(int pin)
+        public int GetDigitalPinState(int pin)
         {
             bool value = SoftataLib.Digital.GetPinState(pin);
-            return value;
+            return value ? 1 : 0;
         }
 
 
@@ -84,12 +64,48 @@ namespace SoftataWebAPI.Controllers
         /// <param name="pinstate">0=Low,1=High</param>
         /// <returns>OK</returns>
         [Route("SetPinState")]
-        [HttpPost] 
-        public IActionResult SetPinState(int pin, PinState pinstate)
+        [HttpPost]
+        public IActionResult SetDigitalPinState(int pin, PinState pinstate)
         {
             SoftataLib.Digital.SetPinState(pin, pinstate);
-            return Ok($"{pin}");
+            return Ok($"Pin:{pin} State:{pinstate}");
         }
+
+        ///////////////////ADC////////////////////////////////////////
+
+        /// <summary>
+        /// Init ADC
+        /// </summary>
+        /// <param name="PicoMode">0=Grove Shield,1=Otherwise</param>>
+        /// <returns>OK</returns>
+        [Route("InitADCPins")]
+        [HttpPost]
+        public IActionResult InitADCPins(int PicoMode = 0)
+        {
+            SoftataLib.Analog.InitAnalogDevicePins((RPiPicoMode)PicoMode);
+            return Ok($"PicoMode:{(RPiPicoMode)PicoMode}");
+        }
+
+        /// <summary>
+        /// Set pin as ADC
+        /// </summary>
+        /// <param name="pin">ADC Pin GPIO 26,27,28</param>
+        /// <returns>OK</returns>
+        [Route("SetADCPin")]
+        [HttpPost]
+        public IActionResult SetADCPin(int pin)
+        {
+            if ((new List<int> { 26, 27, 28 }).Contains(pin))
+            {
+                SoftataLib.Analog.SetAnalogPin(AnalogDevice.Undefined, pin);
+                return Ok($"Pin:{pin} ADC mode");
+            }
+            else
+                return BadRequest($"Invalid ADC Pin:{pin}");
+        }
+
+
+
 
         /// <summary>
         /// Read an ADC Pin value
@@ -104,6 +120,20 @@ namespace SoftataWebAPI.Controllers
             return value;
         }
 
+
+        /// <summary>
+        /// Set PWM pin 
+        /// </summary>>
+        /// <param name="pin">GPIO Pin</param>
+        /// <returns>OK</returns>
+        [Route("SetPWMPin")]
+        [HttpPost]
+        public IActionResult SetPWMPin(int pin)
+        {
+            SoftataLib.Digital.SetPinMode(pin, PinMode.DigitalOutput);
+            return Ok($"Pin:{pin} PWM Mode");
+        }
+
         /// <summary>
         /// Set PWM Pin value
         /// </summary>
@@ -115,7 +145,7 @@ namespace SoftataWebAPI.Controllers
         public IActionResult SetPWM(int pin, byte value)
         {
             SoftataLib.PWM.SetPWM(pin, value);
-            return Ok($"{pin}");
+            return Ok($"Pin:{pin} Value:{value}");
         }
 
     }

@@ -1,0 +1,236 @@
+<xml xmlns="https://developers.google.com/blockly/xml">
+  <variables>
+    <variable id="o3lGDqy73rmA2Uu49Jl5">ipAddress</variable>
+    <variable id="SGa16}b^D_s]=SVKStIU">port</variable>
+    <variable id="6lB00uIS*hC=]9d#vk#)">potentiometerPin</variable>
+    <variable id="#Pd_(dDY2qVJ77{1Vf?j">LEDpin</variable>
+    <variable id="OqMbjLY+f9/YH+UyXzT3">picoMode_picoShield</variable>
+    <variable id="N?gVT/+)4Sl}kk~Bd39W">picoMode</variable>
+    <variable id="MRAXMY{63[mTnkBJn@Vl">potValue</variable>
+  </variables>
+  <block type="variables_set" x="13" y="-90">
+    <field name="VAR" id="o3lGDqy73rmA2Uu49Jl5">ipAddress</field>
+    <value name="VALUE">
+      <block type="text">
+        <field name="TEXT">192.168.0.12</field>
+      </block>
+    </value>
+    <next>
+      <block type="variables_set">
+        <field name="VAR" id="SGa16}b^D_s]=SVKStIU">port</field>
+        <value name="VALUE">
+          <block type="math_number">
+            <field name="NUM">4242</field>
+          </block>
+        </value>
+        <next>
+          <block type="variables_set">
+            <field name="VAR" id="6lB00uIS*hC=]9d#vk#)">potentiometerPin</field>
+            <value name="VALUE">
+              <block type="math_number">
+                <field name="NUM">26</field>
+              </block>
+            </value>
+            <next>
+              <block type="variables_set">
+                <field name="VAR" id="#Pd_(dDY2qVJ77{1Vf?j">LEDpin</field>
+                <value name="VALUE">
+                  <block type="math_number">
+                    <field name="NUM">18</field>
+                  </block>
+                </value>
+                <next>
+                  <block type="variables_set">
+                    <field name="VAR" id="OqMbjLY+f9/YH+UyXzT3">picoMode_picoShield</field>
+                    <value name="VALUE">
+                      <block type="math_number">
+                        <field name="NUM">0</field>
+                      </block>
+                    </value>
+                    <next>
+                      <block type="variables_set">
+                        <field name="VAR" id="N?gVT/+)4Sl}kk~Bd39W">picoMode</field>
+                        <value name="VALUE">
+                          <block type="variables_get">
+                            <field name="VAR" id="OqMbjLY+f9/YH+UyXzT3">picoMode_picoShield</field>
+                          </block>
+                        </value>
+                        <next>
+                          <block type="text_print">
+                            <value name="TEXT">
+                              <block type="post__Connect">
+                                <value name="val_ipAddress">
+                                  <block type="variables_get">
+                                    <field name="VAR" id="o3lGDqy73rmA2Uu49Jl5">ipAddress</field>
+                                  </block>
+                                </value>
+                                <value name="val__port">
+                                  <block type="variables_get">
+                                    <field name="VAR" id="SGa16}b^D_s]=SVKStIU">port</field>
+                                  </block>
+                                </value>
+                                <value name="override_Host">
+                                  <block type="text">
+                                    <field name="TEXT"> </field>
+                                  </block>
+                                </value>
+                                <value name="override_Port">
+                                  <block type="math_number">
+                                    <field name="NUM">0</field>
+                                  </block>
+                                </value>
+                              </block>
+                            </value>
+                            <next>
+                              <block type="text_print">
+                                <value name="TEXT">
+                                  <block type="post__InitADCPins">
+                                    <value name="val_PicoMode">
+                                      <block type="variables_get">
+                                        <field name="VAR" id="N?gVT/+)4Sl}kk~Bd39W">picoMode</field>
+                                      </block>
+                                    </value>
+                                    <value name="override_Host">
+                                      <block type="text">
+                                        <field name="TEXT"> </field>
+                                      </block>
+                                    </value>
+                                    <value name="override_Port">
+                                      <block type="math_number">
+                                        <field name="NUM">0</field>
+                                      </block>
+                                    </value>
+                                  </block>
+                                </value>
+                                <next>
+                                  <block type="text_print">
+                                    <value name="TEXT">
+                                      <block type="post__SetADCPin">
+                                        <value name="val_pin">
+                                          <block type="variables_get">
+                                            <field name="VAR" id="6lB00uIS*hC=]9d#vk#)">potentiometerPin</field>
+                                          </block>
+                                        </value>
+                                        <value name="override_Host">
+                                          <block type="text">
+                                            <field name="TEXT"> </field>
+                                          </block>
+                                        </value>
+                                        <value name="override_Port">
+                                          <block type="math_number">
+                                            <field name="NUM">0</field>
+                                          </block>
+                                        </value>
+                                      </block>
+                                    </value>
+                                    <next>
+                                      <block type="text_print">
+                                        <value name="TEXT">
+                                          <block type="post__SetPWMPin">
+                                            <value name="val_pin">
+                                              <block type="variables_get">
+                                                <field name="VAR" id="#Pd_(dDY2qVJ77{1Vf?j">LEDpin</field>
+                                              </block>
+                                            </value>
+                                            <value name="override_Host">
+                                              <block type="text">
+                                                <field name="TEXT"> </field>
+                                              </block>
+                                            </value>
+                                            <value name="override_Port">
+                                              <block type="math_number">
+                                                <field name="NUM">0</field>
+                                              </block>
+                                            </value>
+                                          </block>
+                                        </value>
+                                        <next>
+                                          <block type="controls_repeat_ext">
+                                            <value name="TIMES">
+                                              <shadow type="math_number">
+                                                <field name="NUM">10</field>
+                                              </shadow>
+                                            </value>
+                                            <statement name="DO">
+                                              <block type="variables_set">
+                                                <field name="VAR" id="MRAXMY{63[mTnkBJn@Vl">potValue</field>
+                                                <value name="VALUE">
+                                                  <block type="get__ReadADC">
+                                                    <value name="val_pin">
+                                                      <block type="variables_get">
+                                                        <field name="VAR" id="6lB00uIS*hC=]9d#vk#)">potentiometerPin</field>
+                                                      </block>
+                                                    </value>
+                                                    <value name="override_Host">
+                                                      <block type="text">
+                                                        <field name="TEXT"> </field>
+                                                      </block>
+                                                    </value>
+                                                    <value name="override_Port">
+                                                      <block type="math_number">
+                                                        <field name="NUM">0</field>
+                                                      </block>
+                                                    </value>
+                                                  </block>
+                                                </value>
+                                                <next>
+                                                  <block type="text_print">
+                                                    <value name="TEXT">
+                                                      <block type="variables_get">
+                                                        <field name="VAR" id="MRAXMY{63[mTnkBJn@Vl">potValue</field>
+                                                      </block>
+                                                    </value>
+                                                    <next>
+                                                      <block type="wait_seconds">
+                                                        <field name="SECONDS">1</field>
+                                                      </block>
+                                                    </next>
+                                                  </block>
+                                                </next>
+                                              </block>
+                                            </statement>
+                                            <next>
+                                              <block type="text_print">
+                                                <value name="TEXT">
+                                                  <block type="get____cmd">
+                                                    <value name="val_cmd">
+                                                      <block type="text">
+                                                        <field name="TEXT">End</field>
+                                                      </block>
+                                                    </value>
+                                                    <value name="override_Host">
+                                                      <block type="text">
+                                                        <field name="TEXT"> </field>
+                                                      </block>
+                                                    </value>
+                                                    <value name="override_Port">
+                                                      <block type="math_number">
+                                                        <field name="NUM">0</field>
+                                                      </block>
+                                                    </value>
+                                                  </block>
+                                                </value>
+                                              </block>
+                                            </next>
+                                          </block>
+                                        </next>
+                                      </block>
+                                    </next>
+                                  </block>
+                                </next>
+                              </block>
+                            </next>
+                          </block>
+                        </next>
+                      </block>
+                    </next>
+                  </block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </next>
+      </block>
+    </next>
+  </block>
+</xml>
