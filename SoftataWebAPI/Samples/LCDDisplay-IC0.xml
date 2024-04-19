@@ -2,8 +2,9 @@
   <variables>
     <variable id="o3lGDqy73rmA2Uu49Jl5">ipAddress</variable>
     <variable id="SGa16}b^D_s]=SVKStIU">port</variable>
-    <variable id=";@Gbx]zhy4szf()v9K=b">switchPin</variable>
-    <variable id="`0)v[Mw|peDh]}?*#94q">LCD_displayType</variable>
+    <variable id="+v^%wR(d~`$BCPnt[u8Z">NeoplixelTypeDisplay</variable>
+    <variable id="`0)v[Mw|peDh]}?*#94q">LCDDisplayType</variable>
+    <variable id="W1sNM/Ct#4Zd^tUT1)Ql">BargraphTypeDisplay</variable>
     <variable id="yKh2f:Gmo4y8xFlq=2We">displayLinkedIndex</variable>
   </variables>
   <block type="variables_set" x="190" y="-47">
@@ -49,68 +50,55 @@
             </value>
             <next>
               <block type="variables_set">
-                <field name="VAR" id=";@Gbx]zhy4szf()v9K=b">switchPin</field>
+                <field name="VAR" id="+v^%wR(d~`$BCPnt[u8Z">NeoplixelTypeDisplay</field>
                 <value name="VALUE">
                   <block type="math_number">
-                    <field name="NUM">16</field>
+                    <field name="NUM">0</field>
                   </block>
                 </value>
                 <next>
                   <block type="variables_set">
-                    <field name="VAR" id="`0)v[Mw|peDh]}?*#94q">LCD_displayType</field>
+                    <field name="VAR" id="`0)v[Mw|peDh]}?*#94q">LCDDisplayType</field>
                     <value name="VALUE">
                       <block type="math_number">
                         <field name="NUM">1</field>
                       </block>
                     </value>
                     <next>
-                      <block type="text_print">
-                        <value name="TEXT">
-                          <block type="post__Display_SetupDefault">
-                            <value name="val_idisplay">
-                              <block type="variables_get">
-                                <field name="VAR" id="`0)v[Mw|peDh]}?*#94q">LCD_displayType</field>
-                              </block>
-                            </value>
-                            <value name="override_Host">
-                              <block type="text">
-                                <field name="TEXT"> </field>
-                              </block>
-                            </value>
-                            <value name="override_Port">
-                              <block type="math_number">
-                                <field name="NUM">0</field>
-                              </block>
-                            </value>
+                      <block type="variables_set">
+                        <field name="VAR" id="W1sNM/Ct#4Zd^tUT1)Ql">BargraphTypeDisplay</field>
+                        <value name="VALUE">
+                          <block type="math_number">
+                            <field name="NUM">2</field>
                           </block>
                         </value>
                         <next>
                           <block type="variables_set">
                             <field name="VAR" id="yKh2f:Gmo4y8xFlq=2We">displayLinkedIndex</field>
                             <value name="VALUE">
-                              <block type="math_number">
-                                <field name="NUM">0</field>
+                              <block type="post__Display_SetupDefault">
+                                <value name="val_idisplay">
+                                  <block type="variables_get">
+                                    <field name="VAR" id="`0)v[Mw|peDh]}?*#94q">LCDDisplayType</field>
+                                  </block>
+                                </value>
+                                <value name="override_Host">
+                                  <block type="text">
+                                    <field name="TEXT"> </field>
+                                  </block>
+                                </value>
+                                <value name="override_Port">
+                                  <block type="math_number">
+                                    <field name="NUM">0</field>
+                                  </block>
+                                </value>
                               </block>
                             </value>
                             <next>
                               <block type="text_print">
                                 <value name="TEXT">
-                                  <block type="post__Display_Clear">
-                                    <value name="val_displayLinkedListIndex">
-                                      <block type="variables_get">
-                                        <field name="VAR" id="yKh2f:Gmo4y8xFlq=2We">displayLinkedIndex</field>
-                                      </block>
-                                    </value>
-                                    <value name="override_Host">
-                                      <block type="text">
-                                        <field name="TEXT"> </field>
-                                      </block>
-                                    </value>
-                                    <value name="override_Port">
-                                      <block type="math_number">
-                                        <field name="NUM">0</field>
-                                      </block>
-                                    </value>
+                                  <block type="variables_get">
+                                    <field name="VAR" id="yKh2f:Gmo4y8xFlq=2We">displayLinkedIndex</field>
                                   </block>
                                 </value>
                                 <next>
@@ -119,15 +107,10 @@
                                     <next>
                                       <block type="text_print">
                                         <value name="TEXT">
-                                          <block type="post__Display_WriteString">
+                                          <block type="post__Display_Clear">
                                             <value name="val_displayLinkedListIndex">
                                               <block type="variables_get">
                                                 <field name="VAR" id="yKh2f:Gmo4y8xFlq=2We">displayLinkedIndex</field>
-                                              </block>
-                                            </value>
-                                            <value name="val_value">
-                                              <block type="text">
-                                                <field name="TEXT">Hello from:</field>
                                               </block>
                                             </value>
                                             <value name="override_Host">
@@ -148,25 +131,15 @@
                                             <next>
                                               <block type="text_print">
                                                 <value name="TEXT">
-                                                  <block type="post__Display_WriteStringXY">
+                                                  <block type="post__Display_WriteString">
                                                     <value name="val_displayLinkedListIndex">
                                                       <block type="variables_get">
                                                         <field name="VAR" id="yKh2f:Gmo4y8xFlq=2We">displayLinkedIndex</field>
                                                       </block>
                                                     </value>
-                                                    <value name="val_x">
-                                                      <block type="math_number">
-                                                        <field name="NUM">1</field>
-                                                      </block>
-                                                    </value>
-                                                    <value name="val_y">
-                                                      <block type="math_number">
-                                                        <field name="NUM">1</field>
-                                                      </block>
-                                                    </value>
                                                     <value name="val_value">
                                                       <block type="text">
-                                                        <field name="TEXT">Softata</field>
+                                                        <field name="TEXT">Hello from:</field>
                                                       </block>
                                                     </value>
                                                     <value name="override_Host">
@@ -187,10 +160,25 @@
                                                     <next>
                                                       <block type="text_print">
                                                         <value name="TEXT">
-                                                          <block type="get____cmd">
-                                                            <value name="val_cmd">
+                                                          <block type="post__Display_WriteStringXY">
+                                                            <value name="val_displayLinkedListIndex">
+                                                              <block type="variables_get">
+                                                                <field name="VAR" id="yKh2f:Gmo4y8xFlq=2We">displayLinkedIndex</field>
+                                                              </block>
+                                                            </value>
+                                                            <value name="val_x">
+                                                              <block type="math_number">
+                                                                <field name="NUM">1</field>
+                                                              </block>
+                                                            </value>
+                                                            <value name="val_y">
+                                                              <block type="math_number">
+                                                                <field name="NUM">1</field>
+                                                              </block>
+                                                            </value>
+                                                            <value name="val_value">
                                                               <block type="text">
-                                                                <field name="TEXT">End</field>
+                                                                <field name="TEXT">Softata</field>
                                                               </block>
                                                             </value>
                                                             <value name="override_Host">
@@ -205,6 +193,34 @@
                                                             </value>
                                                           </block>
                                                         </value>
+                                                        <next>
+                                                          <block type="wait_seconds">
+                                                            <field name="SECONDS">1</field>
+                                                            <next>
+                                                              <block type="text_print">
+                                                                <value name="TEXT">
+                                                                  <block type="get____cmd">
+                                                                    <value name="val_cmd">
+                                                                      <block type="text">
+                                                                        <field name="TEXT">End</field>
+                                                                      </block>
+                                                                    </value>
+                                                                    <value name="override_Host">
+                                                                      <block type="text">
+                                                                        <field name="TEXT"> </field>
+                                                                      </block>
+                                                                    </value>
+                                                                    <value name="override_Port">
+                                                                      <block type="math_number">
+                                                                        <field name="NUM">0</field>
+                                                                      </block>
+                                                                    </value>
+                                                                  </block>
+                                                                </value>
+                                                              </block>
+                                                            </next>
+                                                          </block>
+                                                        </next>
                                                       </block>
                                                     </next>
                                                   </block>
