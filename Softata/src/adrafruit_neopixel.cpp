@@ -40,6 +40,7 @@ bool Adafruit_NeoPixel8::Setup(byte * settings, byte numSettings)
 bool Adafruit_NeoPixel8::Clear()
 {
     pixels->clear();
+    pixels->show();
     return true;
 }
 
