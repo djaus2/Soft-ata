@@ -94,7 +94,7 @@ bool Custom_Bargraph::Misc(byte cmd, byte * data, byte length)
     case flow2:
       //Just set even  segment for now.
       writeTo595(LSBFIRST, (byte)170);
-      Serial.println("flow()");
+      Serial.println("flow2()");
       return true;
       break;
     default:

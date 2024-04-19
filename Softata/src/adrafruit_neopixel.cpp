@@ -139,7 +139,18 @@ bool Adafruit_NeoPixel8::CursorWriteStringAvailable()
 
 bool Adafruit_NeoPixel8::WriteString(String msg)
 {
-    return false;
+    int val = atoi(msg.c_str());
+    Serial.print("WriteString:");
+    Serial.println(val);
+    for (int i=0;i<numPixels;i++)
+    {
+        if (val & (1<<i))
+            pixels->setPixelColor(i, pixels->Color(255, 255, 255));
+        else
+            pixels->setPixelColor(i, pixels->Color(0, 0, 0));
+    }
+    pixels->show();
+    return true;
 }
 
 
