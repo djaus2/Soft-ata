@@ -12,10 +12,10 @@ _Soft-ata rather than firm-ata!_
 - Documentation:  [here](https://davidjones.sportronics.com.au/cats/softata/)
 
 ## <font color="red">Hot Press</font>
-- V6.81 Blockly Added
+- V6.83 Blockly Added
   - SoftaWebAPI app now starts with index page
     -  Can choose link to **BlocklyAutomation** or to **Swagger**
-  - 8 simple sample Blockly apps in ```SoftaWebAPI/Samples folder```.
+  - 11 simple sample Blockly apps in ```SoftaWebAPI/Samples folder```.
     - Load in Blockly Save Local->Load Blocks and browse to folder.
   - For info see [blog post](https://davidjones.sportronics.com.au/softata/Softata-Blockly____The_Holy_Grail-softata.html)
 - V6.30 Added MeadowLabs-.NET Standard version of app: **MeadowLab**
