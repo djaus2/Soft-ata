@@ -1,0 +1,120 @@
+{
+    "title": "Softata Visual API",
+    "footer": "Please give us a star on https://github.com/ignatandrei/BlocklyAutomation",
+    "localAPI": "http://localhost:37283/",
+    "startBlocks":[
+
+"      <xml xmlns='https://developers.google.com/blockly/xml'>",
+"      <block type='text_print' x='181' y='254'>",
+"        <value name='TEXT'>",
+"          <block type='post__Connect'>",
+"            <value name='val_ipAddress'>",
+"              <block type='text'>",
+"                <field name='TEXT'>192.168.0.9</field>",
+"              </block>",
+"            </value>",
+"            <value name='val__port'>",
+"              <block type='math_number'>",
+"                <field name='NUM'>4242</field>",
+"              </block>",
+"            </value>",
+"            <value name='override_Host'>",
+"              <block type='text'>",
+"                <field name='TEXT'> </field>",
+"              </block>",
+"            </value>",
+"            <value name='override_Port'>",
+"              <block type='math_number'>",
+"                <field name='NUM'>0</field>",
+"              </block>",
+"            </value>",
+"          </block>",
+"        </value>",
+"        <next>",
+"          <block type='text_print'>",
+"            <value name='TEXT'>",
+"              <block type='post__Display_Clear'>",
+"                <value name='val_displayLinkedListIndex'>",
+"                  <block type='math_number'>",
+"                    <field name='NUM'>0</field>",
+"                  </block>",
+"                </value>",
+"                <value name='override_Host'>",
+"                  <block type='text'>",
+"                    <field name='TEXT'> </field>",
+"                  </block>",
+"                </value>",
+"                <value name='override_Port'>",
+"                  <block type='math_number'>",
+"                    <field name='NUM'>0</field>",
+"                  </block>",
+"                </value>",
+"              </block>",
+"            </value>",
+"          </block>",
+"        </next>",
+"      </block>",
+"    </xml>",
+""
+      
+    ],
+    "hideMenu":false,
+  "tourSteps":
+    [
+      {
+          "text":"This is the  help tour",
+          "query":".blocklyWorkspace"          
+      },
+      {
+        "text": "You can start with help first",
+        "query":".btnHelp"
+      },
+      {
+        "text":"Here you can find blocks for VisualCode  API ! Expand to investigate and drag",
+        "query":".blocklyToolboxContents"
+      },
+      
+      {
+        "text":"Here you can find blocks for basic constructs : loops, text, bool, logic ...",
+        "query":".blocklyTreeLabel"
+      }
+      ,
+      
+      {
+        "text":"If you are a programmer, you can find your swagger at the left -we have package for Java, .NET , Node, PHP <a href='https://github.com/ignatandrei/blocklyautomation' target='_blank'>VisualAPI</a>",
+        "query":""
+      },
+      
+      {
+        "text":"Drag here blocks to execute them",
+        "query":".blocklyBlockCanvas"
+      }
+      ,
+      {
+          "text":"Here you will find examples to get started",
+          "query":".stepTourDemos"
+      },
+      {
+          "text":"to reuse you can download / load  the blocks from here",
+          "query":".stepTourDownload"
+      },
+      {
+          "text":"Press the execute button to run ;-) ",
+          "query":".stepTourRunButton"
+      },
+      
+      {
+          "text":"Press the output button to see the result of blocks",
+          "query":".stepTourOutputButton"
+      }
+      ,{
+        "text":"Here you can find the output as text, html and json",
+        "query":".stepTourOutput"
+      },
+      {
+          "text":"Now press execute and see , via HTTP, a joke with Chuck Norris ",
+          "query":".stepTourRunButton"
+      }
+      
+  ]
+}
