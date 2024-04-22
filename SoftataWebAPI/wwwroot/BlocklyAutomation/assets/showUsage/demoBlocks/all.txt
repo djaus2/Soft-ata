@@ -1,0 +1,8 @@
+﻿[
+    {
+        "id":  "startExample",
+        "description":  "Softatat Start Example",
+        "categories":  "api;list",
+        "blocks":  "object_create;text;"
+    }
+]

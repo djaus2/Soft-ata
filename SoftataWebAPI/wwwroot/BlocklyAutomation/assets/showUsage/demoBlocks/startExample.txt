@@ -1,0 +1,51 @@
+<xml xmlns="https://developers.google.com/blockly/xml">
+  <block type="text_print" x="181" y="254">
+    <value name="TEXT">
+      <block type="post__Connect">
+        <value name="val_ipAddress">
+          <block type="text">
+            <field name="TEXT">192.168.0.9</field>
+          </block>
+        </value>
+        <value name="val__port">
+          <block type="math_number">
+            <field name="NUM">4242</field>
+          </block>
+        </value>
+        <value name="override_Host">
+          <block type="text">
+            <field name="TEXT"> </field>
+          </block>
+        </value>
+        <value name="override_Port">
+          <block type="math_number">
+            <field name="NUM">0</field>
+          </block>
+        </value>
+      </block>
+    </value>
+    <next>
+      <block type="text_print">
+        <value name="TEXT">
+          <block type="get__Display_GetPins">
+            <value name="val_idisplay">
+              <block type="math_number">
+                <field name="NUM">0</field>
+              </block>
+            </value>
+            <value name="override_Host">
+              <block type="text">
+                <field name="TEXT"> </field>
+              </block>
+            </value>
+            <value name="override_Port">
+              <block type="math_number">
+                <field name="NUM">0</field>
+              </block>
+            </value>
+          </block>
+        </value>
+      </block>
+    </next>
+  </block>
+</xml>
