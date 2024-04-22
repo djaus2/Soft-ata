@@ -59,7 +59,7 @@
                         <next>
                           <block type="text_print">
                             <value name="TEXT">
-                              <block type="post__Connect">
+                              <block type="post__Start">
                                 <value name="val_ipAddress">
                                   <block type="variables_get">
                                     <field name="VAR" id="o3lGDqy73rmA2Uu49Jl5">ipAddress</field>
@@ -297,7 +297,7 @@
       </block>
     </next>
   </block>
-  <block type="variables_get" x="343" y="544">
+  <block type="variables_get" x="362" y="579">
     <field name="VAR" id="#Pd_(dDY2qVJ77{1Vf?j">LEDpin</field>
   </block>
 </xml>

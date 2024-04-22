@@ -13,6 +13,8 @@ _Soft-ata rather than firm-ata!_
 
 ## <font color="red">Hot Press</font>
 - V7.00 Adding Blockly Softata Samples added to Blockly Examples Menu
+  - V7.10 Blockly samples moved to ```SoftaWebAPI/wwwroot/BlocklyAutomation/assests/showYsage/demoBlocks```
+  - This is so that they are directly available from Examples menu in Blockly.
 - V6.83 Blockly Added
   - SoftaWebAPI app now starts with index page
     -  Can choose link to **BlocklyAutomation** or to **Swagger**

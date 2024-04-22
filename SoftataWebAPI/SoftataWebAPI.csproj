@@ -9,7 +9,33 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="wwwroot\BlocklyAutomation\assets\showUsage\demoBlocks\BME280-Sensor-I2C0.txt" />
+    <Content Remove="wwwroot\BlocklyAutomation\assets\showUsage\demoBlocks\DHT11-Sensor-pin-16.txt" />
+    <Content Remove="wwwroot\BlocklyAutomation\assets\showUsage\demoBlocks\LCD-16x2-Display-I2C0.txt" />
+    <Content Remove="wwwroot\BlocklyAutomation\assets\showUsage\demoBlocks\Neopixel8-Display-pin-16.txt" />
+    <Content Remove="wwwroot\BlocklyAutomation\assets\showUsage\demoBlocks\OLED096-Display-I2C0.txt" />
+    <Content Remove="wwwroot\BlocklyAutomation\assets\showUsage\demoBlocks\Servo-Pin-16.txt" />
+    <Content Remove="wwwroot\BlocklyAutomation\assets\showUsage\demoBlocks\Switch-LED-Pins-16-18.txt" />
+    <Content Remove="wwwroot\BlocklyAutomation\assets\showUsage\demoBlocks\Test-ADC-Pot-Pin-26.txt" />
+    <Content Remove="wwwroot\BlocklyAutomation\assets\showUsage\demoBlocks\Test-PWM-LED-Pin-18.txt" />
+    <Content Remove="wwwroot\BlocklyAutomation\assets\showUsage\demoBlocks\Urange-Sensor-pin-16.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="SoftataWebAPI.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\BlocklyAutomation\assets\showUsage\demoBlocks\BME280-Sensor-I2C0.txt" />
+    <None Include="wwwroot\BlocklyAutomation\assets\showUsage\demoBlocks\LCD-16x2-Display-I2C0.txt" />
+    <None Include="wwwroot\BlocklyAutomation\assets\showUsage\demoBlocks\DHT11-Sensor-pin-16.txt" />
+    <None Include="wwwroot\BlocklyAutomation\assets\showUsage\demoBlocks\Neopixel8-Display-pin-16.txt" />
+    <None Include="wwwroot\BlocklyAutomation\assets\showUsage\demoBlocks\OLED096-Display-I2C0.txt" />
+    <None Include="wwwroot\BlocklyAutomation\assets\showUsage\demoBlocks\Servo-Pin-16.txt" />
+    <None Include="wwwroot\BlocklyAutomation\assets\showUsage\demoBlocks\Switch-LED-Pins-16-18.txt" />
+    <None Include="wwwroot\BlocklyAutomation\assets\showUsage\demoBlocks\Test-ADC-Pot-Pin-26.txt" />
+    <None Include="wwwroot\BlocklyAutomation\assets\showUsage\demoBlocks\Test-PWM-LED-Pin-18.txt" />
+    <None Include="wwwroot\BlocklyAutomation\assets\showUsage\demoBlocks\Urange-Sensor-pin-16.txt" />
   </ItemGroup>
 
 
