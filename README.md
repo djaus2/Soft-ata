@@ -12,6 +12,7 @@ _Soft-ata rather than firm-ata!_
 - Documentation:  [here](https://davidjones.sportronics.com.au/cats/softata/)
 
 ## <font color="red">Hot Press</font>
+- V7.00 Adding Blockly Softata Samples added to Blockly Examples Menu
 - V6.83 Blockly Added
   - SoftaWebAPI app now starts with index page
     -  Can choose link to **BlocklyAutomation** or to **Swagger**
