@@ -12,6 +12,12 @@
         "blocks":  "object_create;text;"
     },
     {
+        "id":  "BME-280-IoTHub-Telemetry-I2C0",
+        "description":  "Grove BME280 Telemetry IoTHub I2C0",
+        "categories":  "api;list",
+        "blocks":  "object_create;text;"
+    },
+    {
         "id":  "DHT11-Sensor-pin-16",
         "description":  "Grove DHT11 Sensor Example using pin 16",
         "categories":  "api;list",
