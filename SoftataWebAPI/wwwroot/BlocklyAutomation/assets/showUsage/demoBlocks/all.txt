@@ -12,8 +12,14 @@
         "blocks":  "object_create;text;"
     },
     {
-        "id":  "BME-280-IoTHub-Telemetry-I2C0",
-        "description":  "Grove BME280 Telemetry IoTHub I2C0",
+        "id":  "BME280-IoTHub-Telemetry-I2C0",
+        "description":  "Grove BME280 IoT Hub Telemetry I2C0",
+        "categories":  "api;list",
+        "blocks":  "object_create;text;"
+    },
+    {
+        "id":  "BME280-Bluetooth-Telemetry-I2C0",
+        "description":  "Grove BME280 Bluetooth Telemetry I2C0",
         "categories":  "api;list",
         "blocks":  "object_create;text;"
     },

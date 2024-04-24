@@ -27,7 +27,7 @@ namespace SoftataWebAPI.Controllers
         }
 
         /// <summary>
-        /// Start sending Sensor Telemetry over Bluetooth
+        /// BT: Start sending Sensor Telemetry over Bluetooth
         /// </summary>
         /// <param name="sensorListIndex">Sensor instance index</param>
         /// <param name="period">Period in seconds</param>
@@ -41,7 +41,7 @@ namespace SoftataWebAPI.Controllers
         }
 
         /// <summary>
-        /// Start sending Sensor Telemetry to an Azure IoT Hub
+        /// IoTHub: Start sending Sensor Telemetry to an Azure IoT Hub
         /// </summary>
         /// <param name="sensorListIndex">Sensor instance index</param>
         /// <param name="period">Period in seconds</param>

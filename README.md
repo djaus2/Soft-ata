@@ -15,8 +15,8 @@ _Soft-ata rather than firm-ata!_
 - V7.00 Adding Blockly Softata Samples added to Blockly Examples Menu
   - V7.10 Blockly samples moved to ```SoftaWebAPI/wwwroot/BlocklyAutomation/assests/showUsage/demoBlocks```
   - This is so that they are directly available from Examples menu in Blockly.
-  - V7.11 Added BME280 IoT Hub Telemetry Sample
-    - Easily changed for other sensors
+  - V7.11/2 Added BME280 IoT Hub Telemetry Sample and Bluetooth Version.
+    - Easily changed for other sensors: DHT11 and URange
 - V6.83 Blockly Added
   - SoftaWebAPI app now starts with index page
     -  Can choose link to **BlocklyAutomation** or to **Swagger**
