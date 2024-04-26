@@ -17,17 +17,13 @@ _Soft-ata rather than firm-ata!_
   - This is so that they are directly available from Examples menu in Blockly.
   - V7.11/2 Added BME280 IoT Hub Telemetry Sample and Bluetooth Version.
     - Easily changed for other sensors: DHT11 and URange
+  - V7.13 Added 2nd Neopixel example showing Functional usage.
 - V6.83 Blockly Added
   - SoftaWebAPI app now starts with index page
     -  Can choose link to **BlocklyAutomation** or to **Swagger**
   - 11 simple sample Blockly apps in ```SoftaWebAPI/Samples folder```.
     - Load in Blockly Save Local->Load Blocks and browse to folder.
   - For info see [blog post](https://davidjones.sportronics.com.au/softata/Softata-Blockly____The_Holy_Grail-softata.html)
-- V6.30 Added MeadowLabs-.NET Standard version of app: **MeadowLab**
-  - Note doesn't work: Get "The descriptor is not a socket" error msg.
-  - Has been logged with Vendor
-  - [Meadow labs on GitHub](https://github.com/WildernessLabs/Meadow_Issues/issues/590) 
-  - Meadow.Windows desktop version of app works though: **MeadowLab.WindowsDesktop** with .NET Standard or .NET lib.
 - V6.20  Can send Telemtry pause continue or stop  as C2D Msg
   - Eg **Telemetry 0 pause 0** to pause. 
   - Use Azure IoT Explorer  or VS Code etc to send msg to device

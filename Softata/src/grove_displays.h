@@ -87,7 +87,7 @@ class Grove_OLED096: public Grove_Display
       virtual bool Backlight();
       virtual bool SetCursor(byte x, byte y);
       virtual bool WriteString(String msg);
-       virtual bool CursorWriteStringAvailable();
+      virtual bool CursorWriteStringAvailable();
       virtual bool WriteString(byte col, byte line, String msg);
       virtual bool Misc(byte cmd, byte * data, byte length=0);
   protected:

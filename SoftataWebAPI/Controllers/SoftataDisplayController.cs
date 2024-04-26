@@ -58,6 +58,7 @@ namespace SoftataWebAPI.Controllers
             return Ok($"{displayListIndex}");
         }
 
+
         /// <summary>
         /// Setup display with custom settings
         /// Not fully implemented at this level

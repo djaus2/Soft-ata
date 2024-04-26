@@ -33,6 +33,20 @@ namespace SoftataWebAPI.Controllers
             return value.Split(',',':').ToList();
         }
 
+        /// <summary>
+        /// Convert int to string
+        /// </summary>
+        /// <returns>value as string</returns>
+        // GET: api/<SoftataController>
+        [Route("GetStr")]
+        [HttpGet]
+        public string GetStr(int value)
+        {
+            return $"{value}";
+        }
+
+
+
         List<string> Commands = new List<string> { "Begin", "End", "Devices", "Reset", "Version", "Null" };
 
         /// <summary>
