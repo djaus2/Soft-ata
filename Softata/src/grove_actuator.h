@@ -53,8 +53,10 @@ class Grove_Actuator: public Grove
       // Index for if there are an array of actuators here.
       virtual bool Write(double value, int index);
       virtual bool Write(int value, int index);
-      virtual bool Set(bool state,int index);
-      virtual bool Toggle(int index = 0);
+      virtual bool SetBitState(bool state,int index);
+      virtual bool SetBit(int index = 0);
+      virtual bool ClearBit(int index = 0);
+      virtual bool ToggleBit(int index = 0);
       DeviceType deviceType = actuator;
     protected:
       int num_properties=0;
@@ -94,8 +96,10 @@ class Grove_Servo: public Grove_Actuator
       // Index for if there are an array of actuators here.
       virtual bool Write(double value, int index);
       virtual bool Write(int value, int index);
-      virtual bool Set(bool state,int index);
-      virtual bool Toggle(int index );
+      virtual bool SetBitState(bool state,int index);
+      virtual bool SetBit(int index );
+      virtual bool ClearBit(int index );
+      virtual bool ToggleBit(int index );
       DeviceType deviceType = actuator;
     protected:
       virtual bool SetupServo(int pin, int min, int max, int period);

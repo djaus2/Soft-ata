@@ -5,7 +5,7 @@
 enum SyncedCommands : byte {pauseTelemetryorBT=0,continueTelemetryorBT=1,stopTelemetryorBT=2,svrConnected=10, initialSynch=137};
 #define SynchMultiplier 1000
 
-#define APP_VERSION "7.11"  //Nb: As SoftataLib is updated, this is incremented even if no changes to Arduino code.
+#define APP_VERSION "7.95"  //Nb: As SoftataLib is updated, this is incremented even if no changes to Arduino code.
 
 //#define RPI_PICO_DEFAULT
 #define GROVE_RPI_PICO_SHIELD
@@ -82,7 +82,7 @@ static int bitStuffing[] = {256,16,16,16,16,256,16};
 
 //Add other sensors/actuators here C bracketed, on end.
 #define G_SENSORS C(DHT11)C(BME280)C(UltrasonicRanger)
-#define G_ACTUATORS C(SERVO)
+#define G_ACTUATORS C(SERVO)C(DEMUX)
 #define G_DISPLAYS C(OLED096)C(LCD1602)C(NEOPIXEL)C(BARGRAPH)
 #define G_SERIAL C(LOOPBACK)C(GPS)
 
@@ -92,12 +92,15 @@ enum GroveActuatorCmds{a_getpinsCMD, a_getValueRangeCMD, a_setupDefaultCMD, a_se
 
 #ifdef RPI_PICO_DEFAULT
 #define SERVO_PINNOUT "GPIO: Pin 11 or whatever 0 to 26"
+#define DEMUX_PINNOUT "GPIO: Pin 11 or whatever 0 to 26. 3 pins required, DS, ST_CP and SH_CP."
 #elif defined(GROVE_RPI_PICO_SHIELD)
 #define SERVO_PINNOUT "Pin 16 (default), 18 or 20"
+#define DEMUX_PINNOUT "Pins 16 (DS of 74HC595-Pin14),20 (ST_CP of 74HC595-Pin12),21 (SH_CP of 74HC595-Pin11)(default)"
 #endif
 
 #define DEFAULT_SERVO_PIN 16
 #define SERVO_RANGE "0...180 Angle" 
+#define DEMUX_RANGE "0..255, 8 bits. Can do 16 though."
 
 ///////////////////////// S E N S O R S /////////////////////////////////////////////////
 
@@ -167,7 +170,7 @@ enum GroveDisplayCmds{d_getpinsCMD, d_tbdCMD, d_setupDefaultCMD, d_setupCMD, d_c
 #define OLED096_PINNOUT  "I2C0 (Pins8/9 (SDA/SCL)fixed): Address 0x78. Embedded in driver though."
 #define LCD1602_PINNOUT  "I2C0 (Pins8/9 (SDA/SCL) fixed): Addresses (LCD)0X3E and (RGB)0X62. Embedded in driver though."
 #define NEOPIXEL_PINNOUT "OneWire: Pin 16 (default) Alt 18 or 20 (Grove yellow cable).. 17,19,21 (Grove white cable)"
-#define BARGRAPH_PINNOUT "16 (DS of 74HC595-Pin14),20 (ST_CP of 74HC595-Pin12),21 (SH_CP of 74HC595-Pin11)(default)"
+#define BARGRAPH_PINNOUT "Pins 16 (DS of 74HC595-Pin14),20 (ST_CP of 74HC595-Pin12),21 (SH_CP of 74HC595-Pin11)(default)"
 #endif
 
 

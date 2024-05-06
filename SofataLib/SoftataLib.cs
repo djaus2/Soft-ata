@@ -78,7 +78,56 @@ namespace Softata
 
             Connect(ipAddresStr, port);
         }
-        public  static bool Connect(string _ipAddresStr, int _port)
+
+        public static bool Connect(String server, Int32 port)
+        {
+            try
+            {
+                // Create a new TcpClient.
+                TcpClient client1 = new TcpClient(server, port);
+
+                //// Translate the passed message into ASCII and store it as a byte array.
+                //Byte[] data = System.Text.Encoding.ASCII.GetBytes("Hello World!");
+
+                // Get a client stream for reading and writing.
+                NetworkStream stream1 = client1.GetStream();
+
+                client = client1.Client;
+
+                //// Send the message to the connected TcpServer.
+                //stream.Write(data, 0, data.Length);
+
+                //Console.WriteLine("Sent: Hello World!");
+
+                //// Receive the TcpServer.response.
+                //// Buffer to store the response bytes.
+                //data = new Byte[256];
+
+                //// String to store the response ASCII representation.
+                //String responseData = String.Empty;
+
+                //// Read the first batch of the TcpServer response bytes.
+                //Int32 bytes = stream.Read(data, 0, data.Length);
+                //responseData = System.Text.Encoding.ASCII.GetString(data, 0, bytes);
+                //Console.WriteLine("Received: {0}", responseData);
+
+                //// Close everything.
+                //stream.Close();
+                //client.Close();
+                return true;
+            }
+            catch (ArgumentNullException e)
+            {
+                Console.WriteLine("ArgumentNullException: {0}", e);
+                return false;
+            }
+            catch (SocketException e)
+            {
+                Console.WriteLine("SocketException: {0}", e);
+                return false;
+            }
+        }
+        public  static bool ConnectOld(string _ipAddresStr, int _port)
         {
             Console.WriteLine("Connecting to Softata Server from .NET");
             ipAddresStr = _ipAddresStr;

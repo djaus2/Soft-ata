@@ -13,8 +13,7 @@ Grove_Servo::Grove_Servo(int pin)
 
 bool Grove_Servo::Setup()
 {
-    SetupServo(DEFAULT_SERVO_PIN,MIN_PW,MAX_PW,PERIOD);
-    return true;
+    return SetupServo(DEFAULT_SERVO_PIN,MIN_PW,MAX_PW,PERIOD);
 }
 
 bool Grove_Servo::Setup(byte * settings, byte numSettings)
@@ -44,7 +43,6 @@ bool Grove_Servo::Setup(byte * settings, byte numSettings)
     }
     else
         return SetupServo(DEFAULT_SERVO_PIN,MIN_PW,MAX_PW,PERIOD);
-    return true;
 }
 
 bool Grove_Servo::SetupServo(int pin, int min, int max, int period)
@@ -72,12 +70,22 @@ bool Grove_Servo::Write(int angle, int index=0)
     return true;
 }
 
-bool Grove_Servo::Set(bool state,int index=0)
+bool Grove_Servo::SetBitState(bool state,int index=0)
 {
     return true;
 }
 
-bool Grove_Servo::Toggle(int index = 0)
+bool Grove_Servo::SetBit(int index = 0)
+{
+    return true;
+}
+
+bool Grove_Servo::ClearBit(int index = 0)
+{
+    return true;
+}
+
+bool Grove_Servo::ToggleBit(int index = 0)
 {
     return true;
 }
