@@ -96,11 +96,11 @@ else @if ((AppState.ISensor != 0xff))
     }
     else if (string.IsNullOrEmpty(AppState.Connected))
     {
-        <h2>Start</h2>
+        <h2>Start</h2>  
         <table>
             <tr>
                 <td>IP Address:</td>
-                <td><input type="text" value="@ipaddressStr" /></td>
+                <td><input type="text" @bind-value="@ipaddressStr" /></td>
             </tr>
             <tr>
                 <td>Port:</td>
@@ -695,8 +695,8 @@ else @if ((AppState.ISensor != 0xff))
 
 @code {
     // Set the same as Arduino: Boot Pico as view settings in terminal
-    const int port = 4242;
-    const string ipaddressStr = "192.168.0.9";
+    int port { get; set; } = 4242;
+    string ipaddressStr {get; set;} = "192.168.0.9";
 
     bool busy = false;
     bool Busy

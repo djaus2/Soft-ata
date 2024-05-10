@@ -4,48 +4,47 @@
 //Ref: https://docs.arduino.cc/tutorials/communication/guide-to-shift-out/
 //     https://www.arduino.cc/reference/en/language/functions/advanced-io/shiftout/
 
-        int dddatapin = 16;  
+        int datapin = 16;  
         int latchPin = 20;
         int clockPin = 21;
         unsigned int value = 0;
 
-void _writeTo595_16(BitOrder order, unsigned int data ) {
+void write595(BitOrder order, unsigned int data, int numBytes = 1 ) 
+{
   // Output low level to latchPin
     digitalWrite(latchPin, LOW);
-    // Send serial data to 74HC595
-    if(order == MSBFIRST)
-    {
-        // shift out high byte
-        shiftOut(dddatapin, clockPin, MSBFIRST, (data >> 8));
-        // shift out low byte
-        shiftOut(dddatapin, clockPin, MSBFIRST, data);
-    }
-    else
-    {
-        // shift out low byte
-        shiftOut(dddatapin, clockPin, LSBFIRST, data);
-        // shift out high byte
-        shiftOut(dddatapin, clockPin, LSBFIRST, (data >> 8));
-    }
 
+    // Send serial data to 74HC595
+    if(numBytes==1)
+    {
+        shiftOut(datapin, clockPin, order, data);
+    }
+    else if (numBytes==2)
+    {
+        if(order == MSBFIRST)
+        {
+            // shift out high byte
+            shiftOut(datapin, clockPin, order, (data >> 8));
+            // shift out low byte
+            shiftOut(datapin, clockPin, order, data);
+        }
+        else
+        {
+            // shift out low byte
+            shiftOut(datapin, clockPin, order, data);
+            // shift out high byte
+            shiftOut(datapin, clockPin, order, (data >> 8));
+        }
+    }
     // Output high level to latchPin, and 74HC595 will update the data to the parallel output port.
     digitalWrite(latchPin, HIGH);
     value = data;
 }
 
-void _writeTo595_8(BitOrder order, byte data ) {
-  // Output low level to latchPin
-  digitalWrite(latchPin, LOW);
-  // Send serial data to 74HC595
-  shiftOut(dddatapin, clockPin, order, data);
-  // Output high level to latchPin, and 74HC595 will update the data to the parallel output port.
-  digitalWrite(latchPin, HIGH);
-  value = data;
-}
 
 bool IC_74HC595_ShiftRegister::Setup()
 {
-  dddatapin = 16;  
+  datapin = 16;  
   latchPin = 20;
   clockPin = 21;
   return Setup(NULL,0);
@@ -55,7 +54,7 @@ bool IC_74HC595_ShiftRegister::Setup(byte * settings, byte numSettings)
 {
   if (numSettings >0)
   {
-    dddatapin = (int)settings[0];
+    datapin = (int)settings[0];
     if (numSettings >1)
     {
         latchPin = (int)settings[1];
@@ -67,9 +66,9 @@ bool IC_74HC595_ShiftRegister::Setup(byte * settings, byte numSettings)
   };
   pinMode(latchPin, OUTPUT);
   pinMode(clockPin, OUTPUT);
-  pinMode(dddatapin, OUTPUT);
+  pinMode(datapin, OUTPUT);
   value = 0;
-  _writeTo595_8(LSBFIRST, value);
+  write595(LSBFIRST, value);
   return true;
 }
 
@@ -86,23 +85,17 @@ IC_74HC595_ShiftRegister::IC_74HC595_ShiftRegister(byte * settings, byte numSett
 }
 
 
-bool IC_74HC595_ShiftRegister::Write8(byte num)
+bool IC_74HC595_ShiftRegister::Write(unsigned int num, int numBytes)
 {
-  _writeTo595_8(LSBFIRST, num);
+  write595(LSBFIRST, num, numBytes);
   return true;
 }
 
-// Can daisy chain two 74HC595s as per top link
-bool IC_74HC595_ShiftRegister::Write16(unsigned int num)
-{
-  //Assume data is 16 bits
-  _writeTo595_16(LSBFIRST, num);
-  return true;
-}
 
-bool IC_74HC595_ShiftRegister::SetBitState(bool state,int index)
+// Thse bit manipulations are only 8 bit not 16.
+bool IC_74HC595_ShiftRegister::SetBitState(bool state,int bitNo)
 {
-    byte mask = 1 << index;
+    byte mask = 1 << bitNo;
     if (state)
     {
         value |= mask;
@@ -111,31 +104,31 @@ bool IC_74HC595_ShiftRegister::SetBitState(bool state,int index)
     {
         value &= ~mask;
     }
-    _writeTo595_8(LSBFIRST, value);
+    write595(LSBFIRST, value);
     return true;
 }
 
 
-bool IC_74HC595_ShiftRegister::SetBit(int index)
+bool IC_74HC595_ShiftRegister::SetBit(int bitNo)
 {
-    byte mask = 1 << index;
+    byte mask = 1 << bitNo;
     value |= mask;
-    _writeTo595_8(LSBFIRST, value);
+    write595(LSBFIRST, value);
     return true;
 }
 
-bool IC_74HC595_ShiftRegister::ClearBit(int index)
+bool IC_74HC595_ShiftRegister::ClearBit(int bitNo)
 {
-    byte mask = 1 << index;
+    byte mask = 1 << bitNo;
     value &= ~mask;
-    _writeTo595_8(LSBFIRST, value);
+    write595(LSBFIRST, value);
     return true;
 }
 
-bool IC_74HC595_ShiftRegister::ToggleBit(int index )
+bool IC_74HC595_ShiftRegister::ToggleBit(int bitNo)
 {
-    byte mask = 1 << index;
+    byte mask = 1 << bitNo;
     value ^= mask;
-    _writeTo595_8(LSBFIRST, value);
+    write595(LSBFIRST, value);
     return true;
 }

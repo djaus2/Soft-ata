@@ -162,6 +162,8 @@ class Adafruit_NeoPixel8: public Grove_Display
 #ifndef CUSTOM_BARGRAPHH
 #define CUSTOM_BARGRAPHH
 
+#include "ic_74hc595_shiftRegister.h"
+
 class Custom_Bargraph: public Grove_Display
 {
   public:
@@ -182,7 +184,8 @@ class Custom_Bargraph: public Grove_Display
       virtual bool CursorWriteStringAvailable();
       virtual bool WriteString(byte x, byte y, String msg);
       virtual bool Misc(byte cmd, byte * data, byte length=0);
-  protected:
+    protected:
+      IC_74HC595_ShiftRegister * ic595;
 };
 
 #endif

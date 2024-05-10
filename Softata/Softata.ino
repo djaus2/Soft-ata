@@ -1414,8 +1414,11 @@ void loop() {
                     case SERVO:
                       client.print(Grove_Servo::GetPins());
                       break;
+                    case SHIFT595PARAOUT:
+                      client.print(Shift595ParaOut::GetPins());
+                      break;
                     default:
-                      client.print("Fail:Not a display");
+                      client.print("Fail:Not an Actuator");
                       break;                 }
                   }
                   break;
@@ -1425,6 +1428,9 @@ void loop() {
                   {
                     case SERVO:
                       client.print(Grove_Servo::GetValueRange());
+                      break;
+                    case SHIFT595PARAOUT:
+                      client.print(Shift595ParaOut::GetValueRange());
                       break;
                     default:
                         client.print("Fail:Not an actuator");
@@ -1443,6 +1449,12 @@ void loop() {
                       case SERVO:
                         {
                           grove_Actuator  = new Grove_Servo();
+                          _done = true;
+                        }
+                        break;
+                      case SHIFT595PARAOUT:
+                        {
+                          grove_Actuator  = new Shift595ParaOut();
                           _done = true;
                         }
                         break;
@@ -1513,25 +1525,104 @@ void loop() {
                   else
                   {
                     byte value = otherData[1];
-                    Serial.print("Servo: ");
+                    Serial.print("Actuator: ");
                     Serial.print(value);
                     Serial.print('-');
                     Serial.println(index);
                     if(grove_Actuator->Write(value,index))
-                      client.print("OK:Actuator-WriteIntValue");
+                      client.print("OK:Actuator-WriteByte");
                     else
-                      client.print("Fail:Actuator-WriteIntValue");
+                      client.print("Fail:Actuator-WriteByte");
                   }
                 }
-                break;            
-                case a_getActuatorsCMD:
+                break; 
+               case a_writeWordValueCMD:
+                {
+                  int index = other;
+                  Grove_Actuator * grove_Actuator = GetActuatorFromList(index);
+                  if(otherData[0]<1)
                   {
-                    String msg = String("OK:");
-                    msg.concat(Grove_Actuator::GetListof());
-                    client.print(msg);
+                    client.print("Fail:Actuator-WriteIntValue needs (a value");
                   }
-                  break;
-                
+                  else
+                  {
+                    int value = otherData[1]*256+otherData[2];
+                    Serial.print("Actuator: ");
+                    Serial.print(value);
+                    Serial.print('-');
+                    Serial.println(index);
+
+                    if(grove_Actuator->Write(value,index,2))
+                      client.print("OK:Actuator-WriteWordValue");
+                    else
+                      client.print("Fail:Actuator-WriteWordValue");
+                  }
+                }
+                break;                
+              case a_SetBitStateCMD:  
+              case a_SetBitCMD:
+              case a_ClearBitCMD:
+              case a_ToggleBitCMD:
+                {
+                  int index = other;
+                  bool bitState = false;
+                  byte stateValue =0;
+                  Grove_Actuator * grove_Actuator = GetActuatorFromList(index);
+                  if(otherData[0]<1)
+                  {
+                    client.print("Fail:Actuator-WriteIntValue needs (a value");
+                  }
+                  else
+                  {
+                    byte bit = otherData[1];
+                    Serial.print("Actuator: ");
+                    Serial.print(bit);
+                    Serial.print('-');
+                    Serial.print(index);
+                    switch(cmd)
+                    {
+                      case a_SetBitStateCMD:
+                        stateValue = otherData[2];
+                        if (stateValue>0)
+                            bitState = true;
+                        Serial.print('-');
+                        Serial.print(bitState);
+                        if(grove_Actuator->SetBitState(bitState,bit))
+                          client.print("OK:Actuator-SetBitState");
+                        else
+                          client.print("Fail:Actuator-SetBitState");
+                        break;
+                      case a_SetBitCMD:
+                        if(grove_Actuator->SetBit(bit))
+                          client.print("OK:Actuator-SetBit");
+                        else
+                          client.print("Fail:Actuator-SetBit");
+                        break;                      
+                      case a_ClearBitCMD:
+                          if(grove_Actuator->ClearBit(bit))
+                          client.print("OK:Actuator-ClearBit");
+                        else
+                          client.print("Fail:Actuator-ClearBit");
+                        break;                     
+                      case a_ToggleBitCMD:
+                        if(grove_Actuator->ToggleBit(bit))
+                          client.print("OK:Actuator-ToggleBit");
+                        else
+                          client.print("Fail:Actuator-ToggleBit");
+                        break;
+                    }
+                    Serial.println();
+                    break;
+                  }
+                }
+                break;                                                                     
+              case a_getActuatorsCMD:
+                {
+                  String msg = String("OK:");
+                  msg.concat(Grove_Actuator::GetListof());
+                  client.print(msg);
+                }
+                break;
               }
             }
             break;        

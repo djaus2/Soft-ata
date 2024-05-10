@@ -52,7 +52,7 @@ class Grove_Actuator: public Grove
       virtual bool Setup(byte * settings, byte numSettings);
       // Index for if there are an array of actuators here.
       virtual bool Write(double value, int index);
-      virtual bool Write(int value, int index);
+      virtual bool Write(int value, int index, int numBytes = 1);
       virtual bool SetBitState(bool state,int index);
       virtual bool SetBit(int index = 0);
       virtual bool ClearBit(int index = 0);
@@ -95,7 +95,7 @@ class Grove_Servo: public Grove_Actuator
 
       // Index for if there are an array of actuators here.
       virtual bool Write(double value, int index);
-      virtual bool Write(int value, int index);
+      virtual bool Write(int value, int index, int numBytes = 1);
       virtual bool SetBitState(bool state,int index);
       virtual bool SetBit(int index );
       virtual bool ClearBit(int index );
@@ -107,4 +107,47 @@ class Grove_Servo: public Grove_Actuator
       Servo myservo;
 };
 #endif
+
+#ifndef Shift595ParaOutH
+#define Shift595ParaOutH
+
+#include "ic_74hc595_shiftRegister.h"
+
+#define NUM_SETTINGS 4 // 3 pins plus number of bytes
+
+class Shift595ParaOut: public Grove_Actuator
+{
+    public:
+      Shift595ParaOut();
+      Shift595ParaOut(byte * settings);
+      static arduino::String GetPins()
+      {
+        String msg = "OK:";
+        msg.concat(SHIFT595PARAOUT_PINNOUT);
+        return msg;
+      }
+      static arduino::String GetValueRange()
+      {
+        String msg = "OK:";
+        msg.concat(SHIFT595PARAOUT_RANGE);
+        return msg;
+      }
+      virtual bool Setup();
+      virtual bool Setup(byte * settings, byte numSettings);
+
+      // Index for if there are an array of actuators here.
+      virtual bool Write(double value, int index);
+      virtual bool Write(int value, int index, int numBytes = 1);
+      virtual bool SetBitState(bool state,int bitNo);
+      virtual bool SetBit(int bitNo );
+      virtual bool ClearBit(int bitNo );
+      virtual bool ToggleBit(int bitNo );
+      DeviceType deviceType = actuator;
+    protected:
+      int num_settings=NUM_SETTINGS;
+      int num_bytes=1;
+      IC_74HC595_ShiftRegister * ic595;
+};
+#endif
+
 

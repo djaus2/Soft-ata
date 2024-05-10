@@ -1,9 +1,8 @@
 #include <Arduino.h>
 #include "grove_displays.h"
-#include "ic_74hc595_shiftRegister.h"
 
 // Custom_Bargraph
-IC_74HC595_ShiftRegister * ic595;
+
 
 // Default Setup
 bool Custom_Bargraph::Setup()
@@ -20,7 +19,7 @@ bool Custom_Bargraph::Setup(byte * settings, byte numSettings)
 
 bool Custom_Bargraph::Clear()
 {
-  ic595->Write8(0);
+  ic595->Write(0);
   return true;
 }
 
@@ -44,7 +43,7 @@ bool Custom_Bargraph::WriteString(String msg)
 {
   // For simplicity for now, assume the app does send a valid string
   int num = msg.toInt();
-  ic595->Write8(num);
+  ic595->Write(num);
   return true;
 }
 
@@ -65,13 +64,13 @@ bool Custom_Bargraph::Misc(byte cmd, byte * data, byte length)
   {
     case flow:
       //Just set every odd segment for now.
-      ic595->Write8((byte)85);
+      ic595->Write((byte)85);
       Serial.println("flow()");
       return true;
       break;
     case flow2:
       //Just set even  segment for now.
-      ic595->Write8((byte)170);
+      ic595->Write((byte)170);
       Serial.println("flow2()");
       return true;
       break;

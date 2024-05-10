@@ -112,5 +112,24 @@ namespace SoftataWebAPI.Controllers
             }
             return Ok($"Actuator:WriteByte");
         }
+
+        /// <summary>
+        /// Write a word to Actuator
+        /// </summary>
+        /// <param name="actuatorListIndex">Display Instance index</param>
+        /// <param name="value">Value to set</param>
+        /// <returns>OK or Fail</returns>
+        // POST api/<SoftataController>
+        [Route("WriteWord")]
+        [HttpPost]
+        public IActionResult WriteWord(int actuatorListIndex, int value)
+        {
+            bool result = SoftataLib.Actuator.ActuatorWriteWord((byte)actuatorListIndex, (UInt16)value);
+            if (!result)
+            {
+                return BadRequest("Actuator:WriteByte fail.");
+            }
+            return Ok($"Actuator:WriteByte");
+        }
     }
 }

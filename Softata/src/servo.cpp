@@ -53,16 +53,12 @@ bool Grove_Servo::SetupServo(int pin, int min, int max, int period)
 
 
 // Index for if there are an array of actuators here.
-bool Grove_Servo::Write(double value, int index=0)
+bool Grove_Servo::Write(double value, int index)
 {
-    int angle = (int)value;
-    if((angle<0)||(angle>180))
-        return false;
-    myservo.write(angle);
     return true;
 }
 
-bool Grove_Servo::Write(int angle, int index=0)
+bool Grove_Servo::Write(int angle, int index, int numBytes /*=1*/)
 {
     if((index<0)||(index>180))
         return false;
@@ -70,22 +66,22 @@ bool Grove_Servo::Write(int angle, int index=0)
     return true;
 }
 
-bool Grove_Servo::SetBitState(bool state,int index=0)
+bool Grove_Servo::SetBitState(bool state,int bitIndex)
 {
     return true;
 }
 
-bool Grove_Servo::SetBit(int index = 0)
+bool Grove_Servo::SetBit(int bitNo )
 {
     return true;
 }
 
-bool Grove_Servo::ClearBit(int index = 0)
+bool Grove_Servo::ClearBit(int bitNo)
 {
     return true;
 }
 
-bool Grove_Servo::ToggleBit(int index = 0)
+bool Grove_Servo::ToggleBit(int bitNo)
 {
     return true;
 }

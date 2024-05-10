@@ -16,11 +16,8 @@ class IC_74HC595_ShiftRegister
       virtual bool SetBit(int index );
       virtual bool ClearBit(int index );
       virtual bool ToggleBit(int index );
-      virtual bool Write8(byte num);
+      virtual bool Write(unsigned int num, int numBytes=1);
       // Can daisy chain two 74HC595s as per top link. //Assume data is 16 bits
-      virtual bool Write16(unsigned int num);
-
-  
 };
 
 #endif

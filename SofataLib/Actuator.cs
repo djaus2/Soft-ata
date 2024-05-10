@@ -9,7 +9,7 @@ namespace Softata
 {
     public partial class SoftataLib
     {
-        public enum GroveActuatorCmds { a_getpinsCMD, a_getValueRange, a_setupDefaultCMD, a_setupCMD, a_writeDoubleValueCMD, a_writeByteValueCMD, a_getActuatorsCMD = 255 };
+        public enum GroveActuatorCmds { a_getpinsCMD, a_getValueRangeCMD, a_setupDefaultCMD, a_setupCMD, a_writeDoubleValueCMD, a_writeByteValueCMD, a_writeWordValueCMD, a_SetBitStateCMD, a_SetBitCMD, a_ClearBitCMD, a_ToggleBitCMD, a_getActuatorsCMD = 255 };
 
         public static class Actuator
         {
@@ -51,7 +51,7 @@ namespace Softata
 
             public static string GetValueRange(ActuatorDevice deviceType, bool debug = true)
             {
-                string result = SendMessage(Commands.groveActuator, 0, (byte)GroveActuatorCmds.a_getValueRange, "OK:", (byte)deviceType, null, debug = true);
+                string result = SendMessage(Commands.groveActuator, 0, (byte)GroveActuatorCmds.a_getValueRangeCMD, "OK:", (byte)deviceType, null, debug = true);
                 return result;
             }
 
@@ -114,7 +114,18 @@ namespace Softata
                     return false;
             }
 
-            public static bool ActuatorWrite(byte linkedListNo, double value)
+            public static bool ActuatorWriteWord(byte linkedListNo, UInt16 value)
+            {
+                byte[] bytes = BitConverter.GetBytes(value);
+                byte[] data = bytes.Prepend((byte)bytes.Length).ToArray<byte>(); //Prepend string length +1
+                string result = SendMessage(Commands.groveActuator, 0, (byte)GroveActuatorCmds.a_writeWordValueCMD, "OK:", linkedListNo, data);
+                if (true) //TBD
+                    return true;
+                else
+                    return false;
+            }
+
+            public static bool ActuatorWriteDouble(byte linkedListNo, double value)
             {
                 byte[] bytes = BitConverter.GetBytes(value);
                 byte[] data = bytes.Prepend((byte)bytes.Length).ToArray<byte>(); //Prepend string length +1
