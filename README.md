@@ -1,4 +1,4 @@
-# Soft-ata V6.00
+# Soft-ata Version 7
 
 ## In Brief
 **An Arduino app _LIKE_ Firmata for RPI Pico W running Arduino.**
