@@ -13,7 +13,7 @@ _Soft-ata rather than firm-ata!_
 
 ## <font color="red">Hot Press</font>
 - V7.99 Added Shift595ParaOut class for 74HC595. 8 or 16 bits out.
-  - Added simple custom function app to samples. Deployrf to Azure:
+  - Added simple custom function app to samples. Deployed to Azure:
     - https://softatawebapii.azurewebsites.net/BlocklyAutomation
 - V7.95 Abstracted  74HC595  Shift Reg fucntionality from LedBarGraph to separate class so can use as a Genral Purpose Demux. Actuator version coming.
 - V7.00 Adding Blockly Softata Samples added to Blockly Examples Menu
