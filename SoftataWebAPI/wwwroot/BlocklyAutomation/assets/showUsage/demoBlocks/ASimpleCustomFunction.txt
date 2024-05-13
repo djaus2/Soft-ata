@@ -1,0 +1,66 @@
+<xml xmlns="https://developers.google.com/blockly/xml">
+  <block type="comment" x="203" y="36">
+    <field name="NAME"></field>
+    <value name="TEXT">
+      <shadow type="text">
+        <field name="TEXT">Put here comments</field>
+      </shadow>
+      <block type="text">
+        <field name="TEXT">Click on Categories loaded</field>
+      </block>
+    </value>
+    <next>
+      <block type="comment">
+        <field name="NAME"></field>
+        <value name="TEXT">
+          <shadow type="text">
+            <field name="TEXT">Put here comments</field>
+          </shadow>
+          <block type="text">
+            <field name="TEXT">Add one of the functions there to the app</field>
+          </block>
+        </value>
+        <next>
+          <block type="comment">
+            <field name="NAME"></field>
+            <value name="TEXT">
+              <shadow type="text">
+                <field name="TEXT">Put here comments</field>
+              </shadow>
+              <block type="text">
+                <field name="TEXT">Basic->Functions select the selected Function's block </field>
+              </block>
+            </value>
+            <next>
+              <block type="comment">
+                <field name="NAME"></field>
+                <value name="TEXT">
+                  <shadow type="text">
+                    <field name="TEXT">Put here comments</field>
+                  </shadow>
+                  <block type="text">
+                    <field name="TEXT">Add inside the loop.</field>
+                  </block>
+                </value>
+                <next>
+                  <block type="controls_repeat_ext">
+                    <value name="TIMES">
+                      <shadow type="math_number">
+                        <field name="NUM">10</field>
+                      </shadow>
+                    </value>
+                    <statement name="DO">
+                      <block type="wait_seconds">
+                        <field name="SECONDS">1</field>
+                      </block>
+                    </statement>
+                  </block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </next>
+      </block>
+    </next>
+  </block>
+</xml>

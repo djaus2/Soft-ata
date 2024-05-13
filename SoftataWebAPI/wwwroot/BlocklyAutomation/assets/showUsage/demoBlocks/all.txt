@@ -5,7 +5,13 @@
         "categories":  "api;list",
         "blocks":  "object_create;text;"
     },
-        {
+    {
+        "id":  "ASimpleCustomFunction",
+        "description":  " A Simple Custom Function",
+        "categories":  "api;list",
+        "blocks":  "object_create;text;"
+    },
+    {
         "id":  "BME280-Sensor-I2C0",
         "description":  "Grove BME280 Sensor Example using I2C0",
         "categories":  "api;list",
