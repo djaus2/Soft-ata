@@ -25,4 +25,130 @@
       </block>
     </statement>
   </block>
+    <block type="procedures_defreturn" x="-8" y="-1508">
+    <mutation>
+      <arg name="csvMsg" varid="lk)[gl^6etQM#zNF11uE"></arg>
+    </mutation>
+    <field name="NAME">SelectNextAction</field>
+    <comment pinned="false" h="80" w="160">Describe this function...</comment>
+    <statement name="STACK">
+      <block type="variables_set">
+        <field name="VAR" id="*)T|]0X7ALD#Ze6`P~ZQ">MenuText</field>
+        <value name="VALUE">
+          <block type="variables_get">
+            <field name="VAR" id="lk)[gl^6etQM#zNF11uE">csvMsg</field>
+          </block>
+        </value>
+        <next>
+          <block type="variables_set">
+            <field name="VAR" id="*)T|]0X7ALD#Ze6`P~ZQ">MenuText</field>
+            <value name="VALUE">
+              <block type="get__GetMenu">
+                <value name="val_value">
+                  <block type="variables_get">
+                    <field name="VAR" id="*)T|]0X7ALD#Ze6`P~ZQ">MenuText</field>
+                  </block>
+                </value>
+              </block>
+            </value>
+            <next>
+              <block type="variables_set">
+                <field name="VAR" id="$rjIMxP8UOR=RloL/3(w">_menuSelection</field>
+                <value name="VALUE">
+                  <block type="text_prompt_ext">
+                    <mutation type="NUMBER"></mutation>
+                    <field name="TYPE">NUMBER</field>
+                    <value name="TEXT">
+                      <block type="variables_get">
+                        <field name="VAR" id="*)T|]0X7ALD#Ze6`P~ZQ">MenuText</field>
+                      </block>
+                    </value>
+                  </block>
+                </value>
+                <next>
+                  <block type="controls_whileUntil">
+                    <field name="MODE">WHILE</field>
+                    <value name="BOOL">
+                      <block type="logic_operation">
+                        <field name="OP">OR</field>
+                        <value name="A">
+                          <block type="logic_compare">
+                            <field name="OP">LT</field>
+                            <value name="A">
+                              <block type="variables_get">
+                                <field name="VAR" id="$rjIMxP8UOR=RloL/3(w">_menuSelection</field>
+                              </block>
+                            </value>
+                            <value name="B">
+                              <block type="math_number">
+                                <field name="NUM">1</field>
+                              </block>
+                            </value>
+                          </block>
+                        </value>
+                        <value name="B">
+                          <block type="logic_compare">
+                            <field name="OP">GT</field>
+                            <value name="A">
+                              <block type="variables_get">
+                                <field name="VAR" id="$rjIMxP8UOR=RloL/3(w">_menuSelection</field>
+                              </block>
+                            </value>
+                            <value name="B">
+                              <block type="variables_get">
+                                <field name="VAR" id="s=ZN27,NVb?S]H:%=Esh">numMsgs</field>
+                              </block>
+                            </value>
+                          </block>
+                        </value>
+                      </block>
+                    </value>
+                    <statement name="DO">
+                      <block type="variables_set">
+                        <field name="VAR" id="$rjIMxP8UOR=RloL/3(w">_menuSelection</field>
+                        <value name="VALUE">
+                          <block type="text_prompt_ext">
+                            <mutation type="NUMBER"></mutation>
+                            <field name="TYPE">NUMBER</field>
+                            <value name="TEXT">
+                              <block type="variables_get">
+                                <field name="VAR" id="*)T|]0X7ALD#Ze6`P~ZQ">MenuText</field>
+                              </block>
+                            </value>
+                          </block>
+                        </value>
+                      </block>
+                    </statement>
+                  </block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </next>
+      </block>
+    </statement>
+    <value name="RETURN">
+      <block type="variables_get">
+        <field name="VAR" id="$rjIMxP8UOR=RloL/3(w">_menuSelection</field>
+      </block>
+    </value>
+  </block>
+   <block type="procedures_defreturn" x="-18" y="-556">
+    <field name="NAME">SelectSpeed</field>
+    <comment pinned="false" h="80" w="160">Describe this function...</comment>
+    <statement name="STACK">
+      <block type="variables_set">
+        <field name="VAR" id="HIug0iMa@z=a+2I.,P|R">Speed</field>
+        <value name="VALUE">
+          <block type="text_prompt_ext">
+            <mutation type="NUMBER"></mutation>
+            <field name="TYPE">NUMBER</field>
+            <value name="TEXT">
+              <block type="text">
+                <field name="TEXT">Enter speed 1 ..10</field>
+              </block>
+            </value>
+          </block>
+        </value>
+      </block>
 </category>
