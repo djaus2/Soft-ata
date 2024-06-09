@@ -1,4 +1,4 @@
-# Soft-ata Version 7
+# Soft-ata Version 8.00
 
 ## In Brief
 **An Arduino app _LIKE_ Firmata for RPI Pico W running Arduino.**
@@ -12,6 +12,9 @@ _Soft-ata rather than firm-ata!_
 - Documentation:  [here](https://davidjones.sportronics.com.au/cats/softata/)
 
 ## <font color="red">Hot Press</font>
+  - V8.00 Added SoftataMiscController class for miscellaneous Blockly Blocks
+    - Simplify Blockly code by encapsulating functionality for what would be a complex set of blocks
+     into a Get method that takes input/s, processes it and returns the result.. See [the example in this blog post](https://davidjones.sportronics.com.au/softata/Softata-CustomBlocksviaASP.NETController-softata.html)
 - V7.99 Added Shift595ParaOut class for 74HC595. 8 or 16 bits out.
   - Added simple custom function app to samples. Deployed to Azure:
     - https://softatawebapii.azurewebsites.net/BlocklyAutomation
