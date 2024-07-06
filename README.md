@@ -11,6 +11,8 @@ _Soft-ata rather than firm-ata!_
 
 - Documentation:  [here](https://davidjones.sportronics.com.au/cats/softata/)
 
+- *** The Arduino Shield is now downloadable as a Zip file when running the SoftataWebAPI***
+
 ## <font color="red">Hot Press</font>
   - V8.00 Added SoftataMiscController class for miscellaneous Blockly Blocks
     - Simplify Blockly code by encapsulating functionality for what would be a complex set of blocks

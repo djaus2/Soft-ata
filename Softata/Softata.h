@@ -12,8 +12,8 @@ enum SyncedCommands : byte {pauseTelemetryorBT=0,continueTelemetryorBT=1,stopTel
 
 //WiFi
 #ifndef STASSID
-#define STASSID "APQLZM"
-#define STAPSK "tallinn187isnotinaustralia"
+#define STASSID "<Wifi Network SSID>"
+#define STAPSK "<Wifi Password>"
 #endif
 
 #define IOT_CONFIG_WIFI_SSID STASSID
