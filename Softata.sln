@@ -27,6 +27,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MeadowLab", "MeadowLab\Mead
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MeadowLab.WindowsDesktop", "MeadowLab.WindowsDesktop\MeadowLab.WindowsDesktop.csproj", "{E524B9E4-D353-4695-B0E6-7FB2F0847D24}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Misc", "Misc", "{60F3D639-033B-434F-B14B-2ABB6089B703}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OTALedFlash", "OTALedFlash", "{4F9B17D9-D813-440F-B032-16F666BA5574}"
+	ProjectSection(SolutionItems) = preProject
+		Misc\OTALedFlash\OTALedFlash.h = Misc\OTALedFlash\OTALedFlash.h
+		Misc\OTALedFlash\OTALedFlash.ino = Misc\OTALedFlash\OTALedFlash.ino
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -62,6 +70,10 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{60F3D639-033B-434F-B14B-2ABB6089B703} = {5C9D7B95-EAC4-4C11-A784-C0B0F706E099}
+		{4F9B17D9-D813-440F-B032-16F666BA5574} = {60F3D639-033B-434F-B14B-2ABB6089B703}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {84B4F03A-12C2-41A7-A747-5849AA29553F}
