@@ -4,11 +4,6 @@
 #include <ArduinoOTA.h>
 #include "OTALedFlash.h"
 
-#ifndef STASSID
-#define STASSID "APQLZM"
-#define STAPSK "tallinn187isnotinaustralia"
-#endif
-
 const char* ssid = STASSID;
 const char* password = STAPSK;
 const char* host = "OTA-LEDS";

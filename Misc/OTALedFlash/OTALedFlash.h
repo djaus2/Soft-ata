@@ -1,3 +1,8 @@
+#ifndef STASSID
+#define STASSID "<SSID>"
+#define STAPSK "<Password>"
+#endif
+
 #define SHORTPULSE 500
 #define ULTRA_SHORTPULSE 250
 #define LONGPULSE 1000
