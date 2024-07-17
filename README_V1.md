@@ -64,7 +64,7 @@ _Soft-ata rather than firm-ata!_
   - ActuatorWrite(byte linkedListNo, byte value)
 
   - Other
-    - Serial1 and Serial2, icluding GPS
+    - Serial1 and Serial2, including GPS
     - Second core used for periodic streaming over Bluetooth
 
  > See https://github.com/djaus2/Soft-ata/blob/master/Grove.md
