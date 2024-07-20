@@ -72,6 +72,73 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{55DCE197-4F2
 		Softata\src\Shift595ParaOut.cpp = Softata\src\Shift595ParaOut.cpp
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SoftataOTA", "SoftataOTA", "{1D47515E-81D0-4D41-98F8-8F9DEA6EB53F}"
+	ProjectSection(SolutionItems) = preProject
+		SoftataOTA\devicesLists.h = SoftataOTA\devicesLists.h
+		SoftataOTA\iothub.h = SoftataOTA\iothub.h
+		SoftataOTA\rpiboards.h = SoftataOTA\rpiboards.h
+		SoftataOTA\rpiwatchdog.c = SoftataOTA\rpiwatchdog.c
+		SoftataOTA\rpiwatchdog.h = SoftataOTA\rpiwatchdog.h
+		SoftataOTA\serial_macros.h = SoftataOTA\serial_macros.h
+		SoftataOTA\Softata.h = SoftataOTA\Softata.h
+		SoftataOTA\SoftataCore2.h = SoftataOTA\SoftataCore2.h
+		SoftataOTA\SoftataOTA-2.ino = SoftataOTA\SoftataOTA-2.ino
+		SoftataOTA\SoftataOTA.h = SoftataOTA\SoftataOTA.h
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SoftataOptSerial", "SoftataOptSerial", "{E63711C8-F627-4EA4-85E2-B618F227483B}"
+	ProjectSection(SolutionItems) = preProject
+		SoftataOptSerial\devicesLists.h = SoftataOptSerial\devicesLists.h
+		SoftataOptSerial\iothub.h = SoftataOptSerial\iothub.h
+		SoftataOptSerial\rpiboards.h = SoftataOptSerial\rpiboards.h
+		SoftataOptSerial\rpiwatchdog.c = SoftataOptSerial\rpiwatchdog.c
+		SoftataOptSerial\rpiwatchdog.h = SoftataOptSerial\rpiwatchdog.h
+		SoftataOptSerial\serial_macros.h = SoftataOptSerial\serial_macros.h
+		SoftataOptSerial\Softata.h = SoftataOptSerial\Softata.h
+		SoftataOptSerial\SoftataCore2.h = SoftataOptSerial\SoftataCore2.h
+		SoftataOptSerial\SoftataOptSerial.ino = SoftataOptSerial\SoftataOptSerial.ino
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{A5ED25A0-96F4-4DCA-A6B8-1FE8761632B9}"
+	ProjectSection(SolutionItems) = preProject
+		SoftataOTA\src\adrafruit_neopixel.cpp = SoftataOTA\src\adrafruit_neopixel.cpp
+		SoftataOTA\src\grove.h = SoftataOTA\src\grove.h
+		SoftataOTA\src\grove_actuator.h = SoftataOTA\src\grove_actuator.h
+		SoftataOTA\src\grove_bargraph.cpp = SoftataOTA\src\grove_bargraph.cpp
+		SoftataOTA\src\grove_bme280.cpp = SoftataOTA\src\grove_bme280.cpp
+		SoftataOTA\src\grove_dht11.cpp = SoftataOTA\src\grove_dht11.cpp
+		SoftataOTA\src\grove_displays.cpp = SoftataOTA\src\grove_displays.cpp
+		SoftataOTA\src\grove_displays.h = SoftataOTA\src\grove_displays.h
+		SoftataOTA\src\grove_environsensors.h = SoftataOTA\src\grove_environsensors.h
+		SoftataOTA\src\grove_sensor.h = SoftataOTA\src\grove_sensor.h
+		SoftataOTA\src\grove_sensor_template.cpp.txt = SoftataOTA\src\grove_sensor_template.cpp.txt
+		SoftataOTA\src\grove_urange.cpp = SoftataOTA\src\grove_urange.cpp
+		SoftataOTA\src\ic_74hc595_shiftRegister.cpp = SoftataOTA\src\ic_74hc595_shiftRegister.cpp
+		SoftataOTA\src\ic_74hc595_shiftRegister.h = SoftataOTA\src\ic_74hc595_shiftRegister.h
+		SoftataOTA\src\servo.cpp = SoftataOTA\src\servo.cpp
+		SoftataOTA\src\Shift595ParaOut.cpp = SoftataOTA\src\Shift595ParaOut.cpp
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{0CBAE3E8-9D71-4596-A698-54102CCABC56}"
+	ProjectSection(SolutionItems) = preProject
+		SoftataOptSerial\src\adrafruit_neopixel.cpp = SoftataOptSerial\src\adrafruit_neopixel.cpp
+		SoftataOptSerial\src\grove.h = SoftataOptSerial\src\grove.h
+		SoftataOptSerial\src\grove_actuator.h = SoftataOptSerial\src\grove_actuator.h
+		SoftataOptSerial\src\grove_bargraph.cpp = SoftataOptSerial\src\grove_bargraph.cpp
+		SoftataOptSerial\src\grove_bme280.cpp = SoftataOptSerial\src\grove_bme280.cpp
+		SoftataOptSerial\src\grove_dht11.cpp = SoftataOptSerial\src\grove_dht11.cpp
+		SoftataOptSerial\src\grove_displays.cpp = SoftataOptSerial\src\grove_displays.cpp
+		SoftataOptSerial\src\grove_displays.h = SoftataOptSerial\src\grove_displays.h
+		SoftataOptSerial\src\grove_environsensors.h = SoftataOptSerial\src\grove_environsensors.h
+		SoftataOptSerial\src\grove_sensor.h = SoftataOptSerial\src\grove_sensor.h
+		SoftataOptSerial\src\grove_sensor_template.cpp.txt = SoftataOptSerial\src\grove_sensor_template.cpp.txt
+		SoftataOptSerial\src\grove_urange.cpp = SoftataOptSerial\src\grove_urange.cpp
+		SoftataOptSerial\src\ic_74hc595_shiftRegister.cpp = SoftataOptSerial\src\ic_74hc595_shiftRegister.cpp
+		SoftataOptSerial\src\ic_74hc595_shiftRegister.h = SoftataOptSerial\src\ic_74hc595_shiftRegister.h
+		SoftataOptSerial\src\servo.cpp = SoftataOptSerial\src\servo.cpp
+		SoftataOptSerial\src\Shift595ParaOut.cpp = SoftataOptSerial\src\Shift595ParaOut.cpp
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -113,6 +180,10 @@ Global
 		{4F9B17D9-D813-440F-B032-16F666BA5574} = {60F3D639-033B-434F-B14B-2ABB6089B703}
 		{4E76E241-63D8-4B79-B328-EC08E1335297} = {60B26E93-BC37-48E6-8021-B6306EBF18F2}
 		{55DCE197-4F20-4629-B62E-9C2AF07307CF} = {4E76E241-63D8-4B79-B328-EC08E1335297}
+		{1D47515E-81D0-4D41-98F8-8F9DEA6EB53F} = {60B26E93-BC37-48E6-8021-B6306EBF18F2}
+		{E63711C8-F627-4EA4-85E2-B618F227483B} = {60B26E93-BC37-48E6-8021-B6306EBF18F2}
+		{A5ED25A0-96F4-4DCA-A6B8-1FE8761632B9} = {1D47515E-81D0-4D41-98F8-8F9DEA6EB53F}
+		{0CBAE3E8-9D71-4596-A698-54102CCABC56} = {E63711C8-F627-4EA4-85E2-B618F227483B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {84B4F03A-12C2-41A7-A747-5849AA29553F}
