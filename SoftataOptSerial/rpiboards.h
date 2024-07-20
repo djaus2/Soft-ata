@@ -1,4 +1,4 @@
-#define WATCHDOG_SECS 10
+#define WATCHDOG_SECS 8
 
 enum BAUDRATE{
   bd50, bd75, bd110, bd134, bd150, bd200, bd300, bd600, bd1200, bd1800, bd2400, bd4800, bd9600, bd19200, bd38400, bd57600, bd115200

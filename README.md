@@ -14,6 +14,15 @@ _Soft-ata rather than firm-ata!_
 - ***The Arduino Shield code is now downloadable as a Zip file when running the SoftataWebAPI***
 
 ## <font color="red">Hot Press</font>
+- V9.10 Merging OTA into the Sketch
+  - Sketch: SoftataOTA-1
+  - Only has the Softata setup() and OTA setup.
+  - loop() function has only minimal code to do OTS update 
+    - and some of Softata loop code up to checking if any server connection, only.
+  - Found issue with OTA upload if using WatchDog Timer.
+    - Can optinally disable WatchDog.
+    - WatchDog max update period is about 8s but this upload takes 14.3 seconds!
+    - See [earlephilhower/arduino-pico/issues/2285](https://github.com/earlephilhower/arduino-pico/issues/2285)
 - V9.00 Added SoftatOptSerial sketch that makes the serial debug messages optional.
 - V8.00 Added SoftataMiscController class for miscellaneous Blockly Blocks
     - Simplify Blockly code by encapsulating functionality for what would be a complex set of blocks
