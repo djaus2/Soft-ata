@@ -16,7 +16,7 @@ _Soft-ata rather than firm-ata!_
 ## <font color="red">Hot Press</font>
 - V9.22 Filename fix for the .ino file. 
   - Code improvements
-    - Have tested OTA luanch while console app running. OTA works fine.
+    - Have tested OTA launch while console app running. OTA works fine.
 - V9.20 Merged OTA into the Sketc
   - Sketch: SoftataOTA
   - Found issue with OTA upload if using WatchDog Timer.
