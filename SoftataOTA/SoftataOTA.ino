@@ -280,8 +280,10 @@ int Check4RecvdCloud2DeviceMsg()
   return 0;
 }
 void setup()
-{
-  ArduinoOTAsetup();
+{  
+  #ifdef ENABLE_OTA
+    ArduinoOTAsetup();
+  #endif
   Serial_println("Done OTA");
   hasConnected = false; 
   
@@ -308,15 +310,17 @@ void setup()
   {
     Serial_println("Core1-Core2 Setup Sync Fail");
   }
-  #ifdef USE_WATCHDOG
-  watchdog_enable(WATCHDOG_SECS * 1000, false);
+  #ifdef ENABLE_WATCHDOG
+    watchdog_enable(WATCHDOG_SECS * 1000, false);
   #endif
 }
 
 void loop() {
-  ArduinoOTAloop();
-  #ifdef USE_WATCHDOG
-  watchdog_update();
+  #ifdef ENABLE_OTA
+    ArduinoOTAloop();
+  #endif
+  #ifdef ENABLE_WATCHDOG
+    watchdog_update();
   #endif
   if(OTAing)
       return;
@@ -336,11 +340,25 @@ void loop() {
 
   ////////////////////
   while (true) {
-    watchdog_update();
+    #ifdef ENABLE_OTA
+      ArduinoOTAloop();
+    #endif
+    #ifdef ENABLE_WATCHDOG
+      watchdog_update();
+    #endif
+    if(OTAing)
+        return;
     Serial_print("Get next command.");
     while (!client.available()) {
       delay(100);
-      watchdog_update();
+      #ifdef ENABLE_OTA
+        ArduinoOTAloop();
+      #endif
+      #ifdef ENABLE_WATCHDOG
+        watchdog_update();
+      #endif
+      if(OTAing)
+          return;
       if(rp2040.fifo.available())
         break;
     }
@@ -412,7 +430,9 @@ void loop() {
         rp2040.fifo.push( SynchMultiplier + (int)svrConnected); //Make Inbuilt LED flash faster
         while (!rp2040.fifo.available())
         {
+          #ifdef ENABLE_WATCHDOG
             watchdog_update();
+          #endif
         }
         uint32_t sync = rp2040.fifo.pop();
       }
