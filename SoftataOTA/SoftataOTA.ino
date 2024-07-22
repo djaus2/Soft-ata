@@ -171,7 +171,15 @@ void ArduinoOTAsetup() {
     // Cause an error by making this too long:
     // flash(10, LONGPULSE);
   });
-;
+
+
+  ArduinoOTA.onProgress([](size_t progresso, size_t total){
+    //THandlerFunction_Progress fn
+    #ifdef ENABLE_WATCHDOG
+      watchdog_update();
+    #endif
+  });
+
   ArduinoOTA.onEnd([]() {  // do a fancy thing with our board led at end
     // Done OTA:4 long pulses
     Serial_println("OTA OnEnd");

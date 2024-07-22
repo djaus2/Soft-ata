@@ -14,6 +14,7 @@ _Soft-ata rather than firm-ata!_
 - ***The Arduino Shield code is now downloadable as a Zip file when running the SoftataWebAPI***
 
 ## <font color="red">Hot Press</font>
+- V9.30 WatchDog -OTA issue resolved. WatchDog now enabled with OTA.
 - V9.22 Filename fix for the .ino file. 
   - Code improvements
     - Have tested OTA launch while console app running. OTA works fine.
