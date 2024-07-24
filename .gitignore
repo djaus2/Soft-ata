@@ -379,3 +379,5 @@ FodyWeavers.xsd
 /SoftataWebAPI/Properties/ServiceDependencies/SoftataWebAPII - Web Deploy/apis1.arm.json
 /SoftataWebAPI/Properties/ServiceDependencies/SoftataWebAPII - Web Deploy/profile.arm.json
 /SoftataWebAPI/Properties/serviceDependencies.SoftataWebAPII - Web Deploy.json
+/RPiPicoWArduinoBuildDeploy
+/SoftataOTA/build/rp2040.rp2040.rpipicow
