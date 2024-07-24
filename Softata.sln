@@ -139,6 +139,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{0CBAE3E8-9D7
 		SoftataOptSerial\src\Shift595ParaOut.cpp = SoftataOptSerial\src\Shift595ParaOut.cpp
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RPiPicoWArduinoBuildDeploy", "RPiPicoWArduinoBuildDeploy\RPiPicoWArduinoBuildDeploy.csproj", "{38DB456F-AB20-401E-A3F1-ECE08A4C94D6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -171,6 +173,10 @@ Global
 		{E524B9E4-D353-4695-B0E6-7FB2F0847D24}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E524B9E4-D353-4695-B0E6-7FB2F0847D24}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E524B9E4-D353-4695-B0E6-7FB2F0847D24}.Release|Any CPU.Build.0 = Release|Any CPU
+		{38DB456F-AB20-401E-A3F1-ECE08A4C94D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{38DB456F-AB20-401E-A3F1-ECE08A4C94D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{38DB456F-AB20-401E-A3F1-ECE08A4C94D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{38DB456F-AB20-401E-A3F1-ECE08A4C94D6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

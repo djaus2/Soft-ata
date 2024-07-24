@@ -266,6 +266,13 @@ namespace Softata
                     Client.Dispose();
                     Client = null;
                     break;
+                case "WDTTimeOut":
+                    Thread.Sleep(20000);
+                    Client.Shutdown(SocketShutdown.Both);
+                    Client.Close();
+                    Client.Dispose();
+                    Client = null;
+                    break;
                 case "Reset":
                     break;
             }

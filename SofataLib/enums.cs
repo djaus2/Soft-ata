@@ -33,8 +33,8 @@
         groveSensor = 0xF0,
         groveDisplay = 0xF1,
         groveActuator = 0xF2,
-
-        Undefined = 0xFF
+        Undefined = 0xFF,
+        
     }
 
     public enum CommandType : byte
@@ -51,7 +51,8 @@
         PotRelay = 0x9,
         PotServo = 0xA,
         GPSSerial = 0xB,
-        MaxType = 0xC,
+        TestOTAOrWDT = 0xC,
+        MaxType = 0xD,
         Undefined = 0xFF
     }
 

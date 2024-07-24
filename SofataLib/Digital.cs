@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -50,6 +51,12 @@ namespace Softata
                     return true;
                 else
                     return false;
+            }
+
+            public static void TurnOffWDTUpdates()
+            {
+                Console.WriteLine("Cause WatchDog reboot and/or OTA update failure, press[Return]");
+                SendMessageCmd("WDTTimeOut");
             }
         }
 

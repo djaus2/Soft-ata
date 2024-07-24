@@ -520,6 +520,29 @@ void loop() {
         client.print(devicesCSV);
        }
         break;
+       case (byte)'O':
+       case (byte)'W':  //Cause WatchDog or OTA failure with busy wait with no WDT or OTA updates.
+       {
+        if(!Serial)
+        {
+          Serial.begin(115200);
+          while(!Serial)
+          {
+            delay(100);
+          }
+        }
+        Serial.println();
+        Serial.println("Generating WDT and/or OTA failure.");
+        Serial.printf("If WDT test, shouild get about: [%u] USB serial messages before reboot: ", WATCHDOG_SECS );
+        Serial.println();
+        for (int i=1;i<100;i++)
+        {
+          Serial.printf("WDT count: [%u]sec: ", i);
+          Serial.println();
+          delay(1000);
+        } 
+       }  
+        break;
        default:
         // Get Softata command and parameters
         byte cmd = msg[0];

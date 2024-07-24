@@ -100,6 +100,32 @@ namespace SoftataBasic
 
                 switch (Testtype)
                 {
+                    case CommandType.TestOTAOrWDT:
+                        SoftataLib.Digital.SetPinMode(BUTTON, SoftataLib.PinMode.DigitalInput);
+                        SoftataLib.Digital.SetPinMode(LED, SoftataLib.PinMode.DigitalOutput);
+                        SoftataLib.Digital.SetPinState(LED, SoftataLib.PinState.HIGH);
+
+                        Console.WriteLine("WDT Test: Enable WDT in softata.h, deploy and boot then press [Return]");
+                        Console.WriteLine("OTA Test: Enable OTA (optonally disable WDT) in softata.h, deploy and boot then press [Return]");
+                        Console.ReadLine();
+                        Console.WriteLine("4 LED toggles then WDT.Update/OTA.handle turned off, with busy wait on device,for 100 secs");
+
+                        for (int i = 0; i < 4; i++)
+                        {
+                            SoftataLib.Digital.TogglePinState(LED);
+                            Console.WriteLine($"{i} secs");
+                            Thread.Sleep(1000);
+                        }
+                        Console.WriteLine($"Turning off WDT/OTA Updates with busy wait on device. Press [Enter]");
+                        Console.ReadLine();
+                        SoftataLib.Digital.TurnOffWDTUpdates();
+                        for (int i = 0; i < 100; i++)
+                        {
+                            Console.WriteLine($"{i} secs");
+                            SoftataLib.Digital.TogglePinState(LED);
+                            Thread.Sleep(1000);
+                        }
+                        break;
                     // LED-Button test
                     case CommandType.DigitalButtonLED:
                         SoftataLib.Digital.SetPinMode(BUTTON, SoftataLib.PinMode.DigitalInput);
