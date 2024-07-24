@@ -141,6 +141,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{0CBAE3E8-9D7
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RPiPicoWArduinoBuildDeploy", "RPiPicoWArduinoBuildDeploy\RPiPicoWArduinoBuildDeploy.csproj", "{38DB456F-AB20-401E-A3F1-ECE08A4C94D6}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ota", "ota", "{5488C0EE-01F8-4064-9834-3690E2D8EC9B}"
+	ProjectSection(SolutionItems) = preProject
+		SoftataOTA\ota\espota.py = SoftataOTA\ota\espota.py
+		SoftataOTA\ota\OTA-generic.bat = SoftataOTA\ota\OTA-generic.bat
+		SoftataOTA\ota\OTA-pythoninpath.bat = SoftataOTA\ota\OTA-pythoninpath.bat
+		SoftataOTA\ota\readme.txt = SoftataOTA\ota\readme.txt
+		SoftataOTA\ota\SoftataOTA.ino.bin = SoftataOTA\ota\SoftataOTA.ino.bin
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -190,6 +199,7 @@ Global
 		{E63711C8-F627-4EA4-85E2-B618F227483B} = {60B26E93-BC37-48E6-8021-B6306EBF18F2}
 		{A5ED25A0-96F4-4DCA-A6B8-1FE8761632B9} = {1D47515E-81D0-4D41-98F8-8F9DEA6EB53F}
 		{0CBAE3E8-9D71-4596-A698-54102CCABC56} = {E63711C8-F627-4EA4-85E2-B618F227483B}
+		{5488C0EE-01F8-4064-9834-3690E2D8EC9B} = {1D47515E-81D0-4D41-98F8-8F9DEA6EB53F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {84B4F03A-12C2-41A7-A747-5849AA29553F}
