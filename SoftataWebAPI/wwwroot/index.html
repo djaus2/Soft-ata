@@ -8,7 +8,6 @@
 <body>
     <h1>Softata API</h1>
     <ul>
-
         <li>
             <h2>Run as Blockly</h2>
             <ul>
@@ -19,22 +18,42 @@
                         <li>Drill into Swaggers/MySite/APis</li>
                         <li>Select an API/Controller</li>
                     </ul>
-                </li>           
+                </li>
                 <li><a href="https://davidjones.sportronics.com.au/softata/Softata-Blockly____The_Holy_Grail-softata.html">About Softata Blockly</a></li></>
             </ul>
         </li>
         <li>
-            <h2>Get the RPi Pico W Shield</h2>
+            <h2>Get the Softata Shield project for building in Arduino IDE</h2>
             <ul>
                 <li><a href="/images/Softata.zip">Download as Zip</a></li>
                 <li>Unzip it aand open in Arduino IDE</li>
                 <li>Set parameters (eg WifI) in softata.h</li>
-                <li>When running Blockly on Azure need to specify the running Pico using NAT or ngrok
+                <li>
+                    When running Blockly on Azure need to specify the running Pico using NAT or ngrok
                     <ul>
                         <li>See <a href="https://davidjones.sportronics.com.au/softata/Softata-Running_Blockly_on_local_Pico_from_Azure_SoftataAPII-softata.html">Softata: Running Blockly on local Pico from Azure Softata API</a></li>
-                    </uL>
+                    </ul>
                 </li>
-                </ul>
+            </ul>
+        </li>
+        <li>
+            <h2>Get the SoftataOTA bin and related batch files for upload without IDE.</h2>
+            <ul>
+                <li><a href="/images/ota.zip">Download as Zip</a></li>
+                <li>Unzip into a folder. Change into ota folder</li> 
+                <li>
+                    Upload using USB Serial batch file <b>USBSerial-pythoninpath.bat</b><br />
+                    <ul>
+                        <li>Subsequent uploads can be via OTA batch file <b>OTA-pythoninpath.bat</b></li>
+                    </ul>
+                </li>
+                <li>
+                    When running Blockly on Azure need to specify the running Pico using NAT or ngrok
+                    <ul>
+                        <li>See <a href="https://davidjones.sportronics.com.au/softata/Softata-Running_Blockly_on_local_Pico_from_Azure_SoftataAPII-softata.html">Softata: Running Blockly on local Pico from Azure Softata API</a></li>
+                    </ul>
+                </li>
+            </ul>
         </li>
         <li>
             <h2>Run as Swagger</h2>
