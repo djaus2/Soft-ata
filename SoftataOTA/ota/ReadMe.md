@@ -27,5 +27,14 @@ Several batch files have been added to the repository at ```<Repository>\Softata
   - This batch file copies the IDE->Sketch->Export Compiled Library built files to the OTA folder.
   - ... From <Sketch folder>\build\rp2040.rp2040.rpipicow
 
+  ---
+
+### Instructions:
+
+> May need to modify the Sketch folder location etc.
+
 > Nb: The Repository\SoftataOTA\ota folder and contents have been included in the repository and  
-so can be used directly without the Arduino IDE. In that case ignore the second batch file.
+so can be used directly without the Arduino IDE. In that case ignore the first batch file.
+
+
+> If using first batch file will probably have to modify the paths there.
