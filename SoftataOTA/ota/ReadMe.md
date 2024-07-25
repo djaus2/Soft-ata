@@ -18,6 +18,7 @@ Several batch files have been added to the repository at ```<Repository>\Softata
   - And the bin file needs to be copied to here as well.
 - [USBSerial-pythoninpath.bat](https://github.com/djaus2/Soft-ata/blob/master/SoftataOTA/ota/USBSerial-pythoninpath.bat)  _... view on GitHub._
   - This batch file is used to upload using USB Serial.
+  - Requires device to be in uf2 mode (BootSel)
   - It assumes that the system ```Path``` includes ```python3.exe```
   - Expects ```u2conv.py``` has been copied to the ota folder from tools.
   -  Also expects ```pyserial`` folder has been copied from tools.
