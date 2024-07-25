@@ -146,8 +146,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ota", "ota", "{5488C0EE-01F
 		SoftataOTA\ota\espota.py = SoftataOTA\ota\espota.py
 		SoftataOTA\ota\OTA-generic.bat = SoftataOTA\ota\OTA-generic.bat
 		SoftataOTA\ota\OTA-pythoninpath.bat = SoftataOTA\ota\OTA-pythoninpath.bat
-		SoftataOTA\ota\readme.txt = SoftataOTA\ota\readme.txt
 		SoftataOTA\ota\SoftataOTA.ino.bin = SoftataOTA\ota\SoftataOTA.ino.bin
+		SoftataOTA\ota\ReadMe.md = SoftataOTA\ota\ReadMe.md
+		SoftataOTA\ota\UpdateOTAFolder.bat = SoftataOTA\ota\UpdateOTAFolder.bat
+		SoftataOTA\ota\USBSerial-pythoninpath.bat = SoftataOTA\ota\USBSerial-pythoninpath.bat
 	EndProjectSection
 EndProject
 Global
