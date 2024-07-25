@@ -16,7 +16,7 @@ Several batch files have been added to the repository at ```<Repository>\Softata
   - This assumes that the system ```Path``` includes ```python3.exe```
   - It also requires ```espota.py``` has been copied to the ota folder.
   - And the bin file needs to be copied to here as well.
-- [USBSerial-pythoninpath.bat]https://github.com/djaus2/Soft-ata/tree/master/SoftataOTA/ota/(USBSerial-pythoninpath.bat)  _... view on GitHub._
+- [USBSerial-pythoninpath.bat](https://github.com/djaus2/Soft-ata/tree/master/SoftataOTA/ota/(USBSerial-pythoninpath.bat)  _... view on GitHub._
   - This batch file is used to upload using USB Serial.
   - It assumes that the system ```Path``` includes ```python3.exe```
   - Expects ```u2conv.py``` has been copied to the ota folder from tools.
