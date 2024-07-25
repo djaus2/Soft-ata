@@ -16,14 +16,14 @@ Several batch files have been added to the repository at ```<Repository>\Softata
   - This assumes that the system ```Path``` includes ```python3.exe```
   - It also requires ```espota.py``` has been copied to the ota folder.
   - And the bin file needs to be copied to here as well.
-- [USBSerial-pythoninpath.bat](USBSerial-pythoninpath.bat)  _... view on GitHub._
+- [USBSerial-pythoninpath.bat]https://github.com/djaus2/Soft-ata/tree/master/SoftataOTA/ota/(USBSerial-pythoninpath.bat)  _... view on GitHub._
   - This batch file is used to upload using USB Serial.
   - It assumes that the system ```Path``` includes ```python3.exe```
   - Expects ```u2conv.py``` has been copied to the ota folder from tools.
   -  Also expects ```pyserial`` folder has been copied from tools.
   - eg tools folder: ```C:\Users\%USERNAME%\AppData\Local\arduino15\packages\rp2040\tools```
   - And the uf2 file needs to be copied to in ota as well. See next batch file:
-- [UpdateOTAFolder.bat](UpdateOTAFolder.bat)  _... view on GitHub._
+- [UpdateOTAFolder.bat](https://github.com/djaus2/Soft-ata/tree/master/SoftataOTA/ota/UpdateOTAFolder.bat)  _... view on GitHub._
   - This batch file copies the IDE->Sketch->Export Compiled Library built files to the OTA folder.
   - ... From <Sketch folder>\build\rp2040.rp2040.rpipicow
 
