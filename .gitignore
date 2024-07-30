@@ -381,3 +381,11 @@ FodyWeavers.xsd
 /SoftataWebAPI/Properties/serviceDependencies.SoftataWebAPII - Web Deploy.json
 /RPiPicoWArduinoBuildDeploy
 /SoftataOTA/build/rp2040.rp2040.rpipicow
+/Misc/eepromWiFi/build/rp2040.rp2040.rpipicow/eepromWiFi.ino.bin
+/Misc/eepromWiFi/build/rp2040.rp2040.rpipicow/eepromWiFi.ino.elf
+/Misc/eepromWiFi/build/rp2040.rp2040.rpipicow/eepromWiFi.ino.map
+/Misc/eepromWiFi/build/rp2040.rp2040.rpipicow/eepromWiFi.ino.uf2
+/Misc/GetWifiIPAddress/build/rp2040.rp2040.rpipicow/GetWifiIPAddress.ino.bin
+/Misc/GetWifiIPAddress/build/rp2040.rp2040.rpipicow/GetWifiIPAddress.ino.elf
+/Misc/GetWifiIPAddress/build/rp2040.rp2040.rpipicow/GetWifiIPAddress.ino.map
+/Misc/GetWifiIPAddress/build/rp2040.rp2040.rpipicow/GetWifiIPAddress.ino.uf2
