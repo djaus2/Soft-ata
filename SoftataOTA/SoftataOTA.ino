@@ -17,8 +17,10 @@
 
 #include <float.h>
 
-
 #include "devicesLists.h"
+#include "eepromWiFi.h"
+
+String Hostname = "picow2";
 
 struct CallbackInfo  BME280CBInfo;
 // Used when first connected to change inbuilt LED blink rate.
@@ -124,7 +126,7 @@ void ArduinoOTAsetup() {
   OTAing =false;
   whileNotSerial()
   { 
-    delay(100);
+    delay(250);
   }
 
   Serial_println("Booting");
@@ -136,15 +138,46 @@ void ArduinoOTAsetup() {
   flash(0, BOOTING_NUMFLASHES, BOOTING_PERIOD);
 
 
-  WiFi.mode(WIFI_STA);
-  WiFi.setHostname("PicoW2");
-  WiFi.begin(ssid, password);
   Serial_println("WIFI");
-  while (WiFi.status() != WL_CONNECTED) {
-    Serial_print(".");
-    delay(100);
+
+  // If using USB-Serial then prompt for whether to use Flashed Wifi data
+  bool UseInbuiltWifiSettings = false;
+  #ifdef SOFTATA_DEBUG_MODE
+    Serial.print("Use Soft Wifi settings? [Y/y] [N/n]:");
+    while (Serial.available() == 0) {}
+    String UseInbuiltWifiSettingsStr = Serial.readString();
+    UseInbuiltWifiSettingsStr.trim();
+    UseInbuiltWifiSettingsStr.toUpperCase();
+    if (UseInbuiltWifiSettingsStr == "Y")
+      UseInbuiltWifiSettings = true;
+  #endif
+
+  if (!UseInbuiltWifiSettings)
+  {
+    String hostname = WiFisetup();
+    if (hostname.length()!= 0)
+    {
+      Hostname = hostname;
+      Serial.println("Used EEProm Wifi data.");
+    }
+    else
+    {
+      UseInbuiltWifiSettings = true;
+    }
   }
-  Serial_println("Connnected.");
+  if(UseInbuiltWifiSettings)  
+  {
+    Serial.println("Using Soft Wifi data.");
+    WiFi.mode(WIFI_STA);
+    WiFi.setHostname(Hostname.c_str());
+    WiFi.begin(ssid, password);
+    
+    while (WiFi.status() != WL_CONNECTED) {
+      Serial_print(".");
+      delay(250);
+    }
+    Serial_println("Connnected.");
+  }
 
 
 
@@ -332,8 +365,7 @@ void loop() {
   #endif
   if(OTAing)
       return;
- 
-  Serial_print("-");
+
   static int i;
   int count = 0;
   byte msg[maxRecvdMsgBytes];
@@ -528,7 +560,7 @@ void loop() {
           Serial.begin(115200);
           while(!Serial)
           {
-            delay(100);
+            delay(250);
           }
         }
         Serial.println();
