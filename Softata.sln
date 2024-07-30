@@ -152,6 +152,22 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ota", "ota", "{5488C0EE-01F
 		SoftataOTA\ota\USBSerial-pythoninpath.bat = SoftataOTA\ota\USBSerial-pythoninpath.bat
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "eepromwifi", "eepromwifi", "{8482F3A4-F77A-42A9-A9A2-D2DD82DEA428}"
+	ProjectSection(SolutionItems) = preProject
+		Misc\eepromWiFi\eepromWiFi.h = Misc\eepromWiFi\eepromWiFi.h
+		Misc\eepromWiFi\eepromWiFi.ino = Misc\eepromWiFi\eepromWiFi.ino
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{B33E4227-7763-43B7-929E-46F6A1A49AB1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "rp2040.rp2040.rpipicow", "rp2040.rp2040.rpipicow", "{973250BA-51A8-4268-B45D-1E21D90B157E}"
+	ProjectSection(SolutionItems) = preProject
+		Misc\eepromWiFi\build\rp2040.rp2040.rpipicow\eepromWiFi.ino.bin = Misc\eepromWiFi\build\rp2040.rp2040.rpipicow\eepromWiFi.ino.bin
+		Misc\eepromWiFi\build\rp2040.rp2040.rpipicow\eepromWiFi.ino.elf = Misc\eepromWiFi\build\rp2040.rp2040.rpipicow\eepromWiFi.ino.elf
+		Misc\eepromWiFi\build\rp2040.rp2040.rpipicow\eepromWiFi.ino.map = Misc\eepromWiFi\build\rp2040.rp2040.rpipicow\eepromWiFi.ino.map
+		Misc\eepromWiFi\build\rp2040.rp2040.rpipicow\eepromWiFi.ino.uf2 = Misc\eepromWiFi\build\rp2040.rp2040.rpipicow\eepromWiFi.ino.uf2
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -202,6 +218,9 @@ Global
 		{A5ED25A0-96F4-4DCA-A6B8-1FE8761632B9} = {1D47515E-81D0-4D41-98F8-8F9DEA6EB53F}
 		{0CBAE3E8-9D71-4596-A698-54102CCABC56} = {E63711C8-F627-4EA4-85E2-B618F227483B}
 		{5488C0EE-01F8-4064-9834-3690E2D8EC9B} = {1D47515E-81D0-4D41-98F8-8F9DEA6EB53F}
+		{8482F3A4-F77A-42A9-A9A2-D2DD82DEA428} = {60F3D639-033B-434F-B14B-2ABB6089B703}
+		{B33E4227-7763-43B7-929E-46F6A1A49AB1} = {8482F3A4-F77A-42A9-A9A2-D2DD82DEA428}
+		{973250BA-51A8-4268-B45D-1E21D90B157E} = {B33E4227-7763-43B7-929E-46F6A1A49AB1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {84B4F03A-12C2-41A7-A747-5849AA29553F}
