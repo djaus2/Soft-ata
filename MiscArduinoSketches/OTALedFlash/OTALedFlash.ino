@@ -26,22 +26,25 @@ void setup() {
   while(!Serial);
 
   Serial.println("Booting");
+  Serial.println("Remember if building this sketch, set Tools->Flash size 1MB AND 1MB (last option)");
 
   //Get SSID
-  Serial.println("Enter SSID:");
+  Serial.print("Enter SSID: ");
   while (Serial.available() == 0) {delay(100);}
   String _ssid = Serial.readString();
   _ssid.trim();
   if(_ssid.length() != 0)
     ssid=_ssid.c_str();
+  Serial.println(ssid);
 
   //Get Password
-  Serial.println("Enter Password:");
+  Serial.print("Enter Password:");
   while (Serial.available() == 0) {delay(100);}
   String _password = Serial.readString();
   _password.trim();
   if(_password.length()!=0)
     password = _password.c_str();
+  Serial.println(password);
 
     /* Use BuiltIn LED for flashes */
   pinMode(LED_BUILTIN, OUTPUT);
@@ -53,8 +56,11 @@ void setup() {
   WiFi.begin(ssid, password);
 
   while (WiFi.waitForConnectResult() != WL_CONNECTED) {
+    Serial.print(".");
     delay(100);
   }
+  Serial.println();
+  Serial.println("Connected");
 
   // Got WiFi: 3 long pulses
   flash(WIFI_STARTED_NUMFLASHES, WIFI_STARTED_PERIOD);
@@ -113,8 +119,14 @@ void setup() {
   /* Setup the OTA server */
   ArduinoOTA.begin();
   Serial.println("Ready");
+  Serial.println("Wait a while before trying OTA after serial upload.");
+  Serial.println("Change port to network IPAddress");
+  Serial.println("Run Putty or similar to serially connect.");
   // Ready: 8 ultra short pulses
   flash(READY_NUMFLASHES, READY_PERIOD);
+    //print the local IP address
+  IPAddress ip = WiFi.localIP();
+  Serial.println(ip);
 }
 
 void loop() {

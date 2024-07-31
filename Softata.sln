@@ -28,9 +28,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MeadowLab.WindowsDesktop", "MeadowLab.WindowsDesktop\MeadowLab.WindowsDesktop.csproj", "{E524B9E4-D353-4695-B0E6-7FB2F0847D24}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MiscArduinoSketches", "MiscArduinoSketches", "{60F3D639-033B-434F-B14B-2ABB6089B703}"
-	ProjectSection(SolutionItems) = preProject
-		ReadMe..md = ReadMe..md
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OTALedFlash", "OTALedFlash", "{4F9B17D9-D813-440F-B032-16F666BA5574}"
 	ProjectSection(SolutionItems) = preProject
@@ -189,6 +186,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "rp2040.rp2040.rpipicow", "r
 		MiscArduinoSketches\OTALedFlash\build\rp2040.rp2040.rpipicow\OTALedFlash.ino.uf2 = MiscArduinoSketches\OTALedFlash\build\rp2040.rp2040.rpipicow\OTALedFlash.ino.uf2
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "bat", "bat", "{D16761E9-C116-4CF3-BDBB-653C91E18539}"
+	ProjectSection(SolutionItems) = preProject
+		MiscArduinoSketches\bat\espota.py = MiscArduinoSketches\bat\espota.py
+		MiscArduinoSketches\bat\OTA-pythoninpath.bat = MiscArduinoSketches\bat\OTA-pythoninpath.bat
+		MiscArduinoSketches\bat\OTALedFlash-pythoninpath.bat = MiscArduinoSketches\bat\OTALedFlash-pythoninpath.bat
+		MiscArduinoSketches\bat\USBCheckWiFi.bat = MiscArduinoSketches\bat\USBCheckWiFi.bat
+		MiscArduinoSketches\bat\USBSerialFlashWiFi.bat = MiscArduinoSketches\bat\USBSerialFlashWiFi.bat
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -248,6 +254,7 @@ Global
 		{83D478F0-35CA-4A73-874A-0B8226F45301} = {5488C0EE-01F8-4064-9834-3690E2D8EC9B}
 		{79050D09-F6A8-47AD-A999-E307EDAC26FD} = {4F9B17D9-D813-440F-B032-16F666BA5574}
 		{22E5E1C1-DABC-4E61-A7AC-F32019014A05} = {79050D09-F6A8-47AD-A999-E307EDAC26FD}
+		{D16761E9-C116-4CF3-BDBB-653C91E18539} = {60F3D639-033B-434F-B14B-2ABB6089B703}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {84B4F03A-12C2-41A7-A747-5849AA29553F}
