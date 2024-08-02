@@ -138,52 +138,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{0CBAE3E8-9D7
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RPiPicoWArduinoBuildDeploy", "RPiPicoWArduinoBuildDeploy\RPiPicoWArduinoBuildDeploy.csproj", "{38DB456F-AB20-401E-A3F1-ECE08A4C94D6}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{5488C0EE-01F8-4064-9834-3690E2D8EC9B}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "eepromwifi", "eepromwifi", "{8482F3A4-F77A-42A9-A9A2-D2DD82DEA428}"
 	ProjectSection(SolutionItems) = preProject
 		MiscArduinoSketches\eepromWiFi\eepromWiFi.h = MiscArduinoSketches\eepromWiFi\eepromWiFi.h
 		MiscArduinoSketches\eepromWiFi\eepromWiFi.ino = MiscArduinoSketches\eepromWiFi\eepromWiFi.ino
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{B33E4227-7763-43B7-929E-46F6A1A49AB1}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "rp2040.rp2040.rpipicow", "rp2040.rp2040.rpipicow", "{973250BA-51A8-4268-B45D-1E21D90B157E}"
-	ProjectSection(SolutionItems) = preProject
-		MiscArduinoSketches\eepromWiFi\build\rp2040.rp2040.rpipicow\eepromWiFi.ino.bin = MiscArduinoSketches\eepromWiFi\build\rp2040.rp2040.rpipicow\eepromWiFi.ino.bin
-		MiscArduinoSketches\eepromWiFi\build\rp2040.rp2040.rpipicow\eepromWiFi.ino.elf = MiscArduinoSketches\eepromWiFi\build\rp2040.rp2040.rpipicow\eepromWiFi.ino.elf
-		MiscArduinoSketches\eepromWiFi\build\rp2040.rp2040.rpipicow\eepromWiFi.ino.map = MiscArduinoSketches\eepromWiFi\build\rp2040.rp2040.rpipicow\eepromWiFi.ino.map
-		MiscArduinoSketches\eepromWiFi\build\rp2040.rp2040.rpipicow\eepromWiFi.ino.uf2 = MiscArduinoSketches\eepromWiFi\build\rp2040.rp2040.rpipicow\eepromWiFi.ino.uf2
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GetWifiIPAddress", "GetWifiIPAddress", "{A4372086-1DD4-4B05-956A-92ACE2709F9E}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{9F16110E-093D-4AB2-9E90-6219BEBFF3D4}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "rp2040.rp2040.rpipicow", "rp2040.rp2040.rpipicow", "{DEF22580-08B6-4881-859A-FCBD825FE942}"
 	ProjectSection(SolutionItems) = preProject
-		MiscArduinoSketches\GetWifiIPAddress\build\rp2040.rp2040.rpipicow\GetWifiIPAddress.ino.bin = MiscArduinoSketches\GetWifiIPAddress\build\rp2040.rp2040.rpipicow\GetWifiIPAddress.ino.bin
-		MiscArduinoSketches\GetWifiIPAddress\build\rp2040.rp2040.rpipicow\GetWifiIPAddress.ino.elf = MiscArduinoSketches\GetWifiIPAddress\build\rp2040.rp2040.rpipicow\GetWifiIPAddress.ino.elf
-		MiscArduinoSketches\GetWifiIPAddress\build\rp2040.rp2040.rpipicow\GetWifiIPAddress.ino.map = MiscArduinoSketches\GetWifiIPAddress\build\rp2040.rp2040.rpipicow\GetWifiIPAddress.ino.map
-		MiscArduinoSketches\GetWifiIPAddress\build\rp2040.rp2040.rpipicow\GetWifiIPAddress.ino.uf2 = MiscArduinoSketches\GetWifiIPAddress\build\rp2040.rp2040.rpipicow\GetWifiIPAddress.ino.uf2
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "rp2040.rp2040.rpipicow", "rp2040.rp2040.rpipicow", "{83D478F0-35CA-4A73-874A-0B8226F45301}"
-	ProjectSection(SolutionItems) = preProject
-		SoftataOTA\build\rp2040.rp2040.rpipicow\SoftataOTA.ino.bin = SoftataOTA\build\rp2040.rp2040.rpipicow\SoftataOTA.ino.bin
-		SoftataOTA\build\rp2040.rp2040.rpipicow\SoftataOTA.ino.elf = SoftataOTA\build\rp2040.rp2040.rpipicow\SoftataOTA.ino.elf
-		SoftataOTA\build\rp2040.rp2040.rpipicow\SoftataOTA.ino.map = SoftataOTA\build\rp2040.rp2040.rpipicow\SoftataOTA.ino.map
-		SoftataOTA\build\rp2040.rp2040.rpipicow\SoftataOTA.ino.uf2 = SoftataOTA\build\rp2040.rp2040.rpipicow\SoftataOTA.ino.uf2
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{79050D09-F6A8-47AD-A999-E307EDAC26FD}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "rp2040.rp2040.rpipicow", "rp2040.rp2040.rpipicow", "{22E5E1C1-DABC-4E61-A7AC-F32019014A05}"
-	ProjectSection(SolutionItems) = preProject
-		MiscArduinoSketches\OTALedFlash\build\rp2040.rp2040.rpipicow\OTALedFlash.ino.bin = MiscArduinoSketches\OTALedFlash\build\rp2040.rp2040.rpipicow\OTALedFlash.ino.bin
-		MiscArduinoSketches\OTALedFlash\build\rp2040.rp2040.rpipicow\OTALedFlash.ino.elf = MiscArduinoSketches\OTALedFlash\build\rp2040.rp2040.rpipicow\OTALedFlash.ino.elf
-		MiscArduinoSketches\OTALedFlash\build\rp2040.rp2040.rpipicow\OTALedFlash.ino.map = MiscArduinoSketches\OTALedFlash\build\rp2040.rp2040.rpipicow\OTALedFlash.ino.map
-		MiscArduinoSketches\OTALedFlash\build\rp2040.rp2040.rpipicow\OTALedFlash.ino.uf2 = MiscArduinoSketches\OTALedFlash\build\rp2040.rp2040.rpipicow\OTALedFlash.ino.uf2
+		MiscArduinoSketches\GetWifiIPAddress\GetWifiIPAddress.ino = MiscArduinoSketches\GetWifiIPAddress\GetWifiIPAddress.ino
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "bat", "bat", "{D16761E9-C116-4CF3-BDBB-653C91E18539}"
@@ -193,6 +156,21 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "bat", "bat", "{D16761E9-C11
 		MiscArduinoSketches\bat\OTALedFlash-pythoninpath.bat = MiscArduinoSketches\bat\OTALedFlash-pythoninpath.bat
 		MiscArduinoSketches\bat\USBCheckWiFi.bat = MiscArduinoSketches\bat\USBCheckWiFi.bat
 		MiscArduinoSketches\bat\USBSerialFlashWiFi.bat = MiscArduinoSketches\bat\USBSerialFlashWiFi.bat
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BinZip", "BinZip", "{D497681E-55B6-401C-9BFC-EFE42B37BF1F}"
+	ProjectSection(SolutionItems) = preProject
+		MiscArduinoSketches\BinZip\eepromWiFi.ino.bin = MiscArduinoSketches\BinZip\eepromWiFi.ino.bin
+		MiscArduinoSketches\BinZip\eepromWiFi.ino.uf2 = MiscArduinoSketches\BinZip\eepromWiFi.ino.uf2
+		MiscArduinoSketches\BinZip\espota.py = MiscArduinoSketches\BinZip\espota.py
+		MiscArduinoSketches\BinZip\GetWifiIPAddress.ino.bin = MiscArduinoSketches\BinZip\GetWifiIPAddress.ino.bin
+		MiscArduinoSketches\BinZip\GetWifiIPAddress.ino.uf2 = MiscArduinoSketches\BinZip\GetWifiIPAddress.ino.uf2
+		MiscArduinoSketches\BinZip\OTA-pythoninpath.bat = MiscArduinoSketches\BinZip\OTA-pythoninpath.bat
+		MiscArduinoSketches\BinZip\OTALedFlash.ino.bin = MiscArduinoSketches\BinZip\OTALedFlash.ino.bin
+		MiscArduinoSketches\BinZip\OTALedFlash.ino.uf2 = MiscArduinoSketches\BinZip\OTALedFlash.ino.uf2
+		MiscArduinoSketches\BinZip\SoftataOTA.ino.uf2 = MiscArduinoSketches\BinZip\SoftataOTA.ino.uf2
+		MiscArduinoSketches\BinZip\USBSerialCopyUf2.bat = MiscArduinoSketches\BinZip\USBSerialCopyUf2.bat
+		MiscArduinoSketches\BinZip\SoftataOTAwithSerialDebug.ino.bin = MiscArduinoSketches\BinZip\SoftataOTAwithSerialDebug.ino.bin
 	EndProjectSection
 EndProject
 Global
@@ -244,17 +222,10 @@ Global
 		{E63711C8-F627-4EA4-85E2-B618F227483B} = {60B26E93-BC37-48E6-8021-B6306EBF18F2}
 		{A5ED25A0-96F4-4DCA-A6B8-1FE8761632B9} = {1D47515E-81D0-4D41-98F8-8F9DEA6EB53F}
 		{0CBAE3E8-9D71-4596-A698-54102CCABC56} = {E63711C8-F627-4EA4-85E2-B618F227483B}
-		{5488C0EE-01F8-4064-9834-3690E2D8EC9B} = {1D47515E-81D0-4D41-98F8-8F9DEA6EB53F}
 		{8482F3A4-F77A-42A9-A9A2-D2DD82DEA428} = {60F3D639-033B-434F-B14B-2ABB6089B703}
-		{B33E4227-7763-43B7-929E-46F6A1A49AB1} = {8482F3A4-F77A-42A9-A9A2-D2DD82DEA428}
-		{973250BA-51A8-4268-B45D-1E21D90B157E} = {B33E4227-7763-43B7-929E-46F6A1A49AB1}
 		{A4372086-1DD4-4B05-956A-92ACE2709F9E} = {60F3D639-033B-434F-B14B-2ABB6089B703}
-		{9F16110E-093D-4AB2-9E90-6219BEBFF3D4} = {A4372086-1DD4-4B05-956A-92ACE2709F9E}
-		{DEF22580-08B6-4881-859A-FCBD825FE942} = {9F16110E-093D-4AB2-9E90-6219BEBFF3D4}
-		{83D478F0-35CA-4A73-874A-0B8226F45301} = {5488C0EE-01F8-4064-9834-3690E2D8EC9B}
-		{79050D09-F6A8-47AD-A999-E307EDAC26FD} = {4F9B17D9-D813-440F-B032-16F666BA5574}
-		{22E5E1C1-DABC-4E61-A7AC-F32019014A05} = {79050D09-F6A8-47AD-A999-E307EDAC26FD}
 		{D16761E9-C116-4CF3-BDBB-653C91E18539} = {60F3D639-033B-434F-B14B-2ABB6089B703}
+		{D497681E-55B6-401C-9BFC-EFE42B37BF1F} = {60F3D639-033B-434F-B14B-2ABB6089B703}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {84B4F03A-12C2-41A7-A747-5849AA29553F}

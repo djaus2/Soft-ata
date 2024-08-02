@@ -1,7 +1,7 @@
 #ifndef SERIAL_MACROS_H
 #define SERIAL_MACROS_H
 
-#define SOFTATA_DEBUG_MODE
+//#define SOFTATA_DEBUG_MODE
 // Enable only one (or none) of the following: 
 // Normally just use the following (Debug mode)
 #ifdef SOFTATA_DEBUG_MODE
