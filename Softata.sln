@@ -168,7 +168,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BinZip", "BinZip", "{D49768
 		MiscArduinoSketches\BinZip\OTA-pythoninpath.bat = MiscArduinoSketches\BinZip\OTA-pythoninpath.bat
 		MiscArduinoSketches\BinZip\OTALedFlash.ino.bin = MiscArduinoSketches\BinZip\OTALedFlash.ino.bin
 		MiscArduinoSketches\BinZip\OTALedFlash.ino.uf2 = MiscArduinoSketches\BinZip\OTALedFlash.ino.uf2
-		MiscArduinoSketches\BinZip\SoftataOTA.ino.uf2 = MiscArduinoSketches\BinZip\SoftataOTA.ino.uf2
+		MiscArduinoSketches\BinZip\SoftataOTAnoSerialDebug.ino.bin = MiscArduinoSketches\BinZip\SoftataOTAnoSerialDebug.ino.bin
+		MiscArduinoSketches\BinZip\SoftataOTAnoSerialDebug.ino.uf2 = MiscArduinoSketches\BinZip\SoftataOTAnoSerialDebug.ino.uf2
+		MiscArduinoSketches\BinZip\SoftataOTAwithSerialDebug.ino.uf2 = MiscArduinoSketches\BinZip\SoftataOTAwithSerialDebug.ino.uf2
 		MiscArduinoSketches\BinZip\USBSerialCopyUf2.bat = MiscArduinoSketches\BinZip\USBSerialCopyUf2.bat
 		MiscArduinoSketches\BinZip\SoftataOTAwithSerialDebug.ino.bin = MiscArduinoSketches\BinZip\SoftataOTAwithSerialDebug.ino.bin
 	EndProjectSection
