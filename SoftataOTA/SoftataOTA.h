@@ -4,11 +4,15 @@
 // See serial_macros.h:
 //#define SOFTATA_DEBUG_MODE
 
+#define WIFI_CONNECT_MODE from_eeprom
+#define SERIAL_DEBUG true
+
 //WiFi
 #ifndef STASSID
 #define STASSID "APQLZM"
 #define STAPSK "tallinn187isnotinaustralia"
 #endif
+
 
 #define SHORTPULSE 500
 #define ULTRA_SHORTPULSE 250

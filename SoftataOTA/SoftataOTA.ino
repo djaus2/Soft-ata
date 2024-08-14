@@ -6,7 +6,11 @@
 #include <LEAmDNS.h>
 #include <WiFiUdp.h>
 #include <ArduinoOTA.h>
+
 #include "SoftataOTA.h"
+#include "Connect2Wifi.h"
+#include "menu.h"
+
 
 #include "rpiwatchdog.h"
 #include "src/grove.h"
@@ -18,7 +22,6 @@
 #include <float.h>
 
 #include "devicesLists.h"
-#include "eepromWiFi.h"
 
 String Hostname = "picow2";
 
@@ -139,35 +142,49 @@ void ArduinoOTAsetup() {
 
 
   Serial_println("WIFI");
+  //From: Connect2WiFi.h:
+  //enum ConnectMode: byte {wifi_is_set, from_eeprom, is_defined, wifiset, serial_prompt, bt_prompt };
 
-  // If using USB-Serial then prompt for whether to use Flashed Wifi data
-  bool UseInbuiltWifiSettings = false;
-  #ifdef SOFTATA_DEBUG_MODE
-    Serial.print("Use Soft Wifi settings? [Y/y] [N/n]:");
-    while (Serial.available() == 0) {}
-    String UseInbuiltWifiSettingsStr = Serial.readString();
-    UseInbuiltWifiSettingsStr.trim();
-    UseInbuiltWifiSettingsStr.toUpperCase();
-    if (UseInbuiltWifiSettingsStr == "Y")
-      UseInbuiltWifiSettings = true;
-  #endif
-
-  if (!UseInbuiltWifiSettings)
+  ConnectMode connectMode = WIFI_CONNECT_MODE;
+  if(SERIAL_DEBUG)
   {
-    String hostname = WiFisetup();
-    if (hostname.length()!= 0)
+    Serial.println("Please select source of Wifi Configuration.");
+    Serial.print("Default: "); Serial.print(1+(int)WIFI_CONNECT_MODE); Serial.println(".");
+    Serial.println("1. WiFi is Set. Call with parameters.Ignore");
+        Serial.println("2. From EEProm.");
+            Serial.println("3. Is defined in header.");
+                Serial.println("4. Serial promt for details.");
+                    Serial.println("5. Bluetooth prompt for details.");
+                    
+                   
+   
+    int selection = GetMenuChoiceNum(10);
+    Serial.println();
+    if ((0< selection) && ( 6> selection))
     {
-      Hostname = hostname;
-      Serial.println("Used EEProm Wifi data.");
-    }
-    else
-    {
-      UseInbuiltWifiSettings = true;
+      selection--;
+      if ((selection >= wifi_is_set) && (selection <= bt_prompt ))
+      {
+        connectMode = (ConnectMode)(selection);
+      }
     }
   }
-  if(UseInbuiltWifiSettings)  
+
+  bool UseFlashedSettings  = FlashStorage::WiFiConnectwithOptions(115200,connectMode,true,true, SERIAL_DEBUG);
+
+  if (UseFlashedSettings)
   {
-    Serial.println("Using Soft Wifi data.");
+    Serial_println("Used EEProm Wifi data.");
+  }
+  else
+  {
+    // Fallback
+    Serial.println("Using Inbuilt data.");
+  }
+  Hostname = FlashStorage::GetDeviceHostname();
+  
+  if(!UseFlashedSettings)  
+  {
     WiFi.mode(WIFI_STA);
     WiFi.setHostname(Hostname.c_str());
     WiFi.begin(ssid, password);

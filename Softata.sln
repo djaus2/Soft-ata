@@ -72,6 +72,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SoftataOTA", "SoftataOTA", "{1D47515E-81D0-4D41-98F8-8F9DEA6EB53F}"
 	ProjectSection(SolutionItems) = preProject
 		SoftataOTA\devicesLists.h = SoftataOTA\devicesLists.h
+		SoftataOTA\eepromWiFi.cpp = SoftataOTA\eepromWiFi.cpp
+		SoftataOTA\eepromWiFi.h = SoftataOTA\eepromWiFi.h
 		SoftataOTA\iothub.h = SoftataOTA\iothub.h
 		SoftataOTA\rpiboards.h = SoftataOTA\rpiboards.h
 		SoftataOTA\rpiwatchdog.c = SoftataOTA\rpiwatchdog.c
@@ -79,7 +81,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SoftataOTA", "SoftataOTA", 
 		SoftataOTA\serial_macros.h = SoftataOTA\serial_macros.h
 		SoftataOTA\Softata.h = SoftataOTA\Softata.h
 		SoftataOTA\SoftataCore2.h = SoftataOTA\SoftataCore2.h
-		SoftataOTA\SoftataOTA-2.ino = SoftataOTA\SoftataOTA-2.ino
 		SoftataOTA\SoftataOTA.h = SoftataOTA\SoftataOTA.h
 	EndProjectSection
 EndProject

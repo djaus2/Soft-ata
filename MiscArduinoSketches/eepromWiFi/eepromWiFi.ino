@@ -1,3 +1,4 @@
+#include <Arduino.h>
 #include <WiFi.h>
 #include <EEPROM.h>
 #include "eepromWiFi.h"
@@ -7,12 +8,15 @@ char eeprom[256] = {0};
 
 String Ssid="";
 String Passwd="";
-String _Ssid="";
-String _Passwd="";
 String Hostname="picow2";
 
-void setup() {
-  Serial.begin(115200);
+void begin(int baud) {
+  String _Ssid="";
+  String _Passwd="";
+  if(!Serial)
+  {
+    Serial.begin(baud);
+  }
   while(!Serial);
   bool write2EEProm = false;
   if(!readKey())

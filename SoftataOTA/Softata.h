@@ -1,8 +1,6 @@
 #ifndef SOFTATAH
 #define SOFTATAH
 
-// See serial_macros.h:
-//#define SOFTATA_DEBUG_MODE
 
 #define ENABLE_OTA
 #define ENABLE_WATCHDOG
@@ -17,8 +15,8 @@ enum SyncedCommands : byte {pauseTelemetryorBT=0,continueTelemetryorBT=1,stopTel
 #define GROVE_RPI_PICO_SHIELD
 
 
-#define IOT_CONFIG_WIFI_SSID STASSID
-#define IOT_CONFIG_WIFI_PASSWORD STAPSK 
+//// #define IOT_CONFIG_WIFI_SSID STASSID
+//// #define IOT_CONFIG_WIFI_PASSWORD STAPSK 
 
 // Azure IoT
 // Uncomment following if using Azure IoT Hub
@@ -28,9 +26,13 @@ enum SyncedCommands : byte {pauseTelemetryorBT=0,continueTelemetryorBT=1,stopTel
 #include "serial_macros.h"
 
 
-#define IOT_CONFIG_IOTHUB_FQDN  "<hubname>.azure-devices.net"
-#define IOT_CONFIG_DEVICE_ID  "<devicename>"
-#define IOT_CONFIG_DEVICE_KEY  "<device connection key>" 
+//// #define IOT_CONFIG_IOTHUB_FQDN  "<hubname>.azure-devices.net"
+//// #define IOT_CONFIG_DEVICE_ID  "<devicename>"
+//// #define IOT_CONFIG_DEVICE_KEY  "<device connection key>" 
+
+// See serial_macros.h:
+//#define SOFTATA_DEBUG_MODE
+#include "Connect2WiFi.h"
 
 
 enum bitStuffingIndex: byte {e_cmd,e_pin,e_param,e_other,e_otherDataCount,e_data1,e_data2, e_num};
@@ -204,5 +206,6 @@ struct CallbackInfo
 int AddCallBack(CallbackInfo * info);
 bool PauseTelemetrySend(int index);
 bool ContinueTelemetrySend(int index);
+
 
 #endif
