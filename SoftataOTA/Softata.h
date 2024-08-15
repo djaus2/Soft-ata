@@ -30,8 +30,7 @@ enum SyncedCommands : byte {pauseTelemetryorBT=0,continueTelemetryorBT=1,stopTel
 //// #define IOT_CONFIG_DEVICE_ID  "<devicename>"
 //// #define IOT_CONFIG_DEVICE_KEY  "<device connection key>" 
 
-// See serial_macros.h:
-//#define SOFTATA_DEBUG_MODE
+
 #include "Connect2WiFi.h"
 
 

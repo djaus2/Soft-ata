@@ -24,6 +24,8 @@
 #include <az_core.h>
 #include <az_iot.h>
 #include <azure_ca.h>
+#include "NetworkSettings.h"
+#include "Connect2Wifi.h"
 
 // Additional sample headers
 //#include "iot_configs.h"
@@ -41,7 +43,7 @@
 // Translate iot_configs.h defines into variables used by the sample
 //static const char* ssid = IOT_CONFIG_WIFI_SSID;
 //static const char* password = IOT_CONFIG_WIFI_PASSWORD;
-static const char* host = IOT_CONFIG_IOTHUB_FQDN;
+static const char* host = "IOT_CONFIG_IOTHUB_FQDN"; 
 static const char* device_id = IOT_CONFIG_DEVICE_ID;
 static const char* device_key = IOT_CONFIG_DEVICE_KEY;
 static const int mqttPort = 8883;
@@ -66,7 +68,6 @@ static uint32_t telemetry_send_count = 0;
 
 static void connectToWiFi()
 {
-  Serial_begin(115200);
   Serial_println();
   Serial_print("Connecting to WIFI SSID ");
   Serial_println(ssid);
@@ -416,6 +417,7 @@ void receivedCallback(char* topic, byte* payload, unsigned int length)
 
 static void initializeClients()
 {
+
   az_iot_hub_client_options options = az_iot_hub_client_options_default();
   options.user_agent = AZ_SPAN_FROM_STR(AZURE_SDK_CLIENT_USER_AGENT);
 
@@ -549,21 +551,26 @@ static int connectToAzureIoTHub()
   return 0;
 }
 static bool WiFiStarted = false;
-static bool timeInited = false;
-static bool clientsInited = false;
+static bool TimeInited = false;
+static bool ClientInited = false;
 static void establishConnection()
 {
   if(!WiFiStarted)
-  connectToWiFi();
-  if(!timeInited)
-  initializeTime();
+    FlashStorage::WiFiConnect();
+  if(!TimeInited)
+    initializeTime();
   printCurrentTime();
-  if(!clientsInited)
-  initializeClients();
+  if(!ClientInited)
+  {
+    host = FlashStorage::GetIOT_CONFIG_IOTHUB_FQDN().c_str();
+    device_id = FlashStorage::GetDeviceHostname().c_str();
+    device_key = FlashStorage::GetDeviceConnectionString().c_str();
+    initializeClients();
+  }
 
   WiFiStarted = true;
-  timeInited = true;
-  clientsInited = true;
+  TimeInited = true;
+  ClientInited = true;
 
   // The SAS token is valid for 1 hour by default in this sample.
   // After one hour the sample must be restarted, or the client won't be able

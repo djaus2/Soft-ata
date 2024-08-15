@@ -1,6 +1,8 @@
 #ifndef SERIAL_MACROS_H
 #define SERIAL_MACROS_H
 
+extern bool useSerialDebug;
+
 #define SOFTATA_DEBUG_MODE
 // Enable only one (or none) of the following: 
 // Normally just use the following (Debug mode)
@@ -21,9 +23,9 @@
 #define Serial_begin(...) Serial.begin(__VA_ARGS__)
 #define ifSerial()   if(Serial)
 #define whileNotSerial() while(!Serial)
-#define Serial_print(...) Serial.print(__VA_ARGS__)
-#define Serial_printf(...) Serial.printf(__VA_ARGS__)
-#define Serial_println(...) Serial.println(__VA_ARGS__)
+#define Serial_print(...) if(useSerialDebug)Serial.print(__VA_ARGS__)
+#define Serial_printf(...) if(useSerialDebug)Serial.printf(__VA_ARGS__)
+#define Serial_println(...) if(useSerialDebug)Serial.println(__VA_ARGS__)
 #elif INSTEAD_OF_USB_SERIAL_DELAY
 #define Serial_begin(...) {delay(INSTEAD_OF_USB_SERIAL_DELAY);}
 #define ifSerial()  {delay(INSTEAD_OF_USB_SERIAL_DELAY);}if(true)

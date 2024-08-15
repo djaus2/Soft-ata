@@ -7,15 +7,17 @@ char GetMenuChoice(int timeout)
     if(Serial)
     {
       // Allow <timeout> seconds to respond
-      Serial.print("   --- " );
+      Serial.print("\t--- " );
       Serial.print(timeout);
       Serial.print(" secs to respond.");
       Serial.println( " ---" );
+      Serial.print("\t");
 
       int maxCount = (int) ((timeout*1000)/MENU_DELAY); 
       
       int count=0;
-      while (Serial.available() == 0) { delay(MENU_DELAY);count++; if(count>maxCount)break;}
+      while (Serial.available() == 0) { Serial.print('-');delay(MENU_DELAY);count++; if(count>maxCount)break;}
+      Serial.println();
 
       String resStr = Serial.readString();
       resStr.toUpperCase();
@@ -30,7 +32,7 @@ char GetMenuChoice(int timeout)
     return (char)0;
 }
 
-int  GetMenuChoiceNum(int timeout)
+int  GetMenuChoiceNum( int defaultNum, int timeout)
 {
   char menuCh = GetMenuChoice(timeout);
   if ( ((char)0) != menuCh)
@@ -41,16 +43,21 @@ int  GetMenuChoiceNum(int timeout)
       return selection;
     }
   }
-  return -1;
+  return defaultNum;
 }
 
 //Nb: Default is N
-bool  GetMenuChoiceYN(int timeout)
+bool  GetMenuChoiceYN( bool defaultY, int timeout)
 {
   char menuCh = GetMenuChoice(timeout);
   if ('Y' == menuCh)
   {
     return true;
   }
-  return false;
+  else if ('N' == menuCh)
+  {
+    return false;
+  }
+  else
+    return defaultY;
 }

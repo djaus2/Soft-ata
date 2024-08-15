@@ -1,6 +1,10 @@
 #ifndef NETWORK_SETTINGSH
 #define NETWORK_SETTINGSH
 
+
+// See serial_macros.h:
+#define SOFTATA_DEBUG_MODE
+
 #define WIFI_CONNECT_MODE from_eeprom
 #define SERIAL_DEBUG true
 
@@ -17,8 +21,8 @@
 #define IOT_CONFIG_DEVICE_ID  "<devicename>"
 #define IOT_CONFIG_DEVICE_KEY  "<device connection key>"
 
-#define IOT_CONFIG_IOTHUB_FQDN(Hub)  #Hub  ".azure-devices.net"
-#define IOT_CONFIG_IOTDEV_FQDN(Dev)  #Dev  ".azure-devices.net"
+
+
 
 
 

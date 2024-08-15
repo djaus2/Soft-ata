@@ -1,4 +1,5 @@
 // RPi Pico BSP placed in the public domain by Earle F. Philhower, III, 2022
+
 #include "softata.h"
 #include "rpiboards.h"
 
@@ -6,6 +7,8 @@
 #include <LEAmDNS.h>
 #include <WiFiUdp.h>
 #include <ArduinoOTA.h>
+
+
 
 #include "SoftataOTA.h"
 #include "Connect2Wifi.h"
@@ -24,6 +27,8 @@
 #include "devicesLists.h"
 
 String Hostname = "picow2";
+
+bool useSerialDebug = false;
 
 struct CallbackInfo  BME280CBInfo;
 // Used when first connected to change inbuilt LED blink rate.
@@ -125,40 +130,35 @@ void ArduinoOTAsetup() {
   #ifdef USE_TICKER
   TickerInit();
   #endif
-  Serial_begin(115200);
+
   OTAing =false;
-  whileNotSerial()
-  { 
-    delay(250);
-  }
 
   Serial_println("Booting");
   
-  /* Use BuuiltIn LED for flashes */
+  /* Use BuiltIn LED for flashes */
   pinMode(LED_BUILTIN, OUTPUT);
 
   // Booting: 5 short pulses
   flash(0, BOOTING_NUMFLASHES, BOOTING_PERIOD);
 
 
-  Serial_println("WIFI");
+
   //From: Connect2WiFi.h:
   //enum ConnectMode: byte {wifi_is_set, from_eeprom, is_defined, wifiset, serial_prompt, bt_prompt };
 
   ConnectMode connectMode = WIFI_CONNECT_MODE;
-  if(SERIAL_DEBUG)
+  if(useSerialDebug)
   {
+    Serial_println("WIFI");
     Serial.println("Please select source of Wifi Configuration.");
     Serial.print("Default: "); Serial.print(1+(int)WIFI_CONNECT_MODE); Serial.println(".");
     Serial.println("1. WiFi is Set. Call with parameters.Ignore");
         Serial.println("2. From EEProm.");
             Serial.println("3. Is defined in header.");
-                Serial.println("4. Serial promt for details.");
-                    Serial.println("5. Bluetooth prompt for details.");
-                    
-                   
+                Serial.println("4. Serial prompt for details.");
+                    Serial.println("5. Bluetooth prompt for details.");              
    
-    int selection = GetMenuChoiceNum(10);
+    int selection = GetMenuChoiceNum(2);
     Serial.println();
     if ((0< selection) && ( 6> selection))
     {
@@ -170,33 +170,26 @@ void ArduinoOTAsetup() {
     }
   }
 
-  bool UseFlashedSettings  = FlashStorage::WiFiConnectwithOptions(115200,connectMode,true,true, SERIAL_DEBUG);
-
-  if (UseFlashedSettings)
+  bool Connect2WiFiConnected  = FlashStorage::WiFiConnectwithOptions(connectMode, useSerialDebug);
+Connect2WiFiConnected= false;
+  if (Connect2WiFiConnected)
   {
-    Serial_println("Used EEProm Wifi data.");
+    Serial_println("Used Connect2WIfi for Wifi data.");
   }
   else
   {
     // Fallback
-    Serial.println("Using Inbuilt data.");
+    Serial_println("WiFi connect failed.");
+    while(true)
+    {
+      // If failed just loop here.
+      Serial.print("@");
+      flash(0xff, 5, 200);
+      delay(1000);
+    }
   }
   Hostname = FlashStorage::GetDeviceHostname();
   
-  if(!UseFlashedSettings)  
-  {
-    WiFi.mode(WIFI_STA);
-    WiFi.setHostname(Hostname.c_str());
-    WiFi.begin(ssid, password);
-    
-    while (WiFi.status() != WL_CONNECTED) {
-      Serial_print(".");
-      delay(250);
-    }
-    Serial_println("Connnected.");
-  }
-
-
 
   // Got WiFi: 3 long pulses
   flash(1, WIFI_STARTED_NUMFLASHES, WIFI_STARTED_PERIOD);
@@ -339,6 +332,30 @@ int Check4RecvdCloud2DeviceMsg()
 }
 void setup()
 {  
+#ifdef SOFTATA_DEBUG_MODE
+    Serial.begin();
+    while(!Serial);
+    Serial.println();
+    Serial.println("\t\tS O F T A T A");
+    Serial.println();
+    Serial.println();
+    Serial.println("Use Serial Debug? [Y](Default) [N]");
+    Serial_println();
+    // Longer wait as first menu choice 
+    useSerialDebug = GetMenuChoiceYN(true, 2*DEFAULT_MENU_TIMEOUT_SEC);
+    if (!useSerialDebug)
+    {
+      Serial.println("Serial Debug off.");
+    }
+    else
+    {
+      Serial.println("Serial Debug on.");
+    } 
+    Serial.end(); 
+#endif
+  Serial_begin();
+  whileNotSerial();
+
   #ifdef ENABLE_OTA
     ArduinoOTAsetup();
   #endif

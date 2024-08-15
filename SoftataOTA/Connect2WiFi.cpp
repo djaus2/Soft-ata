@@ -13,12 +13,11 @@ namespace{
   String Ssid=DEFAULT_SSID;
   String Passwd=DEFAULT_PASSWORD;
   String Hostname=DEFAULT_HOSTNAME;
+  String Hubname=DEFAULT_HUBNAME;
   String IoTHubDeviceConnectionString=DEFAULT_DEVICECONNECTIONSTRING;
   String Guid=DEFAULT_GUID;
 
   bool bSERIAL_DEBUG = false;
-  bool bUseIoTHub = false;
-  bool bIncludeGuid = false;
 
   char eeprom[EEPROM_SIZE] = {0};
 }
@@ -28,8 +27,18 @@ namespace FlashStorage{
   // Need to set Tools->IP Bluetooth Stack to IPV4 - Bluetooth
 
   String GetDeviceHostname()
-  {;
+  {
     return Hostname;
+  }
+
+  String GetIOT_CONFIG_IOTHUB_FQDN()
+  {
+    return Hubname +  "." + AZUREDEVICESNET;
+  }
+
+  String GetHubname()
+  {
+    return Hubname;
   }
 
   String GetDeviceConnectionString()
@@ -121,8 +130,8 @@ namespace FlashStorage{
     };
     //Nb: There is a leading separator in the string and one after each value.
     int splits[NUM_STORED_VALUES+1];
-    int numParts = 1;
     splits[0] = 0;
+    int numSplits = 1;
     for (int i=1;i<NUM_STORED_VALUES;i++)
     {
       int split = datas.indexOf(SEP_CHAR,splits[i-1] +1 );
@@ -130,7 +139,12 @@ namespace FlashStorage{
         break;
       splits[i] = split;
       splits[i+1]= length-1;
-      numParts++;
+      numSplits++;
+    }
+
+    if(numSplits != NUM_STORED_VALUES)
+    {
+      return false;
     }
     for (int i=0;i<NUM_STORED_VALUES; i++)
     {
@@ -196,27 +210,15 @@ namespace FlashStorage{
       return false;
     }
 
-    Ssid = vals[0];
-    Passwd = vals[1];
-    Hostname = vals[2];
+    Ssid = vals[sv_SSID];
+    Passwd = vals[sv_Password];
+    Hostname = vals[sv_hostname];
+    Hubname = vals[sv_hubname];
+    IoTHubDeviceConnectionString = vals[sv_deviceConnectionString];
+    Guid = vals[sv_guid];
+
     Serial_println(Hostname);
 
-    bUseIoTHub=false;
-    bIncludeGuid=false;
-    // Next IS IoTHub
-    if(vals[3]!= "")
-    {
-      bUseIoTHub=true;
-      IoTHubDeviceConnectionString = vals[3];
-    }
-    // Next is Guid (order matters)
-    // Could test 4 an5 with Guid String Parse. 2Do
-    // If no IOT Hub expect a dummy value for it.
-    if(vals[4]!= "")
-    {
-      bIncludeGuid=true;
-      Guid = vals[4];
-    }
     return true;
   }
 
@@ -231,11 +233,12 @@ namespace FlashStorage{
     writeKey();
     
     String vals[NUM_STORED_VALUES];
-    vals[0] = Ssid;
-    vals[1] = Passwd;
-    vals[2] = Hostname;
-    vals[3] = IoTHubDeviceConnectionString;
-    vals[4] = Guid;;
+    vals[sv_SSID] = Ssid;
+    vals[sv_Password] = Passwd;
+    vals[sv_hostname] = Hostname;
+    vals[sv_hubname] = Hubname;
+    vals[sv_deviceConnectionString] = IoTHubDeviceConnectionString;
+    vals[sv_guid] = Guid;
     
     bool res = WriteStringArray2EEProm(vals);
 
@@ -323,16 +326,14 @@ namespace FlashStorage{
         Serial_println(Passwd);
         Serial_print("Hostname:");
         Serial_println(Hostname);
-        if(bUseIoTHub)
-        {
-          Serial_print("DeviceConnectionString:");
-          Serial_println(IoTHubDeviceConnectionString);
-        }
-        if(bIncludeGuid)
-        {
-          Serial_print("Guid:");
-          Serial_println(Guid);
-        }
+        Serial_print("Hubname:");
+        Serial_println(Hubname);
+        Serial_print("IOT_CONFIG_IOTHUB_FQDN:");
+        Serial_println(GetIOT_CONFIG_IOTHUB_FQDN());
+        Serial_print("DeviceConnectionString:");
+        Serial_println(IoTHubDeviceConnectionString);
+        Serial_print("Guid:");
+        Serial_println(Guid);
 
         Serial_println("Connecting to WiFi");
       }
@@ -375,6 +376,14 @@ namespace FlashStorage{
         SerialBT.println(Passwd);
         SerialBT.print("Hostname:");
         SerialBT.println(Hostname);
+        SerialBT.print("Hubname:");
+        SerialBT.println(Hubname);
+        SerialBT.print("IOT_CONFIG_IOTHUB_FQDN:");
+        SerialBT.println(GetIOT_CONFIG_IOTHUB_FQDN());
+        SerialBT.print("DeviceConnectionString:");
+        SerialBT.println(IoTHubDeviceConnectionString);
+        SerialBT.print("Guid:");
+        SerialBT.println(Guid);
 
         SerialBT.println("Connecting to WiFi");
       }
@@ -428,38 +437,35 @@ namespace FlashStorage{
       Hostname=val;
     Serial_println();
 
-    if(bUseIoTHub)
-    {
-      SerialBT.print("Enter IoT Hub Connection String. Default ");
-      SerialBT.print(IoTHubDeviceConnectionString);
-      while (SerialBT.available() == 0) {}
-      String val = SerialBT.readString();
-      val.trim();
-      if (val.length()!=0)
-        IoTHubDeviceConnectionString=val; 
-      Serial_println();
-    }
-    else
-    {
-      IoTHubDeviceConnectionString="";
-    }
+     //Get Hubname
+    SerialBT.print("Enter IoT Hubname. Default ");
+    SerialBT.print(Hubname);
+    while (SerialBT.available() == 0) {}
+    val = SerialBT.readString();
+    val.trim();
+    if (val.length()!=0)
+      Hubname=val;
+    Serial_println();
 
+    //Get Device Connection String
+    SerialBT.print("Enter IoT Hub Device Connection String. Default ");
+    SerialBT.print(IoTHubDeviceConnectionString);
+    while (SerialBT.available() == 0) {}
+    val = SerialBT.readString();
+    val.trim();
+    if (val.length()!=0)
+      IoTHubDeviceConnectionString=val; 
+    Serial_println();
 
-    if(bIncludeGuid)
-    {
-      SerialBT.print("Enter Guid. Default ");
-      SerialBT.print(Guid);
-      while (SerialBT.available() == 0) {}
-      String val = SerialBT.readString();
-      val.trim();
-      if (val.length()!=0)
-        Guid=val;
-      Serial_println();
-    }
-    else
-    {
-      Guid="";
-    }
+    //Get GUID
+    SerialBT.print("Enter Guid. Default ");
+    SerialBT.print(Guid);
+    while (SerialBT.available() == 0) {}
+    val = SerialBT.readString();
+    val.trim();
+    if (val.length()!=0)
+      Guid=val;
+    Serial_println();
 
      return true;
   }
@@ -494,50 +500,50 @@ namespace FlashStorage{
     if (val.length()!=0)
       Hostname=val;
     Serial_println();
-    
-    if(bUseIoTHub)
-    {
-      Serial_print("Enter IoT Hub Connection String. Default ");
-      Serial_print(IoTHubDeviceConnectionString);
-      while (Serial.available() == 0) {}
-      String val = Serial.readString();
-      val.trim();
-      if (val.length()!=0)
-        IoTHubDeviceConnectionString=val;
-      Serial_println();
-      Serial_println(IoTHubDeviceConnectionString);
-    }
-    else
-    {
-      IoTHubDeviceConnectionString="";
-    }
 
-    if(bIncludeGuid)
-    {
-      Serial_print("Enter Guid. Default ");
-      Serial_print(Guid);
-      while (Serial.available() == 0) {}
-      String val = Serial.readString();
-      val.trim();
-      if (val.length()!=0)
-        Guid=val;
-      Serial_println();
-      Serial_println(Guid);
-    }
-    else
-    {
-      Guid="";
-    }
+    //Get Hubname
+    Serial_print("Enter IoT Hubname. Default ");
+    Serial_print(Hubname);
+    while (Serial.available() == 0) {}
+    val = Serial.readString();
+    val.trim();
+    if (val.length()!=0)
+      Hubname=val;
+    Serial_println();
+    
+    // Get IoT Hub Device Connection String
+    Serial_print("Enter IoT Hub Device Connection String. Default: ");
+    Serial_print(IoTHubDeviceConnectionString);
+    while (Serial.available() == 0) {}
+    val = Serial.readString();
+    val.trim();
+    if (val.length()!=0)
+      IoTHubDeviceConnectionString=val;
+    Serial_println();
+    Serial_println(IoTHubDeviceConnectionString);
+ 
+    // Get GUID
+    Serial_print("Enter Guid. Default: ");
+    Serial_print(Guid);
+    while (Serial.available() == 0) {}
+    val = Serial.readString();
+    val.trim();
+    if (val.length()!=0)
+      Guid=val;
+    Serial_println();
+    Serial_println(Guid);
+
     Serial_println("Got data");
     return true;
   }
 
   // Software set connection settings
-  void WiFiSet(String ssid, String pwd, String hostname, String deviceconnectionString, String guid )
+  void WiFiSet(String ssid, String pwd, String hostname,String hubname, String deviceconnectionString, String guid )
   {
     Ssid = ssid;
     Passwd = pwd;
     Hostname = hostname;
+    Hubname = hubname;
     IoTHubDeviceConnectionString = deviceconnectionString;
     Guid = guid;
   }
@@ -546,17 +552,15 @@ namespace FlashStorage{
 
 
   // Orchestrate WiFi Connection
-  bool WiFiConnectwithOptions(int baud, ConnectMode connectMode, bool useIoTHub, bool includeGuid, bool debug) 
+  bool WiFiConnectwithOptions(ConnectMode connectMode, bool debug) 
   {
     bSERIAL_DEBUG = debug;
-    bUseIoTHub = useIoTHub;
-    bIncludeGuid = includeGuid;
 
     if(bSERIAL_DEBUG)
     {
       if(!Serial)
       {
-        Serial.begin(baud);
+        Serial.begin();
       }
       while(!Serial);
       delay(100);
@@ -564,12 +568,12 @@ namespace FlashStorage{
       Serial.println(ConnectMode_STR[connectMode]);
     }
 
-    bool res=false;;
+    bool res=false;
     String resStr;
     switch (connectMode)
     {
       case wifi_is_set:
-        res = true;
+        res= true;
         break;
       case from_eeprom:
         if(!readKey())
@@ -621,7 +625,7 @@ namespace FlashStorage{
             Serial_print("Do you wish to reflash the EEProm with new WiFi data? [Y/y] [N/n](Default).");
 
             Serial_println();
-            bool resBool = GetMenuChoiceYN(10);
+            bool resBool = GetMenuChoiceYN(false);
             if (resBool)
             {
               Serial_println("Reading EEProm");
@@ -647,11 +651,16 @@ namespace FlashStorage{
         }
         break;
       case is_defined:
-        WiFiSet(DEFAULT_SSID, DEFAULT_PASSWORD, DEFAULT_HOSTNAME, DEFAULT_DEVICECONNECTIONSTRING, DEFAULT_GUID);    ;
+        WiFiSet(DEFAULT_SSID, DEFAULT_PASSWORD, DEFAULT_HOSTNAME,DEFAULT_HUBNAME, DEFAULT_DEVICECONNECTIONSTRING, DEFAULT_GUID);    ;
         res = true;
         break;
       case serial_prompt:
-        res = Prompt4WiFiConfigData();
+        if(!Serial){
+          res = false;
+        }
+        else{
+          res = Prompt4WiFiConfigData();
+        }
         break;
       case bt_prompt:
         SerialBT.setName(DEFAULT_BT_NAME);
