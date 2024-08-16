@@ -14,7 +14,8 @@ _Soft-ata rather than firm-ata!_
 - ***The Arduino Shield code is now downloadable as a Zip file when running the SoftataWebAPI***
 
 ## <font color="red">Hot Press</font>
-- V9.999 Big reqwrite of Arduino code. Se recent blog post at [https://davidjones.sportronics.com.au](https://davidjones.sportronics.com.au)
+- __Coming_ Rewrite of this ReadMe_
+- V9.999 Big rewrite of Arduino code. Se recent blog post at [https://davidjones.sportronics.com.au](https://davidjones.sportronics.com.au)
 - V9.50 Added more batch files to ota folder See ReadMe there.
 - V9.40 Batch files (2 version) to do OTA upload to Pico W
   - See SoftataOTA\OTA folder
