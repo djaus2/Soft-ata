@@ -15,7 +15,8 @@ _Soft-ata rather than firm-ata!_
 
 ## <font color="red">Hot Press</font>
 - __Coming_ Rewrite of this ReadMe_
-- V9.999 Big rewrite of Arduino code. Se recent blog post at [https://davidjones.sportronics.com.au](https://davidjones.sportronics.com.au)
+- Blog post now available [here](https://djzblogaccname137.z26.web.core.windows.net/softata/Softata-Arduino_Startup_Options-softata.html
+- V9.999 Big rewrite of Arduino code. See recent blog post at [https://davidjones.sportronics.com.au](https://davidjones.sportronics.com.au)
 - V9.50 Added more batch files to ota folder See ReadMe there.
 - V9.40 Batch files (2 version) to do OTA upload to Pico W
   - See SoftataOTA\OTA folder
