@@ -9,14 +9,10 @@
 enum SyncedCommands : byte {pauseTelemetryorBT=0,continueTelemetryorBT=1,stopTelemetryorBT=2,svrConnected=10, initialSynch=137, stopCore2=200};
 #define SynchMultiplier 1000
 
-#define APP_VERSION "9.991"  //Nb: As SoftataLib is updated, this is incremented even if no changes to Arduino code.
+#define APP_VERSION "9.999"  //Nb: As SoftataLib is updated, this is incremented even if no changes to Arduino code.
 
 //#define RPI_PICO_DEFAULT
 #define GROVE_RPI_PICO_SHIELD
-
-
-//// #define IOT_CONFIG_WIFI_SSID STASSID
-//// #define IOT_CONFIG_WIFI_PASSWORD STAPSK 
 
 // Azure IoT
 // Uncomment following if using Azure IoT Hub
@@ -24,13 +20,6 @@ enum SyncedCommands : byte {pauseTelemetryorBT=0,continueTelemetryorBT=1,stopTel
 //#define USINGIOTHUB
 
 #include "serial_macros.h"
-
-
-//// #define IOT_CONFIG_IOTHUB_FQDN  "<hubname>.azure-devices.net"
-//// #define IOT_CONFIG_DEVICE_ID  "<devicename>"
-//// #define IOT_CONFIG_DEVICE_KEY  "<device connection key>" 
-
-
 #include "Connect2WiFi.h"
 
 

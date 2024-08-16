@@ -76,6 +76,5 @@ void WiFiSet(String ssid, String pwd, String hostname, String hubname, String de
 
 // Orchestrate WiFi Connection
 bool WiFiConnectwithOptions(ConnectMode connectMode, bool debug);
-}
 
 #endif

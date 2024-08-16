@@ -4,8 +4,8 @@
 
 // See serial_macros.h:
 #define SOFTATA_DEBUG_MODE
-
 #define WIFI_CONNECT_MODE from_eeprom
+
 #define SERIAL_DEBUG true
 
 //WiFi
