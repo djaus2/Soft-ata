@@ -10,8 +10,8 @@
 
 //WiFi
 #ifndef STASSID
-#define STASSID "APQLZM"
-#define STAPSK "tallinn187isnotinaustralia"
+#define STASSID "<ssid>"
+#define STAPSK "<password>"
 #endif
 
 #define IOT_CONFIG_WIFI_SSID STASSID

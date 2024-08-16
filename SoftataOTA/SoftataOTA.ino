@@ -171,7 +171,7 @@ void ArduinoOTAsetup() {
   }
 
   bool Connect2WiFiConnected  = FlashStorage::WiFiConnectwithOptions(connectMode, useSerialDebug);
-Connect2WiFiConnected= false;
+
   if (Connect2WiFiConnected)
   {
     Serial_println("Used Connect2WIfi for Wifi data.");

@@ -335,24 +335,41 @@ namespace FlashStorage{
         Serial_print("Guid:");
         Serial_println(Guid);
 
-        Serial_println("Connecting to WiFi");
+        Serial.println();
+        Serial_println("\t--- Connecting to WiFi ---");
+        Serial_print("\t--- Timeout: ");
+        Serial_print(WIFI_CONNECT_TIMEOUT_SEC);
+        Serial_println(" sec ---");
       }
       WiFi.mode(WIFI_STA);
       WiFi.setHostname(Hostname.c_str());
       WiFi.begin(Ssid.c_str(), Passwd.c_str());
 
       //2Do add timeout here
+      int maxCount = (int) ((WIFI_CONNECT_TIMEOUT_SEC*1000)/MENU_DELAY);
+      int secCount = (int)(1000/MENU_DELAY);
       while (WiFi.status() != WL_CONNECTED) {
         if(bSERIAL_DEBUG)
         {
-          Serial_print(".");
+          if((maxCount-- % secCount ) == 0){
+            Serial_print("|");
+          }
+          else{
+            Serial_print(".");
+          }
         }
-        delay(250);
+        if (maxCount < 0)
+        { 
+          Serial_println();
+          Serial_println("\t--- WiFi Connect Timeout! ---");
+          return false;
+        }
+        delay(MENU_DELAY);
       }
       if(bSERIAL_DEBUG)
       {
         Serial_println();
-        Serial_println("Connected.");
+        Serial_println("\t--- Connected. ---");
       }
       
       //print the local IP address
