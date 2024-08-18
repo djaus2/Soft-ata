@@ -4,6 +4,23 @@
 > Note: All code folders have been moved to  /code folder.
 ---
 
+## This page:
+
+- [In brief](#in-brief)
+- [About](#about)
+- [History](#history)
+- [API Documentation](#api-documentation)
+- [Local Docs](#local-docs)
+- [Background](#background)
+- [Firmata](#firmata)
+- [Soft-ata Projects](#soft-ata-projects)
+- [RPi Pico W Arduino](#rpi-pico-w-arduino)
+- ["Some" of the required Arduino Libraries](#some-of-the-required-arduino-libraries)
+- [Settings](#settings)
+- [Use](#use)
+- [Blockly](#blockly)
+- [Azure IoT Hub](#azure-iot-hub)
+
 ## In Brief
 **An Arduino sketch _LIKE_ Firmata for a Rapberry Pi  Pico W running Arduino.**
 Includes a .NET package so that you can write your own remote client in C# to remotely control Pico devices. 
@@ -24,7 +41,7 @@ _Soft-ata rather than firm-ata!_
 
 
 
-## About.
+## About
 
 The Pico W app runs as a TCPIP Service taking commands, running them and returning the result to the client. 
 For peripheral setups, displays and actuators, the expected result is simply an acknowledgement "OK:" string.
