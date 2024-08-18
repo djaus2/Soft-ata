@@ -145,9 +145,13 @@ This BSP is as per previous repositories here as well as in some blog posts:
   - Zip install from [azure-sdk-for-c-arduino/releases](https://github.com/Azure/azure-sdk-for-c-arduino/releases)
 ------
 
+## Settings
+
+The Softata sketch requires at least, a WiFi SSID and Password. If sending telemetry to an Azure IoT Hub then connectivity settings for that are also required. There are a number of ways these settings can be ascribe such as fixed in a header file, input or read from flash. See [Arduino Startup Options](https://davidjones.sportronics.com.au/softata/Softata-Arduino_Startup_Options-softata.html). The flash method can be set and survive download of a new sketch.
+
 ## Use
 
-See the [Console app](/code/SoftataConsole) but the IpAddress as determined when the Pico W runs must match that in the library. The ports must also match.
+See the [Console app](/code/SoftataConsole). The IpAddress as determined when the Pico W runs must match that in the library. The ports must also match.
 The Console test app has multiple options:
 
 - 1  Digital
@@ -174,7 +178,7 @@ The Blazor app has similar functionality.
 
 ## Azure IoT Hub
 
-- Telemetry can be sent from a sensor connected to the Pico to an Azure IoT Hub. Some CD messages can be sent to stop, pause and start such telemetry.
+- Telemetry can be sent from a sensor connected to the Pico to an Azure IoT Hub. See [Softata-Console_app_-_Sensors](https://davidjones.sportronics.com.au/softata/Softata-Console_app_-_Sensors-softata.html)Some CD messages can be sent to stop, pause and start such telemetry. Control of an actuator via CD Messages is a work in progress.
 
 ------
 
