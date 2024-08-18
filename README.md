@@ -37,7 +37,7 @@ Firstly, the inbuilt LED flashes under control by the second core.
 When the Pico sketch first boots and both cores are ready, it blinks at a slow rate. 
 _(4s on/4s off)_. Once a connection is made, it blinks at 4x this rate. 
   - The client app should not try connecting until then.
-  - The device can run in a "headless" mode with status being indicated by [coded flashes on the inbuilt LED](https://davidjones.sportronics.com.au/softata/Softata-Arduino_Startup_Options-softata#WiFi-Connection-Failure-and-Inbuilt-LED-Flash-Signatures).
+  - The device can run in a "headless" mode with status being indicated by "Coded flashes on the inbuilt LED" [on this page](https://davidjones.sportronics.com.au/softata/Softata-Arduino_Startup_Options-softata.html).
 Communication between the two cores is generally from core one to core two and is done in a synchronized manner.
 
 The second core is also used for autonomous streaming of Sensor Telemetry data over Bluetooth and to an Azure IoT Hub.
