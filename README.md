@@ -6,10 +6,11 @@
 
 ## Index this page:
 
-| ------------- | ------------- |
+| :-----------------: | ----------------- |
 | Cell 1, Row 1 | Cell 2, Row 1 |
 | Cell 1, Row 2 | Cell 1, Row 2 |
 
+| :------------------------------- | :--------------------------------- |
 | [In brief](#in|brief) | [Soft|ata Projects](#soft|ata|projects) |
 | [About](#about) | [RPi Pico W Arduino](#rpi|pico|w|arduino) |
 | [History](#history) | ["Some" of the required Arduino Libraries](#some|of|the|required|arduino|libraries) |
