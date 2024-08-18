@@ -101,9 +101,8 @@ The full API documentation is [here](https://davidjones.sportronics.com.au/cats/
 
 - [ReadMe .. this](./README.md)
 - [Softata API](./SoftataAPI.md)
-- [Repository History](./RepositoryHistory.md)
-- [Original ReadMe](./README_V1.md)
-- [Second ReadMe version](./README_V2.md)
+- [Grove Sensors](./Grove.md)
+- [Previous Docs](./PrevReadMesEtc)
 
 ## Background
 I wanted to use a RPI Pico W with Arduino installed controlled by .NET apps. Drilling deeper, 
