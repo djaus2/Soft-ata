@@ -1,91 +1,49 @@
 # Soft-ata Version 10.001
 
 ---
-> Note: Code folders have been moved to under /code
-
+> Note: All code folders have been moved to  /code folder.
 ---
 
 ## In Brief
-**An Arduino app _LIKE_ Firmata for RPI Pico W running Arduino.**
-Includes a .NET package so that you can write your own client in C# to remotely control Pico devices. 
-Console, Blazor and WebAPI app examples included with MAUI possible later..
+**An Arduino sketch _LIKE_ Firmata for a Rapberry Pi  Pico W running Arduino.**
+Includes a .NET package so that you can write your own remote client in C# to remotely control Pico devices. 
+Console, Blazor and WebAPI app examples included with MAUI possible later. 
+
+**A key objective was to also provide a Blockly style low code device programming using this infrastructure.**
   
 _Soft-ata rather than firm-ata!_ 
 
 ---
 
-- Documentation:  [here](https://davidjones.sportronics.com.au/cats/softata/)
+- Documentation:  [Related blog posts](https://davidjones.sportronics.com.au/cats/softata/)
 
 - ***The Arduino Shield code is now downloadable as a Zip file when running the SoftataWebAPI***
 
-## <font color="red">Hot Press</font>
-- __Coming_ Rewrite of this ReadMe_
-- Blog post now available [here](https://davidjones.sportronics.com.au/softata/Softata-Arduino_Startup_Options-softata.html)
-- V9.999 Big rewrite of Arduino code. See recent blog post at [https://davidjones.sportronics.com.au](https://davidjones.sportronics.com.au)
-- V9.50 Added more batch files to ota folder See ReadMe there.
-- V9.40 Batch files (2 version) to do OTA upload to Pico W
-  - See SoftataOTA\OTA folder
-- V9.30 WatchDog -OTA issue resolved. WatchDog now enabled with OTA.
-- V9.22 Filename fix for the .ino file. 
-  - Code improvements
-    - Have tested OTA launch while console app running. OTA works fine.
-- V9.20 Merged OTA into the Sketc
-  - Sketch: SoftataOTA
-  - Found issue with OTA upload if using WatchDog Timer.
-    - Can optinally disable WatchDog. __(Disabled)__
-    - WatchDog max update period is about 8s but this upload takes 14.3 seconds!
-    - See [earlephilhower/arduino-pico/issues/2285](https://github.com/earlephilhower/arduino-pico/issues/2285)
-- V9.00 Added SoftatOptSerial sketch that makes the serial debug messages optional.
-- V8.00 Added SoftataMiscController class for miscellaneous Blockly Blocks
-    - Simplify Blockly code by encapsulating functionality for what would be a complex set of blocks
-     into a Get method that takes input/s, processes it and returns the result.. See [the example in this blog post](https://davidjones.sportronics.com.au/softata/Softata-CustomBlocksviaASP.NETController-softata.html)
-- V7.99 Added Shift595ParaOut class for 74HC595. 8 or 16 bits out.
-  - Added simple custom function app to samples. Deployed to Azure:
-    - https://softatawebapii.azurewebsites.net/BlocklyAutomation
-- V7.95 Abstracted  74HC595  Shift Reg fucntionality from LedBarGraph to separate class so can use as a Genral Purpose Demux. Actuator version coming.
-- V7.00 Adding Blockly Softata Samples added to Blockly Examples Menu
-  - V7.10 Blockly samples moved to ```SoftaWebAPI/wwwroot/BlocklyAutomation/assests/showUsage/demoBlocks```
-  - This is so that they are directly available from Examples menu in Blockly.
-  - V7.11/2 Added BME280 IoT Hub Telemetry Sample and Bluetooth Version.
-    - Easily changed for other sensors: DHT11 and URange
-  - V7.13 Added 2nd Neopixel example showing Functional usage.
-- V6.83 Blockly Added
-  - SoftaWebAPI app now starts with index page
-    -  Can choose link to **BlocklyAutomation** or to **Swagger**
-  - 11 simple sample Blockly apps in ```SoftaWebAPI/Samples folder```.
-    - Load in Blockly Save Local->Load Blocks and browse to folder.
-  - For info see [blog post](https://davidjones.sportronics.com.au/softata/Softata-Blockly____The_Holy_Grail-softata.html)
-- V6.20  Can send Telemtry pause continue or stop  as C2D Msg
-  - Eg **Telemetry 0 pause 0** to pause. 
-  - Use Azure IoT Explorer  or VS Code etc to send msg to device
-  - Also can send raw msg commands eg **240 0 9 0** to pause. 
-    - 240 = Sensor(Telemetry) 9 = pause 10=continue.
-    - Further details, take last/latest post (at bottom) [here](https://davidjones.sportronics.com.au/cats/softata/)
-  - Can also send raw C2D msg commands to actuator (Servo)
-    - eg ```242 0 5 0 1 90``` to move servo to 90 degress.
-    - Need to init servo first though.
+
 
 ## About.
 
-The Pico app runs as a TCPIP Service taking commands, running them and returning the result to the client. 
-For setups, displays and actuators, the expected result is simply an acknowledgement "OK:" string.
-For sensor reads, a data string is returned with an "OK:" prefix. The SoftaLib checks and consumes the acknowledgments 
+The Pico W app runs as a TCPIP Service taking commands, running them and returning the result to the client. 
+For peripheral setups, displays and actuators, the expected result is simply an acknowledgement "OK:" string.
+For sensor reads, a data string is returned with an "OK:" prefix. The SoftaLib checks and consumes the acknowledgment 
  data before it is forwarded to the client app.
 
-The RPi Pico W has two procressing cores. Whilst most interactions occur via the first core, 
+The RPi Pico W has two processing cores. Whilst most interactions occur via the first core, 
 some functionality is built into the second core. 
 Firstly, the inbuilt LED flashes under control by the second core. 
 When the Pico app first boots and both cores are ready, it blinks at a slow rate. 
-_(4s on/4s off)_. Once a connection is made, it blinks at 4x this rate. So the client app should try connecting until then. 
+_(4s on/4s off)_. Once a connection is made, it blinks at 4x this rate. 
+  - The client app should not try connecting until then.
+  - The device can run in a "headless" mode with status being indicated by [coded flashes on the inbuilt LED](https://davidjones.sportronics.com.au/softata/Softata-Arduino_Startup_Options-softata.html#WiFi-Connection-Failure-and-Inbuilt-LED-Flash-Signatures).
 Communication between the two cores is generally from core one to core two and is done in a synchronised manner.
 
-The second core is also used for automous streaming of Sensor Telemetry data over Bluetooth and to an Azure IoT Hub.
+The second core is also used for autonomous streaming of Sensor Telemetry data over Bluetooth and to an Azure IoT Hub.
 Once started, it runs with periodic transmissions without futher interaction until a **Pause** or **Stop** command is sent.
 When paused, the transmission continues after reception of a **Continue** command. 
 For every transmission, there is also a quick double flash by the inbuilt LED.
 
-Whereas Firmata is implemented form the ground up, implemented in terms of protocols with ddevices being added interms of those implementations
-Softata is implemented in terms of existing spcific Arduino device libaries. 
+Whereas Firmata is implemented from the ground up, implemented in tfraerms of protocols with devices being added in terms of those implementations
+Softata is implemented in terms of existing specific Arduino device libraries. 
 To add a device you include its Arduino library and then slot it into the 
 Softata app infrastructure. That code is, in the main, polymorphic. To add for example, a sensor
 you copy you copy the template sensor.cpp file and implement the methods in it
@@ -138,10 +96,10 @@ After some consideration Firmata was considered. But this lacks a simple .NET (n
 
 > Firmata is a protocol for communicating with microcontrollers from software on a host computer. The protocol can be implemented in firmware on any microcontroller architecture as well as software on any host computer software package. [From](https://github.com/firmata/arduino)
 
-So if there a Firmata app running on a device, a host computrer can interact directly with the device's hardware through a standard protocol over Serial, Ethernet (Wired or WiFi) or Bluetooth. The Firmata protocol can be viewed in the first link below. There are various implementations of it for various devices:
+So if there a Firmata app running on a device, a host computer can interact directly with the device's hardware through a standard protocol over Serial, Ethernet (Wired or WiFi) or Bluetooth. The Firmata protocol can be viewed in the first link below. There are various implementations of it for various devices:
 ... There is more discussion of Firmata in the Blog post. ...
 
-> I could get the [ConfigurableFirmata](https://github.com/firmata/ConfigurableFirmata) running on a RPi Pico W over WiFi. The.NET client libraries were quite old and used a Serial connection. Using a .NET Tcpip Client, I found that the functionality I could get working with interactively was limited. So I decided to build my own "Firmata", hence Soft-ata.
+> I could get the [ConfigurableFirmata](https://github.com/firmata/ConfigurableFirmata) running on a RPi Pico W over WiFi. The.NET client libraries were quite old and used a Serial connection. Using a .NET TCPIP Client, I found that the functionality I could get working with interactively was limited. So I decided to build my own "Firmata", hence Soft-ata.
 
 ## Soft-ata Projects
 
@@ -162,7 +120,7 @@ This requires a setup as per previous repositories here as well as in some blog 
 
 ------
 
-## Required Arduino Libraries
+## Some of the required Arduino Libraries
 
 - [DHT11_Temperature_And_Humidity_Sensor](https://github.com/RobTillaart/Arduino/tree/master/libraries/DHTlib)
   - Direct library install from Arduino. Search for **DHTlib**
@@ -185,7 +143,7 @@ This requires a setup as per previous repositories here as well as in some blog 
 
 ## Usage
 
-See the [Console app](/SoftataConsole) but the IpAddress as determined when the Pico W runs must match that in the library. The ports must also match.
+See the [Console app](/code/SoftataConsole) but the IpAddress as determined when the Pico W runs must match that in the library. The ports must also match.
 The Console test app has multiple options:
 
 - 1  Digital
@@ -202,7 +160,7 @@ The Console test app has multiple options:
 
 The Blazor app has similar functionality.
 
-The SoftataWebAPI is an ASP.NET Core API app presents a Swagger interafce to all of the SoftataLib (.NET) API commands
+The SoftataWebAPI is an ASP.NET Core API app presents a Blockly and Swagger interface to all of the SoftataLib (.NET) API commands
 
 ------
 
