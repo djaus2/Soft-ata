@@ -191,6 +191,8 @@ The Blazor app has similar functionality.
 
 ![netcoreblockly](netcoreblockly-decluttered-large.png)
 
+This Blockly app connects to the device at 192.168.0.9 (Begin), gets the version number of Softata _(currently 10.001)_, gets a list of devices that can be used, and completes _(which reboots the device)_. 
+
 ------
 
 ## Azure IoT Hub
