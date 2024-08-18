@@ -9,7 +9,7 @@
 
 |   |   |
 |:---|:-------|
-| 1.[In brief](#in-brief)  | 8. [Soft-ata Projects](#soft-ata-projects)  |
+| 1. [In brief](#in-brief)  | 8. [Soft-ata Projects](#soft-ata-projects)  |
 | 2. [About](#about)  | 9. [RPi Pico W Arduino](#rpi-pico-w-arduino)  |
 | 3. [History](#history) |  10. ["Some" of the required Arduino Libraries](#some-of-the-required-arduino-libraries)  |
 | 4. [API Documentation](#api-documentation)  | 11. [Settings](#settings) |
