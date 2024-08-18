@@ -4,22 +4,19 @@
 > Note: All code folders have been moved to  /code folder.
 ---
 
-## This page:
+## Index this page:
 
-- [In brief](#in-brief)
-- [About](#about)
-- [History](#history)
-- [API Documentation](#api-documentation)
-- [Local Docs](#local-docs)
-- [Background](#background)
-- [Firmata](#firmata)
-- [Soft-ata Projects](#soft-ata-projects)
-- [RPi Pico W Arduino](#rpi-pico-w-arduino)
-- ["Some" of the required Arduino Libraries](#some-of-the-required-arduino-libraries)
-- [Settings](#settings)
-- [Use](#use)
-- [Blockly](#blockly)
-- [Azure IoT Hub](#azure-iot-hub)
+| ------------- | ------------- |
+| Cell 1, Row 1 | Cell 2, Row 1 |
+| Cell 1, Row 2 | Cell 1, Row 2 |
+
+| [In brief](#in|brief) | [Soft|ata Projects](#soft|ata|projects) |
+| [About](#about) | [RPi Pico W Arduino](#rpi|pico|w|arduino) |
+| [History](#history) | ["Some" of the required Arduino Libraries](#some|of|the|required|arduino|libraries) |
+| [API Documentation](#api|documentation) | [Settings](#settings) |
+| [Local Docs](#local|docs) | [Use](#use) |
+| [Background](#background) | [Blockly](#blockly) |
+| [Firmata](#firmata) | [Azure IoT Hub](#azure|iot|hub) |
 
 ## In Brief
 **An Arduino sketch _LIKE_ Firmata for a Rapberry Pi  Pico W running Arduino.**
