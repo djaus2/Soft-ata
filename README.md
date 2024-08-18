@@ -103,15 +103,16 @@ So if there a Firmata app running on a device, a host computer can interact dire
 
 ## Soft-ata Projects
 
-- Softata: The Arduino RPI Pico app
-- SoftataLib: The. NET Library
-- SoftataConsole: A simple .NET Console demo app
-- BlazorSoftata: Blazor Web Server App, some tests as Console app.
-- SoftataWebAPI: Swagger interface to SoftataLib
+- See [./code](./code)
 
 ## RPi Pico W Arduino
 
-This requires a setup as per previous repositories here as well as in some blog posts:
+The Pico needs the following BSP installed:
+- [earlephilhower RPi Pico W Arduino BSP](https://github.com/earlephilhower/arduino-pico/) 
+
+Its API doumentation is [here](https://arduino-pico.readthedocs.io/en/latest/)
+
+This BSP is as per previous repositories here as well as in some blog posts:
 
 - [RPI Pico W GPS Bluetooth and Azure IoT Hub](https://github.com/djaus2/RpiPicoWGPSandBT)
 - [Azure IoT Hub Arduino Raspberry Pi Pico with Telemetry](https://github.com/djaus2/Azure_IoT_Hub_Arduino_RPI_Pico_Telemetry)
@@ -120,7 +121,7 @@ This requires a setup as per previous repositories here as well as in some blog 
 
 ------
 
-## Some of the required Arduino Libraries
+## "Some" of the required Arduino Libraries
 
 - [DHT11_Temperature_And_Humidity_Sensor](https://github.com/RobTillaart/Arduino/tree/master/libraries/DHTlib)
   - Direct library install from Arduino. Search for **DHTlib**
@@ -141,7 +142,7 @@ This requires a setup as per previous repositories here as well as in some blog 
   - Zip install from [azure-sdk-for-c-arduino/releases](https://github.com/Azure/azure-sdk-for-c-arduino/releases)
 ------
 
-## Usage
+## Use
 
 See the [Console app](/code/SoftataConsole) but the IpAddress as determined when the Pico W runs must match that in the library. The ports must also match.
 The Console test app has multiple options:
@@ -160,16 +161,17 @@ The Console test app has multiple options:
 
 The Blazor app has similar functionality.
 
-The SoftataWebAPI is an ASP.NET Core API app presents a Blockly and Swagger interface to all of the SoftataLib (.NET) API commands
+## Blockly
+
+[SoftataWebAPI](./code/SoftataWebAPI) is an ASP.NET Core API sketch that presents a Blockly and a Swagger interface to all of the SoftataLib (.NET) API commands. This makes use of [ignatandrei/NETCoreBlockly](https://github.com/ignatandrei/NETCoreBlockly). **SoftataWebAPI** can also be used without installation as it is hosted on Azure at [softatawebapii.azurewebsites.net](https://softatawebapii.azurewebsites.net/). Note though that some tunnelling is required to connect SoftataWebAPI and the Softata service running locally on a Pico W.  See [Running Blockly on local Pico from Azure Softata API](https://davidjones.sportronics.com.au/softata/Softata-Running_Blockly_on_local_Pico_from_Azure_SoftataAPII-softata.html). Eg:
+
+![netcoreblockly](netcoreblockly-decluttered-large.png)
 
 ------
 
-## Roadmap
+## Azure IoT Hub
 
-- Add more devices: __Please submit.__
-- Azure IoT C2D commands (Control actuators etc)
-- _Please leave suggestions in Issues or Discussions,thx_
-- _More:_ See the Blog post _(See API Documentation link above)_
+- Telemetry can be sent from a sensor connected to the Pico to an Azure IoT Hub. Some CD messages can be sent to stop, pause and start such telemetry.
 
 ------
 
