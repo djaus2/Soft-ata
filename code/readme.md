@@ -13,10 +13,13 @@
     - The C# Class that can be used by .NET apps
     - Provides connection between apps and the Arduino sketch service.
 3. Sample apps
-  - Provide interation with the RPi Pico W via SoftataLib:
+
+  - Provide interaction with the RPi Pico W via SoftataLib:
+
     (i) [SoftataConsole](./SoftaConsole)
     (ii) [BlazorSoftata](./BlazorSoftata)
     (iii) [SoftataWebAPI](./SoftataWebAPI)
+
 4. [MiscArduinoSketches](./MiscArduinoSketches)
     - See folder
 5. [NetStandardSoftata](./NetStandardSoftata)
