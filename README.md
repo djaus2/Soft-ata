@@ -113,7 +113,7 @@ So if there a Firmata app running on a device, a host computer can interact dire
 The Pico needs the following BSP installed:
 - [earlephilhower RPi Pico W Arduino BSP](https://github.com/earlephilhower/arduino-pico/) 
 
-Its API doumentation is [here](https://arduino-pico.readthedocs.io/en/latest/)
+Its API documentation is [here](https://arduino-pico.readthedocs.io/en/latest/)
 
 This BSP is as per previous repositories here as well as in some blog posts:
 
