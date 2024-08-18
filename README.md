@@ -6,18 +6,17 @@
 
 ## Index this page:
 
-| :-----------------: | ----------------- |
-| Cell 1, Row 1 | Cell 2, Row 1 |
-| Cell 1, Row 2 | Cell 1, Row 2 |
 
-| :------------------------------- | :--------------------------------- |
-| [In brief](#in|brief) | [Soft|ata Projects](#soft|ata|projects) |
-| [About](#about) | [RPi Pico W Arduino](#rpi|pico|w|arduino) |
-| [History](#history) | ["Some" of the required Arduino Libraries](#some|of|the|required|arduino|libraries) |
-| [API Documentation](#api|documentation) | [Settings](#settings) |
-| [Local Docs](#local|docs) | [Use](#use) |
-| [Background](#background) | [Blockly](#blockly) |
-| [Firmata](#firmata) | [Azure IoT Hub](#azure|iot|hub) |
+|   |   |
+|:---|:-------|
+| 1.[In brief](#in-brief)  | 8. [Soft-ata Projects](#soft-ata-projects)  |
+| 2. [About](#about)  | 9. [RPi Pico W Arduino](#rpi-pico-w-arduino)  |
+| 3. [History](#history) |  10. ["Some" of the required Arduino Libraries](#some-of-the-required-arduino-libraries)  |
+| 4. [API Documentation](#api-documentation)  | 11. [Settings](#settings) |
+| 5. [Local Docs](#local-docs) | 12. [Use](#use)   |
+| 6. [Background](#background) | 13. [Blockly](#blockly) |
+| 7. [Firmata](#firmata) | 14. [Azure IoT Hub](#azure-iot-hub)  |
+
 
 ## In Brief
 **An Arduino sketch _LIKE_ Firmata for a Rapberry Pi  Pico W running Arduino.**
