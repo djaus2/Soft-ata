@@ -10,8 +10,8 @@
   - Supports classes for running attached senors, actuators etc that can be orchestrated via the service.
   - Also Azure IoT Hub and Bluetooth Telemetry options.
 2. [SoftataLib](./SofataLib)  
-  - The C# Class that can be used by .NET apps
-  - Provides connection between apps and the Arduino sketch service.
+    - The C# Class that can be used by .NET apps
+    - Provides connection between apps and the Arduino sketch service.
 3. Sample apps
   - Provide interation with the RPi Pico W via SoftataLib:
    (i) [SoftataConsole](./SoftaConsole)
@@ -19,10 +19,10 @@
   (iii) [SoftataWebAPI](./SoftataWebAPI)
 4. [MiscArduinoSketches](./MiscArduinoSketches)
   - See folder
-5. NetStandardSoftata
+5. [NetStandardSoftata](./NetStandardSoftata)
   - Port of SoftataLib to .NETStandard as used by MeadowLab
   - _Needs updates_
-6. MeadowLab/.WindowsDesktop
+6. [MeadowLab](./MeadowLab)/[MeadowLabs.WindowsDesktop](./MeadowLabs.WindowsDesktop)
   - MeadowLabs app for Softata
   - _Needs updates_
 
