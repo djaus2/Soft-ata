@@ -90,7 +90,7 @@ A Console app was built to fully test and demonstrate this functionality. A Blaz
 Similarly a .NET MAUI app is envisaged. Finally, a port of the .NET library to the [Wilderness Labs Project Lab V3 ](https://store.wildernesslabs.co/products/project-lab-board)device is also envisaged.***
 
 
-# API Documentation
+## API Documentation
 
 The full API documentation is [here](https://davidjones.sportronics.com.au/cats/softata/) __(Extended/updated)__
 
