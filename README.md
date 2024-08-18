@@ -31,18 +31,18 @@ For sensor reads, a data string is returned with an "OK:" prefix. The SoftaLib c
 The RPi Pico W has two processing cores. Whilst most interactions occur via the first core, 
 some functionality is built into the second core. 
 Firstly, the inbuilt LED flashes under control by the second core. 
-When the Pico app first boots and both cores are ready, it blinks at a slow rate. 
+When the Pico sketch first boots and both cores are ready, it blinks at a slow rate. 
 _(4s on/4s off)_. Once a connection is made, it blinks at 4x this rate. 
   - The client app should not try connecting until then.
-  - The device can run in a "headless" mode with status being indicated by [coded flashes on the inbuilt LED](https://davidjones.sportronics.com.au/softata/Softata-Arduino_Startup_Options-softata.html#WiFi-Connection-Failure-and-Inbuilt-LED-Flash-Signatures).
-Communication between the two cores is generally from core one to core two and is done in a synchronised manner.
+  - The device can run in a "headless" mode with status being indicated by [coded flashes on the inbuilt LED](https://davidjones.sportronics.com.au/softata/Softata-Arduino_Startup_Options-softata#WiFi-Connection-Failure-and-Inbuilt-LED-Flash-Signatures).
+Communication between the two cores is generally from core one to core two and is done in a synchronized manner.
 
 The second core is also used for autonomous streaming of Sensor Telemetry data over Bluetooth and to an Azure IoT Hub.
-Once started, it runs with periodic transmissions without futher interaction until a **Pause** or **Stop** command is sent.
+Once started, it runs with periodic transmissions without further interaction until a **Pause** or **Stop** command is sent.
 When paused, the transmission continues after reception of a **Continue** command. 
 For every transmission, there is also a quick double flash by the inbuilt LED.
 
-Whereas Firmata is implemented from the ground up, implemented in tfraerms of protocols with devices being added in terms of those implementations
+Whereas Firmata is implemented from the ground up, implemented in terms of protocols with devices being added in terms of those implementations
 Softata is implemented in terms of existing specific Arduino device libraries. 
 To add a device you include its Arduino library and then slot it into the 
 Softata app infrastructure. That code is, in the main, polymorphic. To add for example, a sensor
@@ -55,7 +55,7 @@ This process is documented [here](https://davidjones.sportronics.com.au/softata/
 
 The plan was to implement an Arduino app to run on a [RPi Pico W](https://www.raspberrypi.com/documentation/microcontrollers/raspberry-pi-pico.html) placed in a [Grove Shield for Pi Pico](https://www.seeedstudio.com/Grove-Shield-for-Pi-Pico-v1-0-p-4846.html). 
 The Pico W has onboard Arduino implemented using the [earlephilhowe BSP implementation](https://github.com/earlephilhower/arduino-pico). 
-The Grove instructure being used because of it's simple standardised connectivity between devices and the shield at both ends.
+The Grove infrastructure being used because of it's simple standardised connectivity between devices and the shield at both ends.
 Rather than implement a general purpose interface for devices in One Wire, I2C or SPI, etc, 
 use is made of existing Arduino libraries for Grove devices.  
 
