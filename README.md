@@ -7,6 +7,9 @@ Console, Blazor and WebAPI app examples included with MAUI possible later..
   
 _Soft-ata rather than firm-ata!_ 
 
+> Branch 10.001 Is latest. Major resture of repository. All code under /code with a readme each. Under developement. Will merge back here when complete.
+
+
 ---
 
 - Documentation:  [here](https://davidjones.sportronics.com.au/cats/softata/)
