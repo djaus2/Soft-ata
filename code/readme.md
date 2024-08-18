@@ -25,7 +25,7 @@
 5. [NetStandardSoftata](./NetStandardSoftata)
     - Port of SoftataLib to .NETStandard as used by MeadowLab
     - _Needs updates_
-6. [MeadowLab](./MeadowLab)/[MeadowLab.WindowsDesktop](./MeadowLab.WindowsDesktop)
+6. [MeadowLab](./MeadowLab)/[MeadowLab.WindowsDesktop](./MeadowLabs.WindowsDesktop)
     - MeadowLabs app for Softata
     - _Needs updates_
 
