@@ -15,10 +15,9 @@
 3. Sample apps
 
   - Provide interaction with the RPi Pico W via SoftataLib:
-
-    (i) [SoftataConsole](./SoftaConsole)
-    (ii) [BlazorSoftata](./BlazorSoftata)
-    (iii) [SoftataWebAPI](./SoftataWebAPI)
+  - (i) [SoftataConsole](./SoftaConsole)
+  - ii) [BlazorSoftata](./BlazorSoftata)
+  - (iii) [SoftataWebAPI](./SoftataWebAPI)
 
 4. [MiscArduinoSketches](./MiscArduinoSketches)
     - See folder
