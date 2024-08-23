@@ -306,10 +306,10 @@ void receivedCallback(char* topic, byte* payload, unsigned int length)
   {
     bCmd = 0xf0;
   }
-  /*else if(Cmd.equalsIgnoreCase(_Actuator))
+  else if(Cmd.equalsIgnoreCase(_Actuator))
   { //Coming
     bCmd = 0xf2;
-  }*/
+  }
   else if(Cmd.equalsIgnoreCase(_Raw))
   {
     //bCmd already parsed

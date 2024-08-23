@@ -170,6 +170,7 @@ void ArduinoOTAsetup() {
     }
   }
 
+
   bool Connect2WiFiConnected  = FlashStorage::WiFiConnectwithOptions(connectMode, useSerialDebug);
 
   if (Connect2WiFiConnected)
@@ -340,7 +341,10 @@ void setup()
     Serial.println();
     Serial.println();
     Serial.println("Use Serial Debug? [Y](Default) [N]");
-    Serial_println();
+
+    // Need useSerialDebug to be set before menu is displayed.
+    // YN Menu will determine its state.
+    useSerialDebug = true;
     // Longer wait as first menu choice 
     useSerialDebug = GetMenuChoiceYN(true, 2*DEFAULT_MENU_TIMEOUT_SEC);
     if (!useSerialDebug)
@@ -957,7 +961,7 @@ void loop() {
               }
             }
             break;
-          case 0xF0: //Grove Sensors
+          case GROVE_SENSOR_CMD: //Grove Sensors
             { 
               // Cmd = 0xF0,pin=Index of cmd in list,param=SubCmd,Other=
               // GroveSensorCmds{
@@ -1371,7 +1375,7 @@ void loop() {
               }
             }
             break;
-          case 0xF1: //Grove Displays
+          case GROVE_DISPLAY_CMD: //Grove Displays
             {
               //#define G_DISPLAYS C(OLED096)C(LCD1602)C(NEOPIXEL)
               // enum GroveDisplayCmds{
@@ -1707,7 +1711,7 @@ void loop() {
               }
             }
             break;
-          case 0xF2: //Grove Actuators
+          case GROVE_ACTUATOR_CMD: //Grove Actuators
             {
               GroveActuator actuator = (GroveActuator)other;
               switch (param)
@@ -1875,7 +1879,7 @@ void loop() {
                   Grove_Actuator * grove_Actuator = GetActuatorFromList(index);
                   if(otherData[0]<1)
                   {
-                    client.print("Fail:Actuator-WriteIntValue needs (a value");
+                    client.print("Fail:Actuator-WriteIntValue needs a value");
                   }
                   else
                   {

@@ -77,6 +77,16 @@ static int bitStuffing[] = {256,16,16,16,16,256,16};
 #define G_DISPLAYS C(OLED096)C(LCD1602)C(NEOPIXEL)C(BARGRAPH)
 #define G_SERIAL C(LOOPBACK)C(GPS)
 
+//////////////////////// C O M M A N D   T Y P ES  //////////////////////////////////////////
+#define ANALOG_CMDS 0xA0
+#define PWM_CMDS 0xB0
+#define SERVO_CMDS 0xC0
+#define DIGITAL_CMDS 0xD0
+#define SERIAL_CMDS 0xE0
+
+#define GROVE_SENSOR_CMD  0xF0
+#define GROVE_DISPLAY_CMD 0xF1
+#define GROVE_ACTUATOR_CMD 0xf2
 ///////////////////////// A C T U A T O R S /////////////////////////////////////////////////
 
 enum GroveActuatorCmds{a_getpinsCMD, a_getValueRangeCMD, a_setupDefaultCMD, a_setupCMD, a_writeDoubleValueCMD, a_writeByteValueCMD,a_writeWordValueCMD,a_SetBitStateCMD,a_SetBitCMD,a_ClearBitCMD,a_ToggleBitCMD, a_getActuatorsCMD=255 };
