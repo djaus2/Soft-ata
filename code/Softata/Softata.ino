@@ -367,13 +367,21 @@ void setup()
   hasConnected = false; 
   
   server.begin();
+  Serial_print("Connected to wifi. Address:");
+  IPAddress ipAddress = WiFi.localIP();
+  Serial_print(ipAddress);
+  Serial_print(" Port:");
+  Serial_println(port); //port*/
+  Serial_print("Server Status: ");
+  Serial_println(server.status());
+  
 
   InitSensorList();
   InitDisplayList();
   InitActuatorList();  
   
   bool first = false;
-  // Just to be safe don't simulataneously setup server and client
+  // Just to be safe don't simultaneously setup server and client
   uint32_t val = initialSynch;
  
   Serial_print("Initial Core1-Core2 Synch value:");
@@ -410,7 +418,7 @@ void loop() {
                               
   delay(500);
 
-   WiFiClient client = server.accept();//server.available();
+   WiFiClient client = server.available();//server.accept();//
   if (!client) {
     return;
   }
