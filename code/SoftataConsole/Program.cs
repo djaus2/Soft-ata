@@ -21,7 +21,7 @@ namespace SoftataBasic
 
         // Set the same as Arduino:
         const int port = 4242;
-        const string ipaddressStr = "192.168.0.20";
+        const string ipaddressStr = "192.168.0.12";
 
         // Configure hardware pin connections thus:
         static byte LED = 12;
@@ -56,6 +56,25 @@ namespace SoftataBasic
             Console.WriteLine();
             Console.WriteLine("For details see https://davidjones.sportronics.com.au/cats/softata/");
             Console.WriteLine();
+            Console.WriteLine($"Default Softata Server is at {ipaddressStr}:{port}");
+            Console.Write("Plz Enter IPAdress: ");
+            string IpAddress = ipaddressStr;
+            int Port = port;
+            string?  ip = Console.ReadLine();
+            if (!string.IsNullOrEmpty(ip))
+                    IpAddress = ip;
+
+            Console.Write("Plz Enter Port: ");
+            string? prt = Console.ReadLine();
+            if (!string.IsNullOrEmpty(prt))
+            {
+                if(int.TryParse(prt, out int portNo))
+                {
+                    Port = portNo;
+                }
+            }
+            Console.WriteLine($"Softata Server is at {ipaddressStr}:{port}");
+
             Console.WriteLine("TESTS");
             try
             {
@@ -87,7 +106,7 @@ namespace SoftataBasic
 
                 Console.WriteLine($"Testtype: {Testtype}");
 
-                SoftataLib.Connect(ipaddressStr, port);
+                SoftataLib.Connect(IpAddress, Port);
 
                 SoftataLib.SendMessageCmd("Begin");
                 Thread.Sleep(500);

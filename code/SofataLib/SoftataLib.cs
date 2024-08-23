@@ -24,7 +24,7 @@ namespace Softata
         public const byte nullData = 0xfe;
 
         public static  int port { get; set; } = 4242;
-        public static string ipAddresStr { get; set; } = "192.168.0.20";
+        public static string ipAddresStr { get; set; } = "192.168.0.12";
 
         private static Socket? _client;
 
