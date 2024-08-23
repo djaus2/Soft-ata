@@ -1,28 +1,38 @@
 #include <Arduino.h>
 #include "menu.h"
 
+#include "serial_macros.h"
+
 // Using a previously displayed menu and return the user's choice as a single character
 char GetMenuChoice(int timeout)
 {
     if(Serial)
     {
       // Allow <timeout> seconds to respond
-      Serial.print("\t--- " );
-      Serial.print(timeout);
-      Serial.print(" secs to respond.");
-      Serial.println( " ---" );
-      Serial.print("\t");
+      Serial_print("\t--- " );
+      Serial_print(timeout);
+      Serial_print(" secs to respond.");
+      Serial_println( " ---" );
+      Serial_print("\t");
 
       int maxCount = (int) ((timeout*1000)/MENU_DELAY); 
-      
-      int count=0;
-      while (Serial.available() == 0) { Serial.print('-');delay(MENU_DELAY);count++; if(count>maxCount)break;}
-      Serial.println();
+      int secCount = (int) (1000/MENU_DELAY);
+      while (Serial.available() == 0) { 
+        if((maxCount-- % secCount ) == 0){
+          Serial_print("|");
+        }
+        else{
+          Serial_print(".");
+        }
+        delay(MENU_DELAY); 
+        if(maxCount<0)break;
+      }
+      Serial_println();
 
       String resStr = Serial.readString();
       resStr.toUpperCase();
       resStr.trim();
-      Serial.println();
+      Serial_println();
       if (resStr.length()>0)
       {
           char resCh = resStr[0];

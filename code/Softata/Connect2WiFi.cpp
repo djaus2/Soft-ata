@@ -2,6 +2,7 @@
 #include <WiFi.h>
 #include <EEPROM.h>
 #include <SerialBT.h>
+
 #include "serial_macros.h"
 #include "Connect2WiFi.h"
 #include "menu.h"
@@ -203,13 +204,14 @@ namespace FlashStorage{
   bool ReadWiFiDataFromEEProm()
   {
     String vals[NUM_STORED_VALUES];
+    Serial_println("Reading data from EEProm");
+    Serial_println("This may take a while.");
     bool res = ReadStringArrayFromEEProm(vals);
     if(!res)
     {
       Serial_println("ReadWiFiDataFromEEProm False");
       return false;
     }
-
     Ssid = vals[sv_SSID];
     Passwd = vals[sv_Password];
     Hostname = vals[sv_hostname];
@@ -229,6 +231,7 @@ namespace FlashStorage{
       return false;
     
     Serial_println("Writing key to EEProm");
+    Serial_println("This may take a while.");
     
     writeKey();
     
@@ -272,6 +275,7 @@ namespace FlashStorage{
   void writeKey()
   {
     String key = KEY;
+    Serial_println("Writing key to EEProm");
     EEPROM.begin(EEPROM_SIZE);
     char * msg = const_cast<char*>(key.c_str());
     int len = KEYLENGTH;
@@ -293,6 +297,7 @@ namespace FlashStorage{
   bool readKey()
   {
     String key = KEY;
+    Serial_println("Reading key from EEProm");
     EEPROM.begin(EEPROM_SIZE);
     int address = 0;
     byte value = 0;
@@ -335,7 +340,7 @@ namespace FlashStorage{
         Serial_print("Guid:");
         Serial_println(Guid);
 
-        Serial.println();
+        Serial_println();
         Serial_println("\t--- Connecting to WiFi ---");
         Serial_print("\t--- Timeout: ");
         Serial_print(WIFI_CONNECT_TIMEOUT_SEC);
@@ -581,8 +586,8 @@ namespace FlashStorage{
       }
       while(!Serial);
       delay(100);
-      Serial.print("WiFi ConnectMode: ");
-      Serial.println(ConnectMode_STR[connectMode]);
+      Serial_print("WiFi ConnectMode: ");
+      Serial_println(ConnectMode_STR[connectMode]);
     }
 
     bool res=false;
@@ -646,6 +651,7 @@ namespace FlashStorage{
             if (resBool)
             {
               Serial_println("Reading EEProm");
+              Serial_println("This may take a while.");
               res = Prompt4WiFiConfigData();
               if(res)
               {
@@ -655,14 +661,12 @@ namespace FlashStorage{
               if(res)
               {
                 Serial_println("WiFi check Ok: Writing to EEProm");
-                //Write if check OK
                 res =  Write2EEPromwithPrompt();
               }
             }
           }
           if(res)
           {
-            Serial_println("Reading EEProm");
             res = ReadWiFiDataFromEEProm();
           }
         }
