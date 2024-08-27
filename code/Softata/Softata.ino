@@ -29,6 +29,7 @@
 String Hostname = "picow2";
 
 bool useSerialDebug = false;
+bool skipMenus = false;
 
 struct CallbackInfo  BME280CBInfo;
 // Used when first connected to change inbuilt LED blink rate.
@@ -147,7 +148,7 @@ void ArduinoOTAsetup() {
   //enum ConnectMode: byte {wifi_is_set, from_eeprom, is_defined, wifiset, serial_prompt, bt_prompt };
 
   ConnectMode connectMode = WIFI_CONNECT_MODE;
-  if(useSerialDebug)
+  if((useSerialDebug) &&(!skipMenus))
   {
     Serial_println("WIFI");
     Serial.println("Please select source of Wifi Configuration.");
@@ -171,7 +172,7 @@ void ArduinoOTAsetup() {
   }
 
 
-  bool Connect2WiFiConnected  = FlashStorage::WiFiConnectwithOptions(connectMode, useSerialDebug);
+  bool Connect2WiFiConnected  = FlashStorage::WiFiConnectwithOptions(connectMode, useSerialDebug, !skipMenus);
 
   if (Connect2WiFiConnected)
   {
@@ -189,7 +190,7 @@ void ArduinoOTAsetup() {
       delay(1000);
     }
   }
-  Hostname = FlashStorage::GetDeviceHostname();
+  Hostname = FlashStorage::GetDeviceName();
   
 
   // Got WiFi: 3 long pulses
@@ -340,13 +341,31 @@ void setup()
     Serial.println("\t\tS O F T A T A");
     Serial.println();
     Serial.println();
-    Serial.println("Use Serial Debug? [Y](Default) [N]");
+    Serial.println("Use Serial Debug? [Y] [N]");
+    Serial.println("Also [S](default)= Yes but SKIP subsequent menus.");
 
     // Need useSerialDebug to be set before menu is displayed.
     // YN Menu will determine its state.
     useSerialDebug = true;
+    skipMenus = false;
     // Longer wait as first menu choice 
-    useSerialDebug = GetMenuChoiceYN(true, 2*DEFAULT_MENU_TIMEOUT_SEC);
+    tristate resb = GetMenuChoiceYNS(trueButSkipMenus, 2*DEFAULT_MENU_TIMEOUT_SEC);
+    switch(resb)
+    {
+      case trueButSkipMenus:
+        useSerialDebug = true;
+        skipMenus = true;
+        break;
+      case ttrue:
+        useSerialDebug = true;
+        skipMenus = false;
+        break;
+      case tfalse:
+        useSerialDebug = false;
+        skipMenus = false;
+        break;
+      
+    }
     if (!useSerialDebug)
     {
       Serial.println("Serial Debug off.");
@@ -374,6 +393,11 @@ void setup()
   Serial_println(port); //port*/
   Serial_print("Server Status: ");
   Serial_println(server.status());
+
+  // WiFi is started so 2nd core can start
+  uint32_t syncVal = initialSynch;
+  rp2040.fifo.push(syncVal);
+  uint32_t sync = rp2040.fifo.pop();
   
 
   InitSensorList();
@@ -388,14 +412,14 @@ void setup()
   Serial_println(val);
   rp2040.fifo.push(val);
 
-  uint32_t sync = rp2040.fifo.pop();
-  if(val==sync)
+  uint32_t sync2 = rp2040.fifo.pop();
+  if(val==sync2)
   {
-    Serial_println("Core1-Core2 Setup Sync OK");
+    Serial_println("\t\t==== Core1-Core2 Setup Sync OK ====");
   }
   else
   {
-    Serial_println("Core1-Core2 Setup Sync Fail");
+    Serial_println("\t\t==== Core1-Core2 Setup Sync Fail ====");
   }
   #ifdef ENABLE_WATCHDOG
     watchdog_enable(WATCHDOG_SECS * 1000, false);
@@ -418,7 +442,7 @@ void loop() {
                               
   delay(500);
 
-   WiFiClient client = server.available();//server.accept();//
+  WiFiClient client = server.accept();//server.available();//
   if (!client) {
     return;
   }
@@ -998,9 +1022,14 @@ void loop() {
                           client.print(Grove_URangeSensor::GetPins());
                         }
                         break;
+                        case Simulator:
+                        {
+                          client.print(Grove_SensorSimulator::GetPins());
+                        }
+                        break;
                       // Add more here
                       default:
-                        String msgFail = "Fail:Not a sensor:";
+                        String msgFail = "Fail:Not a sensor-Get Pins:";
                         msgFail += other;
                         client.print(msgFail);
                         break;
@@ -1009,6 +1038,8 @@ void loop() {
                   break;
                 case s_getPropertiesCMD:
                   {
+                    Serial.println("Get Properties");
+                    Serial.println(other);
                     switch ((GroveSensor)other)
                     {
                       //#define SENSORS C(DHT11)C(SWITCH)C(SOUND)C(BME280)
@@ -1026,11 +1057,17 @@ void loop() {
                         {
                           client.print(Grove_URangeSensor::GetListofProperties());
                         }
-                        break;                       
+                        break; 
+                      case Simulator:
+                        {
+                          Serial.println("Simulator In");
+                          client.print(Grove_SensorSimulator::GetListofProperties());
+                          Serial.println("Simulator Out");
+                        } 
+                        break;                     
                       // Add more here
                       default:
-                      client.print(Grove_URangeSensor::GetListofProperties());
-                        String msgFail = "Fail:Not a sensor:";
+                      String msgFail = "Fail:Not a sensor-Get Properties:";
                         msgFail += other;
                         client.print(msgFail);
                         break;
@@ -1064,9 +1101,15 @@ void loop() {
                           _done = true;
                         }
                         break;
+                      case Simulator:
+                        {
+                          grove_Sensor  = new Grove_SensorSimulator();
+                          _done = true;
+                        }
+                        break;
                       // Add more here
                       default:
-                        client.print("Fail:Not a sensor");
+                        client.print("Fail:Not a sensor-Setup");
                         break;
                     }
                     if(_done)

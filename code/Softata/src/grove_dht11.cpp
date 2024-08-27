@@ -18,12 +18,20 @@ int Pins[] = {PINS};
 #endif
 
 
-
+    
 
 
 
     Grove_DHT11::Grove_DHT11()
     {
+      Grove_Sensor::num_properties = NUM_DHT11_PROPERTIES;
+      Grove_Sensor::sensorType = DHT11;
+    }
+
+    Grove_DHT11::Grove_DHT11(int pin)
+    {
+      Pin = pin;
+      SetupPin(Pin);
       Grove_Sensor::num_properties = NUM_DHT11_PROPERTIES;
       Grove_Sensor::sensorType = DHT11;
     }
@@ -38,24 +46,6 @@ int Pins[] = {PINS};
       return String(_pins); //pins;
     }*/
 
-  
-
-    bool Grove_DHT11::Setup(byte * settings, byte numSettings)
-    {
-      if(numSettings>0)
-      {
-        int pin = settings[0];
-        return SetupPin(pin);
-      }
-      else
-        return false;
-    }
- 
-    bool Grove_DHT11::Setup()
-    {
-      return SetupPin(DEFAULT_PIN);
-      num_properties = 2;
-    }
 
     bool Grove_DHT11::SetupPin(int pin)
     {
@@ -87,6 +77,28 @@ int Pins[] = {PINS};
       //Serial_println("Type,\tstatus,\tHumidity (%),\tTemperature (C)");
       return true;
     }
+
+  
+
+    bool Grove_DHT11::Setup(byte * settings, byte numSettings)
+    {
+      if(numSettings>0)
+      {
+        Pin = settings[0];
+        return SetupPin(Pin);
+      }
+      else
+        return false;
+    }
+ 
+    bool Grove_DHT11::Setup()
+    {
+      Pin = DEFAULT_PIN;
+      return SetupPin(Pin);
+      num_properties = 2;
+    }
+
+
 
     bool Grove_DHT11::ReadAll(double * values)
     {

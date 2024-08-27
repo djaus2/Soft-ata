@@ -13,7 +13,7 @@ namespace{
   //Current Connection details
   String Ssid=DEFAULT_SSID;
   String Passwd=DEFAULT_PASSWORD;
-  String Hostname=DEFAULT_HOSTNAME;
+  String DeviceName=DEFAULT_DEVICENAME;
   String Hubname=DEFAULT_HUBNAME;
   String IoTHubDeviceConnectionString=DEFAULT_DEVICECONNECTIONSTRING;
   String Guid=DEFAULT_GUID;
@@ -27,9 +27,9 @@ namespace FlashStorage{
 
   // Need to set Tools->IP Bluetooth Stack to IPV4 - Bluetooth
 
-  String GetDeviceHostname()
+  String GetDeviceName()
   {
-    return Hostname;
+    return DeviceName;
   }
 
   String GetIOT_CONFIG_IOTHUB_FQDN()
@@ -214,12 +214,12 @@ namespace FlashStorage{
     }
     Ssid = vals[sv_SSID];
     Passwd = vals[sv_Password];
-    Hostname = vals[sv_hostname];
+    DeviceName = vals[sv_hostname];
     Hubname = vals[sv_hubname];
     IoTHubDeviceConnectionString = vals[sv_deviceConnectionString];
     Guid = vals[sv_guid];
 
-    Serial_println(Hostname);
+    Serial_println(DeviceName);
 
     return true;
   }
@@ -238,7 +238,7 @@ namespace FlashStorage{
     String vals[NUM_STORED_VALUES];
     vals[sv_SSID] = Ssid;
     vals[sv_Password] = Passwd;
-    vals[sv_hostname] = Hostname;
+    vals[sv_hostname] = DeviceName;
     vals[sv_hubname] = Hubname;
     vals[sv_deviceConnectionString] = IoTHubDeviceConnectionString;
     vals[sv_guid] = Guid;
@@ -329,8 +329,8 @@ namespace FlashStorage{
         Serial_println(Ssid);
         Serial_print("Password:");
         Serial_println(Passwd);
-        Serial_print("Hostname:");
-        Serial_println(Hostname);
+        Serial_print("DeviceName:");
+        Serial_println(DeviceName);
         Serial_print("Hubname:");
         Serial_println(Hubname);
         Serial_print("IOT_CONFIG_IOTHUB_FQDN:");
@@ -347,7 +347,7 @@ namespace FlashStorage{
         Serial_println(" sec ---");
       }
       WiFi.mode(WIFI_STA);
-      WiFi.setHostname(Hostname.c_str());
+      WiFi.setHostname(DeviceName.c_str());
       WiFi.begin(Ssid.c_str(), Passwd.c_str());
 
       //2Do add timeout here
@@ -396,8 +396,8 @@ namespace FlashStorage{
         SerialBT.println(Ssid);
         SerialBT.print("Password:");
         SerialBT.println(Passwd);
-        SerialBT.print("Hostname:");
-        SerialBT.println(Hostname);
+        SerialBT.print("DeviceName:");
+        SerialBT.println(DeviceName);
         SerialBT.print("Hubname:");
         SerialBT.println(Hubname);
         SerialBT.print("IOT_CONFIG_IOTHUB_FQDN:");
@@ -411,7 +411,7 @@ namespace FlashStorage{
       }
 
       WiFi.mode(WIFI_STA);
-      WiFi.setHostname(Hostname.c_str());
+      WiFi.setHostname(DeviceName.c_str());
       WiFi.begin(Ssid.c_str(), Passwd.c_str());
 
       //2Do add timeout here
@@ -449,14 +449,14 @@ namespace FlashStorage{
     Passwd.trim();
     Serial_println();
 
-    //Get Hostname
-    SerialBT.print("Enter Hostname. Default ");
-    SerialBT.print(Hostname);
+    //Get DeviceName
+    SerialBT.print("Enter DeviceName. Default ");
+    SerialBT.print(DeviceName);
     while (SerialBT.available() == 0) {}
     String val = SerialBT.readString();
     val.trim();
     if (val.length()!=0)
-      Hostname=val;
+      DeviceName=val;
     Serial_println();
 
      //Get Hubname
@@ -513,14 +513,14 @@ namespace FlashStorage{
     Passwd.trim();
     Serial_println();
 
-    //Get Hostname
-    Serial_print("Enter Hostname. Default ");
-    Serial_print(Hostname);
+    //Get DeviceName
+    Serial_print("Enter DeviceName. Default ");
+    Serial_print(DeviceName);
     while (Serial.available() == 0) {}
     String val = Serial.readString();
     val.trim();
     if (val.length()!=0)
-      Hostname=val;
+      DeviceName=val;
     Serial_println();
 
     //Get Hubname
@@ -564,7 +564,7 @@ namespace FlashStorage{
   {
     Ssid = ssid;
     Passwd = pwd;
-    Hostname = hostname;
+    DeviceName = hostname;
     Hubname = hubname;
     IoTHubDeviceConnectionString = deviceconnectionString;
     Guid = guid;
@@ -574,7 +574,7 @@ namespace FlashStorage{
 
 
   // Orchestrate WiFi Connection
-  bool WiFiConnectwithOptions(ConnectMode connectMode, bool debug) 
+  bool WiFiConnectwithOptions(ConnectMode connectMode, bool debug, bool doMenu=true) 
   {
     bSERIAL_DEBUG = debug;
 
@@ -641,29 +641,34 @@ namespace FlashStorage{
           res = true;
           if (bSERIAL_DEBUG)
           {
-            Serial_print("Key found. (");
-            Serial_print(KEY);
-            Serial_println(") at start of EEProm"); 
-            Serial_print("Do you wish to reflash the EEProm with new WiFi data? [Y/y] [N/n](Default).");
-
-            Serial_println();
-            bool resBool = GetMenuChoiceYN(false);
-            if (resBool)
+            if(doMenu)
             {
-              Serial_println("Reading EEProm");
-              Serial_println("This may take a while.");
-              res = Prompt4WiFiConfigData();
-              if(res)
+              Serial_print("Key found. (");
+              Serial_print(KEY);
+              Serial_println(") at start of EEProm"); 
+              Serial_print("Do you wish to reflash the EEProm with new WiFi data? [Y/y] [N/n](Default).");
+
+              Serial_println();
+              bool resBool = GetMenuChoiceYN(false);
+              if (resBool)
               {
-                //Check
-                res= WiFiConnect();
-              }
-              if(res)
-              {
-                Serial_println("WiFi check Ok: Writing to EEProm");
-                res =  Write2EEPromwithPrompt();
+                Serial_println("Reading EEProm");
+                Serial_println("This may take a while.");
+                res = Prompt4WiFiConfigData();
+                if(res)
+                {
+                  //Check
+                  res= WiFiConnect();
+                }
+                if(res)
+                {
+                  Serial_println("WiFi check Ok: Writing to EEProm");
+                  res =  Write2EEPromwithPrompt();
+                }
               }
             }
+            else
+              res = true;
           }
           if(res)
           {
@@ -672,7 +677,7 @@ namespace FlashStorage{
         }
         break;
       case is_defined:
-        WiFiSet(DEFAULT_SSID, DEFAULT_PASSWORD, DEFAULT_HOSTNAME,DEFAULT_HUBNAME, DEFAULT_DEVICECONNECTIONSTRING, DEFAULT_GUID);    ;
+        WiFiSet(DEFAULT_SSID, DEFAULT_PASSWORD, DEFAULT_DEVICENAME,DEFAULT_HUBNAME, DEFAULT_DEVICECONNECTIONSTRING, DEFAULT_GUID);    ;
         res = true;
         break;
       case serial_prompt:

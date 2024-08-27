@@ -57,7 +57,7 @@ int  GetMenuChoiceNum( int defaultNum, int timeout)
 }
 
 //Nb: Default is N
-bool  GetMenuChoiceYN( bool defaultY, int timeout)
+bool  GetMenuChoiceYN( bool defaultYN, int timeout)
 {
   char menuCh = GetMenuChoice(timeout);
   if ('Y' == menuCh)
@@ -69,5 +69,24 @@ bool  GetMenuChoiceYN( bool defaultY, int timeout)
     return false;
   }
   else
-    return defaultY;
+    return defaultYN;
+}
+
+tristate  GetMenuChoiceYNS( tristate defaultYNS, int timeout)
+{
+  char menuCh = GetMenuChoice(timeout);
+  if ('Y' == menuCh)
+  {
+    return ttrue;
+  }
+  else if ('N' == menuCh)
+  {
+    return tfalse;
+  }
+  else if ('S' == menuCh)
+  {
+    return trueButSkipMenus;
+  }
+  else
+    return defaultYNS;
 }

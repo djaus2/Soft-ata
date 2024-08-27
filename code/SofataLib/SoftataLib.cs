@@ -220,6 +220,7 @@ namespace Softata
         public static string SendMessageCmd(string cmd)
         {
             if (Client == null)
+                    
                 throw new Exception("SendMessageCmd: Client is null");
 
             else if (!Client.Connected)

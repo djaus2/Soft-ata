@@ -10,6 +10,8 @@ class Grove_DHT11: public Grove_Sensor
 {
     public:
       Grove_DHT11();
+      Grove_DHT11(int SetupPin);
+
       static String GetPins()
       {
         String msg="OK:";
@@ -99,5 +101,34 @@ public:
     protected:
       CallbackInfo info;
     bool SetupURangeSensor();
+};
+
+class Grove_SensorSimulator : public Grove_Sensor
+{
+public:
+
+    Grove_SensorSimulator();
+
+    static String GetPins()
+    {
+        String msg = "OK:";
+        msg.concat(SIMULATOR_PINNOUT);
+        return msg;
+    }
+    static String GetListofProperties()
+    {
+        String msg = "OK:";
+        msg.concat(SIMULATOR_PROPERTIES);
+        return msg;
+    }
+
+    virtual bool Setup();
+    virtual bool Setup(byte* settings, byte numSettings = 1);
+    virtual bool ReadAll(double* values);
+    virtual String GetTelemetry();
+    virtual double Read(int property);
+    virtual CallbackInfo * GetCallbackInfo();    
+    protected:
+      CallbackInfo info;
 };
 #endif

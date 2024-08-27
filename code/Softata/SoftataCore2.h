@@ -9,6 +9,8 @@
 #include <SerialBT.h>
 #include "iothub.h"
 
+#include "serial_macros.h"
+
 bool Led_State = false;
 bool doingIoTHub = false;
 
@@ -38,6 +40,9 @@ bool PauseTelemetrySend(int index)
   CallbackInfo * info = GetCallbackInfoFromCore2List(index);
   if (info!= NULL)
   {
+    Serial_print("\t\t==== PauseTelemetrySend:");
+    Serial_print(index);
+    Serial_println(" ====");
     info->isRunning = false;
     return true;
   }
@@ -50,8 +55,9 @@ bool ContinueTelemetrySend(int index)
   CallbackInfo * info = GetCallbackInfoFromCore2List(index);
   if (info!= NULL)
   {
-    Serial_println("ContinueTelemetrySend:");
-    Serial_println(index);
+    Serial_println("\t\t==== ContinueTelemetrySend:");
+    Serial_print(index);
+    Serial_println(" ====");
     info->isRunning = true;
     return true;
   }
@@ -77,23 +83,33 @@ int LEDListIndex = -1;
 void setup1() {
   numSensors=0;
 
+  // Wait for WiFi to be started to do Setup1
+  uint32_t sync = rp2040.fifo.pop();
+  rp2040.fifo.push(sync);
+  // Should now be running. Check anyway.
+  whileNotSerial();
+  while (WiFi.status() != WL_CONNECTED) {
+    Serial_print(".");
+    delay(250);
+  }
+  Serial_println();
+  
+
   /////////////////////////////////////////////////
   // Defined in Softata.h
   // Perhaps make software setable??
   // App starts quicker if not defined
   #ifdef USINGIOTHUB
     doingIoTHub = true;
+    Serial_println("\t\t==== USING IoT Hub ====");
   #else
     doingIoTHub = false;
+    Serial_println("\t\t==== NOT using IoT Hub ====");
   #endif
   ////////////////////////////////////////////////
 
 
-  whileNotSerial();
-  Serial_println("==== 2nd Core Started ====");
-  /*SerialBT.begin();
-  while (!SerialBT) ;
-  Serial_println("SerialBT Started in 2nd Core");*/
+  Serial_println("\t\t==== 2nd Core Started ====");
 
 
   pinMode(LED_BUILTIN, OUTPUT);
@@ -109,13 +125,15 @@ void setup1() {
 
 
   // Wait for other Setup to finish
-  uint32_t sync = rp2040.fifo.pop();
+  uint32_t sync2 = rp2040.fifo.pop();
+
   if(doingIoTHub)
   {
     establishConnection();
   }
-  Serial_println("==== 2nd Core Ready ====");
-  rp2040.fifo.push(sync);
+  Serial_println();
+  Serial_println("\t\t==== 2nd Core Ready ====");
+  rp2040.fifo.push(sync2);
 }
 
 /*
@@ -167,7 +185,7 @@ void loop1()
       res =  ContinueTelemetrySend(index);
     else if(cmd==stopTelemetryorBT)
     {
-      Serial_println("Stopping Telemetry");
+      Serial_println("\t\t==== Stopping Telemetry =====");
       Grove_Sensor * grove_Sensor = GetSensorFromList(index);
       delete grove_Sensor;
       RemoveSensorFromCore2List(index);
@@ -191,7 +209,7 @@ void loop1()
       info->next = millis() + info->period;
       if(!info->isRunning)
       {
-        Serial_println("Not running");
+        Serial_println("\t\t==== Telemetry Not running ====");
         continue;
       }
       if(!info->isSensor)
@@ -207,10 +225,10 @@ void loop1()
       {
         if(!SerialBT)
         {
-          Serial_println("Starting SerialBT in 2nd Core");
+          Serial_println("\t\t==== Starting SerialBT in 2nd Core ====");
           SerialBT.begin();
           while (!SerialBT);// Perhaps a timeout??
-          Serial_println("SerialBT Started in 2nd Core");
+          Serial_println("\t\t==== SerialBT Started in 2nd Core ====");
         }
         if (SerialBT) 
         {      
