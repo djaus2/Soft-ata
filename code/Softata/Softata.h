@@ -17,7 +17,7 @@ enum SyncedCommands : byte {pauseTelemetryorBT=0,continueTelemetryorBT=1,stopTel
 // Azure IoT
 // Uncomment following if using Azure IoT Hub
 // For Bluetooth do not define USINGIOTHUB
-//#define USINGIOTHUB
+#define USINGIOTHUB
 
 #include "serial_macros.h"
 #include "Connect2WiFi.h"
@@ -72,7 +72,7 @@ static int bitStuffing[] = {256,16,16,16,16,256,16};
 #define G_DEVICETYPES C(sensor)C(actuator)C(communication)C(display)C(serial)
 
 //Add other sensors/actuators here C bracketed, on end.
-#define G_SENSORS C(DHT11)C(BME280)C(UltrasonicRanger)
+#define G_SENSORS C(DHT11)C(BME280)C(UltrasonicRanger)C(Simulator)
 #define G_ACTUATORS C(SERVO)C(SHIFT595PARAOUT)
 #define G_DISPLAYS C(OLED096)C(LCD1602)C(NEOPIXEL)C(BARGRAPH)
 #define G_SERIAL C(LOOPBACK)C(GPS)
@@ -115,10 +115,12 @@ enum GroveSensorCmds{s_getpinsCMD, s_getPropertiesCMD, s_setupdefaultCMD, s_setu
 #define DHT11_PROPERTIES "Temperature,Humidity"
 #define BME280_PROPERTIES "Temperature,Pressure,Humidity"
 #define URANGE_PROPERTIES "mm,cm,inches"
+#define SIMULATOR_PROPERTIES "Temperature"
 
 #define NUM_DHT11_PROPERTIES 2
 #define NUM_BME280_PROPERTIES 3
 #define NUM_URANGE_PROPERTIES 3
+#define NUM_SIMULATOR_PROPERTIES 1
 
 //#define BME280_I2C_ADDRESS76
 #define BME280_I2C_ADDRESS77
@@ -130,10 +132,12 @@ enum GroveSensorCmds{s_getpinsCMD, s_getPropertiesCMD, s_setupdefaultCMD, s_setu
 #define BME280_PINNOUT  "I2C0 (Pins4/5 (SDA/SCL) default): Address 0x77 (Alt 0x76). Embedded in driver though."
 #define DHT11_PINNOUT "OneWire: Pin 11 or whatever 0 to 26"
 #define URANGE_PINNOUT "Digital and PWM: Pin 11 or whatever 0 to 26"
+#define SIMULATOR_PINNOUT "None"
 #elif defined(GROVE_RPI_PICO_SHIELD)
 #define BME280_PINNOUT  "I2C0 (Pins8/9 (SDA/SCL) fixed): Address 0x77 (Alt 0x76). Embedded in driver though."
 #define DHT11_PINNOUT  "OneWire: Pin 16 (default), 18 or 20"
 #define URANGE_PINNOUT "Digital and PWM: Pin 16 (default), 18 or 20"
+#define SIMULATOR_PINNOUT "None"
 #endif
 
 #define DEFAULT_DHT11_PIN 16

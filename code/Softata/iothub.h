@@ -43,9 +43,9 @@
 // Translate iot_configs.h defines into variables used by the sample
 //static const char* ssid = IOT_CONFIG_WIFI_SSID;
 //static const char* password = IOT_CONFIG_WIFI_PASSWORD;
-static const char* host = "IOT_CONFIG_IOTHUB_FQDN"; 
-static const char* device_id = IOT_CONFIG_DEVICE_ID;
-static const char* device_key = IOT_CONFIG_DEVICE_KEY;
+static const char* host = ""; //IOT_CONFIG_HUBNAME; 
+static const char* device_id = ""; //IOT_CONFIG_DEVICE_ID;
+static const char* device_key =""; // IOT_CONFIG_DEVICE_KEY;
 static const int mqttPort = 8883;
 
 
@@ -64,25 +64,8 @@ static char telemetry_topic[128];
 static uint8_t telemetry_payload[100];
 static uint32_t telemetry_send_count = 0;
 
+
 // Auxiliary functions
-
-static void connectToWiFi()
-{
-  Serial_println();
-  Serial_print("Connecting to WIFI SSID ");
-  Serial_println(ssid);
-
-  WiFi.mode(WIFI_STA);
-  WiFi.begin(ssid, password);
-  while (WiFi.status() != WL_CONNECTED)
-  {
-    delay(500);
-    Serial_print("+");
-  }
-
-  Serial_print("Core 2 WiFi connected, IP address: ");
-  Serial_println(WiFi.localIP());
-}
 
 static void initializeTime()
 {
@@ -415,8 +398,32 @@ void receivedCallback(char* topic, byte* payload, unsigned int length)
   rp2040.fifo.push(cdmMsg);
 }
 
+  const char * tempHost;
+  const char * tempDevice_id;
+  String hostStr;
+  String device_idStr;
+
 static void initializeClients()
 {
+  /////////////////////////////////////////////////////////////
+  // Need these to persist beyond this call
+  // Hence declaration in Global space, above.
+  /////////////////////////////////////////////////////////////
+  hostStr = FlashStorage::GetIOT_CONFIG_IOTHUB_FQDN(); //.c_str();
+  device_idStr = FlashStorage::GetDeviceName(); //.c_str();
+  // Now get const char * from that
+  tempHost = hostStr.c_str();
+  tempDevice_id = device_idStr.c_str();
+  /////////////////////////////////////////////////////////////
+
+  /////////////////////////////////////////////////////////////
+  // Nb host and device_id are const char * in Globals
+  // That is, only a pointers with a constant location.
+  // But address pointed to there contained can change.
+  /////////////////////////////////////////////////////////////
+  host = &tempHost[0];
+  device_id = &tempDevice_id[0];
+  /////////////////////////////////////////////////////////////
 
   az_iot_hub_client_options options = az_iot_hub_client_options_default();
   options.user_agent = AZ_SPAN_FROM_STR(AZURE_SDK_CLIENT_USER_AGENT);
@@ -431,6 +438,9 @@ static void initializeClients()
     Serial_println("Failed initializing Azure IoT Hub client");
     return;
   }
+
+  Serial_print("mqttPort: ");
+  Serial_println(mqttPort);
 
   mqtt_client.setServer(host, mqttPort);
   mqtt_client.setCallback(receivedCallback);
@@ -460,9 +470,13 @@ static int generateSasToken(char* sas_token, size_t size)
     return 1;
   }
 
+  const char * device_key_ConstCharStar = FlashStorage::GetDeviceConnectionString().c_str();
+  Serial_print("device_key: ");
+  Serial_println(device_key_ConstCharStar);
+
   // Base64-decode device key
   int base64_decoded_device_key_length
-      = base64_decode_chars(device_key, strlen(device_key), base64_decoded_device_key);
+      = base64_decode_chars(device_key_ConstCharStar, strlen(device_key_ConstCharStar), base64_decoded_device_key);
 
   if (base64_decoded_device_key_length == 0)
   {
@@ -507,6 +521,7 @@ static int connectToAzureIoTHub()
 {
   size_t client_id_length;
   char mqtt_client_id[128];
+
   if (az_result_failed(az_iot_hub_client_get_client_id(
           &client, mqtt_client_id, sizeof(mqtt_client_id) - 1, &client_id_length)))
   {
@@ -524,17 +539,25 @@ static int connectToAzureIoTHub()
     printf("Failed to get MQTT clientId, return code\n");
     return 1;
   }
+
+  Serial_print("MQTT Client ID: ");
+  Serial_println(mqtt_client_id);
+
+  Serial_print("MQTT Username: ");
+  Serial_println(mqtt_username);
+
   mqtt_client.setBufferSize(MQTT_PACKET_SIZE);
 
   while (!mqtt_client.connected())
   {
     time_t now = time(NULL);
 
+
     Serial_print("MQTT connecting ... ");
 
     if (mqtt_client.connect(mqtt_client_id, mqtt_username, sas_token))
     {
-      Serial_println("connected.");
+      Serial_println("MQTT connected.");
     }
     else
     {
@@ -550,27 +573,14 @@ static int connectToAzureIoTHub()
 
   return 0;
 }
-static bool WiFiStarted = false;
-static bool TimeInited = false;
-static bool ClientInited = false;
+
+
 static void establishConnection()
 {
-  if(!WiFiStarted)
-    FlashStorage::WiFiConnect();
-  if(!TimeInited)
     initializeTime();
-  printCurrentTime();
-  if(!ClientInited)
-  {
-    host = FlashStorage::GetIOT_CONFIG_IOTHUB_FQDN().c_str();
-    device_id = FlashStorage::GetDeviceHostname().c_str();
-    device_key = FlashStorage::GetDeviceConnectionString().c_str();
+    printCurrentTime();
     initializeClients();
-  }
-
-  WiFiStarted = true;
-  TimeInited = true;
-  ClientInited = true;
+ 
 
   // The SAS token is valid for 1 hour by default in this sample.
   // After one hour the sample must be restarted, or the client won't be able
@@ -606,12 +616,22 @@ static void sendTelemetry(String jsonStr)
   if (az_result_failed(az_iot_hub_client_telemetry_get_publish_topic(
           &client, NULL, telemetry_topic, sizeof(telemetry_topic), NULL)))
   {
+    Serial_println("NOK GET");
     Serial_println("Failed az_iot_hub_client_telemetry_get_publish_topic");
     return;
   }
+
+  Serial_print(" Telemetry: ");
+  Serial_print(jsonStr);
+  Serial_print(" ");
+
   char * json = const_cast<char*>(jsonStr.c_str());
-  mqtt_client.publish(telemetry_topic, getTelemetryPayload(json), false);
-  Serial_println("OK");
+  bool published = mqtt_client.publish(telemetry_topic, getTelemetryPayload(json), false);
+  if(published)
+    Serial_println(" -- OK: Publshed Telemetry");
+  else
+    Serial_println(" -- NOK: Publish Telemetry");
+
 }
 
 #endif

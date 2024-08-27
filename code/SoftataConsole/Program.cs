@@ -1092,6 +1092,7 @@ namespace SoftataBasic
                                         Console.WriteLine($"\t\t\tAngle: 0");
                                         Thread.Sleep(2000);
                                     }
+                                    Console.WriteLine("Connect Servo to D16");
                                     Console.WriteLine("Connect Potentiometer to A0.");
                                     Console.WriteLine("Press any key to continue.");
                                     Console.ReadLine();

@@ -7,9 +7,9 @@
 
 #define DEFAULT_SSID STASSID
 #define DEFAULT_PASSWORD STAPSK
-#define DEFAULT_HOSTNAME IOT_CONFIG_DEVICE_ID
+#define DEFAULT_DEVICENAME IOT_CONFIG_DEVICE_ID
 #define DEFAULT_HUBNAME IOT_CONFIG_HUBNAME
-#define DEFAULT_BT_NAME DEFAULT_HOSTNAME "SoftataOTA 00:00:00:00:00:00"
+#define DEFAULT_BT_NAME  "SoftataOTA 00:00:00:00:00:00"
 #define DEFAULT_DEVICECONNECTIONSTRING IOT_CONFIG_DEVICE_KEY
 #define DEFAULT_GUID "00000000-0000-0000-0000-000000000000"
 #define EEPROM_SIZE 256
@@ -38,7 +38,7 @@ static const char *ConnectMode_STR[] = {
 
 String GetIOT_CONFIG_IOTHUB_FQDN();
 String GetHubname();
-String GetDeviceHostname();
+String GetDeviceName();
 String GetDeviceConnectionString();
 String GetDeviceGuidString();
 
@@ -75,6 +75,6 @@ bool Prompt4WiFiConfigData();
 void WiFiSet(String ssid, String pwd, String hostname, String hubname, String deviceconnectionString, String guid );
 
 // Orchestrate WiFi Connection
-bool WiFiConnectwithOptions(ConnectMode connectMode, bool debug);
+bool WiFiConnectwithOptions(ConnectMode connectMode, bool debug, bool showMenus);
 }
 #endif
