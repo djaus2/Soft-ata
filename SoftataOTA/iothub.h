@@ -131,6 +131,8 @@ void receivedCallback(char* topic, byte* payload, unsigned int length)
     Serial_print((char)payload[i]);
   }
   Serial_println();
+  Serial.println("Length: ");
+  Serial_println(length);
   
   char cmd[length+1];
   char pin[length+1];
