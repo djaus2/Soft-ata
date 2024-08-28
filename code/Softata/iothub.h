@@ -407,25 +407,41 @@ void receivedCallback(char* topic, byte* payload, unsigned int length)
 
 static void initializeClients()
 {
-  /////////////////////////////////////////////////////////////
-  // Need these to persist beyond this call
-  // Hence declaration in Global space, above.
-  /////////////////////////////////////////////////////////////
-  hostStr = FlashStorage::GetIOT_CONFIG_IOTHUB_FQDN(); //.c_str();
+  /////////////////////////////////////////////////////////////////
+  // Need these to persist client internal data beyond this call
+  // Hence declarations in Global space, above.
+  /////////////////////////////////////////////////////////////////
+  hostStr = FlashStorage::GetIOT_CONFIG_IOTHUB_FQDN(); //.c_str(); Also works with using .c_str() here
   device_idStr = FlashStorage::GetDeviceName(); //.c_str();
-  // Now get const char * from that
+  // Now get const char * from that as Globals
   tempHost = hostStr.c_str();
   tempDevice_id = device_idStr.c_str();
-  /////////////////////////////////////////////////////////////
-
-  /////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////
+  // Nb If assigned directly from .c_str() to host etc:
+  /*
+    host = FlashStorage::GetIOT_CONFIG_IOTHUB_FQDN().c_str();
+    device_id = FlashStorage::GetDeviceName().c_str();
+  */
+  // ... then get an issue. eg Get (Incorrect):
+  /*
+    MQTT Client ID: dr9FefTZcHEi
+    MQTT Username: GyX13moCcJQ=
+  */
+  //Instead of (Correct):
+  /*
+    MQTT Client ID: Blockly2_Dev
+    MQTT Username: Blockly2.azure-devices.net/Blockly2_Dev/?api-version=2020-09-30 
+  */
+  /////////////////////////////////////////////////////////////////
   // Nb host and device_id are const char * in Globals
   // That is, only a pointers with a constant location.
-  // But address pointed to there contained can change.
-  /////////////////////////////////////////////////////////////
+  // But address pointed to there can change.
+  /////////////////////////////////////////////////////////////////
   host = &tempHost[0];
   device_id = &tempDevice_id[0];
-  /////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////
+  // The above 2 lines as suggested as workaround in StackOverflow
+  /////////////////////////////////////////////////////////////////
 
   az_iot_hub_client_options options = az_iot_hub_client_options_default();
   options.user_agent = AZ_SPAN_FROM_STR(AZURE_SDK_CLIENT_USER_AGENT);
