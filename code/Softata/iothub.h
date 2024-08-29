@@ -116,7 +116,46 @@ void receivedCallback(char* topic, byte* payload, unsigned int length)
   Serial_println();
   Serial.println("Length: ");
   Serial_println(length);
-  
+
+  if(length>1)
+  {
+    // A simpler C2D Msg protocol form, cmds that can implemented by 2nd Core
+    int index =  (int)(payload[length-1]- (byte)'0');
+    if(index>=0 && index< MAX_SENSORS)
+    {
+      bool done = true;
+      bool res = true;
+      char ch = (char)((payload[0]) & ~(0x20));
+      switch (ch)
+      {
+        case 'P':
+          res = PauseTelemetrySend(index);
+          break;
+        case 'C':
+          res = ContinueTelemetrySend(index);
+          break;
+        case 'S':
+          res = StopTelemetrySend(index);
+          break;
+        case 'T':
+          res = ToggleActuator(index);
+          break;
+        case 'A':
+          res = SetActuator(index);
+          break;
+        case 'R':
+          res = ResetActuator(index);
+          break;
+        default:
+          done = false;
+          break;
+      }
+      if (done)
+      {
+        return;  
+      }
+    }
+  }  
   char cmd[length+1];
   char pin[length+1];
   char param[length+1];

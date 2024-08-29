@@ -35,6 +35,26 @@ int AddCallBack(CallbackInfo * info)
   return LEDListIndex;
 }
 
+bool StopTelemetrySend(int index)
+{
+  return false;
+}
+
+bool ToggleActuator(int index)
+{
+  return true;
+}
+
+bool SetActuator(int index)
+{
+  return true;
+}
+
+bool ResetActuator(int index)
+{
+  return true;
+}
+
 bool PauseTelemetrySend(int index)
 {
   CallbackInfo * info = GetCallbackInfoFromCore2List(index);

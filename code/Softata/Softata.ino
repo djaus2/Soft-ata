@@ -8,12 +8,9 @@
 #include <WiFiUdp.h>
 #include <ArduinoOTA.h>
 
-
-
 #include "SoftataOTA.h"
 #include "Connect2Wifi.h"
 #include "menu.h"
-
 
 #include "rpiwatchdog.h"
 #include "src/grove.h"

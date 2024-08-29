@@ -9,7 +9,7 @@
 enum SyncedCommands : byte {pauseTelemetryorBT=0,continueTelemetryorBT=1,stopTelemetryorBT=2,svrConnected=10, initialSynch=137, stopCore2=200};
 #define SynchMultiplier 1000
 
-#define APP_VERSION "10.100"  //Nb: As SoftataLib is updated, this is incremented even if no changes to Arduino code.
+#define APP_VERSION "10.110"  //Nb: As SoftataLib is updated, this is incremented even if no changes to Arduino code.
 
 //#define RPI_PICO_DEFAULT
 #define GROVE_RPI_PICO_SHIELD
@@ -208,6 +208,12 @@ struct CallbackInfo
 int AddCallBack(CallbackInfo * info);
 bool PauseTelemetrySend(int index);
 bool ContinueTelemetrySend(int index);
+
+// Following 2Do in SoftataCore2.h
+bool StopTelemetrySend(int index); //Not the Stop sketch command
+bool ToggleActuator(int index);
+bool SetActuator(int index);
+bool ResetActuator(int index);
 
 
 #endif

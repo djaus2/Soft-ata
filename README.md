@@ -1,8 +1,19 @@
-# Soft-ata Version 10.100
+# Soft-ata Version 10.110
 
 ---
 > Note: This main branch has been merged from V10.001 development branch  
 > In that, all code folders were been moved to  /code folder.
+---
+
+## Updates
+
+- V10.110: ***Simplified C2D message protocol***
+  - Can send C2D messages to Pause and Continue Telemetry
+  - Eg "P1"  or "Pause 1"
+  - First char in string P_ause_ or C_ontinue_ determines command. Case insensitive
+  - Last char is index _(Nb: Typically 1 not 0)_.
+  - _Toggle, A(Set), Reset Actuator D2C messages coming_
+
 ---
 
 ## Index this page:
