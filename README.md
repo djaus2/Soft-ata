@@ -1,8 +1,8 @@
 # Soft-ata Version 10.100
 
 ---
-> Note: This main brabnch has been merged from V10.001 development branch  
-> Note also: All code folders have been moved to  /code folder.
+> Note: This main branch has been merged from V10.001 development branch  
+> In that all code folders were been moved to  /code folder.
 ---
 
 ## Index this page:
