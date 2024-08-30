@@ -120,13 +120,13 @@ void receivedCallback(char* topic, byte* payload, unsigned int length)
   if(length>1)
   {
     // A simpler C2D Msg protocol form, cmds that can implemented by 2nd Core
-    int index =  (int)(payload[length-1]- (byte)'0');
+    int index =  (int)(payload[length-1]- (byte)'0'); //Need <P-C-S-T-A-R><index>
     if(index>=0 && index< MAX_SENSORS)
     {
       bool done = true;
       bool res = true;
-      char ch = (char)((payload[0]) & ~(0x20));
-      switch (ch)
+      char C2DMsgCmd = (char)((payload[0]) & ~(0x20));
+      switch (C2DMsgCmd)
       {
         case 'P':
           res = PauseTelemetrySend(index);
@@ -138,13 +138,33 @@ void receivedCallback(char* topic, byte* payload, unsigned int length)
           res = StopTelemetrySend(index);
           break;
         case 'T':
-          res = ToggleActuator(index);
-          break;
-        case 'A':
-          res = SetActuator(index);
-          break;
+        case 'A': //Actuator
         case 'R':
-          res = ResetActuator(index);
+          if(length>2) // Need <T-A-R><bit><index>
+          {
+            byte bit =  (byte)(payload[length-2]- (byte)'0');
+            if((bit>=0) &&(bit<16))
+            {
+              switch (C2DMsgCmd)
+              {
+              case 'T':
+                res = ToggleActuator(index);
+                break;
+              case 'A':
+                res = SetActuator(index);
+                break;
+              case 'R':
+                res = ResetActuator(index);
+                break;
+              default:
+                done = false;
+              }
+            }
+            else
+              done = false;
+          }
+          else
+            done = false;
           break;
         default:
           done = false;

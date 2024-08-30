@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Softata.Enums;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Softata
 {
@@ -30,7 +31,7 @@ namespace Softata
                 {
                     ValidActuatorPins = Enumerable.Range(0, 26).ToList<int>();
                 }
-                string csv = String.Join(",", ValidActuatorPins.Select(x => x.ToString()).ToArray());
+                string csv = string.Join(",", ValidActuatorPins.Select(x => x.ToString()).ToArray());
             }
 
             public static string[] GetActuators()
@@ -136,6 +137,38 @@ namespace Softata
                     return false;
             }
 
+            public static bool ToggleBit(byte actuatorListIndex, byte bit)
+            {
+                byte[] bytes = new byte[]{bit};
+                byte[] data = bytes.Prepend((byte)bytes.Length).ToArray<byte>(); //Prepend string length +1
+                string result = SendMessage(Commands.groveActuator, 0, (byte)GroveActuatorCmds.a_ToggleBitCMD, "OK:", actuatorListIndex, data);
+                if (true) //TBD
+                    return true;
+                else
+                    return false;
+            }
+
+            public static bool ClearBit(byte actuatorListIndex, byte bit)
+            {
+                byte[] bytes = new byte[] { bit };
+                byte[] data = bytes.Prepend((byte)bytes.Length).ToArray<byte>(); //Prepend string length +1
+                string result = SendMessage(Commands.groveActuator, 0, (byte)GroveActuatorCmds.a_ClearBitCMD, "OK:", actuatorListIndex, data);
+                if (true) //TBD
+                    return true;
+                else
+                    return false;
+            }
+
+            public static bool SetBit(byte actuatorListIndex, byte bit)
+            {
+                byte[] bytes = new byte[] { bit };
+                byte[] data = bytes.Prepend((byte)bytes.Length).ToArray<byte>(); //Prepend string length +1
+                string result = SendMessage(Commands.groveActuator, 0, (byte)GroveActuatorCmds.a_SetBitCMD, "OK:", actuatorListIndex, data);
+                if (true) //TBD
+                    return true;
+                else
+                    return false;
+            }
         }
     }
 }

@@ -1774,6 +1774,9 @@ void loop() {
                     case SHIFT595PARAOUT:
                       client.print(Shift595ParaOut::GetPins());
                       break;
+                    case RELAY:
+                      client.print(Grove_Relay::GetPins());
+                      break;
                     default:
                       client.print("Fail:Not an Actuator");
                       break;                 }
@@ -1789,6 +1792,9 @@ void loop() {
                     case SHIFT595PARAOUT:
                       client.print(Shift595ParaOut::GetValueRange());
                       break;
+                    case RELAY:
+                      client.print(Grove_Relay::GetValueRange());
+                      break;
                     default:
                         client.print("Fail:Not an actuator");
                         break;
@@ -1798,6 +1804,7 @@ void loop() {
                 case a_setupDefaultCMD: //Setupdefault
                 case a_setupCMD: //Setup(params)
                   {
+                    Serial.println("Setup act");
                     Grove_Actuator * grove_Actuator;
                     //GroveActuator groveActuator;
                     bool _done=false;
@@ -1815,6 +1822,12 @@ void loop() {
                           _done = true;
                         }
                         break;
+                      case RELAY:
+                        {
+                          grove_Actuator  = new Grove_Relay();
+                          _done = true;
+                        }
+                        break;
                       // Add more here
                       default:
                         client.print("Fail:Not an actuator");
@@ -1822,11 +1835,14 @@ void loop() {
                     }
                     if(_done)
                     {
-                      if(param==d_setupDefaultCMD)
+                      if(param==a_setupDefaultCMD)
                       {
                         if(grove_Actuator->Setup())
                         {
+                          Serial_println("Default Actuator Setup")
                           int index = AddActuatorToList(grove_Actuator);
+                          Serial_print({"Actuator Index: "}
+                          Serial.println(index);
                           String msgSettingsA1 = "OK";
                           msgSettingsA1.concat(':');
                           msgSettingsA1.concat(index);
@@ -1837,11 +1853,15 @@ void loop() {
                         }
                       else
                       {
-                        byte settings[1];
-                        settings[0] = pin;
-                        if(grove_Actuator->Setup(settings,1))
+                        byte asettings[1];
+                        Serial_print("Non-Default Actuator Setup Pin: ");
+                        Serial_print(pin);
+                        asettings[0] = pin;
+                        if(grove_Actuator->Setup(asettings,1))
                         {
                           int index = AddActuatorToList(grove_Actuator);
+                          Serial_print({"Actuator Index: "}
+                          Serial_println(index);
                           String msgSettingsA2 = "OK";
                           msgSettingsA2.concat(':');
                           msgSettingsA2.concat(index);
@@ -1932,11 +1952,13 @@ void loop() {
                   else
                   {
                     byte bit = otherData[1];
-                    Serial_print("Actuator: ");
+                    Serial_print("Actuator Param: ");
+                    Serial_print(param);
+                    Serial_print(" Bit: ");
                     Serial_print(bit);
-                    Serial_print('-');
-                    Serial_print(index);
-                    switch(cmd)
+                    Serial_print(" Index: ");
+                    Serial_println(index);
+                    switch(param)
                     {
                       case a_SetBitStateCMD:
                         stateValue = otherData[2];

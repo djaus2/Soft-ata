@@ -64,6 +64,46 @@ class Grove_Actuator: public Grove
 };
 #endif
 
+#ifndef RELAYH
+#define RELAYH
+
+
+class Grove_Relay: public Grove_Actuator
+{
+    public:
+      Grove_Relay();
+      Grove_Relay(int pin);
+      static arduino::String GetPins()
+      {
+        String msg = "OK:";
+        msg.concat(RELAYPINNOUT);
+        return msg;
+      }
+
+      static arduino::String GetValueRange()
+      {
+        String msg = "OK:";
+        msg.concat(RELAY_RANGE);
+        return msg;
+      }
+
+      virtual bool Setup();
+      virtual bool Setup(byte * settings, byte numSettings);
+
+      // Index for if there are an array of actuators here.
+      virtual bool Write(double value, int index);
+      virtual bool Write(int value, int index, int numBytes = 1);
+      virtual bool SetBitState(bool state,int index);
+      virtual bool SetBit(int index );
+      virtual bool ClearBit(int index );
+      virtual bool ToggleBit(int index );
+      DeviceType deviceType = actuator;
+    protected:
+      int num_properties=0;
+      byte relayPin = 16;
+};
+#endif
+
 #ifndef SERVOH
 #define SERVOH
 
@@ -72,6 +112,7 @@ class Grove_Actuator: public Grove
 #define MAX_PW 2400
 #define MIN_PW 544
 #define PERIOD 20000
+
 
 class Grove_Servo: public Grove_Actuator
 {

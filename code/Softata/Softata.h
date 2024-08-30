@@ -73,7 +73,7 @@ static int bitStuffing[] = {256,16,16,16,16,256,16};
 
 //Add other sensors/actuators here C bracketed, on end.
 #define G_SENSORS C(DHT11)C(BME280)C(UltrasonicRanger)C(Simulator)
-#define G_ACTUATORS C(SERVO)C(SHIFT595PARAOUT)
+#define G_ACTUATORS C(SERVO)C(SHIFT595PARAOUT)C(RELAY)
 #define G_DISPLAYS C(OLED096)C(LCD1602)C(NEOPIXEL)C(BARGRAPH)
 #define G_SERIAL C(LOOPBACK)C(GPS)
 
@@ -96,11 +96,14 @@ enum GroveActuatorCmds{a_getpinsCMD, a_getValueRangeCMD, a_setupDefaultCMD, a_se
 #define SHIFT595PARAOUT_PINNOUT "GPIO: Pin 11 or whatever 0 to 26. 3 pins required, DS, ST_CP and SH_CP."
 #elif defined(GROVE_RPI_PICO_SHIELD)
 #define SERVO_PINNOUT "Pin 16 (default), 18 or 20"
+#define RELAYPINNOUT "Pin 16 (default), 18 or 20"
 #define SHIFT595PARAOUT_PINNOUT "Pins 16 (DS of 74HC595-Pin14),20 (ST_CP of 74HC595-Pin12),21 (SH_CP of 74HC595-Pin11)(default)"
 #endif
 
 #define DEFAULT_SERVO_PIN 16
+#define DEFAULT_RELAY_PIN 16
 #define SERVO_RANGE "0...180 Angle" 
+#define RELAY_RANGE "N/A"
 #define SHIFT595PARAOUT_RANGE "0..255, 8 bits. Can do 16 too."
 
 ///////////////////////// S E N S O R S /////////////////////////////////////////////////

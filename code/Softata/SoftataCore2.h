@@ -35,6 +35,44 @@ int AddCallBack(CallbackInfo * info)
   return LEDListIndex;
 }
 
+bool DoActuator(int index, GroveActuatorCmds cmd )
+{
+  Grove_Actuator * grove_Actuator = GetActuatorFromList(index);
+  if(grove_Actuator != NULL)
+  {
+    Serial_print("Actuator: ");
+    Serial_print('-');
+    Serial_print(index);
+    switch(cmd)
+    {
+      case a_SetBitCMD:
+        if(grove_Actuator->SetBit())
+          /*client*/Serial.print("OK:Actuator-SetBit");
+        else
+          /*client*/Serial.print("Fail:Actuator-SetBit");
+        break;                      
+      case a_ClearBitCMD:
+          if(grove_Actuator->ClearBit())
+          /*client*/Serial.print("OK:Actuator-ClearBit");
+        else
+          /*client*/Serial.print("Fail:Actuator-ClearBit");
+        break;                     
+      case a_ToggleBitCMD:
+        if(grove_Actuator->ToggleBit())
+          /*client*/Serial.print("OK:Actuator-ToggleBit");
+        else
+          /*client*/Serial.print("Fail:Actuator-ToggleBit");
+        break;
+    }
+  } 
+  else
+  {
+    return false;
+  } 
+  return true;                                                                   
+
+}
+
 bool StopTelemetrySend(int index)
 {
   return false;
@@ -42,17 +80,17 @@ bool StopTelemetrySend(int index)
 
 bool ToggleActuator(int index)
 {
-  return true;
+  return DoActuator(index,a_ToggleBitCMD);
 }
 
 bool SetActuator(int index)
 {
-  return true;
+  return DoActuator(index,a_SetBitCMD);
 }
 
 bool ResetActuator(int index)
 {
-  return true;
+  return DoActuator(index,a_ClearBitCMD);
 }
 
 bool PauseTelemetrySend(int index)

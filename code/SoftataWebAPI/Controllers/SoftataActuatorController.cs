@@ -86,7 +86,7 @@ namespace SoftataWebAPI.Controllers
         [HttpPost]
         public IActionResult Setup(int iactuator, int pin, List<byte> settings = null)
         {
-            int actuatorListIndex = SoftataLib.Sensor.Setup((byte)iactuator, (byte)pin, settings);
+            int actuatorListIndex = SoftataLib.Actuator.Setup((ActuatorDevice)iactuator, (byte)pin);
             if (actuatorListIndex == -1)
             {
                 return BadRequest("Actuator not found");
@@ -130,6 +130,42 @@ namespace SoftataWebAPI.Controllers
                 return BadRequest("Actuator:WriteByte fail.");
             }
             return Ok($"Actuator:WriteByte");
+        }
+
+        [Route("ToggleBit")]
+        [HttpPost]
+        public IActionResult ToggleBit(int actuatorListIndex, byte bit)
+        {
+            bool result = SoftataLib.Actuator.ToggleBit((byte)actuatorListIndex, bit);
+            if (!result)
+            {
+                return BadRequest("Actuator:ToggleBit fail.");
+            }
+            return Ok($"{actuatorListIndex}");
+        }
+
+        [Route("ClearBit")]
+        [HttpPost]
+        public IActionResult ClearBit(int actuatorListIndex, byte bit)
+        {
+            bool result = SoftataLib.Actuator.ClearBit((byte)actuatorListIndex, bit);
+            if (!result)
+            {
+                return BadRequest("Actuator:ClearBit fail.");
+            }
+            return Ok($"{actuatorListIndex}");
+        }
+
+        [Route("SetBit")]
+        [HttpPost]
+        public IActionResult SetBit(int actuatorListIndex, byte bit)
+        {
+            bool result = SoftataLib.Actuator.SetBit((byte)actuatorListIndex, bit);
+            if (!result)
+            {
+                return BadRequest("Actuator:SetBit fail.");
+            }
+            return Ok($"{actuatorListIndex}");
         }
     }
 }
