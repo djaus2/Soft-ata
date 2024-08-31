@@ -1091,7 +1091,7 @@ namespace SoftataBasic
                                                 break;
                                         }
                                     }
-                                }
+                                } 
                                 else
                                 {
                                     if (state)
