@@ -6,7 +6,10 @@
 ---
 
 ## Updates
-
+- V10.111 ***Actuator:Grove Relay added***
+  - Connect to Pin 16(default)/18 or 20 (Socket 3/4 or 5 on bottom)
+  - Can set,clear or toggle
+  - _Note that bit parameter is ignored but required (use 0)._
 - V10.110: ***Simplified C2D message protocol***
   - Can send C2D messages to Pause and Continue Telemetry
   - Eg "P1"  or "Pause 1"
