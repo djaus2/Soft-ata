@@ -16,7 +16,7 @@ namespace Softata
         {
 
 
-            public enum ActuatorDevice { Servo = 0, Undefined = 0xff };
+            public enum ActuatorDevice { Servo = 0,Shift95ParaOut=1, Relay = 2, Undefined = 0xff };
 
 
             public enum RPiPicoMode { groveShield,defaultMode, Undefined = 255 };

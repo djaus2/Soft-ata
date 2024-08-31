@@ -995,12 +995,75 @@ namespace SoftataBasic
                         Console.WriteLine();
                         Console.WriteLine("Potentiometer-Relay Test");
                         Console.WriteLine("Potentiometer controls relay. On if >50%");
-                        Console.WriteLine("Potentiometer connected to A0, Relay to D16");
+                        Console.WriteLine("Potentiometer connected to A0, Relay to D16/18 or 20");
+
+                        Console.WriteLine("1. D16: Digital IO (Default)");
+                        Console.WriteLine("2. Actuator-Relay Class( Default Settings (Pin 16)");
+                        Console.WriteLine("3. Actuator-Relay Class( Setting: (Pin 18");
+                        Console.WriteLine("4. Actuator-Relay Class( Setting: (Pin 20)");
+                        Console.WriteLine("5. Quit");
+
+                        Console.Write("Selection:");
+                        bool potRelaySelectionFound = false;
+                        byte potRelaySelection = 1;
+                        do
+                        {
+                            string? s = Console.ReadLine();
+                            if (byte.TryParse(s, out byte prSelection))
+                            {
+                                if ((prSelection > 0) && (prSelection <= 5))
+                                {
+                                    potRelaySelectionFound = true;
+                                    potRelaySelection = prSelection;
+                                }
+                            }
+                            else if (!string.IsNullOrEmpty(s))
+                            {
+                                string key = s;
+                                if (key.ToUpper() == "Q")
+                                {
+                                    potRelaySelectionFound = true;
+                                    potRelaySelection = 5;
+                                }
+                            }
+                            else
+                            {
+                                potRelaySelectionFound = true;
+                                potRelaySelection = 1; //Default
+                            }
+                        } while (!potRelaySelectionFound);
+
+                        if (potRelaySelection == 5)
+                            break;
+
+                        byte relayPin = 16;
+                        byte actuatorIndex = 0;
+
+                        switch (potRelaySelection)
+                        {
+                            case 1:
+                                SoftataLib.Digital.SetPinMode(RELAY, SoftataLib.PinMode.DigitalOutput);
+                                break;
+                            case 2:
+                                actuatorIndex = (byte)SoftataLib.Actuator.SetupDefault(SoftataLib.Actuator.ActuatorDevice.Relay);
+                                break;
+                            case 3:
+                                relayPin = 18;
+                                actuatorIndex = (byte)SoftataLib.Actuator.Setup(SoftataLib.Actuator.ActuatorDevice.Relay, relayPin);
+                                break;
+                            case 4:
+                                relayPin = 20;
+                                actuatorIndex = (byte)SoftataLib.Actuator.Setup(SoftataLib.Actuator.ActuatorDevice.Relay, relayPin);
+                                break;
+                        }
+
+
+
                         SoftataLib.Analog.InitAnalogDevicePins(SoftataLib.Analog.RPiPicoMode.groveShield);
                         SoftataLib.Analog.SetAnalogPin(SoftataLib.Analog.AnalogDevice.Potentiometer, POTENTIOMETER, 1023);
                         Console.WriteLine("Press any key to continue.");
                         Console.ReadLine();
-                        SoftataLib.Digital.SetPinMode(RELAY, SoftataLib.PinMode.DigitalOutput);
+                        
                         bool state = false;
                         Console.WriteLine("Relay OFF");
                         for (int i = 0; i < 20; i++)
@@ -1014,8 +1077,19 @@ namespace SoftataBasic
                                     if (!state)
                                     {
                                         Console.WriteLine("\t\t\tRelay ON");
-                                        state = true;
-                                        SoftataLib.Digital.SetPinState(RELAY, SoftataLib.PinState.HIGH);
+                                        state = !state;
+                                       
+                                        switch (potRelaySelection)
+                                        {
+                                            case 1:
+                                                SoftataLib.Digital.SetPinState(RELAY, SoftataLib.PinState.HIGH);
+                                                break;
+                                            case 2:
+                                            case 3:
+                                            case 4:
+                                                SoftataLib.Actuator.SetBit(actuatorIndex,0);
+                                                break;
+                                        }
                                     }
                                 }
                                 else
@@ -1023,8 +1097,18 @@ namespace SoftataBasic
                                     if (state)
                                     {
                                         Console.WriteLine("\t\t\tRelay OFF");
-                                        state = false;
-                                        SoftataLib.Digital.SetPinState(RELAY, SoftataLib.PinState.LOW);
+                                        state = !state;
+                                        switch (potRelaySelection)
+                                        {
+                                            case 1:
+                                                SoftataLib.Digital.SetPinState(RELAY, SoftataLib.PinState.LOW);
+                                                break;
+                                            case 2:
+                                            case 3:
+                                            case 4:
+                                                SoftataLib.Actuator.ClearBit(actuatorIndex, 0);
+                                                break;
+                                        }
                                     }
                                 }
                             }
