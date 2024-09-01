@@ -1118,6 +1118,130 @@ namespace SoftataBasic
                             Thread.Sleep(2000);
                         }
                         break;
+                    case CommandType.PotShift595ParaOut:
+                        Console.WriteLine();
+                        Console.WriteLine("Potentiometer-595 Test");
+                        Console.WriteLine("Potentiometer controls which 8 bits are set");
+                        Console.WriteLine("0% Pot = none, 50% Pot = 4 bits, 100% = all 8 bits etc.");
+                        Console.WriteLine("Potentiometer connected to A0");
+                        Console.WriteLine("Default '74HC595 setup:");
+                        Console.WriteLine("595 Datapin = 16"); //Not 18 as in blog post
+                        Console.WriteLine("505 LatchPin = 20");
+                        Console.WriteLine("595 ClockPin = 21");
+
+
+                        Console.WriteLine("1. Default setup");
+                        Console.WriteLine("5. Quit");
+
+                        Console.Write("Selection:");
+                        bool potShift595ParaOutFound = false;
+                        byte potShift595ParaOutSelection = 1;
+                        do
+                        {
+                            string? s = Console.ReadLine();
+                            if (byte.TryParse(s, out byte prSelection))
+                            {
+                                if ((prSelection > 0) && (prSelection <= 5))
+                                {
+                                    potShift595ParaOutFound = true;
+                                    potShift595ParaOutSelection = prSelection;
+                                }
+                            }
+                            else if (!string.IsNullOrEmpty(s))
+                            {
+                                string key = s;
+                                if (key.ToUpper() == "Q")
+                                {
+                                    potShift595ParaOutFound = true;
+                                    potShift595ParaOutSelection = 5;
+                                }
+                            }
+                            else
+                            {
+                                potShift595ParaOutFound = true;
+                                potShift595ParaOutSelection = 1; //Default
+                            }
+                        } while (!potShift595ParaOutFound);
+
+                        if (potShift595ParaOutSelection == 5)
+                            break;
+
+                        byte actuatorParaIndex = 0;
+
+                        switch (potShift595ParaOutSelection)
+                        {
+                            case 1:
+                                actuatorParaIndex = (byte)SoftataLib.Actuator.SetupDefault(SoftataLib.Actuator.ActuatorDevice.Shift95ParaOut);
+                                break;;
+                        }
+
+
+
+                        SoftataLib.Analog.InitAnalogDevicePins(SoftataLib.Analog.RPiPicoMode.groveShield);
+                        SoftataLib.Analog.SetAnalogPin(SoftataLib.Analog.AnalogDevice.Potentiometer, POTENTIOMETER, 1023);
+                        Console.WriteLine("Press any key to continue.");
+                        Console.ReadLine();
+
+                        Console.WriteLine("Setting 0 to 8 bits depending upon Pot.");
+                        bool paraState = false;
+                        byte prevBits = 0;
+                        SoftataLib.Actuator.ActuatorWrite(actuatorParaIndex, prevBits);
+                        Console.WriteLine($"\t\t\tClear all 8 bits");
+                        for (int i = 0; i < 30; i++)
+                        {
+                            double val = SoftataLib.Analog.AnalogReadPotentiometer();
+                            double max = 91.3;
+                            double min = 0.29;
+                            byte bits = (byte)(256 * (val-min) / (max-min));
+                            Console.WriteLine($"AnalogRead({POTENTIOMETER}) = {val:0.##}");
+                            Console.Write("\t\t\tBits: ");
+                            string hex = Convert.ToString(bits, 2);
+                            string paddedString = hex.PadLeft(8, '0');
+                            Console.WriteLine(paddedString);
+                            Thread.Sleep(1000);
+                        }
+
+                        prevBits = 0;
+                        SoftataLib.Actuator.ActuatorWrite(actuatorParaIndex, prevBits);
+                        Console.WriteLine($"\t\t\tClear all 8 bits");
+                        for (int i = 0; i < 30; i++)
+                        {
+                            double val = SoftataLib.Analog.AnalogReadPotentiometer();
+                            double max = 91.3;
+                            double min = 0.29;
+                            byte bits = (byte)(8 * (val - min) / (max - min));
+                            Console.WriteLine($"AnalogRead({POTENTIOMETER}) = {val:0.##}");
+                            Console.Write("\t\t\tBits: ");
+                            string pat = "";
+                            switch (bits)
+                            {
+                                case 1: 
+                                    pat = "00000001";
+                                    break;
+                                case 2: 
+                                    pat = "00000010";
+                                    break;
+                                case 3: pat = "00000100";
+                                    break;
+                                case 4: pat = "00001000";
+                                    break;
+                                case 5:
+                                    pat = "00010000";
+                                    break;
+                                case 6:
+                                    pat = "00100000";
+                                    break;
+                                case 7:
+                                    pat = "01000000";
+                                    break;
+                                case 8:
+                                    pat = "10000000";
+                                    break;
+                            }
+                            Console.WriteLine(pat);
+                            Thread.Sleep(1000);
+                        }
+                        break;
                     case CommandType.PotServo:
                         string[] Actuators = SoftataLib.Actuator.GetActuators();
                         if (Actuators.Length == 0)
@@ -1156,6 +1280,12 @@ namespace SoftataBasic
                             Console.WriteLine("Testing Actuator");
                             switch (iactuator)
                             {
+                                case 2:
+                                    Console.WriteLine("Choose the Relay Test");
+                                    break;
+                                case 1:
+                                    Console.WriteLine("Choose '595 Test");
+                                    break;
                                 case 0:
                                     Console.WriteLine("Connect Servo to D16");
                                     Console.WriteLine("Press any key to continue.");
@@ -1210,6 +1340,9 @@ namespace SoftataBasic
                                     }
 
 
+                                    break;
+                                default:
+                                    Console.WriteLine("Actuator not yet implemented for this test.");
                                     break;
                             }
                             Console.WriteLine("Finished test");

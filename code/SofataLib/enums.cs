@@ -52,8 +52,9 @@
         PotServo = 0xA,
         GPSSerial = 0xB,
         TestOTAOrWDT = 0xC,
-        MaxType = 0xD,
-        Undefined = 0xFF
+        PotShift595ParaOut = 0xD,
+        MaxType = 0xE,       
+        Undefined = 0xFF,
     }
 
     public enum DeviceCategory : byte
