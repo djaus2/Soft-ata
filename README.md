@@ -6,7 +6,8 @@
 ---
 
 ## Updates
-- V10.199
+- V10.199/200
+  - Console app: Can save settings (RPi Pico Server IPAddress and Port).
   - Renaming of tests in Console and Blazor apps
   - Renaming in Arduino Softata as well such as: Shift595ParaOut class to SIPO_74Hc595.
   - Console app now loops. When test finishes get menu again.
