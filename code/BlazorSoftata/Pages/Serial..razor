@@ -44,7 +44,7 @@
         <td>@AppState.TestCategory</td>
     </tr>
 }
-@if (!(AppState.TestType == CommandType.MaxType))
+@if (!(AppState.TestType == BlazorTestType.MaxType))
 {
     <tr>
         <td><b>Selected Test Type: </b></td>
@@ -80,7 +80,7 @@
 }
     @switch(AppState.TestType)
     {
-        case CommandType.Loopback:
+        case BlazorTestType.Loopback:
             @if (datamodeASCII != null)
             {
                 @if ((bool)datamodeASCII)
@@ -97,7 +97,7 @@
                 }
             }
             break;
-        case CommandType.GPSSerial:
+        case BlazorTestType.GPS_Serial:
             break;
     }
     </table>
@@ -121,7 +121,7 @@ else if(AppState.Running)
 <div>
         @switch (AppState.TestType)
         {
-            case CommandType.Loopback:
+            case BlazorTestType.Loopback:
                 <h4>Data Mode</h4>
                 <select @onchange="OnChangeDataMode">
                     <option value="null">Select Transmission Mode</option>
@@ -129,7 +129,7 @@ else if(AppState.Running)
                     <option value="2">Raw Bytes</option>
                 </select>
                 break;
-            case CommandType.GPSSerial:
+            case BlazorTestType.GPS_Serial:
                 break;
         }
         <h4>Enter Baudrate:</h4>
@@ -170,9 +170,9 @@ else if (AppState.ReadytoRun)
         <h4>Serial Test Ready </h4>
         @switch (AppState.TestType)
         {
-            case CommandType.Loopback:
+            case BlazorTestType.Loopback:
                 break;
-            case CommandType.GPSSerial:
+            case BlazorTestType.GPS_Serial:
                 break;
         }
 
@@ -237,13 +237,13 @@ else if (AppState.ReadytoRun)
     {
         if (firstRender)
         {
-            if (AppState.TestType == CommandType.Loopback)
+            if (AppState.TestType == BlazorTestType.Loopback)
             {
                 Title = new MarkupString($"Softata: Grove -  Serial Loopback");
                 ComportRx = AppState.SerialRx;
                 ComPortTx = AppState.SerialTx;
             }
-            else if (AppState.TestType == CommandType.GPSSerial)
+            else if (AppState.TestType == BlazorTestType.GPS_Serial)
             {
                 Title = new MarkupString($"Softata: Grove -  Serial GPS");
                 ComportRx = AppState.SerialTx;
@@ -356,7 +356,7 @@ else if (AppState.ReadytoRun)
         StateHasChanged();
         await Task.Delay(100);
 
-        if (AppState.TestType == CommandType.Loopback)
+        if (AppState.TestType == BlazorTestType.Loopback)
         {
             if (datamodeASCII == null)
                 return;
@@ -419,7 +419,7 @@ else if (AppState.ReadytoRun)
                 }
             }
         }
-        else if (AppState.TestType == CommandType.GPSSerial)
+        else if (AppState.TestType == BlazorTestType.GPS_Serial)
         {
             Busy = true;
             SoftataLib.Serial.serialSetup(TxPin, BRate.Rate, ComPortTx);

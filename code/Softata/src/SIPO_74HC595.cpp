@@ -1,24 +1,24 @@
 #include <Arduino.h>
 #include "grove_actuator.h"
 
-Shift595ParaOut::Shift595ParaOut()
+Sipo74hc95::Sipo74hc95()
 {
     Setup();
 }
 
-Shift595ParaOut::Shift595ParaOut(byte * settings)
+Sipo74hc95::Sipo74hc95(byte * settings)
 {
     Setup(settings,NUM_SETTINGS);
 }
 
-bool Shift595ParaOut::Setup()
+bool Sipo74hc95::Setup()
 {
   ic595 = new IC_74HC595_ShiftRegister();
   num_bytes = 1;
   return true;
 }
 
-bool Shift595ParaOut::Setup(byte * settings, byte numSettings)
+bool Sipo74hc95::Setup(byte * settings, byte numSettings)
 {
   ic595 = new IC_74HC595_ShiftRegister(settings,numSettings);
   if(num_settings>3)
@@ -30,36 +30,36 @@ bool Shift595ParaOut::Setup(byte * settings, byte numSettings)
 // Instance of is collected elsewhere.
 // No longer need. 2Do Remove
 
-bool Shift595ParaOut::Write(double value, int index)
+bool Sipo74hc95::Write(double value, int index)
 {
     return true;
 }
-bool Shift595ParaOut::Write(int value, int index, int numBytes )
+bool Sipo74hc95::Write(int value, int index, int numBytes )
 {
     ic595->Write(value,numBytes);
     return true;
 }
 
 
-bool Shift595ParaOut::SetBitState(bool state,int bitNo)
+bool Sipo74hc95::SetBitState(bool state,int bitNo)
 {
     ic595->SetBitState(state,bitNo);
     return true;
 }
 
-bool Shift595ParaOut::SetBit(int bitNo )
+bool Sipo74hc95::SetBit(int bitNo )
 {
     ic595->SetBit(bitNo);
     return true;
 }
 
-bool Shift595ParaOut::ClearBit(int bitNo)
+bool Sipo74hc95::ClearBit(int bitNo)
 {
     ic595->ClearBit(bitNo);
     return true;
 }
 
-bool Shift595ParaOut::ToggleBit(int bitNo)
+bool Sipo74hc95::ToggleBit(int bitNo)
 {
     ic595->ToggleBit(bitNo);
     return true;

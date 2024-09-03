@@ -37,7 +37,7 @@ _Soft-ata rather than firm-ata!_
 - V8.00 Added SoftataMiscController class for miscellaneous Blockly Blocks
     - Simplify Blockly code by encapsulating functionality for what would be a complex set of blocks
      into a Get method that takes input/s, processes it and returns the result.. See [the example in this blog post](https://davidjones.sportronics.com.au/softata/Softata-CustomBlocksviaASP.NETController-softata.html)
-- V7.99 Added Shift595ParaOut class for 74HC595. 8 or 16 bits out.
+- V7.99 Added SIPO_74HC595 class for 74HC595. 8 or 16 bits out.
   - Added simple custom function app to samples. Deployed to Azure:
     - https://softatawebapii.azurewebsites.net/BlocklyAutomation
 - V7.95 Abstracted  74HC595  Shift Reg fucntionality from LedBarGraph to separate class so can use as a Genral Purpose Demux. Actuator version coming.

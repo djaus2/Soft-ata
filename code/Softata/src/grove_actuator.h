@@ -149,28 +149,28 @@ class Grove_Servo: public Grove_Actuator
 };
 #endif
 
-#ifndef Shift595ParaOutH
-#define Shift595ParaOutH
+#ifndef SIPO_74HC595H
+#define SIPO_74HC595H
 
 #include "ic_74hc595_shiftRegister.h"
 
 #define NUM_SETTINGS 4 // 3 pins plus number of bytes
 
-class Shift595ParaOut: public Grove_Actuator
+class Sipo74hc95: public Grove_Actuator
 {
     public:
-      Shift595ParaOut();
-      Shift595ParaOut(byte * settings);
+      Sipo74hc95();
+      Sipo74hc95(byte * settings);
       static arduino::String GetPins()
       {
         String msg = "OK:";
-        msg.concat(SHIFT595PARAOUT_PINNOUT);
+        msg.concat(SIPO_74HC595_PINNOUT);
         return msg;
       }
       static arduino::String GetValueRange()
       {
         String msg = "OK:";
-        msg.concat(SHIFT595PARAOUT_RANGE);
+        msg.concat(SIPO_74HC595_RANGE);
         return msg;
       }
       virtual bool Setup();

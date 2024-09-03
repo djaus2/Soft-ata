@@ -37,7 +37,7 @@
         <td>@AppState.TestCategory</td>
     </tr>
 }
-@if (!(AppState.TestType == CommandType.MaxType))
+@if (!(AppState.TestType == BlazorTestType.MaxType))
 {
     <tr>
         <td><b>Selected Test Type: </b></td>
@@ -98,7 +98,7 @@ else if(AppState.Running)
         <div class="form-group">
             @switch (AppState.TestType)
             {
-                case Softata.Enums.CommandType.PotLightSoundAnalog:
+                case Softata.Enums.BlazorTestType.Analog_Potentiometer_Light_and_Sound:
                     {
                         <h4>Rotate the potentiometer, cover light sensor/shine torch on it,.</h4>
                         <h4>Cover light sensor/shine torch on it,.</h4>

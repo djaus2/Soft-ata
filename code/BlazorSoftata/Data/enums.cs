@@ -5,7 +5,7 @@
     enum OLEDMiscCmds : byte { drawCircle, drawFrame, OLEDMiscCmds_MAX }
     public enum SensorDevice : byte { DHT11, BME280, UltrasonicRanger, Undefined = 0xFF }
     public enum DisplayDevice : byte { OLED096, LCD1602, NEOPIXEL, Undefined = 0xFF }
-    public enum ServoDevice : byte { Servo }
+    public enum ServoDevice : byte {  Servo, SIPO_74HC595,Relay }
    /* public enum CommandType : byte
     {
         DigitalButtonLED = 0,

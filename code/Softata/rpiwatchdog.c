@@ -25,9 +25,12 @@ void watchdog_update(void) {
 }
 // end::watchdog_update[]
 
+/* Now in ??
+c:\users\david\appdata\local\arduino15\packages\rp2040\hardware\rp2040\4.0.1\pico-sdk\src\rp2_common\hardware_watchdog\include\hardware\watchdog.h:136:24
+
 uint32_t watchdog_get_count(void) {
     return (watchdog_hw->ctrl & WATCHDOG_CTRL_TIME_BITS) / 2 ;
-}
+}*/
 
 // tag::watchdog_enable[]
 // Helper function used by both watchdog_enable and watchdog_reboot

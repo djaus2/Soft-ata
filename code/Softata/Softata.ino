@@ -1771,8 +1771,8 @@ void loop() {
                     case SERVO:
                       client.print(Grove_Servo::GetPins());
                       break;
-                    case SHIFT595PARAOUT:
-                      client.print(Shift595ParaOut::GetPins());
+                    case SIPO_74HC595:
+                      client.print(Sipo74hc95::GetPins());
                       break;
                     case RELAY:
                       client.print(Grove_Relay::GetPins());
@@ -1789,8 +1789,8 @@ void loop() {
                     case SERVO:
                       client.print(Grove_Servo::GetValueRange());
                       break;
-                    case SHIFT595PARAOUT:
-                      client.print(Shift595ParaOut::GetValueRange());
+                    case SIPO_74HC595:
+                      client.print(Sipo74hc95::GetValueRange());
                       break;
                     case RELAY:
                       client.print(Grove_Relay::GetValueRange());
@@ -1816,9 +1816,9 @@ void loop() {
                           _done = true;
                         }
                         break;
-                      case SHIFT595PARAOUT:
+                      case SIPO_74HC595:
                         {
-                          grove_Actuator  = new Shift595ParaOut();
+                          grove_Actuator  = new Sipo74hc95();
                           _done = true;
                         }
                         break;
@@ -1839,9 +1839,9 @@ void loop() {
                       {
                         if(grove_Actuator->Setup())
                         {
-                          Serial_println("Default Actuator Setup")
+                          Serial_println("Default Actuator Setup");
                           int index = AddActuatorToList(grove_Actuator);
-                          Serial_print({"Actuator Index: "}
+                          Serial_print("Actuator Index: ");
                           Serial.println(index);
                           String msgSettingsA1 = "OK";
                           msgSettingsA1.concat(':');
@@ -1860,7 +1860,7 @@ void loop() {
                         if(grove_Actuator->Setup(asettings,1))
                         {
                           int index = AddActuatorToList(grove_Actuator);
-                          Serial_print({"Actuator Index: "}
+                          Serial_print("Actuator Index: ");
                           Serial_println(index);
                           String msgSettingsA2 = "OK";
                           msgSettingsA2.concat(':');

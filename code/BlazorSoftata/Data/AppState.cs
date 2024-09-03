@@ -22,7 +22,7 @@ namespace BlazorSoftata
         private bool readytoRun = false;
         private bool running = false;
         private byte i2C;
-        private CommandType testType = CommandType.MaxType;
+        private BlazorTestType testType = BlazorTestType.MaxType;
         private byte tx1;
         private byte tx2;
         private bool? usingGroveShield = null;
@@ -45,7 +45,7 @@ namespace BlazorSoftata
         public byte ServoPin { get => servopin; set { servopin = value; NotifyStateChanged(); } }
 
         public byte DisplayPin { get => displaypin; set { displaypin = value; NotifyStateChanged(); } }
-        public CommandType TestType { get => testType; 
+        public BlazorTestType TestType { get => testType; 
             set { testType = value; NotifyStateChanged(); } }
         public bool ReadytoRun { get => readytoRun; set { readytoRun = value; NotifyStateChanged(); } }
         public bool Running { get => running; set { running = value; NotifyStateChanged(); } }
@@ -66,18 +66,18 @@ namespace BlazorSoftata
         // Test Categories
         public DeviceCategory TestCategory { get => testCategory; set { testCategory = value; NotifyStateChanged(); } }
 
-        // Lists of tests as a CommandType
-        public List<CommandType> LDigitals { get => lDigitals; set { lDigitals = value; NotifyStateChanged(); } }
-        public List<CommandType> LAnalogs { get => lAnalogs; set { lAnalogs = value; NotifyStateChanged(); } }
+        // Lists of tests as a BlazorTestType
+        public List<BlazorTestType> LDigitals { get => lDigitals; set { lDigitals = value; NotifyStateChanged(); } }
+        public List<BlazorTestType> LAnalogs { get => lAnalogs; set { lAnalogs = value; NotifyStateChanged(); } }
 
-        public List<CommandType> LActuators { get => lActuators; set { lActuators = value; NotifyStateChanged(); } }
+        public List<BlazorTestType> LActuators { get => lActuators; set { lActuators = value; NotifyStateChanged(); } }
 
-        public List<CommandType> LSensors { get => lAnalogs; set { lAnalogs = value; NotifyStateChanged(); } }
+        public List<BlazorTestType> LSensors { get => lAnalogs; set { lAnalogs = value; NotifyStateChanged(); } }
 
-        public List<CommandType> LDisplays { get => lActuators; set { lActuators = value; NotifyStateChanged(); } }
+        public List<BlazorTestType> LDisplays { get => lActuators; set { lActuators = value; NotifyStateChanged(); } }
 
 
-        public List<CommandType> LSerial{ get => lSerial; set { lSerial = value; NotifyStateChanged(); } }
+        public List<BlazorTestType> LSerial{ get => lSerial; set { lSerial = value; NotifyStateChanged(); } }
 
         public byte IDigital
         {
@@ -226,12 +226,12 @@ public byte I2C { get => i2C; set { if ((value < 0) || (value > 1)) return; i2C 
         private bool servoGetPins;
         private bool defaultSettings = false;
         private DeviceCategory testCategory;
-        private List<CommandType> lDigitals;
-        private List<CommandType> lAnalogs;
-        private List<CommandType> lDisplays;
-        private List<CommandType> lSensors;
-        private List<CommandType> lActuators;
-        private List<CommandType> lSerial;
+        private List<BlazorTestType> lDigitals;
+        private List<BlazorTestType> lAnalogs;
+        private List<BlazorTestType> lDisplays;
+        private List<BlazorTestType> lSensors;
+        private List<BlazorTestType> lActuators;
+        private List<BlazorTestType> lSerial;
         private MarkupString data = new MarkupString("");
         private string lat;
 

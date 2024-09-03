@@ -48,7 +48,7 @@ namespace Softata
                 {
                     if (item.Value.PinNumber == pinNumber)
                     {
-                        throw new ArgumentOutOfRangeException(nameof(pinNumber), "AnalogPotLED pin already assigned");
+                        throw new ArgumentOutOfRangeException(nameof(pinNumber), "Analog_Potentiometer_and__LED pin already assigned");
                         //break;
                     }
                 }

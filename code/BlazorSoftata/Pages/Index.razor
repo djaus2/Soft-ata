@@ -41,7 +41,7 @@
         <td>@TestCategory</td>
     </tr>
 }
-@if (!(AppState.TestType == CommandType.MaxType))
+@if (!(AppState.TestType == BlazorTestType.MaxType))
 {
     <tr>
         <td><b>Selected Test Type: </b></td>
@@ -130,7 +130,7 @@ else @if ((AppState.ISensor != 0xff))
             </select>
         </div>
     }
-    else if (AppState.TestType == CommandType.MaxType)
+    else if (AppState.TestType == BlazorTestType.MaxType)
     {
         <h3>@TestCategory</h3>
         <button class="btn btn-primary" @onclick="Reset">Reset</button>
@@ -143,7 +143,7 @@ else @if ((AppState.ISensor != 0xff))
             @if(CurrentTypes != null)
                 {
                     <div class="form-group">
-                        @if (AppState.TestType != CommandType.MaxType)
+                        @if (AppState.TestType != BlazorTestType.MaxType)
                         {
                             <h4>Tests: @AppState.TestType </h4>
                         }
@@ -151,7 +151,7 @@ else @if ((AppState.ISensor != 0xff))
                         {
                             <h4>Tests:</h4>
                         }
-                        <select @onchange="OnChangeCommandType">
+                        <select @onchange="OnChangeBlazorTestType">
                             <option value="None">Select test</option>
                             @foreach (var value in CurrentTypes)
                             {
@@ -168,7 +168,7 @@ else @if ((AppState.ISensor != 0xff))
                         <tr><td colspan="4">Run an exemplar sequence of tests demonstrating .NET interaction with the Display.</td></tr>
                         <tr>
                             <td colspan="4">
-                                <select @onchange="OnChangeCommandType">
+                                <select @onchange="OnChangeBlazorTestType">
                                     <option value=0xff>Select Display</option>
                                     @for (int i = 0; i < ListDeviceTypeTests.Count(); i++)
                                     {
@@ -184,7 +184,7 @@ else @if ((AppState.ISensor != 0xff))
             case DeviceCategory.sensor:
                 <div>
                     <h4>Select</h4>
-                        <select @onchange="OnChangeCommandType">
+                        <select @onchange="OnChangeBlazorTestType">
                         <option value=0xff>Select Sensor</option>
                         @for (int i = 0; i < ListDeviceTypeTests.Count(); i++)
                         {
@@ -201,7 +201,7 @@ else @if ((AppState.ISensor != 0xff))
         <div class="form-group">
             @switch (AppState.TestType)
            {
-                case Softata.Enums.CommandType.Sensors:
+                case Softata.Enums.BlazorTestType.Sensors:
                     {
                         <table>
                             <tr><td colspan="4">Run an exemplar sequence of tests demonstrating .NET interaction with the Sensor.</td></tr>
@@ -210,7 +210,7 @@ else @if ((AppState.ISensor != 0xff))
                         </table>
                     }
                     break;
-                case Softata.Enums.CommandType.Displays:
+                case Softata.Enums.BlazorTestType.Displays:
                     {
                         <h4>Display Connection for @AppState.Displays[AppState.IDisplay]</h4>
                         <table>
@@ -250,7 +250,7 @@ else @if ((AppState.ISensor != 0xff))
                         </table>
                     }
                     break;
-                case Softata.Enums.CommandType.Loopback:
+                case Softata.Enums.BlazorTestType.Loopback:
                     {
                         <table>
                             <tr><td colspan="3">Select Connections</td></tr>
@@ -275,7 +275,7 @@ else @if ((AppState.ISensor != 0xff))
                         </table>
                     } 
                     break;
-                case Softata.Enums.CommandType.GPSSerial:
+                case Softata.Enums.BlazorTestType.GPS_Serial:
                     {
                         <table>
                             <tr><td>Serial: Select Port</td></tr>
@@ -291,7 +291,7 @@ else @if ((AppState.ISensor != 0xff))
                         </table>
                     }
                     break;
-                case Softata.Enums.CommandType.PotServo:
+                case Softata.Enums.BlazorTestType.Potentiometer_Actuator:
                     {
                         @if (!AppState.GetPins)
                         {
@@ -345,7 +345,7 @@ else @if ((AppState.ISensor != 0xff))
                         }
                     }
                     break;
-                case Softata.Enums.CommandType.PotLightSoundAnalog:
+                case Softata.Enums.BlazorTestType.Analog_Potentiometer_Light_and_Sound:
                     {
                         <h4>Analog Potentiometer-Light-Sound Test</h4>
                         <p>2Do
@@ -385,7 +385,7 @@ else @if ((AppState.ISensor != 0xff))
                         </table>
                     }
                     break;
-                case Softata.Enums.CommandType.PotRelay:
+                case Softata.Enums.BlazorTestType.Potentiometer_Relay:
                     {
                         <h4>Potentiometer-Relay Test</h4>
                         <p>
@@ -429,8 +429,8 @@ else @if ((AppState.ISensor != 0xff))
                         </table>
                     }
                     break;
-                case Softata.Enums.CommandType.PWM:
-                case Softata.Enums.CommandType.AnalogPotLED:
+                case Softata.Enums.BlazorTestType.PWM:
+                case Softata.Enums.BlazorTestType.Analog_Potentiometer_and__LED:
                     {
                         <h4>Potentiometer-LED Test</h4>
                         <p>
@@ -466,7 +466,7 @@ else @if ((AppState.ISensor != 0xff))
                         </table>
                     }
                     break;
-                case Softata.Enums.CommandType.DigitalButtonLED:
+                case Softata.Enums.BlazorTestType.Digital_Button_and_LED:
                 {
                     <h4>Digital Button-LED Test </h4>
                         <p>
@@ -504,7 +504,7 @@ else @if ((AppState.ISensor != 0xff))
             <br />
             @switch (AppState.TestType)
             {
-                case CommandType.Loopback:
+                case BlazorTestType.Loopback:
                     @if ((@AppState.SerialRx == 1) || (@AppState.SerialRx == 2))
                     {
                         @if ((@AppState.SerialTx == 1) || (@AppState.SerialTx == 2))
@@ -513,14 +513,14 @@ else @if ((AppState.ISensor != 0xff))
                         }
                     }
                     break;
-                case CommandType.GPSSerial:
+                case BlazorTestType.GPS_Serial:
                     @if ((@AppState.SerialTx == 1) || (@AppState.SerialTx == 2))
                     {
                         <button class="btn btn-primary" @onclick="Ready">Test is configured</button>
                     }
                     break;
-                case CommandType.Sensors:
-                case CommandType.Displays:
+                case BlazorTestType.Sensors:
+                case BlazorTestType.Displays:
                 // Only used defaults for now
                     break;
                 default:
@@ -535,7 +535,7 @@ else @if ((AppState.ISensor != 0xff))
         <div class="form-group">
             @switch (AppState.TestType)
             {
-                case Softata.Enums.CommandType.Sensors:
+                case Softata.Enums.BlazorTestType.Sensors:
                     {
                         <h4>Sensor Test</h4>
                         <p>
@@ -545,7 +545,7 @@ else @if ((AppState.ISensor != 0xff))
                         <button class="btn btn-primary" @onclick="Start">Go to test</button>
                     }
                     break;
-                case Softata.Enums.CommandType.Displays:
+                case Softata.Enums.BlazorTestType.Displays:
                     {
                         <h4>Display Test</h4>
                         <p>
@@ -568,7 +568,7 @@ else @if ((AppState.ISensor != 0xff))
                         <button class="btn btn-primary" @onclick="Start">Go to test</button>
                     }
                     break;
-                case Softata.Enums.CommandType.Loopback:
+                case Softata.Enums.BlazorTestType.Loopback:
                     {
                        <h4>Serial Test</h4>
                        <p>Serial Tx: Serial @AppState.SerialTx</p>
@@ -576,7 +576,7 @@ else @if ((AppState.ISensor != 0xff))
                         <button class="btn btn-primary" @onclick="Start">Go to test</button>
                     }
                     break;
-                case Softata.Enums.CommandType.GPSSerial:
+                case Softata.Enums.BlazorTestType.GPS_Serial:
                     {
                         <h4>GPS Test</h4>
                         @if (@AppState.SerialTx==1)
@@ -590,7 +590,7 @@ else @if ((AppState.ISensor != 0xff))
                         <button class="btn btn-primary" @onclick="Start">Go to test</button>
                     }
                     break;
-                case Softata.Enums.CommandType.PotLightSoundAnalog:
+                case Softata.Enums.BlazorTestType.Analog_Potentiometer_Light_and_Sound:
                     {
                         <h4>Potentiometer-LED Test</h4>
                         <p>
@@ -602,7 +602,7 @@ else @if ((AppState.ISensor != 0xff))
                     }
                     <button class="btn btn-primary" @onclick="Start">Go to test</button>
                     break;
-                case Softata.Enums.CommandType.PotServo:
+                case Softata.Enums.BlazorTestType.Potentiometer_Actuator:
                     {
                         @* //One entry needed here for each actuator *@
                         @if (AppState.IActuator == 0)
@@ -628,7 +628,7 @@ else @if ((AppState.ISensor != 0xff))
                     }
                     <button class="btn btn-primary" @onclick="Start">Go to test</button>
                     break;
-                case Softata.Enums.CommandType.PotRelay:
+                case Softata.Enums.BlazorTestType.Potentiometer_Relay:
                     {
                         <h4>Potentiometer-Relay Test</h4>
                         <p>
@@ -651,8 +651,8 @@ else @if ((AppState.ISensor != 0xff))
                         <button class="btn btn-primary" @onclick="Start">Go to test</button>
                     }
                     break;
-                case Softata.Enums.CommandType.AnalogPotLED:
-                case Softata.Enums.CommandType.PWM:
+                case BlazorTestType.Analog_Potentiometer_and__LED:
+                case BlazorTestType.PWM:
                     {
                         <h4>Potentiometer-LED Test</h4>
     <p>This tests the Analog input(potentiometer) and PWM output to an LED with the  RPi Pico W.
@@ -670,7 +670,7 @@ else @if ((AppState.ISensor != 0xff))
                     <button class="btn btn-primary" @onclick="Start">Go to test</button>
 
                     break;
-                case Softata.Enums.CommandType.DigitalButtonLED:
+                    case BlazorTestType.Digital_Button_and_LED.:
                     {
                         <h4>Digital Button-LED Test </h4>
                         <p>
@@ -705,7 +705,7 @@ else @if ((AppState.ISensor != 0xff))
         set { busy = value; StateHasChanged(); }
     }
 
-    List<CommandType> CurrentTypes { get; set; } = new List<CommandType>();
+    List<BlazorTestType> CurrentTypes { get; set; } = new List<BlazorTestType>();
     List<string> ListDeviceTypeTests { get; set; } = new List<string>();
     string TestCategory = "";
 
@@ -737,7 +737,7 @@ else @if ((AppState.ISensor != 0xff))
         AppState.TestCategory = DeviceCategory.MaxType;
         AppState.ReadytoRun = false;
         AppState.Running = false;
-        AppState.TestType = CommandType.MaxType;
+        AppState.TestType = BlazorTestType.MaxType;
         /*AppState.IDigital = 0xff;
         AppState.IDisplay = 0xff;
         AppState.IAnalog = 0xff;
@@ -767,19 +767,19 @@ else @if ((AppState.ISensor != 0xff))
                 {
                     case DeviceCategory.digital:
                         acts = SoftataLib.DeviceCategoryMembers[DeviceCategory.digital];
-                        AppState.LDigitals = (from a in acts select (CommandType)a).ToList<CommandType>();
+                        AppState.LDigitals = (from a in acts select (BlazorTestType)a).ToList<BlazorTestType>();
                         CurrentTypes = AppState.LDigitals;
                         AppState.IDigital = 0xff;
                         break;
                     case DeviceCategory.serial:
                         acts = SoftataLib.DeviceCategoryMembers[DeviceCategory.serial];
-                        AppState.LSerial = (from a in acts select (CommandType)a).ToList<CommandType>();
+                        AppState.LSerial = (from a in acts select (BlazorTestType)a).ToList<BlazorTestType>();
                         CurrentTypes = AppState.LSerial;
                         AppState.ISerial = 0xff;
                         break;
                     case DeviceCategory.analog:
                         acts = SoftataLib.DeviceCategoryMembers[DeviceCategory.analog];
-                        AppState.LAnalogs = (from a in acts select (CommandType)a).ToList<CommandType>();
+                        AppState.LAnalogs = (from a in acts select (BlazorTestType)a).ToList<BlazorTestType>();
                         CurrentTypes =AppState.LAnalogs;
                         AppState.IAnalog = 0xff;
                         break;
@@ -796,7 +796,7 @@ else @if ((AppState.ISensor != 0xff))
                     case DeviceCategory.actuator:
                         acts =  SoftataLib.DeviceCategoryMembers[DeviceCategory.actuator];
                         AppState.Actuators = SoftataLib.Actuator.GetActuators().ToList();
-                        AppState.LActuators = (from a in acts select (CommandType)a).ToList<CommandType>();
+                        AppState.LActuators = (from a in acts select (BlazorTestType)a).ToList<BlazorTestType>();
                         AppState.Actuators.AddRange(from a in AppState.LActuators select a.ToString());
                         CurrentTypes = AppState.LActuators;
                         AppState.IActuator = 0xff;
@@ -807,7 +807,7 @@ else @if ((AppState.ISensor != 0xff))
         }
     }
 
-    private void OnChangeCommandType(ChangeEventArgs e)
+    private void OnChangeBlazorTestType(ChangeEventArgs e)
     {
         if (e == null)
             return;
@@ -818,19 +818,19 @@ else @if ((AppState.ISensor != 0xff))
             (AppState.TestCategory != DeviceCategory.sensor))
             {
                 string TestType = selected;
-                if (Enum.TryParse(TestType, out CommandType _testType))
+                if (Enum.TryParse(TestType, out BlazorTestType _testType))
                 {
                     AppState.TestType = _testType;
                     switch (AppState.TestType)
                     {
-                        case CommandType.Loopback:
-                        case CommandType.GPSSerial:
-                            //AppState = new DigitalButtonLED();
+                        case BlazorTestType.Loopback:
+                        case BlazorTestType.GPS_Serial:
+                        //AppState = new DigitalButtonLED();
                             break;
-                        case CommandType.DigitalButtonLED:
-                            //AppState = new DigitalButtonLED();
+                        case BlazorTestType.Digital_Button_and_LED:
+            //AppState = new DigitalButtonLED();
                             break;
-                        case CommandType.PotServo:
+                        case BlazorTestType.Potentiometer_Servo:
                             AppState.Actuators = SoftataLib.Actuator.GetActuators().ToList();
                             AppState.GetPins = true;
                             AppState.IActuator = 0;
@@ -844,7 +844,7 @@ else @if ((AppState.ISensor != 0xff))
                 switch (AppState.TestCategory)
                 {
                     case DeviceCategory.display:
-                        AppState.TestType = CommandType.Displays;
+                        AppState.TestType = BlazorTestType.Displays;
                         string DisplayType = selected;
                         if (byte.TryParse(DisplayType, out byte idisplay))
                         {
@@ -852,7 +852,7 @@ else @if ((AppState.ISensor != 0xff))
                         }
                         break;
                     case DeviceCategory.sensor:
-                        AppState.TestType = CommandType.Sensors;
+                        AppState.TestType = BlazorTestType.Sensors;
                         string SensorType = selected;
                         if (byte.TryParse(SensorType, out byte iSensor))
                         {
@@ -868,10 +868,10 @@ else @if ((AppState.ISensor != 0xff))
 
     public void Select()
     {
-        var commandsArray = Enum.GetValues(typeof(CommandType));
+        var commandsArray = Enum.GetValues(typeof(BlazorTestType));
 
         // Convert the array to an IEnumerable<Colors>
-        var commandsList = commandsArray.Cast<CommandType>().ToList();
+        var commandsList = commandsArray.Cast<BlazorTestType>().ToList();
     }
 
 
@@ -941,11 +941,11 @@ else @if ((AppState.ISensor != 0xff))
         AppState.ReadytoRun = false;
         switch (AppState.TestType)
         {
-            case CommandType.Sensors:
+            case BlazorTestType.Sensors:
                 break;
-            case CommandType.Displays:
+            case BlazorTestType.Displays:
                 break;;
-            case CommandType.PotServo:
+            case BlazorTestType.Pot_Actuator:
                 if (!AppState.GPIOPins.Contains(AppState.ServoPin))
                     return;
                 if (AppState.Potentiometer == AppState.ServoPin)
@@ -955,9 +955,9 @@ else @if ((AppState.ISensor != 0xff))
                 else
                     AppState.DefaultSettings = false;
                 break;
-            case CommandType.Loopback:
+            case BlazorTestType.Loopback:
                 break;
-            case CommandType.PotRelay:
+            case BlazorTestType.PotRelay:
                 if (!AppState.GPIOPins.Contains(AppState.Relay))
                     return;
                 if (AppState.Potentiometer == AppState.Relay)
@@ -966,15 +966,13 @@ else @if ((AppState.ISensor != 0xff))
                     AppState.DefaultSettings = true;
                 else
                     AppState.DefaultSettings = false;
-                break;
-            case CommandType.AnalogPotLED:
-            case CommandType.PWM:
+                breAnalogPot_LED     case BlazorTestType.AnalogPotLED:
+            case BlazorTestType.PWM:
                 if (!AppState.GPIOPins.Contains(AppState.LED))
                     return;
                 if (AppState.Potentiometer == AppState.LED)
                     return;
-                break;
-            case CommandType.DigitalButtonLED:
+                Digital_Button_and_LED    case BlazorTestType.DigitalButtonLED:
                 if (AppState == null)
                     return;
                 if (!AppState.GPIOPins.Contains(AppState.Button))
@@ -984,7 +982,7 @@ else @if ((AppState.ISensor != 0xff))
                 if (AppState.Button == AppState.LED)
                     return;
                 break;
-            case CommandType.PotLightSoundAnalog:
+            case BlazorTestType.Analog_Pototentiometer_Light_Sound:
                 if (AppState.Potentiometer == AppState.LightSensor)
                     return;
                 if (AppState.Potentiometer == AppState.SoundSensor)
@@ -1001,7 +999,7 @@ else @if ((AppState.ISensor != 0xff))
     {
         switch (AppState.TestType)
         {
-            case CommandType.Sensors:
+            case BlazorTestType.Sensors:
                 switch((SensorDevice)AppState.ISensor)
                 {
                     case SensorDevice.DHT11:
@@ -1015,7 +1013,7 @@ else @if ((AppState.ISensor != 0xff))
                         break;
                 }
                 break;
-            case CommandType.Displays:
+            case BlazorTestType.Displays:
                 switch((DisplayDevice)AppState.IDisplay)
                 {
                     case DisplayDevice.OLED096:
@@ -1031,24 +1029,23 @@ else @if ((AppState.ISensor != 0xff))
                 }
                 
                 break; ;
-            case CommandType.PotServo:
+            case BlazorTestType.Pot_Actuator:
                 navigationManager.NavigateTo("/potservo");
                 break;
-            case CommandType.Loopback:
-            case CommandType.GPSSerial:
+            case CommandGPS_Serialback:
+            case BlazorTestType.GPSSerial:
                 navigationManager.NavigateTo("/serial");
                 break;
-            case CommandType.PotRelay:
+            case BlazorTestType.PotRelay:
                 navigationManager.NavigateTo("/potrelay");
                 break;
-            case CommandType.PotLightSoundAnalog:
-                navigationManager.NavigateTo("/potlightsoundanalog");
+            case BlazorTestType.Analog_Pototentiometer_Light_Sound:
+                navigationManager.NavigateTo("/potlightsounAnalogPot_LED");
                 break;
-            case CommandType.AnalogPotLED:
-            case CommandType.PWM:
-                navigationManager.NavigateTo("/analog");
-                break;
-            case CommandType.DigitalButtonLED:
+            case BlazorTestType.AnalogPotLED:
+            case BlazorTestType.PWM:
+                navigationManager.NavigateDigital_Button_and_LED                break;
+            case BlazorTestType.DigitalButtonLED:
                 navigationManager.NavigateTo("/digital");
                 break;
         }

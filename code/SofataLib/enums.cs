@@ -5,18 +5,18 @@
     enum OLEDMiscCmds : byte { drawCircle, drawFrame, /* Add Here, */ OLEDMiscCmds_MAX }
     public enum SensorDevice : byte { DHT11, BME280, UltrasonicRANGER,/* Add Here, */  Undefined = 0xFF }
     public enum DisplayDevice : byte { OLED096, LCD1602, NEOPIXEL,BARGRAPH, /* Add Here, */ Undefined = 0xFF }
-    public enum ServoDevice : byte { Servo, Shift595ParaOut,/* Add Here, */ Undefined = 0xFF }
+    public enum ActuatorDevice : byte { Servo, SIPO_74HC595,Relay,/* Add Here, */ Undefined = 0xFF }
     public enum SerialDevice : byte { Loopback, GPS, Undefined = 0xFF }
 
     public enum Commands
     {
-        //DigitalButtonLED IO
+        //Digital_Button_and_LED IO
         pinMode = 0xD0,
         digitalWrite = 0xD1,
         digitalRead = 0xD2,
         digitalToggle = 0xD3,
 
-        //AnalogPotLED/PWM
+        //Analog_Potentiometer_and__LED/PWM
         analogRead = 0xA2,
         pwmWrite = 0xB1,
 
@@ -37,23 +37,42 @@
         
     }
 
-    public enum CommandType : byte
+    public enum ConsoleTestType : byte
     {
-        DigitalButtonLED = 0,
-        AnalogPotLED = 1,
+        Digital_Button_and_LED = 0,
+        Analog_Potentiometer_and__LED = 1,
         PWM = 2,
         Servo = 3,
         Sensors = 4,
         Displays = 0x5,
         Loopback = 6,
-        PotLightSoundAnalog = 0x7,
+        Analog_Potentiometer_Light_and_Sound = 0x7,
         USonicRange = 0x8,
-        PotRelay = 0x9,
-        PotServo = 0xA,
-        GPSSerial = 0xB,
-        TestOTAOrWDT = 0xC,
-        PotShift595ParaOut = 0xD,
-        MaxType = 0xE,       
+        Potentiometer_and_Actuator = 0x9,
+        GPS_Serial = 0xA,
+        Test_OTA_Or_WDT = 0xB,
+        MaxType = 0xC,       
+        Undefined = 0xFF,
+    }
+
+    public enum BlazorTestType : byte
+    {
+        Digital_Button_and_LED = 0,
+        Analog_Potentiometer_and__LED = 1,
+        PWM = 2,
+        Servo = 3,
+        Sensors = 4,
+        Displays = 0x5,
+        Loopback = 6,
+        Analog_Potentiometer_Light_and_Sound = 0x7,
+        USonicRange = 0x8,
+        Potentiometer_and_Actuator = 0x9,
+        GPS_Serial = 0xA,
+        Test_OTA_Or_WDT = 0xB,
+        Potentiometer_Relay =0xC,
+        Potentiometer_Actuator =0xD,
+        Potentiometer_Servo = 0xE,
+        MaxType = 0xF,
         Undefined = 0xFF,
     }
 

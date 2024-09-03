@@ -66,7 +66,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{55DCE197-4F2
 		Softata\src\ic_74hc595_shiftRegister.cpp = Softata\src\ic_74hc595_shiftRegister.cpp
 		Softata\src\ic_74hc595_shiftRegister.h = Softata\src\ic_74hc595_shiftRegister.h
 		Softata\src\servo.cpp = Softata\src\servo.cpp
-		Softata\src\Shift595ParaOut.cpp = Softata\src\Shift595ParaOut.cpp
+		Softata\src\SIPO_74HC595.cpp = Softata\src\SIPO_74HC595.cpp
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SoftataOTA", "SoftataOTA", "{1D47515E-81D0-4D41-98F8-8F9DEA6EB53F}"
@@ -114,7 +114,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{A5ED25A0-96F
 		SoftataOTA\src\ic_74hc595_shiftRegister.cpp = SoftataOTA\src\ic_74hc595_shiftRegister.cpp
 		SoftataOTA\src\ic_74hc595_shiftRegister.h = SoftataOTA\src\ic_74hc595_shiftRegister.h
 		SoftataOTA\src\servo.cpp = SoftataOTA\src\servo.cpp
-		SoftataOTA\src\Shift595ParaOut.cpp = SoftataOTA\src\Shift595ParaOut.cpp
+		SoftataOTA\src\SIPO_74HC595.cpp = SoftataOTA\src\SIPO_74HC595.cpp
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{0CBAE3E8-9D71-4596-A698-54102CCABC56}"
@@ -134,7 +134,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{0CBAE3E8-9D7
 		SoftataOptSerial\src\ic_74hc595_shiftRegister.cpp = SoftataOptSerial\src\ic_74hc595_shiftRegister.cpp
 		SoftataOptSerial\src\ic_74hc595_shiftRegister.h = SoftataOptSerial\src\ic_74hc595_shiftRegister.h
 		SoftataOptSerial\src\servo.cpp = SoftataOptSerial\src\servo.cpp
-		SoftataOptSerial\src\Shift595ParaOut.cpp = SoftataOptSerial\src\Shift595ParaOut.cpp
+		SoftataOptSerial\src\SIPO_74HC595.cpp = SoftataOptSerial\src\SIPO_74HC595.cpp
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RPiPicoWArduinoBuildDeploy", "RPiPicoWArduinoBuildDeploy\RPiPicoWArduinoBuildDeploy.csproj", "{38DB456F-AB20-401E-A3F1-ECE08A4C94D6}"

@@ -37,7 +37,7 @@
         <td>@AppState.TestCategory</td>
     </tr>
 }
-@if (!(AppState.TestType == CommandType.MaxType))
+@if (!(AppState.TestType == BlazorTestType.MaxType))
 {
     <tr>
         <td><b>Selected Test Type: </b></td>
@@ -83,7 +83,7 @@ else if(AppState.Running)
         <div class="form-group">
             @switch (AppState.TestType)
             {
-                case Softata.Enums.CommandType.DigitalButtonLED:
+                case Softata.Enums.BlazorTestType.Digital_Button_and_LED:
                     {
                         <h2>Press hardware button to toggle LED.</h2>
                         <h3>Hold until LED changes state = Button here is HIGH</h3>

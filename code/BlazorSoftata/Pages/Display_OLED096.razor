@@ -60,7 +60,7 @@ else if (AppState.Running)
         <td>@AppState.TestCategory</td>
     </tr>
 }
-@if (!(AppState.TestType == CommandType.MaxType))
+@if (!(AppState.TestType == BlazorTestType.MaxType))
 {
     <tr>
         <td><b>Selected Test Type: </b></td>
@@ -294,7 +294,7 @@ else if (AppState.Running)
         AppState.Running = false;
         AppState.IDisplay = 0xff;
         AppState.Running = false;
-        AppState.TestType = CommandType.MaxType;
+        AppState.TestType = BlazorTestType.MaxType;
         AppState.TestCategory = DeviceCategory.MaxType;
         AppState.Connected = "";
         ReconnectVisible = false;
