@@ -1,4 +1,4 @@
-# Soft-ata Version 10.110
+# Soft-ata Version 10.199
 
 ---
 > Note: This main branch has been merged from V10.001 development branch  
@@ -6,6 +6,10 @@
 ---
 
 ## Updates
+- V10.199
+  - Renaming of tests in Console and Blazor apps
+  - Renaming in Arduino Softata as well SIPO_74Hc595 for previous class.
+  - Console app now loops. When test finishes get menu again.
 - V10.111 ***Actuator:Grove Relay added***
   - Connect to Pin 16(default)/18 or 20 (Socket 3/4 or 5 on bottom)
   - Can set,clear or toggle
