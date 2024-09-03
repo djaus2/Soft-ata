@@ -8,7 +8,7 @@
 ## Updates
 - V10.199
   - Renaming of tests in Console and Blazor apps
-  - Renaming in Arduino Softata as well SIPO_74Hc595 for previous class.
+  - Renaming in Arduino Softata as well such as: Shift595ParaOut class t0 SIPO_74Hc595.
   - Console app now loops. When test finishes get menu again.
 - V10.111 ***Actuator:Grove Relay added***
   - Connect to Pin 16(default)/18 or 20 (Socket 3/4 or 5 on bottom)
