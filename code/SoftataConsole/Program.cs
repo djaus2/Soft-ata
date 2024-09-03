@@ -62,13 +62,18 @@ namespace SoftataBasic
 
             string _ipaddressStr = SettingsManager.ReadSetting("IpaddressStr");
             if (!string.IsNullOrEmpty(_ipaddressStr))
-            {             
-                if (IPAddress.TryParse(_ipaddressStr, out IPAddress? address))
+            {
+                if (_ipaddressStr.Count(c => c == '.') == 3)
                 {
-                    ipaddressStr = _ipaddressStr;
+                    if (IPAddress.TryParse(_ipaddressStr, out IPAddress? address))
+                    {
+                        ipaddressStr = _ipaddressStr;
+                    }
+                    else
+                        Console.WriteLine("Invalid App SettingsIP Address");
                 }
                 else
-                    Console.WriteLine("Invalid App SettingsIP Address");
+                    Console.WriteLine("Invalid App Settings IP Address");
             }
             else
             {
@@ -107,13 +112,18 @@ namespace SoftataBasic
                         string? ip = Console.ReadLine();
                         if (!string.IsNullOrEmpty(ip))
                         {
-                            if (IPAddress.TryParse(ip, out IPAddress? address))
+                            if (IpAddress.Count(c => c == '.') == 3)
                             {
-                                IpAddress = ip;
-                                SettingsManager.AddUpdateAppSettings("IpaddressStr", IpAddress);
+                                if (IPAddress.TryParse(ip, out IPAddress? address))
+                                {
+                                    IpAddress = ip;
+                                    SettingsManager.AddUpdateAppSettings("IpaddressStr", IpAddress);
+                                }
+                                else
+                                    Console.WriteLine("Invalid IP Address");
                             }
                             else
-                                Console.WriteLine("Invalid IP Address");                                                           
+                                Console.WriteLine("Invalid IP Address");
                         }
 
                         Console.Write("Plz Enter Port: ");
