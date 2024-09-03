@@ -20,8 +20,8 @@ namespace SoftataBasic
     {
 
         // Set the same as Arduino:
-        const int port = 4242;
-        const string ipaddressStr = "192.168.0.12";
+        static int port = 4242;
+        static string ipaddressStr = "192.168.0.12";
 
         // Configure hardware pin connections thus:
         static byte LED = 12;
@@ -56,8 +56,42 @@ namespace SoftataBasic
             Console.WriteLine();
             Console.WriteLine("For details see https://davidjones.sportronics.com.au/cats/softata/");
             Console.WriteLine();
+;
+            //SettingsManager.ClearAllSettings();
+            SettingsManager.ReadAllSettings();
+
+            string _ipaddressStr = SettingsManager.ReadSetting("IpaddressStr");
+            if (!string.IsNullOrEmpty(_ipaddressStr))
+            {             
+                if (IPAddress.TryParse(_ipaddressStr, out IPAddress? address))
+                {
+                    ipaddressStr = _ipaddressStr;
+                }
+                else
+                    Console.WriteLine("Invalid App SettingsIP Address");
+            }
+            else
+            {
+                SettingsManager.AddUpdateAppSettings("IpaddressStr", ipaddressStr);
+            }
+            string _port = SettingsManager.ReadSetting("Port");
+            if (!string.IsNullOrEmpty(_ipaddressStr))
+            {
+                if(int.TryParse(_port, out int _portNo))
+                {
+                    port = _portNo;
+                }
+                else
+                    Console.WriteLine("Invalid AppSettings  Port");
+            }
+            else
+            {
+                SettingsManager.AddUpdateAppSettings("Port", port.ToString());
+            }
+
             string IpAddress = ipaddressStr;
             int Port = port;
+
             Console.WriteLine("TESTS");
             bool quit = false;
             bool connected = false;
@@ -68,10 +102,19 @@ namespace SoftataBasic
                     if (!connected)
                     {
                         Console.WriteLine($"Default Softata Server is at {ipaddressStr}:{port}");
+                        Console.WriteLine("Enter new values or press [Enter] to continue:");
                         Console.Write("Plz Enter IPAdress: ");
                         string? ip = Console.ReadLine();
                         if (!string.IsNullOrEmpty(ip))
-                            IpAddress = ip;
+                        {
+                            if (IPAddress.TryParse(ip, out IPAddress? address))
+                            {
+                                IpAddress = ip;
+                                SettingsManager.AddUpdateAppSettings("IpaddressStr", IpAddress);
+                            }
+                            else
+                                Console.WriteLine("Invalid IP Address");                                                           
+                        }
 
                         Console.Write("Plz Enter Port: ");
                         string? prt = Console.ReadLine();
@@ -80,9 +123,12 @@ namespace SoftataBasic
                             if (int.TryParse(prt, out int portNo))
                             {
                                 Port = portNo;
+                                SettingsManager.AddUpdateAppSettings("Port", Port.ToString());
                             }
+                            else
+                                Console.WriteLine("Invalid Port");
                         }
-                        Console.WriteLine($"Selected Softata Server is at {ipaddressStr}:{port}");
+                        Console.WriteLine($"Selected Softata Server is at {IpAddress}:{Port}");
                     }
                     int num = 0;
                     for (int i = 0; i < (int)ConsoleTestType.MaxType; i++)
