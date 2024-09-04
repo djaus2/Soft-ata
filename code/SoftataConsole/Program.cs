@@ -70,24 +70,24 @@ namespace SoftataBasic
                         ipaddressStr = _ipaddressStr;
                     }
                     else
-                        Console.WriteLine("Invalid App SettingsIP Address");
+                        Console.WriteLine("\t\t App SettingsIP Address");
                 }
                 else
-                    Console.WriteLine("Invalid App Settings IP Address");
+                    Console.WriteLine("\t\tInvalid App Settings IP Address");
             }
             else
             {
                 SettingsManager.AddUpdateAppSettings("IpaddressStr", ipaddressStr);
             }
             string _port = SettingsManager.ReadSetting("Port");
-            if (!string.IsNullOrEmpty(_ipaddressStr))
+            if (!string.IsNullOrEmpty(_port))
             {
                 if(int.TryParse(_port, out int _portNo))
                 {
                     port = _portNo;
                 }
                 else
-                    Console.WriteLine("Invalid AppSettings  Port");
+                    Console.WriteLine("\t\tInvalid AppSettings  Port");
             }
             else
             {
@@ -112,7 +112,7 @@ namespace SoftataBasic
                         string? ip = Console.ReadLine();
                         if (!string.IsNullOrEmpty(ip))
                         {
-                            if (IpAddress.Count(c => c == '.') == 3)
+                            if (ip.Count(c => c == '.') == 3)
                             {
                                 if (IPAddress.TryParse(ip, out IPAddress? address))
                                 {
@@ -120,10 +120,10 @@ namespace SoftataBasic
                                     SettingsManager.AddUpdateAppSettings("IpaddressStr", IpAddress);
                                 }
                                 else
-                                    Console.WriteLine("Invalid IP Address");
+                                    Console.WriteLine("\t\tInvalid IP Address");
                             }
                             else
-                                Console.WriteLine("Invalid IP Address");
+                                Console.WriteLine("\t\tInvalid IP Address");
                         }
 
                         Console.Write("Plz Enter Port: ");
@@ -136,7 +136,7 @@ namespace SoftataBasic
                                 SettingsManager.AddUpdateAppSettings("Port", Port.ToString());
                             }
                             else
-                                Console.WriteLine("Invalid Port");
+                                Console.WriteLine("\t\tInvalid Port");
                         }
                         Console.WriteLine($"Selected Softata Server is at {IpAddress}:{Port}");
                     }
