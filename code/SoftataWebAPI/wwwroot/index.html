@@ -3,108 +3,177 @@
 <head>
     <meta charset="utf-8" />
     <title>Softata Index</title>
+    <style>
+        details > summary {
+            padding: 4px;
+            color: blueviolet;
+            font-weight: bold;
+            background-color: lightgoldenrodyellow;
+            cursor: pointer;
+        }
+
+        details > p {
+            background-color: #eeeeee;
+            padding: 4px;
+            margin: 0;
+        }
+        q {
+            color: white;
+            background-color: black;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        td {
+            border: 1px solid black;
+            padding: 16px;
+            text-align: left;
+            color: white;
+            background-color: black;
+            font-weight: bold;
+            font-size: 20px;
+        }
+    </style>
 
 </head>
 <body>
     <h1>Softata API</h1>
-    <ul>
-        <li>
-            <h2>Run as Blockly</h2>
-            <ul>
-                <li><a href="/BlocklyAutomation">Softata NetCoreBlockly</a></li>
-                <li>
-                    <ul>
-                        <li>Expand Blockly Core</li>
-                        <li>Drill into Swaggers/MySite/APis</li>
-                        <li>Select an API/Controller</li>
-                    </ul>
-                </li>
-                <li><a href="https://davidjones.sportronics.com.au/softata/Softata-Blockly____The_Holy_Grail-softata.html">About Softata Blockly</a></li></>
-            </ul>
-        </li>
-        <li>
-            <h2>Get the Softata Shield project for building in Arduino IDE</h2>
-            <ul>
-                <li><a href="/images/Softata.zip">Download as Zip</a></li>
-                <li>Unzip it aand open in Arduino IDE</li>
-                <li>Set parameters (eg WifI) in softata.h</li>
-                <li>
-                    When running Blockly on Azure need to specify the running Pico using NAT or ngrok
-                    <ul>
-                        <li>See <a href="https://davidjones.sportronics.com.au/softata/Softata-Running_Blockly_on_local_Pico_from_Azure_SoftataAPII-softata.html">Softata: Running Blockly on local Pico from Azure Softata API</a></li>
-                    </ul>
-                </li>
-            </ul>
-        </li>
-        <li>
-            <h2>Get the SoftataOTA bin and related batch files for upload without IDE.</h2>
-            <ul>
-                <li><a href="/images/ota.zip">Download as Zip</a></li>
-                <li>Unzip into a folder. Change into ota folder</li> 
-                <li>
-                    Upload using USB Serial batch file <b>USBSerial-pythoninpath.bat</b><br />
-                    <ul>
-                        <li>Subsequent uploads can be via OTA batch file <b>OTA-pythoninpath.bat</b></li>
-                    </ul>
-                </li>
-                <li>
-                    When running Blockly on Azure need to specify the running Pico using NAT or ngrok
-                    <ul>
-                        <li>See <a href="https://davidjones.sportronics.com.au/softata/Softata-Running_Blockly_on_local_Pico_from_Azure_SoftataAPII-softata.html">Softata: Running Blockly on local Pico from Azure Softata API</a></li>
-                    </ul>
-                </li>
-            </ul>
-        </li>
-        <li>
-            <h2>Run as Swagger</h2>
-            <ul>
-                <li><a href="/Swagger">Softata Swagger</a></li>
-                <ul>
-                    <li><a href="https://davidjones.sportronics.com.au/softata/Softata-An_ASP.NET_Core_API_Interface_-softata.html">About Softata Swagger: 1</a></li>
-                    <li><a href="https://davidjones.sportronics.com.au/softata/Softata-An_ASP.NET_Core_API_Interface_-_2-softata.html">About Softata Swagger: 2</a></li>
-                </ul>
-            </ul>
-        </li>
-        <li>
-            <h2>GitHub Repository</h2>
-            <ul>
-                <li><a href="https://github.com/djaus2/Soft-ata/blob/master/README.md">Soft-ata ReadMe</a></li>
-                <li><a href="https://github.com/djaus2/Soft-ata/">Soft-ata Repository</a></li>
-            </ul>
-        </li>
-        <li>
-            <h2>Blog posts</h2>
-            <ul>
-                <li><a href="https://davidjones.sportronics.com.au/cats/softata/">All Softata Docs</a></li>
-            </ul>
-            <ul>
-                <li><a href="https://davidjones.sportronics.com.au/tags/blockly/">Softata Blockly Docs</a></li>
-            </ul>
-        </li>
-        <li>
-            <h2>Other</h2>
-            <ul>
-                <li><a href="https://github.com/ignatandrei/NETCoreBlockly">NetCoreBlockly</a></li>
-            </ul>
-            <ul>
-                <li><a href="https://github.com/earlephilhower/arduino-pico">RPi Pico W BSP <i>(github/earlephilhower)</i></a></li>
-            </ul>
-        </li>
-    </ul>
-            <p>
+
+    <table>
+        <tr>
+            <td>
                 <i>
                     Softata running in a .NET context is able to remotely orchestrate functionality on a RPi Pico W running in Arduino mode.
                     The .NET context can be a Console app, a Blazor app or via ASP.NET Core APIs.
                     The orchestration can be used to control the RPi Pico W's GPIO pins, ADC, I2C, SPI, UART, PWM, etc.
+                    The hardware conetxt is a Grove Shield with a number of implemented devices.
                     The ASP.NET Core API can be exercised via Swagger or a Blockly style app.
                 </i>
-            </p>
-            <p>
-                <img src="/images/netcoreblockly-decluttered.png" class="img" width="300" alt="Netcore Blockly" /><br />
-                <b><i>Softata NetCoreBlockly Example</i></b>
-            </p>
-            <p>
-                <img src="/images/swagger1.png" class="img" width="500" alt="Swagger" /><br />
-                <b><i>Softata Swagger API</i></b>
-            </p>
+            </td>
+        </tr>
+    </table>
+    <br />
+    <br />
+
+
+
+    <details>
+        <summary><b>Install the Softata RPi Pico W Sketch</b></summary>
+        <ul>
+            <li>
+                <a href="/sketch/Softata.ino.zip" download>Download sketch binary as a zip</a>
+                <ul>
+                    <li>Extract Softata.ino.uf2 to the desktop </li>
+                    <li>Press and hold the button</li>
+                    <li>Connect the Pico to USB on the desktop s</li>
+                    <li>Release the button</li>
+                    <li>A popup will appear with a drive letter, say D:</li>
+                    <li>Drag and drop the uf2 file onto the drive</li>
+                    <li>Allow the Pico to boot, noting its IpAddress</li>
+                </ul>
+            </li>
+        </ul>
+    </details>
+
+    <hr />
+
+
+    <details>
+        <summary><b>Run Blockly</b></summary>
+        <ul>
+            <li>
+                <a href="/BlocklyAutomation">Softata NetCoreBlockly</a>
+                <ul>
+                    <li>Expand Blockly Core</li>
+                    <li>Drill into Swaggers/MySite/APis</li>
+                    <li>Select API/Controllers</li>
+                    <li>OR Select an Example</li>
+                    <li>
+                        When running Blockly on Azure need to specify the running Pico using NAT or ngrok
+                        <ul>
+                            <li>See <a href="https://davidjones.sportronics.com.au/softata/Softata-Running_Blockly_on_local_Pico_from_Azure_SoftataAPII-softata.html">Softata: Running Blockly on local Pico from Azure Softata API</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+            <li><a href="https://davidjones.sportronics.com.au/softata/Softata-Blockly____The_Holy_Grail-softata.html">About Softata Blockly</a></li></>
+        </ul>
+    </details>
+    </br>
+    <details>
+        <summary><b>Or Run Console App</b></summary>
+        <ul>
+            <li>
+                <a href="/ConsoleApp/Publish.html">Softata Console App (Click Once)</a>
+                <ul>
+                    <li>Open SoftataConsole (ClickOnce)</li>
+                    <li>Install the .NET version if not already done.</li>
+                    <li>Click on launch</li>
+                    <li>Click on [Open]</li>
+                    <li>Enter the IPAddress from 1.</li>
+                    <li>Make a Test selection and follow hardware connection info.</li>
+                </ul>
+            </li>
+        </ul>
+    </details>
+    <br />
+    <details>
+        <summary><b>Or Run as Swagger</b></summary>
+        <ul>
+            <li><a href="/Swagger">Softata Swagger</a></li>
+            <ul>
+                <li><a href="https://davidjones.sportronics.com.au/softata/Softata-An_ASP.NET_Core_API_Interface_-softata.html">About Softata Swagger: 1</a></li>
+                <li><a href="https://davidjones.sportronics.com.au/softata/Softata-An_ASP.NET_Core_API_Interface_-_2-softata.html">About Softata Swagger: 2</a></li>
+            </ul>
+        </ul>
+    </details>
+
+    <hr />
+
+    <details>
+        <summary><b>Documentation</b></summary>
+
+        <h2>GitHub Repository</h2>
+        <ul>
+            <li><a href="https://github.com/djaus2/Soft-ata/blob/master/README.md">Soft-ata ReadMe</a></li>
+            <li><a href="https://github.com/djaus2/Soft-ata/">Soft-ata Repository</a></li>
+        </ul>
+
+        <h2>Blog posts</h2>
+        <ul>
+            <li><a href="https://davidjones.sportronics.com.au/cats/softata/">All Softata Docs</a></li>
+        </ul>
+        <ul>
+            <li><a href="https://davidjones.sportronics.com.au/tags/blockly/">Softata Blockly Docs</a></li>
+        </ul>
+    </details>
+    <br />
+    <details>
+        <summary><b>Other</b></summary>
+
+        <h2>Other</h2>
+        <ul>
+            <li><a href="https://github.com/ignatandrei/NETCoreBlockly">NetCoreBlockly</a></li>
+        </ul>
+        <ul>
+            <li><a href="https://github.com/earlephilhower/arduino-pico">RPi Pico W BSP <i>(github/earlephilhower)</i></a></li>
+        </ul>
+    </details>
+    <br />
+    <details>
+        <summary><b>View Blockly and Swagger Examples</b></summary>
+
+        <p>
+            <img src="/images/netcoreblockly-decluttered.png" class="img" width="300" alt="Netcore Blockly" /><br />
+            <b><i>Softata NetCoreBlockly Example</i></b>
+        </p>
+        <p>
+            <img src="/images/swagger1.png" class="img" width="500" alt="Swagger" /><br />
+            <b><i>Softata Swagger API</i></b>
+        </p>    
+    </details>
 </body>
