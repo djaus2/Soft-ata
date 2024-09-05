@@ -390,3 +390,6 @@ FodyWeavers.xsd
 /Misc/GetWifiIPAddress/build/rp2040.rp2040.rpipicow/GetWifiIPAddress.ino.map
 /Misc/GetWifiIPAddress/build/rp2040.rp2040.rpipicow/GetWifiIPAddress.ino.uf2
 /code/SoftataConsole/Settings.job
+/code/SoftataWebAPI/Properties/ServiceDependencies/SoftataWebAPII - Web Deploy/apis1.arm.json
+/code/SoftataWebAPI/Properties/ServiceDependencies/SoftataWebAPII - Web Deploy/profile.arm.json
+/code/SoftataWebAPI/Properties/ServiceDependencies/SoftataWebAPI20240321114706 - Web Deploy/profile.arm.json
