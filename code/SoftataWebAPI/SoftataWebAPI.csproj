@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="wwwroot\sketch\Softata.ino.uf2" />
+    <Content Remove="wwwroot\sketch\IoT_Softata.ino.uf2" />
   </ItemGroup>
 
   <ItemGroup>
@@ -28,7 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="wwwroot\sketch\Softata.ino.uf2">
+    <Resource Include="wwwroot\sketch\IoT_Softata.ino.uf2">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>

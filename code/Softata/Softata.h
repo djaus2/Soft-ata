@@ -17,7 +17,7 @@ enum SyncedCommands : byte {pauseTelemetryorBT=0,continueTelemetryorBT=1,stopTel
 // Azure IoT
 // Uncomment following if using Azure IoT Hub
 // For Bluetooth do not define USINGIOTHUB
-#define USINGIOTHUB
+// #define USINGIOTHUB
 
 #include "serial_macros.h"
 #include "Connect2WiFi.h"

@@ -65,14 +65,20 @@
         <summary><b>Install the Softata RPi Pico W Sketch</b></summary>
         <ul>
             <li>
-                <a href="/sketch/Softata.ino.zip" download>Download sketch binary as a zip</a>
+                <ul>
+                    <li><a href="/sketch/NoIoT_Softata.ino.zip" download>Download sketch binary WITHOUT IOT, as a zip</a></li>
+                    <li><a href="/sketch/IoT_Softata.ino.zip" download>OR Download sketch binary WITH IOT, as a zip</a>
+                    <ul>
+                    <li><i><b>Comment: </b>The non-IoT version starts quicker, so use that if not using Azure IoT Telemetry</i></li>
+                    <li><i>If using Bluetooth Telemetry use non-IoT version</i></li>
+                    </ul></li>
+                </ul>    
                 <ul>
                     <li>Extract Softata.ino.uf2 to the desktop </li>
-                    <li>Press and hold the button</li>
-                    <li>Connect the Pico to USB on the desktop s</li>
-                    <li>Release the button</li>
+                    <li> Press and hold the BOOTSEL button on the Pico down while plugging it into your computer</li>
                     <li>A popup will appear with a drive letter, say D:</li>
-                    <li>Drag and drop the uf2 file onto the drive</li>
+                    <li>Release the button</li>
+                    <li>Drag and drop the uf2 file onto that drive</li>
                     <li>Allow the Pico to boot, noting its IpAddress</li>
                 </ul>
             </li>
@@ -128,6 +134,12 @@
             <ul>
                 <li><a href="https://davidjones.sportronics.com.au/softata/Softata-An_ASP.NET_Core_API_Interface_-softata.html">About Softata Swagger: 1</a></li>
                 <li><a href="https://davidjones.sportronics.com.au/softata/Softata-An_ASP.NET_Core_API_Interface_-_2-softata.html">About Softata Swagger: 2</a></li>
+                <li>
+                    When using Swagger on Azure need to specify the running Pico using NAT or ngrok
+                    <ul>
+                        <li>See <a href="https://davidjones.sportronics.com.au/softata/Softata-Running_Blockly_on_local_Pico_from_Azure_SoftataAPII-softata.html">Softata: Running Blockly on local Pico from Azure Softata API</a></li>
+                    </ul>
+                </li>
             </ul>
         </ul>
     </details>
