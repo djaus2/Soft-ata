@@ -67,16 +67,19 @@ FONT.key {font-weight: bold; color: darkgreen}
 <TABLE ID="BootstrapperSection" BORDER="0"><TR><TD COLSPAN="2">The following prerequisites are required:</TD></TR><TR><TD WIDTH="10">&nbsp;</TD><TD><UL>
 <LI>.NET Runtime 8.0.3 (x64)</LI>
 </UL></TD></TR><TR><TD COLSPAN="2">
-If these components are already installed, you can launch the application now.<br /> Otherwise, click the button below to install the prerequisites and run the application.
+    If these components are already installed, you can launch the application now.<br /> Otherwise, click the button below to install the prerequisites and run the application. <br /><b><i>You may have to override some security issues blocking the download of setup.exe if installing.</i></b>
 </TD></TR><TR><TD COLSPAN="2">&nbsp;</TD></TR></TABLE>
 <!-- End Prerequisites -->
-
-         <p><large><a href="/ConsoleApp/SoftataConsole.application">[Launch the Console App]</a></large></p>
 
 
 </TD></TR></TABLE>
 <!-- Begin Buttons -->
-<TR><TD ALIGN="LEFT"><TABLE CELLPADDING="2" CELLSPACING="0" BORDER="0" WIDTH="540" STYLE="cursor:hand" ONCLICK="window.navigate(InstallButton.href)"><TR><TD ALIGN="LEFT"><TABLE CELLPADDING="1" BGCOLOR="#333333" CELLSPACING="0" BORDER="0"><TR><TD><TABLE CELLPADDING="1" BGCOLOR="#cecece" CELLSPACING="0" BORDER="0"><TR><TD><TABLE CELLPADDING="1" BGCOLOR="#efefef" CELLSPACING="0" BORDER="0"><TR><TD WIDTH="20"><SPACER TYPE="block" WIDTH="20" HEIGHT="1" /></TD><TD><A ID="InstallButton" HREF="setup.exe">Install</A></TD><TD width="20"><SPACER TYPE="block" WIDTH="20" HEIGHT="1" /></TD></TR></TABLE></TD></TR></TABLE></TD></TR></TABLE></TD><TD WIDTH="15%" ALIGN="right" /></TR></TABLE></TD></TR>
+<TR><TD ALIGN="LEFT"><TABLE CELLPADDING="2" CELLSPACING="0" BORDER="0" WIDTH="540" STYLE="cursor:hand" onclick="window.location.href = '/ConsoleApp/SoftataConsole.application';"><TR><TD ALIGN="LEFT"><TABLE CELLPADDING="1" BGCOLOR="#333333" CELLSPACING="0" BORDER="0"><TR><TD><TABLE CELLPADDING="1" BGCOLOR="#cecece" CELLSPACING="0" BORDER="0"><TR><TD><TABLE CELLPADDING="1" BGCOLOR="#efefef" CELLSPACING="0" BORDER="0"><TR><TD WIDTH="20"><SPACER TYPE="block" WIDTH="20" HEIGHT="1" /></TD><TD><A ID="InstallButton">Launch the Console App</A></TD><TD width="20"><SPACER TYPE="block" WIDTH="20" HEIGHT="1" /></TD></TR></TABLE></TD></TR></TABLE></TD></TR></TABLE></TD><TD WIDTH="15%" ALIGN="right" /></TR></TABLE></TD></TR>
+<!-- End Buttons -->
+</TD></TR>
+<!-- End Dialog -->
+<!-- Begin Buttons -->
+<TR><TD ALIGN="LEFT"><TABLE CELLPADDING="2" CELLSPACING="0" BORDER="0" WIDTH="540" STYLE="cursor:hand" ONCLICK="window.navigate(InstallButton.href)"><TR><TD ALIGN="LEFT"><TABLE CELLPADDING="1" BGCOLOR="#333333" CELLSPACING="0" BORDER="0"><TR><TD><TABLE CELLPADDING="1" BGCOLOR="#cecece" CELLSPACING="0" BORDER="0"><TR><TD><TABLE CELLPADDING="1" BGCOLOR="#efefef" CELLSPACING="0" BORDER="0"><TR><TD WIDTH="20"><SPACER TYPE="block" WIDTH="20" HEIGHT="1" /></TD><TD><A ID="InstallButton" HREF="setup.exe">Install the Console app</A></TD><TD width="20"><SPACER TYPE="block" WIDTH="20" HEIGHT="1" /></TD></TR></TABLE></TD></TR></TABLE></TD></TR></TABLE></TD><TD WIDTH="15%" ALIGN="right" /></TR></TABLE></TD></TR>
 <!-- End Buttons -->
 </TD></TR>
 <!-- End Dialog -->
