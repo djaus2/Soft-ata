@@ -390,7 +390,21 @@ void setup()
   Serial_println(port); //port*/
   Serial_print("Server Status: ");
   Serial_println(server.status());
-
+  
+  Serial.println();
+  Serial.println("Use Azure Service via ngrok? [Y] [N](Default)");
+  bool resNgrok = GetMenuChoiceYN(false, DEFAULT_MENU_TIMEOUT_SEC);
+  if(resNgrok){
+    Serial_println("====================================================================================");
+    Serial_println("For remote access run the following on your desktop.");
+    Serial_println("(Requires ngrok installation):");
+    Serial_print("ngrok tcp ");
+    Serial_print(ipAddress);
+    Serial_print(":");
+    Serial_println(port);
+    Serial.println("Note the returned index (the first tuple).eg tcp://4.tcp.ngrok.io:15129, note the 4.");
+    Serial_println("====================================================================================");
+  }
   // WiFi is started so 2nd core can start
   uint32_t syncVal = initialSynch;
   rp2040.fifo.push(syncVal);
@@ -2026,3 +2040,42 @@ void loop() {
 
 // Core2 code moved from here to:
 #include "SoftataCore2.h"
+/*
+#include <HTTPClient.h>
+void doCurl()
+{
+      HTTPClient client;
+
+    Serial.print("[HTTPS] begin...\n");
+    if (http.begin(*client, "https://data.mongodb-api.com/app/xxxxx/endpoint/data/beta/action/find")) {  // HTTPS
+      
+      http.addHeader("Content-Type", "application/json"); 
+      http.addHeader("api-key", "wf19sEt..........fOBWhP8Q");
+      
+      String payload = "{\r\n\"collection\":\"myCollection\",\r\n\"database\":\"myDB\",\r\n\"dataSource\":\"Cluster0\",\r\n\"filter\": {\"FTX\": \"0001\"}\r\n}"; //Instead of TEXT as Payload, can be JSON as Paylaod
+      
+      Serial.print("[HTTPS] GET...\n");
+      // start connection and send HTTP header
+      int httpCode = http.POST(payload);
+
+      // httpCode will be negative on error
+      if (httpCode > 0) {
+        // HTTP header has been send and Server response header has been handled
+        Serial.printf("[HTTPS] GET... code: %d\n", httpCode);
+
+        // file found at server
+        if (httpCode == HTTP_CODE_OK || httpCode == HTTP_CODE_MOVED_PERMANENTLY) {
+          String payload = https.getString();
+          Serial.println(payload);
+        }
+      } else {
+        Serial.printf("[HTTPS] GET... failed, error: %s\n", https.errorToString(httpCode).c_str());
+      }
+
+      https.end();
+    } else {
+      Serial.printf("[HTTPS] Unable to connect\n");
+    }
+  }
+}
+*/
