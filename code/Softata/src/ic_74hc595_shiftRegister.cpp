@@ -132,3 +132,9 @@ bool IC_74HC595_ShiftRegister::ToggleBit(int bitNo)
     write595(LSBFIRST, value);
     return true;
 }
+
+bool IC_74HC595_ShiftRegister::SetLevel(int level)
+{
+    write595(LSBFIRST, level);
+    return true;
+}

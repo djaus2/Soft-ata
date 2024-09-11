@@ -74,7 +74,7 @@ static int bitStuffing[] = {256,16,16,16,16,256,16};
 //Add other sensors/actuators here C bracketed, on end.
 #define G_SENSORS C(DHT11)C(BME280)C(UltrasonicRanger)C(Simulator)
 #define G_ACTUATORS C(SERVO)C(SIPO_74HC595)C(RELAY)
-#define G_DISPLAYS C(OLED096)C(LCD1602)C(NEOPIXEL)C(BARGRAPH)
+#define G_DISPLAYS C(OLED096)C(LCD1602)C(NEOPIXEL)C(BARGRAPH)C(GBARGRAPH)
 #define G_SERIAL C(LOOPBACK)C(GPS)
 
 //////////////////////// C O M M A N D   T Y P ES  //////////////////////////////////////////
@@ -179,6 +179,7 @@ enum GroveDisplayCmds{d_getpinsCMD, d_tbdCMD, d_setupDefaultCMD, d_setupCMD, d_c
 #define LCD1602_PINNOUT  "I2C0 (Pins8/9 (SDA/SCL) fixed): Addresses (LCD)0X3E and (RGB)0X62. Embedded in driver though."
 #define NEOPIXEL_PINNOUT "OneWire: Pin 16 (default) Alt 18 or 20 (Grove yellow cable).. 17,19,21 (Grove white cable)"
 #define BARGRAPH_PINNOUT "Pins 16 (DS of 74HC595-Pin14),20 (ST_CP of 74HC595-Pin12),21 (SH_CP of 74HC595-Pin11)(default)"
+#define GBARGRAPH_PINNOUT "Pin 16 DI (Data-MY9221) + Pin 17 DCKI (Clock-MY9221)"
 #endif
 
 
@@ -187,8 +188,8 @@ enum GroveDisplayCmds{d_getpinsCMD, d_tbdCMD, d_setupDefaultCMD, d_setupCMD, d_c
 enum LCD1602MiscCmds {home,autoscroll,noautoscroll,blink,noblink,LCD1602MiscCmds_MAX};
 enum NEOPIXELMiscCmds {setpixelcolor,setpixelcolorAll,setpixelcolorOdds,setpixelcolorEvens,setBrightness,setN,NEOPIXELMiscCmds_MAX};
 enum OLEDMiscCmds {drawCircle,drawFrame,test,OLEDMiscCmds_MAX};
-enum BARGRAPHMiscCmds {flow,flow2,BARGRAPHMiscCmds_MAX};
-
+enum BARGRAPHMiscCmds {flow,flow2,setLed,clrLed,toggleLed,setLevel,exercise,BARGRAPHMiscCmds_MAX};
+enum numStringType {_DEC, _BIN, _HEX, _NONE};
 enum range_units {mm,cm,inch};
 
 ///////////////////////////////////

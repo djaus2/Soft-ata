@@ -1463,6 +1463,9 @@ void loop() {
                     case BARGRAPH:
                       client.print(Custom_Bargraph::GetPins());
                       break;
+                    case GBARGRAPH:
+                      client.print(Grove_Bargraph::GetPins());
+                      break;
                     default:
                       client.print("Fail:Not a display");
                       break;                 }
@@ -1484,11 +1487,12 @@ void loop() {
                       msg = "OK:Misc:setpixelcolor,setpixelcolorAll,setpixelcolorOdds,setpixelcolorEvens,setBrightness,setN";
                       break;
                     case BARGRAPH:
-                      msg = "OK:Misc:flow,flow2";
+                    case GBARGRAPH:
+                      msg = "OK:Misc:flow,flow2,setLed,clrLed,toggleLed,setLevel,exercise";
                       break;
                     default:
-                        msg = "Fail:Not a display";
-                        break;
+                      msg = "Fail:Not a display";
+                      break;
                   }
                   Serial_println(msg);
                   client.print(msg);              
@@ -1526,6 +1530,12 @@ void loop() {
                           _done = true;
                         }
                         break;
+                      case GBARGRAPH:
+                        {
+                          grove_Display  = new Grove_Bargraph();
+                          _done = true;
+                        }
+                        break;                       
                       // Add more here
                       default:
                         client.print("Fail:Not a display");
@@ -1537,6 +1547,7 @@ void loop() {
                       {
                         if(grove_Display->Setup())
                         {
+                          Serial.println("Default Display Setup");
                           int index = AddDisplayToList(grove_Display);
                           String msgSettingsD1 = "OK";
                           msgSettingsD1.concat(':');
@@ -1552,7 +1563,7 @@ void loop() {
                         byte settings[maxNumDisplaySettings]; // Allow 4 settings for nw.
                         settings[0] = pin;
                         int numSettings=1;
-                        Serial_print("Settings non default pin:");
+                        Serial_print("Settings NON default pin:");
                         Serial_println(pin);
                         if (otherData!= NULL)
                         {
@@ -1737,7 +1748,7 @@ void loop() {
                         {
                           miscData = otherData +2;
                         }
-                        Serial_println("miscDataLength:");
+                        Serial_print("miscDataLength: ");
                         Serial_println(miscDataLength);
                         if(grove_Display->Misc(miscCMD,miscData,miscDataLength))
                         {

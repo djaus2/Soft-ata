@@ -126,6 +126,17 @@ namespace Softata
                     return false;
             }
 
+            public static bool WriteString(byte linkedListNo, byte[] dataIn)
+            {
+                byte[] bytes2 = dataIn.Append((byte)0).ToArray<byte>(); //Need to append 0
+                byte[] data = bytes2.Prepend((byte)bytes2.Length).ToArray<byte>(); //Prepend string length +1
+                string result = SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.writestrngCMD, "OK:", linkedListNo, data);
+                if (true) //TBD
+                    return true;
+                else
+                    return false;
+            }
+
             public static bool WriteString(byte linkedListNo, string msg)
             {
                 byte[] bytes = Encoding.ASCII.GetBytes(msg);
@@ -303,7 +314,7 @@ namespace Softata
             public static class BARGRAPHDisplay
             {
                 // Misc commands
-                enum BARGRAPHMiscCmds { flow };
+                public enum BARGRAPHMiscCmds { flow, flow2, setLed, clrLed, toggleLed, setLevel, exercise };
 
                 public static bool Flow(byte displayLinkedListIndex)
                 {

@@ -4,7 +4,7 @@
     enum NEOPIXELMiscCmds : byte { setpixelcolor, setpixelcolorAll, setpixelcolorOdds, setpixelcolorEvens, setBrightness, /* Add Here, */NEOPIXELMiscCmds_MAX }
     enum OLEDMiscCmds : byte { drawCircle, drawFrame, /* Add Here, */ OLEDMiscCmds_MAX }
     public enum SensorDevice : byte { DHT11, BME280, UltrasonicRANGER,/* Add Here, */  Undefined = 0xFF }
-    public enum DisplayDevice : byte { OLED096, LCD1602, NEOPIXEL,BARGRAPH, /* Add Here, */ Undefined = 0xFF }
+    public enum DisplayDevice : byte { OLED096, LCD1602, NEOPIXEL,BARGRAPH,GBARGRAPH, /* Add Here, */ Undefined = 0xFF }
     public enum ActuatorDevice : byte { Servo, SIPO_74HC595,Relay,/* Add Here, */ Undefined = 0xFF }
     public enum SerialDevice : byte { Loopback, GPS, Undefined = 0xFF }
 

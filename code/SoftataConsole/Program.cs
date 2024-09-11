@@ -11,6 +11,8 @@ using System.Threading;
 using Softata;
 using Softata.Enums;
 using System.Collections.Generic;
+using static Softata.SoftataLib.Display;
+using System.Collections;
 
 
 
@@ -833,7 +835,7 @@ namespace SoftataBasic
                                 } while (!found);
                                 displayLinkedListIndex = (byte)SoftataLib.Display.Setup(idisplay, 16, numPixels);
                             }
-                            else if (displayDevice == DisplayDevice.BARGRAPH)
+                            else if ((displayDevice == DisplayDevice.BARGRAPH)) //|| (displayDevice == DisplayDevice.GBARGRAPH))
                             {
 
                                 // Use default settings
@@ -844,12 +846,13 @@ namespace SoftataBasic
                             }
                             else
                                 displayLinkedListIndex = (byte)SoftataLib.Display.SetupDefault(idisplay);
-
+                            int bargraphPin = 0;
                             Console.WriteLine($"displayLinkedListIndex: {displayLinkedListIndex}");
                             if (displayLinkedListIndex < 0)
                                 Console.WriteLine($"Instantiated sensor {display} not found");
                             else
                             {
+                                bool bargraphResult = true;
                                 if (Miscs.Length > 0)
                                 {
                                     int imisc = 0xff;
@@ -863,16 +866,20 @@ namespace SoftataBasic
                                             misc = Miscs[i];
                                             Console.WriteLine($"{i + 1}.\t\t{misc}");
                                         }
+                                        Console.WriteLine($"{Miscs.Length+1}.\t\tClear Display");
+                                        Console.WriteLine($"{Miscs.Length + 2}.\t\tWrite Value");
                                         Console.WriteLine("Default: 0.");
                                         Console.Write("Selection:");
                                         bool found = false;
+                                        var ExtendedMiscsTemp = Miscs.Append("Clear Display");
+                                        string[] ExtendedMiscs = ExtendedMiscsTemp.Append("Write Value").ToArray();
 
                                         do
                                         {
                                             string? s = Console.ReadLine();
                                             if (byte.TryParse(s, out byte imis))
                                             {
-                                                if ((imis >= 0) && (imis <= Miscs.Length)) // && (idis != 1))
+                                                if ((imis >= 0) && (imis <= ExtendedMiscs.Length)) // && (idis != 1))
                                                 {
                                                     if (imis == 0)
                                                         imisc = 0xff;
@@ -886,13 +893,80 @@ namespace SoftataBasic
                                                 }
                                             }
                                         } while (!found);
-                                        if (imisc < Miscs.Length)
+                                        if (imisc < ExtendedMiscs.Length)
                                         {
-                                            misc = Miscs[imisc];
+                                            misc = ExtendedMiscs[imisc];
                                             Console.WriteLine($"Selected {misc} Misc command");
-                                            Console.WriteLine("Note: Not passing any params to Misc command at this stage.");
-                                            bool result = SoftataLib.Display.Misc(displayLinkedListIndex, (byte)imisc);
-                                            if (result)
+                                            //Console.WriteLine("Note: Not passing any params to Misc command at this stage.");
+                                            byte[]? data = null;
+                                            if (displayDevice == DisplayDevice.GBARGRAPH)
+                                            {                           
+                                                if(
+                                                    ((BARGRAPHDisplay.BARGRAPHMiscCmds)imisc >= BARGRAPHDisplay.BARGRAPHMiscCmds.setLed)
+                                                    && 
+                                                    ((BARGRAPHDisplay.BARGRAPHMiscCmds)imisc <=BARGRAPHDisplay.BARGRAPHMiscCmds.toggleLed)
+                                                  )
+   
+                                                {
+                                                    Console.WriteLine("Enter Bargraph Pin.");
+                                                    Console.Write($"Default: {bargraphPin}");
+                                                    string? indxStr = Console.ReadLine();
+                                                    if(!string.IsNullOrEmpty(indxStr))
+                                                    {
+                                                        if (byte.TryParse(indxStr, out byte indx))
+                                                        {
+                                                            bargraphPin = indx;
+                                                        }
+                                                    }
+                                                    //setLed,clrLed,toggleLed
+                                                    data = new byte[] { (byte)bargraphPin };
+                                                }
+                                                else if ((BARGRAPHDisplay.BARGRAPHMiscCmds)imisc == BARGRAPHDisplay.BARGRAPHMiscCmds.setLevel)
+                                                {
+                                                    Console.WriteLine("Enter Bargraph Level 0-10");
+                                                    Console.Write($"Default: 0");
+                                                    string? levelStr = Console.ReadLine();
+                                                    byte bargraphLevel = 0;
+                                                    if (!string.IsNullOrEmpty(levelStr))
+                                                    {
+                                                        if (byte.TryParse(levelStr, out byte indx))
+                                                        {
+                                                            if ((indx>= 0) && (indx <= 10))
+                                                                bargraphLevel = indx;
+                                                        }
+                                                    }
+                                                    data = new byte[] { bargraphLevel };
+                                                }
+                                                else if (imisc == (ExtendedMiscs.Length-2))
+                                                {
+                                                    //Clear Display
+                                                    data = new byte[] { 0 };
+                                                    imisc = 5;
+                                                }
+                                                else if (imisc == (ExtendedMiscs.Length - 1))
+                                                {
+                                                    //Set Value
+                                                    Console.WriteLine("Enter valuel 0-2^10-1");
+                                                    Console.Write($"Default: 0");
+                                                    string? levelStr = Console.ReadLine();
+                                                    int bargraphValue = 0;
+                                                    if (!string.IsNullOrEmpty(levelStr))
+                                                    {
+                                                        if (int.TryParse(levelStr, out int indx))
+                                                        {
+                                                            if ((indx >= 0) && (indx < 1024))
+                                                                bargraphValue = indx;
+                                                        }
+                                                    }
+                                                    bargraphResult = SoftataLib.Display.WriteString(displayLinkedListIndex, bargraphValue.ToString());
+                                                }
+                                            }
+
+                                            if (imisc != (ExtendedMiscs.Length - 1))
+                                            {
+                                                bargraphResult = SoftataLib.Display.Misc(displayLinkedListIndex, (byte)imisc, data);
+                                            }
+                                            if (bargraphResult)
                                                 Console.WriteLine($"Misc command {misc} ran OK");
                                             else
                                                 Console.WriteLine($"Misc command {misc} failed");
@@ -1043,6 +1117,7 @@ namespace SoftataBasic
 
                                         break;
                                     case DisplayDevice.BARGRAPH:
+                                    case DisplayDevice.GBARGRAPH:
                                         Console.WriteLine($"Instantiated {display} linked at {displayLinkedListIndex}");
                                         SoftataLib.Display.Clear(displayLinkedListIndex);
                                         Thread.Sleep(1000);

@@ -189,3 +189,34 @@ class Custom_Bargraph: public Grove_Display
 };
 
 #endif
+
+#ifndef GROVE_BARGRAPHH
+#define GROVE_BARGRAPHH
+
+#include "ic_74hc595_shiftRegister.h"
+
+class Grove_Bargraph: public Grove_Display
+{
+  public:
+      static String GetPins()
+      {
+        String msg="OK:";
+        msg.concat(GBARGRAPH_PINNOUT);
+        return msg;
+      }
+      virtual bool Setup();
+      virtual bool Setup(byte * settings, byte numSettings);
+      // Index for if there are an array of actuators here.
+      virtual bool Clear();
+      virtual bool Home();
+      virtual bool Backlight();
+      virtual bool SetCursor(byte x, byte y);
+      virtual bool WriteString(String msg);
+      virtual bool CursorWriteStringAvailable();
+      virtual bool WriteString(byte x, byte y, String msg);
+      virtual bool Misc(byte cmd, byte * data, byte length=0);
+    protected:
+      IC_74HC595_ShiftRegister * ic595;
+};
+
+#endif
