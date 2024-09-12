@@ -902,9 +902,9 @@ namespace SoftataBasic
                                             if (displayDevice == DisplayDevice.GBARGRAPH)
                                             {                           
                                                 if(
-                                                    ((BARGRAPHDisplay.BARGRAPHMiscCmds)imisc >= BARGRAPHDisplay.BARGRAPHMiscCmds.setLed)
+                                                    ((BARGRAPHMiscCmds)imisc >= BARGRAPHMiscCmds.setLed)
                                                     && 
-                                                    ((BARGRAPHDisplay.BARGRAPHMiscCmds)imisc <=BARGRAPHDisplay.BARGRAPHMiscCmds.toggleLed)
+                                                    ((BARGRAPHMiscCmds)imisc <=BARGRAPHMiscCmds.toggleLed)
                                                   )
    
                                                 {
@@ -921,7 +921,7 @@ namespace SoftataBasic
                                                     //setLed,clrLed,toggleLed
                                                     data = new byte[] { (byte)bargraphPin };
                                                 }
-                                                else if ((BARGRAPHDisplay.BARGRAPHMiscCmds)imisc == BARGRAPHDisplay.BARGRAPHMiscCmds.setLevel)
+                                                else if ((BARGRAPHMiscCmds)imisc == BARGRAPHMiscCmds.setLevel)
                                                 {
                                                     Console.WriteLine("Enter Bargraph Level 0-10");
                                                     Console.Write($"Default: 0");
@@ -1146,7 +1146,7 @@ namespace SoftataBasic
                                         for (byte i = 0; i < 11; i++)
                                         {
                                             byte[] data = new byte[] { i };
-                                            bool bargraphLeelResult = SoftataLib.Display.Misc(displayLinkedListIndex, (byte)BARGRAPHDisplay.BARGRAPHMiscCmds.setLevel, data);
+                                            bool bargraphLeelResult = SoftataLib.Display.Misc(displayLinkedListIndex, (byte)BARGRAPHMiscCmds.setLevel, data);
                                             Thread.Sleep(1000);
                                         }
                                         SoftataLib.Display.Clear(displayLinkedListIndex);

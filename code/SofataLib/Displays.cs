@@ -314,7 +314,7 @@ namespace Softata
             public static class BARGRAPHDisplay
             {
                 // Misc commands
-                public enum BARGRAPHMiscCmds { flow, flow2, setLed, clrLed, toggleLed, setLevel, exercise };
+
 
                 public static bool Flow(byte displayLinkedListIndex)
                 {

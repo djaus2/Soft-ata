@@ -8,6 +8,8 @@
     public enum ActuatorDevice : byte { Servo, SIPO_74HC595,Relay,/* Add Here, */ Undefined = 0xFF }
     public enum SerialDevice : byte { Loopback, GPS, Undefined = 0xFF }
 
+    public enum BARGRAPHMiscCmds { flow, flow2, setLed, clrLed, toggleLed, setLevel, exercise }
+
     public enum Commands
     {
         //Digital_Button_and_LED IO
