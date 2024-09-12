@@ -7,7 +7,9 @@
 
 ## Updates
 - V10.199/200
-  - Console app: Can save settings (RPi Pico Server IPAddress and Port).
+  - Added Grove.Bargraph/Linksprite.bargraph as per [linksprite.bargraph.rpipico](https://github.com/djaus2/linksprite.bargraph.rpipico)
+    - Added extra Misc commands now: flow,flow2,setLed,clrLed,toggleLed,setLevel,exercise
+  - Console app: Can save settings (RPi Pico Server IPAddress and Port). Console app now has extra Misc coammnds as above and Grove.Bargraph option.
   - Renaming of tests in Console and Blazor apps
   - Renaming in Arduino Softata as well such as: Shift595ParaOut class to SIPO_74Hc595.
   - Console app now loops. When test finishes get menu again.
