@@ -1137,8 +1137,19 @@ namespace SoftataBasic
                                         Thread.Sleep(1000);
                                         SoftataLib.Display.WriteString(displayLinkedListIndex, "128");
                                         Thread.Sleep(1000);
+                                        SoftataLib.Display.WriteString(displayLinkedListIndex, "256");
+                                        Thread.Sleep(1000);
+                                        SoftataLib.Display.WriteString(displayLinkedListIndex, "512");
+                                        Thread.Sleep(1000);
                                         SoftataLib.Display.Clear(displayLinkedListIndex);
                                         Thread.Sleep(1000);
+                                        for (byte i = 0; i < 11; i++)
+                                        {
+                                            byte[] data = new byte[] { i };
+                                            bool bargraphLeelResult = SoftataLib.Display.Misc(displayLinkedListIndex, (byte)BARGRAPHDisplay.BARGRAPHMiscCmds.setLevel, data);
+                                            Thread.Sleep(1000);
+                                        }
+                                        SoftataLib.Display.Clear(displayLinkedListIndex);
                                         break;
                                 }
                             }
