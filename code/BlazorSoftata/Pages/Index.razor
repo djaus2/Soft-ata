@@ -7,12 +7,14 @@
 @inject AppState AppState
 @inject NavigationManager navigationManager
 @using BlazorPro.Spinkit
+@using Majorsoft.Blazor.Components.Toggle
 
 
-<PageTitle>Softata</PageTitle>
-<h1>Softata</h1>
+<PageTitle>Blazor Softata</PageTitle>
+<h1>Blazor Softata </h1>
 <i><b>Softata:</b> A Firmata like C# library connecting to a RPi Pico W running Arduino.</i>
 <p>For details <a href="https://davidjones.sportronics.com.au/cats/softata/">see here</a></p>
+<p>Blockly/Swagger alternatives:<a href="https://softatawebapii.azurewebsites.net/">SoftataWebAPIi site</a></p>
 @if (!string.IsNullOrEmpty(AppState.AppVersion))
 {
     <tr>
@@ -96,21 +98,69 @@ else @if ((AppState.ISensor != 0xff))
     }
     else if (string.IsNullOrEmpty(AppState.Connected))
     {
-        <h2>Start</h2>  
-        <table>
-            <tr>
-                <td>IP Address:</td>
-                <td><input type="text" @bind-value="@ipaddressStr" /></td>
-            </tr>
-            <tr>
-                <td>Port:</td>
-                <td><input type="text" value="@port" /></td>
-            </tr>
-            <tr><td colspan="2">Wait until Inbuilt LED flashes slowly.</td></tr>
-            <tr><td><button class="btn btn-primary" @onclick="Connect">Connect</button></td></tr>
-        </table>
-        <table>
-            <tr>
+        <h2>Start</h2>
+
+        <b>&nbsp;Use IPAddress&nbsp;</b>
+        <ToggleSwitch @ref="_toggleSwitch"
+                      Checked="@useNgrok"
+                      OnColor="@_onColor"
+                      OffColor="@_offColor"
+                      Width="_widht"
+                      Height="_height"
+                      HandleStyle="_styleType"
+                      Disabled="_disabled"
+                      OnToggleChanged="OnToggleSwitched">
+        </ToggleSwitch>
+        <b>&nbsp;Use ngrok&nbsp;</b>
+        @code {
+    //Ref: https://github.com/majorimi/blazor-components/blob/master/.github/docs/Toggle.md
+    private ToggleSwitch? _toggleSwitch;
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            if (_toggleSwitch != null)
+                await _toggleSwitch.InnerElementReference.FocusAsync();
+        }
+    }
+
+    private string _onColor = "DodgerBlue";
+    private string _offColor = "DarkGray";
+    private int _widht = 70;
+    private int _height = 22;
+    private bool _disabled = false;
+    private ToggleSwitchStyle _styleType = ToggleSwitchStyle.Ellipse;//.Circle;
+
+    private ElementReference log1;
+    private string? _swithch1Log;
+
+    private void OnToggleSwitched(bool val)
+    {
+        useNgrok = val;
+    }
+}
+
+
+        @if (!useNgrok)
+        {
+            <table>
+                <tr>
+                    <td>IP Address:</td>
+                    <td><input type="text" @bind-value="@ipaddressStr" /></td>
+                </tr>
+                <tr>
+                    <td>Port:</td>
+                    <td><input type="text" value="@port" /></td>
+                </tr>
+                <tr><td>IPAddress: </td><td>@ipaddressStr:@port</td></tr>
+                <tr><td colspan="2">Wait until Inbuilt LED flashes slowly.</td></tr>
+                <tr><td><button class="btn btn-primary" @onclick="Connect">Connect</button></td></tr>
+            </table>
+        }
+        else
+        {
+            <table>
+                <tr>
                 <td>ngrok Index:</td>
                 <td><InputNumber @bind-Value=@ngrokIndex /></td>
             </tr>
@@ -119,13 +169,10 @@ else @if ((AppState.ISensor != 0xff))
                 <td><InputNumber @bind-Value=@ngrokPort /></td>
             </tr>
             <tr><td>ngrok IPAddress: </td><td>@ngrokipaddressStr</td></tr>
-            <tr>
-                <td>Port:</td>
-                <td><input type="text" value="@port" /></td>
-            </tr>
             <tr><td colspan="2">Wait until Inbuilt LED flashes slowly.</td></tr>
             <tr><td><button class="btn btn-primary" @onclick="ngrokConnect">ngrok Connect</button></td></tr>
         </table>
+        }
     }
     else if (AppState.TestCategory == DeviceCategory.MaxType)
     {
@@ -711,28 +758,29 @@ else @if ((AppState.ISensor != 0xff))
 
 
 @code {
-        // Set the same as Arduino: Boot Pico as view settings in terminal
-        int port { get; set; } = 4242;
-        int ngrokIndex { get; set; } = 4;
-        int ngrokPort { get; set; } = 15129;
-        string ipaddressStr {get; set;} = "192.168.0.9";
-        string ngrokipaddressStr { get { return $"{ngrokIndex}.tcp.ngrok.io:{ngrokPort}"; } }
+    // Set the same as Arduino: Boot Pico as view settings in terminal
+    int port { get; set; } = 4242;
+    int ngrokIndex { get; set; } = 4;
+    int ngrokPort { get; set; } = 15129;
+    string ipaddressStr {get; set;} = "192.168.0.9";
+    string ngrokipaddressStr { get { return $"{ngrokIndex}.tcp.ngrok.io:{ngrokPort}"; } }
+    bool useNgrok {get;set;} = false;
 
-        bool busy = false;
-        bool Busy
+    bool busy = false;
+    bool Busy
     {
-            get => busy;
-            set { busy = value; StateHasChanged(); }
-        }
+        get => busy;
+        set { busy = value; StateHasChanged(); }
+    }
 
-        List<BlazorTestType> CurrentTypes { get; set; } = new List<BlazorTestType>();
-        List<string> ListDeviceTypeTests { get; set; } = new List<string>();
-        string TestCategory = "";
+    List<BlazorTestType> CurrentTypes { get; set; } = new List<BlazorTestType>();
+    List<string> ListDeviceTypeTests { get; set; } = new List<string>();
+    string TestCategory = "";
 
-        public async Task ngrokConnect()
-        {
-            ipaddressStr = $"{ngrokIndex}.tcp.ngrok.io"; 
-            port = ngrokPort;
+    public async Task ngrokConnect()
+    {
+        ipaddressStr = $"{ngrokIndex}.tcp.ngrok.io"; 
+        port = ngrokPort;
         await Connect();
     }
 
@@ -775,7 +823,7 @@ else @if ((AppState.ISensor != 0xff))
 
 
 
-   
+
 
     private void OnChangeDeviceType(ChangeEventArgs e)
     {
@@ -852,10 +900,10 @@ else @if ((AppState.ISensor != 0xff))
                     {
                         case BlazorTestType.Loopback:
                         case BlazorTestType.GPS_Serial:
-                        //AppState = new DigitalButtonLED();
+                            //AppState = new DigitalButtonLED();
                             break;
                         case BlazorTestType.Digital_Button_and_LED:
-            //AppState = new DigitalButtonLED();
+                            //AppState = new DigitalButtonLED();
                             break;
                         case BlazorTestType.Potentiometer_Servo:
                             AppState.Actuators = SoftataLib.Actuator.GetActuators().ToList();
@@ -949,8 +997,8 @@ else @if ((AppState.ISensor != 0xff))
 
     private void LEDButtonDefaults()
     {
-        AppState.Button = 26;
-        AppState.LED = 18;
+        AppState.Button = 18;
+        AppState.LED = 16;
         Ready();
     }
 
