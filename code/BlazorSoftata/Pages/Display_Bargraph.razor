@@ -1,9 +1,8 @@
-﻿@page "/display_lcd1602"
+﻿@page "/display_bargraph"
 
 
 @using Softata;
 @using Softata.Enums
-
 @inject AppState AppState
 @using BlazorPro.Spinkit
 @inject NavigationManager navigationManager
@@ -17,7 +16,16 @@
     <i>Run an exemplar sequence of tests demonstrating .NET interaction with the Display.</i>
 </p>
 <hr/>
-    Hardware: <a href="@DeviceHTMLLink">Grove - @displayName Display</a>
+Hardware: 
+@if (@displayName == "GBARGRAPH")
+{
+     <a href="@DeviceHTMLLink">Grove - LED Bar Display</a>
+}
+else
+{
+     <a href="@DeviceHTMLLink">Custom - @displayName Display</a>
+}
+
 <hr/>
 @if (Busy)
 {
@@ -111,20 +119,57 @@ else if (AppState.Running)
     @if (!IsReady)
    { 
         <h2>Setup</h2>
-
-        <font color="blue>"><h4>Pins: @pins</h4></font>
-        <EditForm Model=@AppState>
-            Test step period (mS): <InputNumber @bind-Value="AppState.TestStepPeriod" />
-            <br/><br/>
+        <hr />
+        <table>
+  
+        @if (@AppState.DisplayPin != 0xff)
+        {
+            <tr>
+                <td>
+                        <font color="purple"><b>Selected GPIO Pin:</b>&nbsp;@AppState.DisplayPin</font>
+                </td>
+            </tr>
+        }
+        else
+        {
+            <tr>
+                <td>
+                    <font color="purple>"><h4><b>Pins:</b> @pins</h4></font>
+                </td>
+            </tr>
+        }
+        </table>
+        <hr />
+@*         <table>
+            <tr><td>Select number of LED Segments:</td></tr>
+            <tr>
+                <td>
+                    <select @bind=@numPixels>
+                        <option value=0xff>Select</option>
+                        @for (byte i = 1; i <= SoftataLib.Display.BARGRAPHDisplay.MaxNumSegements; i++)
+                        {
+                            <option value=@i>@i Pixels</option>
+                        }
+                    </select>  <br />
+                </td>
+            </tr>
+            <tr><td><b>Default:</b> @SoftataLib.Display.Neopixel.MaxNumPixels</td></tr>
+            <tr><td><font color="purple"><b>Selected:</b>&nbsp @numPixels</font></td></tr>
+        </table>
+        <hr /> *@
+         <EditForm Model=@AppState>
+            Test step period (mS): <InputNumber  @bind-Value="AppState.TestStepPeriod" />
+            <br /><br />
             Delay after Clear period (mS): <InputNumber @bind-Value="AppState.TestClearPeriod" />
-            <br/><br/>
-            <button class="btn btn-primary" @onclick="Ready">Is Connected as per default</button>
+            <br /><br />
+            <button class="btn btn-primary" @onclick="Ready">Is configured</button>
         </EditForm>
     }
     else
     {
         @if (!AppState.Running)
         { 
+
             @if (ReconnectVisible)
             {
                 <button  class="btn btn-primary" @onclick="Reconnect">Reconnect and run test</button>
@@ -170,6 +215,8 @@ else if (AppState.Running)
     MarkupString OKMsg { get; set; } = new MarkupString("");
     MarkupString RunMsg { get; set; } = new MarkupString("");
 
+    byte numPixels { get; set; } = 10;
+
     bool busy = false;
     bool Busy
     {
@@ -189,6 +236,7 @@ else if (AppState.Running)
 
     protected override void OnInitialized()
     {
+        numPixels = SoftataLib.Display.Neopixel.MaxNumPixels;
         AppState.OnChange += StateHasChanged;
         AppState.ReadytoRun = true; 
         AppState.Running = false;
@@ -229,56 +277,108 @@ else if (AppState.Running)
         StateHasChanged();
         await Task.Delay(333);
 
-        RunMsg = new MarkupString("<h4>Exercising the {displayName} Display.</h4>");
+
+        RunMsg = new MarkupString($"<h4>Exercising the {displayName} Display.</h4>");
         StateHasChanged();
 
         /////////////////////////// T E S T S /////////////////////////////
+
         SoftataLib.Display.Clear(deviceLinkedListIndex);
-        Thread.Sleep(AppState.TestClearPeriod); 
-        SoftataLib.Display.SetCursor(deviceLinkedListIndex, 0, 0);
-        SoftataLib.Display.WriteString(deviceLinkedListIndex, "First Line");
-        Thread.Sleep(AppState.TestStepPeriod);
+        byte[]? nullData = null;
+        Console.WriteLine("Testing Display.flow/flow2()");
+        for (int i = 0; i < 5; i++)
+        {
+            byte bmisc = (byte)BARGRAPHMiscCmds.flow;
+            SoftataLib.Display.Misc(deviceLinkedListIndex, bmisc, nullData);
+            Thread.Sleep(AppState.TestStepPeriod);
+
+            bmisc = (byte)BARGRAPHMiscCmds.flow2;
+            SoftataLib.Display.Misc(deviceLinkedListIndex, bmisc, nullData);
+            Thread.Sleep(AppState.TestStepPeriod);
+        }
+
+
+        // More
         if (AppState.Running)
         {
-            SoftataLib.Display.SetCursor(deviceLinkedListIndex, 0, 1);
-            SoftataLib.Display.WriteString(deviceLinkedListIndex, "Wait");
+            Console.WriteLine("Testing Display.misc cmd exercise");
+            byte bmisc = (byte)BARGRAPHMiscCmds.exercise;
+            SoftataLib.Display.Misc(deviceLinkedListIndex, bmisc, nullData);
             Thread.Sleep(AppState.TestStepPeriod);
+            SoftataLib.Display.Clear(deviceLinkedListIndex);
+            Thread.Sleep(AppState.TestStepPeriod);
+            //More
             if (AppState.Running)
             {
-                SoftataLib.Display.Clear(deviceLinkedListIndex);
-                Thread.Sleep(AppState.TestClearPeriod);
-                SoftataLib.Display.WriteString(deviceLinkedListIndex, 4, 0, "(4,0):Cursor");
-                Thread.Sleep(AppState.TestStepPeriod);
+                Console.WriteLine("Testing Display.misc cmds set/clr/toggle Level");
+                for (byte pin = 1; pin < 10; pin++)
+                { 
+                    byte[] data = new byte[] { pin };
+                    bmisc = (byte)BARGRAPHMiscCmds.setLevel;
+                    SoftataLib.Display.Misc(deviceLinkedListIndex, bmisc, data);
+                    Thread.Sleep(AppState.TestStepPeriod/2);
+                    bmisc = (byte)BARGRAPHMiscCmds.clrLed;
+                    SoftataLib.Display.Misc(deviceLinkedListIndex, bmisc, data);
+                    Thread.Sleep(AppState.TestStepPeriod / 2);
+                    bmisc = (byte)BARGRAPHMiscCmds.toggleLed;
+                    SoftataLib.Display.Misc(deviceLinkedListIndex, bmisc, data);
+                    Thread.Sleep(AppState.TestStepPeriod / 2);
+                    bmisc = (byte)BARGRAPHMiscCmds.toggleLed;
+                    SoftataLib.Display.Misc(deviceLinkedListIndex, bmisc, data);
+                    Thread.Sleep(AppState.TestStepPeriod / 2);
+                }
+                //More
                 if (AppState.Running)
                 {
-                    SoftataLib.Display.WriteString(deviceLinkedListIndex, 2, 1, "(2,1):Write");
-                    Thread.Sleep(AppState.TestStepPeriod);
+
                     if (AppState.Running)
                     {
+                        Console.WriteLine("Testing Display.WriteString()");
                         SoftataLib.Display.Clear(deviceLinkedListIndex);
-                        Thread.Sleep(AppState.TestClearPeriod);
-                        SoftataLib.Display.SetCursor(deviceLinkedListIndex, 0, 0);
-
-                        SoftataLib.Display.WriteString(deviceLinkedListIndex, "Time:");
-                        int num = 10;
-                        for (int i = 0; i < num; i++)
+                        Thread.Sleep(AppState.TestStepPeriod);
+                        SoftataLib.Display.WriteString(deviceLinkedListIndex, "1");
+                        Thread.Sleep(AppState.TestStepPeriod);
+                        SoftataLib.Display.WriteString(deviceLinkedListIndex, "2");
+                        Thread.Sleep(AppState.TestStepPeriod);
+                        SoftataLib.Display.WriteString(deviceLinkedListIndex, "4");
+                        Thread.Sleep(AppState.TestStepPeriod);
+                        SoftataLib.Display.WriteString(deviceLinkedListIndex, "8");
+                        Thread.Sleep(AppState.TestStepPeriod);
+                        SoftataLib.Display.WriteString(deviceLinkedListIndex, "16");
+                        Thread.Sleep(AppState.TestStepPeriod);
+                        SoftataLib.Display.WriteString(deviceLinkedListIndex, "32");
+                        Thread.Sleep(AppState.TestStepPeriod);
+                        SoftataLib.Display.WriteString(deviceLinkedListIndex, "64");
+                        Thread.Sleep(AppState.TestStepPeriod);
+                        SoftataLib.Display.WriteString(deviceLinkedListIndex, "128");
+                        Thread.Sleep(AppState.TestStepPeriod);
+                        SoftataLib.Display.WriteString(deviceLinkedListIndex, "256");
+                        Thread.Sleep(AppState.TestStepPeriod);
+                        SoftataLib.Display.WriteString(deviceLinkedListIndex, "512");
+                        Thread.Sleep(AppState.TestStepPeriod);
+                        SoftataLib.Display.Clear(deviceLinkedListIndex);
+                        Thread.Sleep(AppState.TestStepPeriod);
+                    }
+                    if (AppState.Running)
+                    {
+                        Console.WriteLine("Testing setLevel");
+                        for (byte i = 0; i < 11; i++)
                         {
-                            DateTime now = DateTime.Now;
-                            string format = "HH:mm:ss";
-                            string time = now.ToString(format);
-                            string msg = $"{i + 1}/{num} {time}";
-                            SoftataLib.Display.WriteString(deviceLinkedListIndex, 0, 1, msg);
+                            byte[] data = new byte[] { i };
+                            bool bargraphLeelResult = SoftataLib.Display.Misc(deviceLinkedListIndex, (byte)BARGRAPHMiscCmds.setLevel, data);
                             Thread.Sleep(AppState.TestStepPeriod);
                         }
                     }
+                    SoftataLib.Display.Clear(deviceLinkedListIndex);
+                    Thread.Sleep(AppState.TestClearPeriod);
                 }
             }
         }
-
         SoftataLib.Display.Clear(deviceLinkedListIndex);
         Thread.Sleep(AppState.TestClearPeriod);
-        /////////////////////////// T E S T S /////////////////////////////
-        
+	/////////////////////////// T E S T S /////////////////////////////
+	
+       
         RunMsg = new MarkupString("<h4>Done.</h4>");
         Busy = false;
         AppState.Running = false;
@@ -319,7 +419,14 @@ else if (AppState.Running)
 
     private void Ready(MouseEventArgs e)
     {
-        deviceLinkedListIndex = (byte)SoftataLib.Display.SetupDefault(idisplay);
+        if (AppState.DisplayPin!= 0xff)
+        {
+            var deviceLinkedListIndex = (byte)SoftataLib.Display.Setup(idisplay, AppState.DisplayPin, numPixels);
+        }
+        else
+        {
+            var deviceLinkedListIndex2 = (byte)SoftataLib.Display.SetupDefault(idisplay);
+        }
         if (deviceLinkedListIndex < 0)
         {
             FailMsg = new MarkupString($"<h3>Instantiated {displayName} not found</h3>");

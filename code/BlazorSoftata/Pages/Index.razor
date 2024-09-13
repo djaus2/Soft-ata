@@ -585,7 +585,7 @@ else @if ((AppState.ISensor != 0xff))
                     break;
                 case BlazorTestType.Sensors:
                 case BlazorTestType.Displays:
-                // Only used defaults for now
+                // Only use defaults for now
                     break;
                 default:
                     <button class="btn btn-primary" @onclick="Ready">Test is configured</button>
@@ -1101,6 +1101,10 @@ else @if ((AppState.ISensor != 0xff))
                         break;
                     case DisplayDevice.NEOPIXEL:
                         navigationManager.NavigateTo("/display_neopixel");
+                        break;
+                    case DisplayDevice.BARGRAPH:
+                    case DisplayDevice.GBARGRAPH:
+                        navigationManager.NavigateTo("/display_bargraph");
                         break;
 
                 }

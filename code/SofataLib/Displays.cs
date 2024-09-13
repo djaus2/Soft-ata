@@ -23,6 +23,7 @@ namespace Softata
                 ,{DisplayDevice.LCD1602,"https://wiki.seeedstudio.com/Grove-LCD_RGB_Backlight/" }
                 ,{DisplayDevice.NEOPIXEL,"https://www.adafruit.com/category/184" } //Nb 8 Pixel version used
                 ,{DisplayDevice.BARGRAPH,"" }
+                ,{DisplayDevice.GBARGRAPH,"https://wiki.seeedstudio.com/Grove-LED_Bar/" }
                 /* ,Add here */
             };
             public static string[] GetDisplays()
