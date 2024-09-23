@@ -11,12 +11,13 @@ using static Softata.SoftataLib;
 using static Softata.SoftataLib.Analog;
 
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace SoftataWebAPI.Controllers
 {
     /// <summary>
-    /// The Base Controller
+    /// An API controller for SoftataLib that
+    /// allows you to get and set the state.
+    /// This easily could be using a database.
     /// </summary>
     [Route("/")]
     [ApiController]
@@ -53,7 +54,7 @@ namespace SoftataWebAPI.Controllers
             if (lib != null)
             {
                 lib.SetAvalue(aval);
-                return Ok($"Aval:{aval}");
+                return Ok($"Avalue:{aval}");
             }
             else
                 return BadRequest($"SoftataLib not found [{key}]");
@@ -74,7 +75,7 @@ namespace SoftataWebAPI.Controllers
             if (lib != null)
             {
                 lib.SetAvalue(aval);
-                return Ok($"Aval:{aval}");
+                return Ok($"Avalue:{aval}");
             }
             else
                 return BadRequest($"SoftataLib not found [{key}]");
@@ -125,6 +126,31 @@ namespace SoftataWebAPI.Controllers
         public void ClearAll()
         {
              SoftataLib.ClearAll();
+        }
+        //////////////////////////////////////////////////////////
+        //Using Session for state example
+        /////////////////////////////////////////////////////////
+ 
+        public const string SessionKeyName = "_Name";
+        public const string SessionKeyAge = "_Age";
+
+        /// <summary>
+        /// Interact with the Session (Set/Get)
+        /// </summary>
+        /// <returns>Set of Session values</returns>
+        // GET: api/<SoftataController>
+        [Route("GetSetSession")]
+        [HttpGet]
+        public IEnumerable<string> GetSetSession()
+        {
+            if (string.IsNullOrEmpty(HttpContext.Session.GetString(SessionKeyName)))
+            {
+                HttpContext.Session.SetString(SessionKeyName, "The Doctor");
+                HttpContext.Session.SetInt32(SessionKeyAge, 73);
+            }
+            var name = HttpContext.Session.GetString(SessionKeyName);
+            var age = HttpContext.Session.GetInt32(SessionKeyAge).ToString();
+            return from x in new[] { name, age } select x;
         }
 
 

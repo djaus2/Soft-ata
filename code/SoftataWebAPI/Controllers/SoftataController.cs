@@ -36,71 +36,8 @@ namespace SoftataWebAPI.Controllers
     [ApiController]
     public class SoftataController : ControllerBase
     {
-        public const string SessionKeyName = "_Name";
-        public const string SessionKeyAge = "_Age";
-        public SoftataController() {
-
-            /*if (string.IsNullOrEmpty(HttpContext.Session.GetString(SessionKeyName)))
-            {
-                HttpContext.Session.SetString(SessionKeyName, "The Doctor");
-                HttpContext.Session.SetInt32(SessionKeyAge, 73);
-            }
-            var name = HttpContext.Session.GetString(SessionKeyName);
-            var age = HttpContext.Session.GetInt32(SessionKeyAge).ToString();*/
-        }
-
-        /*public void OnGet()
-        {
-            if (string.IsNullOrEmpty(HttpContext.Session.GetString(SessionKeyName)))
-            {
-                HttpContext.Session.SetString(SessionKeyName, "The Doctor");
-                HttpContext.Session.SetInt32(SessionKeyAge, 73);
-            }
-            var name = HttpContext.Session.GetString(SessionKeyName);
-            var age = HttpContext.Session.GetInt32(SessionKeyAge).ToString();*
-        }*/
-
         const int port = 4242;
         const string ipaddressStr = "192.168.0.12";
-
-        /// <summary>
-        /// Interact with the Session (Set/Get)
-        /// </summary>
-        /// <returns>Set of Session values</returns>
-        // GET: api/<SoftataController>
-        [Route("GetSetSession")]
-        [HttpGet]
-        public IEnumerable<string> GetSetSession()
-        {
-            if (string.IsNullOrEmpty(HttpContext.Session.GetString(SessionKeyName)))
-            {
-                HttpContext.Session.SetString(SessionKeyName, "The Doctor");
-                HttpContext.Session.SetInt32(SessionKeyAge, 73);
-            }
-            var name = HttpContext.Session.GetString(SessionKeyName);
-            var age = HttpContext.Session.GetInt32(SessionKeyAge).ToString();
-            return from x in new[] { name, age } select x;
-        }
-
-            /// <summary>
-            /// Get a list of Device Types
-            /// </summary>
-            /// <returns>List of device types</returns>
-            // GET: api/<SoftataController>
-            [Route("Get")]
-        [HttpGet]
-        public IEnumerable<string> Get()
-        {
-            if (string.IsNullOrEmpty(HttpContext.Session.GetString(SessionKeyName)))
-            {
-                HttpContext.Session.SetString(SessionKeyName, "The Doctor");
-                HttpContext.Session.SetInt32(SessionKeyAge, 73);
-            }
-            var name = HttpContext.Session.GetString(SessionKeyName);
-            var age = HttpContext.Session.GetInt32(SessionKeyAge).ToString();
-            string value = SoftataLib.SendMessageCmd("Devices");
-            return value.Split(',',':').ToList();
-        }
 
         /// <summary>
         /// Convert int to string
