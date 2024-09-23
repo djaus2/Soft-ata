@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Softata;
+using Softata.Enums;
 using static Softata.SoftataLib;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -45,10 +46,28 @@ namespace SoftataWebAPI.Controllers
         /// </summary>
         /// <param name="idisplay">The enum ord of the display in the list of displays</param>
         /// <returns>OK with instance index or Fail</returns>
-        // POST api/<SoftataController>
+        // POST api/<SoftataDisplayController>
         [Route("SetupDefault")]
         [HttpPost] // Default setup for display
         public IActionResult SetupDefault(int idisplay=0)
+        {
+            int displayListIndex = SoftataLib.Display.SetupDefault((byte)idisplay);
+            if (displayListIndex == -1)
+            {
+                return BadRequest("Display not found");
+            }
+            return Ok($"{displayListIndex}");
+        }
+
+        /// <summary>
+        /// Setup a display with default connection settings
+        /// </summary>
+        /// <param name="idisplay">The enum ord of the display in the list of displays</param>
+        /// <returns>OK with instance index or Fail</returns>
+        // POST api/<SoftataDisplayController>
+        [Route("SetupDefaultfromList")]
+        [HttpPost] // Default setup for display from list
+        public IActionResult SetupDefaultfromList(DisplayDevice idisplay )
         {
             int displayListIndex = SoftataLib.Display.SetupDefault((byte)idisplay);
             if (displayListIndex == -1)
@@ -204,9 +223,29 @@ namespace SoftataWebAPI.Controllers
         // POST api/<SoftataController>
         [Route("Misc")]
         [HttpPost] // Default setup for display
-        public IActionResult Misc(int displayLinkedListIndex, int miscCmndIndex)
+        public IActionResult Misc(int displayLinkedListIndex,  int miscCmndIndex)
         {
-            bool result = SoftataLib.Display.Backlight((byte)displayLinkedListIndex, (byte)miscCmndIndex);
+            bool result = SoftataLib.Display.Misc((byte)displayLinkedListIndex, (byte)miscCmndIndex);
+            if (!result)
+            {
+                return BadRequest("Display:Misc fail.");
+            }
+            return Ok($"Display:Misc");
+        }
+
+        /// <summary>
+        /// Run a display specific miscellaneous command
+        /// </summary>
+        /// <param name="displayLinkedListIndex">Display instance index</param>
+        /// <param name="deviceType"></param>
+        /// <param name="miscCmd">Misc Command</param>
+        /// <returns>OK or fail</returns>
+        // POST api/<SoftataController>
+        [Route("MiscCmd")]
+        [HttpPost] // Default setup for display
+        public IActionResult MiscCmd(int displayLinkedListIndex, DisplayDevice deviceType,  AllDisplayMiscCommands miscCmd)
+        {
+            bool result = SoftataLib.Display.MiscCmd((byte)displayLinkedListIndex,  deviceType,miscCmd);
             if (!result)
             {
                 return BadRequest("Display:Misc fail.");

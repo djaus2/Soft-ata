@@ -11,39 +11,67 @@ namespace Softata
 {
     public partial class SoftataLib
     {
+        
 
         public static class Digital
         {
+            private static bool ValidateDigitalPin(int pinNumber)
+            {
+                if ((pinNumber < 0) || (pinNumber >= PinMax))
+                {
+                    throw new ArgumentOutOfRangeException(nameof(pinNumber), "Messages.ArgumentEx_DigitalPinRange0to28");
+                    //return false;
+                }
 
-            public static void SetPinMode(int pinNumber, PinMode mode)
+                if (_RPiPicoMode == RPiPicoMode.groveShield)
+                {
+                    if (!GroveGPIOPinList.Contains($"p{pinNumber}"))
+                    {
+                        throw new ArgumentOutOfRangeException(nameof(pinNumber), "Messages.ArgumentEx_DigitalPinRange16to21");
+                    }
+                }
+                return true;
+            }
+
+
+            public static bool SetPinMode(int pinNumber, PinMode mode)
             {
            
-                if (pinNumber <= 0 || pinNumber >= PinMax)
-                    throw new ArgumentOutOfRangeException(nameof(pinNumber), "Messages.ArgumentEx_PinRange0_127");
-
-                SendMessage(Commands.pinMode, (byte)pinNumber, (byte)mode);
+                if(!ValidateDigitalPin(pinNumber))
+                    return false;
+                string resp = SendMessage(Commands.pinMode, (byte)pinNumber, (byte)mode);
+                if (resp.Contains("OK"))
+                    return true;
+                else
+                    return false;             
             }
 
-            public static void SetPinState(int pinNumber, PinState state)
+            public static bool SetPinState(int pinNumber, PinState state)
             {
-                if (pinNumber <= 0 || pinNumber >= PinMax)
-                    throw new ArgumentOutOfRangeException(nameof(pinNumber), "Messages.ArgumentEx_PinRange0_127");
-
-                SendMessage(Commands.digitalWrite, (byte)pinNumber, (byte)state);
+                if (!ValidateDigitalPin(pinNumber))
+                    return false;
+                string resp = SendMessage(Commands.digitalWrite, (byte)pinNumber, (byte)state);
+                if (resp.Contains("OK"))
+                    return true;
+                else
+                    return false;
             }
 
-            public static void TogglePinState(int pinNumber)
+            public static bool TogglePinState(int pinNumber)
             {
-                if (pinNumber <= 0 || pinNumber >= PinMax)
-                    throw new ArgumentOutOfRangeException(nameof(pinNumber), "Messages.ArgumentEx_PinRange0_127");
-
-                SendMessage(Commands.digitalToggle, (byte)pinNumber);
+                if (!ValidateDigitalPin(pinNumber))
+                    return false;
+                string resp = SendMessage(Commands.digitalToggle, (byte)pinNumber);
+                if (resp.Contains("OK"))
+                    return true;
+                else
+                    return false;
             }
 
             public static bool GetPinState(int pinNumber)
             {
-                if (pinNumber <= 0 || pinNumber >= PinMax)
-                    throw new ArgumentOutOfRangeException(nameof(pinNumber), "Messages.ArgumentEx_PinRange0_127");
+                if (!ValidateDigitalPin(pinNumber))
+                    return false;
 
                 string state = SendMessage(Commands.digitalRead, (byte)pinNumber, nullData, "ON,OFF");
 

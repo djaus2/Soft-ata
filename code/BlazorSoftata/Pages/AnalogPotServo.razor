@@ -310,12 +310,12 @@ else if(AppState.Running)
         if (AppState.DefaultSettings)
         {
             id = (byte)SoftataLib.Actuator.SetupDefault(SoftataLib.Actuator.ActuatorDevice.Servo);
-            SoftataLib.Analog.SetAnalogPin(SoftataLib.Analog.AnalogDevice.Potentiometer, AppState.Potentiometer, 1023);
+            SoftataLib.Analog.SetAnalogPin(SoftataLib.Analog.AnalogDevice.Potentiometer, AppState.Potentiometer  );
         }
         else //Alt
         {
             id = (byte)SoftataLib.Actuator.SetupDefault(SoftataLib.Actuator.ActuatorDevice.Servo);
-            SoftataLib.Analog.SetAnalogPin(SoftataLib.Analog.AnalogDevice.Potentiometer, AppState.Potentiometer, 1023);
+            SoftataLib.Analog.SetAnalogPin(SoftataLib.Analog.AnalogDevice.Potentiometer, AppState.Potentiometer);
         }
         A2DandServoValues a2DandServoValues = new A2DandServoValues();
 

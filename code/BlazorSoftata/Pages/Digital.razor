@@ -94,8 +94,8 @@ else if(AppState.Running)
                                 <td rowspan="2">
                                     <div class="row">
                                         <div class="lights">
-                                            <div class="yellow @(Buttonstate== SoftataLib.PinState.HIGH ? "on" : "off")"></div>
-                                            <div class="blue @(LEDstate== SoftataLib.PinState.HIGH ? "on" : "off")"></div>
+                                            <div class="yellow @(Buttonstate== SoftataLib.PinState.High ? "on" : "off")"></div>
+                                            <div class="blue @(LEDstate== SoftataLib.PinState.High ? "on" : "off")"></div>
                                         </div>
                                     </div>
                                 </td>
@@ -136,15 +136,15 @@ else if(AppState.Running)
 
     public class LEDandButtonStates
     {
-        public SoftataLib.PinState LEDstate { get; set; } = SoftataLib.PinState.LOW;
-        public SoftataLib.PinState Buttonstate { get; set; } = SoftataLib.PinState.LOW;
+        public SoftataLib.PinState LEDstate { get; set; } = SoftataLib.PinState.Low;
+        public SoftataLib.PinState Buttonstate { get; set; } = SoftataLib.PinState.Low;
     }
     bool reconnectable = false;
 
     Queue<LEDandButtonStates> queue = new Queue<LEDandButtonStates>();
 
-    SoftataLib.PinState LEDstate = SoftataLib.PinState.LOW;
-    SoftataLib.PinState Buttonstate { get; set; } = SoftataLib.PinState.LOW;
+    SoftataLib.PinState LEDstate = SoftataLib.PinState.Low;
+    SoftataLib.PinState Buttonstate { get; set; } = SoftataLib.PinState.Low;
 
     public System.Threading.WaitHandle Trigger { get; set; }
 
@@ -245,8 +245,8 @@ else if(AppState.Running)
         SoftataLib.Digital.SetPinMode((byte)BUTTON, SoftataLib.PinMode.DigitalInput);
         SoftataLib.Digital.SetPinMode((byte)LED, SoftataLib.PinMode.DigitalOutput);
 
-        SoftataLib.PinState state = SoftataLib.PinState.HIGH;
-        SoftataLib.PinState buttonState = SoftataLib.PinState.LOW;
+        SoftataLib.PinState state = SoftataLib.PinState.High;
+        SoftataLib.PinState buttonState = SoftataLib.PinState.Low;
         SoftataLib.Digital.SetPinState(LED, state);
         states.Buttonstate = buttonState;
         states.LEDstate = state;
@@ -261,8 +261,8 @@ else if(AppState.Running)
                 if (!AppState.Running) return;
             };
 
-            states.Buttonstate = SoftataLib.PinState.HIGH;
-            state = (state == SoftataLib.PinState.HIGH) ? SoftataLib.PinState.LOW : SoftataLib.PinState.HIGH;
+            states.Buttonstate = SoftataLib.PinState.High;
+            state = (state == SoftataLib.PinState.High) ? SoftataLib.PinState.Low : SoftataLib.PinState.High;
             SoftataLib.Digital.SetPinState(LED, state);
             states.LEDstate = state;
             queue.Enqueue(states);
@@ -272,7 +272,7 @@ else if(AppState.Running)
                 await Task.Delay(333);
                 if (!AppState.Running) return;
             }
-            states.Buttonstate = SoftataLib.PinState.LOW;
+            states.Buttonstate = SoftataLib.PinState.Low;
             queue.Enqueue(states);
         }
         AppState.Running = false;

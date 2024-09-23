@@ -182,6 +182,58 @@ namespace Softata
                 return true;
             }
 
+            public static bool MiscCmd(byte linkedListNo, DisplayDevice displayType, AllDisplayMiscCommands cmd, byte[]? _data = null)
+            {
+                byte command = 0;
+                AllDisplayMiscCommands start = 0;
+                AllDisplayMiscCommands max = 0;
+                switch (displayType)
+                {
+                    case DisplayDevice.OLED096:
+                        start =  DisplayMiscEnumFirstCmd.OLEDMiscCmds;
+                        max = AllDisplayMiscCommands.OLEDMiscCmds_MAX;
+                        break;
+                    case DisplayDevice.LCD1602:
+                        start =  DisplayMiscEnumFirstCmd.LCD1602MiscCmds;
+                        max = AllDisplayMiscCommands.LCD1602MiscCmds_MAX;
+                        break;
+                    case DisplayDevice.NEOPIXEL:
+                        start = DisplayMiscEnumFirstCmd.NEOPIXELMiscCmds;
+                        max = AllDisplayMiscCommands.NEOPIXELMiscCmds_MAX;
+                        break;
+                    case DisplayDevice.BARGRAPH:
+                        start = DisplayMiscEnumFirstCmd.BARGRAPHMiscCmds;
+                        max = AllDisplayMiscCommands.BARGRAPHMiscCmds_MAX;
+                        break;
+                    case DisplayDevice.GBARGRAPH:
+                        start = DisplayMiscEnumFirstCmd.BARGRAPHMiscCmds;
+                        max = AllDisplayMiscCommands.BARGRAPHMiscCmds_MAX;
+                        break;
+                    default:
+                        return false;
+                }
+                if ((cmd >= start) && (cmd < max))
+                {
+                    command = cmd - start;
+                }
+                else
+                    return false;
+
+
+                byte[] data = new byte[] { 0x4, command, 0, 0, 0 };
+                if (_data != null)
+                {
+                    if (_data.Length > 0)
+                    {
+                        for (int i = 0; (i < _data.Length) && (i < 3); i++)
+                            data[i + 2] = _data[i];
+                    }
+                }
+                string result = SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", linkedListNo, data);
+                return true;
+            }
+
+
             public static string[] GetMiscCmds(byte displayType)
             {
 

@@ -5,11 +5,30 @@ using Softata.Enums;
 using System;
 using System.Net;
 using System.Net.NetworkInformation;
+using static Softata.SoftataLib;
+using Microsoft.AspNetCore.Http;
+using System.Text.Json;
+using System.Collections.Generic;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace SoftataWebAPI.Controllers
 {
+
+    public static class SessionExtensions
+    {
+        public static void Set<T>(this ISession session, string key, T value)
+        {
+            session.SetString(key, JsonSerializer.Serialize(value));
+        }
+
+        public static T? Get<T>(this ISession session, string key)
+        {
+            var value = session.GetString(key);
+            return value == null ? default : JsonSerializer.Deserialize<T>(value);
+        }
+    }
+
     /// <summary>
     /// The Base Controller
     /// </summary>
@@ -17,18 +36,68 @@ namespace SoftataWebAPI.Controllers
     [ApiController]
     public class SoftataController : ControllerBase
     {
+        public const string SessionKeyName = "_Name";
+        public const string SessionKeyAge = "_Age";
+        public SoftataController() {
+
+            /*if (string.IsNullOrEmpty(HttpContext.Session.GetString(SessionKeyName)))
+            {
+                HttpContext.Session.SetString(SessionKeyName, "The Doctor");
+                HttpContext.Session.SetInt32(SessionKeyAge, 73);
+            }
+            var name = HttpContext.Session.GetString(SessionKeyName);
+            var age = HttpContext.Session.GetInt32(SessionKeyAge).ToString();*/
+        }
+
+        /*public void OnGet()
+        {
+            if (string.IsNullOrEmpty(HttpContext.Session.GetString(SessionKeyName)))
+            {
+                HttpContext.Session.SetString(SessionKeyName, "The Doctor");
+                HttpContext.Session.SetInt32(SessionKeyAge, 73);
+            }
+            var name = HttpContext.Session.GetString(SessionKeyName);
+            var age = HttpContext.Session.GetInt32(SessionKeyAge).ToString();*
+        }*/
 
         const int port = 4242;
         const string ipaddressStr = "192.168.0.12";
+
         /// <summary>
-        /// Get a list of Device Types
+        /// Interact with the Session (Set/Get)
         /// </summary>
-        /// <returns>List of device types</returns>
+        /// <returns>Set of Session values</returns>
         // GET: api/<SoftataController>
-        [Route("Get")]
+        [Route("GetSetSession")]
+        [HttpGet]
+        public IEnumerable<string> GetSetSession()
+        {
+            if (string.IsNullOrEmpty(HttpContext.Session.GetString(SessionKeyName)))
+            {
+                HttpContext.Session.SetString(SessionKeyName, "The Doctor");
+                HttpContext.Session.SetInt32(SessionKeyAge, 73);
+            }
+            var name = HttpContext.Session.GetString(SessionKeyName);
+            var age = HttpContext.Session.GetInt32(SessionKeyAge).ToString();
+            return from x in new[] { name, age } select x;
+        }
+
+            /// <summary>
+            /// Get a list of Device Types
+            /// </summary>
+            /// <returns>List of device types</returns>
+            // GET: api/<SoftataController>
+            [Route("Get")]
         [HttpGet]
         public IEnumerable<string> Get()
         {
+            if (string.IsNullOrEmpty(HttpContext.Session.GetString(SessionKeyName)))
+            {
+                HttpContext.Session.SetString(SessionKeyName, "The Doctor");
+                HttpContext.Session.SetInt32(SessionKeyAge, 73);
+            }
+            var name = HttpContext.Session.GetString(SessionKeyName);
+            var age = HttpContext.Session.GetInt32(SessionKeyAge).ToString();
             string value = SoftataLib.SendMessageCmd("Devices");
             return value.Split(',',':').ToList();
         }
@@ -115,6 +184,58 @@ namespace SoftataWebAPI.Controllers
         }
 
         /// <summary>
+        /// (Optional) Set Shield Mode to Grove (Default: Restrict GPIO/PWM to pins 16-21 only etc)
+        /// ... Or General (GPIO/PWM 0...26 etc)
+        /// </summary>
+        /// <param name="mode">groveShield,general</param>
+        /// <returns>OK</returns>
+        // POST api/<SoftataController>
+        [Route("SetPicoShieldMode")]
+        [HttpPost]
+        public IActionResult SetPicoShieldMode(RPiPicoMode mode = RPiPicoMode.groveShield)
+        {
+            bool result = SoftataLib.SetPicoShieldMode(mode);
+            return Ok($"Set Pico Mode {mode}");
+        }
+
+
+        /// <summary>
+        /// Connect to the Pico W Server and send the Begin, Version and Devices commands
+        /// </summary>
+        /// <param name="ipAddress"></param>
+        /// <param name="_port"></param>
+        /// <returns>IActionResult(Ok or BadRequest)</returns>
+        // POST api/<SoftataController>
+        [Route("Start")]
+        [HttpPost]
+        public IActionResult Start(string ipAddress = "0.tcp.ngrok.io", int _port = port)
+        {
+            bool result = _Connect(ipAddress, _port);
+            if (result)
+            {
+                string beginValue = SoftataLib.SendMessageCmd("Begin");
+                if (beginValue == "Ready")
+                {
+                    string OKresult = $"Connected to {ipAddress}:{_port} and Ready";
+                    string value = SoftataLib.SendMessageCmd("Version");
+                    OKresult += $"\nSoftata Version:{value}";
+                    value = SoftataLib.SendMessageCmd("Devices");
+                    OKresult += $"\n{value}";
+                    return Ok(OKresult);
+                }
+                else
+                {
+                    SoftataLib.Disconnect();
+                    return BadRequest($"Connected to {ipAddress}:{_port} but Begin not ready. Disconnecting");
+                }
+            }
+            else
+            {
+                return BadRequest($"Failed to connect to {ipAddress}:{_port}");
+            }
+        }
+
+        /// <summary>
         /// Connect to the Pico W Server (only). No Begin command is sent.
         /// </summary>
         /// <param name="ipAddress"></param>
@@ -136,42 +257,6 @@ namespace SoftataWebAPI.Controllers
         }
 
 
-
-        // POST api/<SoftataController>
-        /// <summary>
-        /// Connect to the Pico W Server and send the Begin, Version and Devices commands
-        /// </summary>
-        /// <param name="ipAddress"></param>
-        /// <param name="_port"></param>
-        /// <returns>IActionResult(Ok or BadRequest)</returns>
-        [Route("Start")]
-        [HttpPost]
-        public IActionResult Start(string ipAddress= "0.tcp.ngrok.io", int _port=port)
-        {
-            bool result = _Connect(ipAddress, _port);
-            if (result)
-            {
-                string beginValue = SoftataLib.SendMessageCmd("Begin");
-                if (beginValue == "Ready")
-                {
-                    string OKresult = $"Connected to {ipAddress}:{_port} and Ready";
-                    string value = SoftataLib.SendMessageCmd("Version");
-                    OKresult += $"\nSoftata Version:{value}";
-                    value = SoftataLib.SendMessageCmd("Devices");
-                    OKresult += $"\n{value}";
-                    return Ok(OKresult);
-                }
-                else
-                {
-                    SoftataLib.Disconnect();
-                    return BadRequest ($"Connected to {ipAddress}:{_port} but Begin not ready. Disconnecting");
-                }
-            }
-            else
-            {
-                return BadRequest($"Failed to connect to {ipAddress}:{_port}");
-            }
-        }
 
         /// <summary>
         /// Connect to the Pico W Server (only). No Begin command is sent.
@@ -219,7 +304,7 @@ namespace SoftataWebAPI.Controllers
             // POST api/<SoftataController>
             [Route("SendMessage")]
         [HttpPost]
-        public IActionResult SendMessage(int msgOrDeviceType, int pin = 0xff,int state = 0xff  , string expect="OK:", int other = 0xff, byte[]? Data = null)
+        public IActionResult SendMessage(int msgOrDeviceType, byte pin = 0xff,int state = 0xff  , string expect="OK:", int other = 0xff, byte[]? Data = null)
         {
             string result = SoftataLib.SendMessage((Commands)msgOrDeviceType, (byte)pin, (byte)state, expect, (byte)other ,Data);
             if(result != "Reset")

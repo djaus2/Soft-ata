@@ -74,6 +74,22 @@ namespace SoftataWebAPI.Controllers
             return Ok($"{actuatorListIndex}");
         }
 
+        /// </summary>
+        /// <param name="iactuator">The enum ord of the actuator in the list of actuators</param>
+        /// <returns>OK with instance index or Fail</returns>
+        // POST api/<SoftataController>
+        [Route("SetupDefaultfromList")]
+        [HttpPost] // Default setup for actuator
+        public IActionResult SetupDefaultfromList(ActuatorDevice iactuator )
+        {
+            int actuatorListIndex = SoftataLib.Actuator.SetupDefault((SoftataLib.Actuator.ActuatorDevice)(byte)iactuator);
+            if (actuatorListIndex == -1)
+            {
+                return BadRequest("Sensor not found");
+            }
+            return Ok($"{actuatorListIndex}");
+        }
+
         /// <summary>
         /// Setup actuator with custom settings
         /// Not fully implemented at this level
@@ -84,7 +100,7 @@ namespace SoftataWebAPI.Controllers
         /// <returns>OK with instance index or Fail</returns>
         [Route("Setup")]
         [HttpPost]
-        public IActionResult Setup(int iactuator, int pin, List<byte> settings = null)
+        public IActionResult Setup(int iactuator, byte pin, List<byte> settings = null)
         {
             int actuatorListIndex = SoftataLib.Actuator.Setup((ActuatorDevice)iactuator, (byte)pin);
             if (actuatorListIndex == -1)

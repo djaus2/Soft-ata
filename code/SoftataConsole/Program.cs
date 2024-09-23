@@ -229,7 +229,7 @@ namespace SoftataBasic
                         case ConsoleTestType.Test_OTA_Or_WDT:
                             SoftataLib.Digital.SetPinMode(BUTTON, SoftataLib.PinMode.DigitalInput);
                             SoftataLib.Digital.SetPinMode(LED, SoftataLib.PinMode.DigitalOutput);
-                            SoftataLib.Digital.SetPinState(LED, SoftataLib.PinState.HIGH);
+                            SoftataLib.Digital.SetPinState(LED, SoftataLib.PinState.High);
 
                             Console.WriteLine("WDT Test: Enable WDT in softata.h, deploy and boot then press [Return]");
                             Console.WriteLine("OTA Test: Enable OTA (optonally disable WDT) in softata.h, deploy and boot then press [Return]");
@@ -256,7 +256,7 @@ namespace SoftataBasic
                         case ConsoleTestType.Digital_Button_and_LED:
                             SoftataLib.Digital.SetPinMode(BUTTON, SoftataLib.PinMode.DigitalInput);
                             SoftataLib.Digital.SetPinMode(LED, SoftataLib.PinMode.DigitalOutput);
-                            SoftataLib.Digital.SetPinState(LED, SoftataLib.PinState.HIGH);
+                            SoftataLib.Digital.SetPinState(LED, SoftataLib.PinState.High);
 
                             // Next is errant as no pin 50 on Pico
                             //Digital_Button_and_LED.SetAnalogPin(50, PinMode.DigitalInput);
@@ -1155,8 +1155,8 @@ namespace SoftataBasic
                             }
                             break;
                         case ConsoleTestType.Analog_Potentiometer_Light_and_Sound:
-                            SoftataLib.Analog.InitAnalogDevicePins(SoftataLib.Analog.RPiPicoMode.groveShield);
-                            SoftataLib.Analog.SetAnalogPin(SoftataLib.Analog.AnalogDevice.Potentiometer, POTENTIOMETER, 1023);
+                            SoftataLib.Analog.InitAnalogDevicePins(SoftataLib.RPiPicoMode.groveShield);
+                            SoftataLib.Analog.SetAnalogPin(SoftataLib.Analog.AnalogDevice.Potentiometer, POTENTIOMETER);
                             SoftataLib.Analog.SetAnalogPin(SoftataLib.Analog.AnalogDevice.LightSensor, LIGHTSENSOR);
                             SoftataLib.Analog.SetAnalogPin(SoftataLib.Analog.AnalogDevice.SoundSensor, SOUNDSENSOR);
                             for (int i = 0; i < 100; i++)
@@ -1293,8 +1293,8 @@ namespace SoftataBasic
 
 
 
-                                            SoftataLib.Analog.InitAnalogDevicePins(SoftataLib.Analog.RPiPicoMode.groveShield);
-                                            SoftataLib.Analog.SetAnalogPin(SoftataLib.Analog.AnalogDevice.Potentiometer, POTENTIOMETER, 1023);
+                                            SoftataLib.Analog.InitAnalogDevicePins(SoftataLib.RPiPicoMode.groveShield);
+                                            SoftataLib.Analog.SetAnalogPin(SoftataLib.Analog.AnalogDevice.Potentiometer, POTENTIOMETER);
                                             Console.WriteLine("Press any key to continue.");
                                             Console.ReadLine();
 
@@ -1316,7 +1316,7 @@ namespace SoftataBasic
                                                             switch (potRelaySelection)
                                                             {
                                                                 case 1:
-                                                                    SoftataLib.Digital.SetPinState(RELAY, SoftataLib.PinState.HIGH);
+                                                                    SoftataLib.Digital.SetPinState(RELAY, SoftataLib.PinState.High);
                                                                     break;
                                                                 case 2:
                                                                 case 3:
@@ -1335,7 +1335,7 @@ namespace SoftataBasic
                                                             switch (potRelaySelection)
                                                             {
                                                                 case 1:
-                                                                    SoftataLib.Digital.SetPinState(RELAY, SoftataLib.PinState.LOW);
+                                                                    SoftataLib.Digital.SetPinState(RELAY, SoftataLib.PinState.Low);
                                                                     break;
                                                                 case 2:
                                                                 case 3:
@@ -1413,8 +1413,8 @@ namespace SoftataBasic
 
 
 
-                                            SoftataLib.Analog.InitAnalogDevicePins(SoftataLib.Analog.RPiPicoMode.groveShield);
-                                            SoftataLib.Analog.SetAnalogPin(SoftataLib.Analog.AnalogDevice.Potentiometer, POTENTIOMETER, 1023);
+                                            SoftataLib.Analog.InitAnalogDevicePins(SoftataLib.RPiPicoMode.groveShield);
+                                            SoftataLib.Analog.SetAnalogPin(SoftataLib.Analog.AnalogDevice.Potentiometer, POTENTIOMETER);
                                             Console.WriteLine("Press any key to continue.");
                                             Console.ReadLine();
 
@@ -1505,7 +1505,7 @@ namespace SoftataBasic
                                         Console.WriteLine("Connect Potentiometer to A0.");
                                         Console.WriteLine("Press any key to continue.");
                                         Console.ReadLine();
-                                        SoftataLib.Analog.SetAnalogPin(SoftataLib.Analog.AnalogDevice.Potentiometer, POTENTIOMETER, 1023);
+                                        SoftataLib.Analog.SetAnalogPin(SoftataLib.Analog.AnalogDevice.Potentiometer, POTENTIOMETER);
                                         Console.WriteLine("Turn potetiometer full in one direction.");
                                         Console.WriteLine("Press any key to continue.");
                                         Console.ReadLine();

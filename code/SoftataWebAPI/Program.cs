@@ -2,6 +2,7 @@
 using Microsoft.OpenApi.Models;
 using NetCore2BlocklyNew;
 using System.Reflection;
+using System.Text.Json.Serialization;
 
 namespace SoftataWebAPI
 {
@@ -16,6 +17,15 @@ namespace SoftataWebAPI
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
+
+            builder.Services.AddDistributedMemoryCache();
+
+            builder.Services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromSeconds(120);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
 
             //Swagger Documentation Section
             var info = new OpenApiInfo()
@@ -42,6 +52,10 @@ namespace SoftataWebAPI
                 c.IncludeXmlComments(xmlPath);
             });
 
+            builder.Services.AddControllers().AddJsonOptions(options =>
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -61,11 +75,14 @@ namespace SoftataWebAPI
             {
                 c.RoutePrefix = "swagger";
                 c.SwaggerEndpoint(url: "/swagger/v1/swagger.json", name: "Softata");
+                c.DocumentTitle="Softata";
             });
 
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
+
+            app.UseSession();
 
             app.MapControllers();
             app.UseBlocklyUI(app.Environment);

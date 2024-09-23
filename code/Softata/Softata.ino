@@ -715,7 +715,6 @@ void loop() {
           }
         }
         Serial_println();
-
         // Action cmds
         int value;
         switch (cmd) {
@@ -772,7 +771,7 @@ void loop() {
             }
           case 0xA2:  // Analog place holder
             if (!IS_PIN_ANALOG(pin)) {
-              Serial_print("Pin not Analog");
+              Serial_print("NOK: Pin not Analog");
               client.print("FAIL");
               continue;
             } else {
@@ -786,7 +785,77 @@ void loop() {
               }
             }
             break;
-          case 0xB1:
+          case 0xA3:  // 10 or 12 bit ADC
+            if (cmd == 0xA3) { 
+              byte resolution = param;
+              String msg = "";
+              if(resolution == 0xff)
+              {
+                msg = "NOK:No resolution supplied.";
+                Serial.println(msg);
+                client.print(msg);
+                continue;
+              } else if (resolution == 10) {
+                msg = "10 bit/1023 Max";
+                analogReadResolution(param);
+              } else if (resolution == 12) {
+                msg = "12 bit/4095 Max";
+                analogReadResolution(param);
+              } 
+              else {
+                msg = "NOK:Unknown resolution: ";
+                msg += resolution;
+                Serial.println(msg);
+                client.print(msg);
+                continue;
+              }          
+              String msgAD = "AD:";
+              msgAD += msg;
+              Serial_println(msgAD);
+              client.print(msgAD);
+              //break;
+            }
+            break;
+                   
+          
+          case 0xB0:  // 4 to 16 bit PWM
+            if (cmd == 0xB0) { 
+              String msgAD = "";
+              byte resolutionBits = param;
+              String msg = "";
+              if(resolutionBits == 0xff)
+              {
+                  msgAD = "NOK: SetPWM Resolution. Not supplied.";
+                  Serial.println(msgAD);
+                  client.print(msgAD);
+                  continue;
+              }             
+              if(resolutionBits<4)
+              {
+                  msgAD = "NOK: SetPWM Resolution Bits too small: ";
+                  msgAD += resolutionBits;
+                  msgAD += " Needs to be 4 to 16.";
+                  Serial.println(msgAD);
+                  client.print(msgAD);
+                  continue;
+              }
+              else if(resolutionBits>16)
+              {
+                  msgAD = "NOK: SetPWM Resolution Bits too large: ";
+                  msgAD += resolutionBits;
+                  msgAD += " Needs to be 4 to 16.";
+                  Serial.println(msgAD);
+                  client.print(msgAD);
+                  continue;
+              }
+              analogWriteResolution(resolutionBits);
+              msgAD ="PW: SetPWM Resolution Bits: ";
+              msgAD += resolutionBits;
+              Serial_println(msgAD);
+              client.print(msgAD);
+            }
+            break;   
+          case 0xB1:  // PWM
             if (!IS_PIN_PWM(pin)) {
               Serial_print("Pin not PWM");
               client.print("FAIL");
@@ -794,9 +863,12 @@ void loop() {
             }
             if (cmd == 0xB1) {
               Serial_print("PWM");
-              analogWrite(pin, param);
-              Serial_println("PWM:analogWrite()");
-              client.print("OK");
+              int value = otherData[1]+otherData[2]*256;
+              analogWrite(pin, value);
+              Serial_print("PWM:analogWrite(");
+              Serial.print(value);
+              Serial.println(")");
+              client.print("PW: AnalogWrite()");
             }
             break;
           case 0xC0:

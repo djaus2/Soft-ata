@@ -120,7 +120,7 @@ else if(AppState.Running)
                                             <div class="orange @(PotValue>49 ? "on" : "off")"></div>
                                             <div class="orange @(PotValue>74 ? "on" : "off")"></div>
                                             <div class="orange @(PotValue>89 ? "on" : "off")"></div>
-                                            <div class="green @(RelayValue==SoftataLib.PinState.HIGH ? "on" : "off")"></div>
+                                            <div class="green @(RelayValue==SoftataLib.PinState.High ? "on" : "off")"></div>
                                         </div>
                                     </div>
                                 </td>
@@ -151,13 +151,13 @@ else if(AppState.Running)
 
 
 @code {
-    SoftataLib.PinState RelayValue = SoftataLib.PinState.LOW;
+    SoftataLib.PinState RelayValue = SoftataLib.PinState.Low;
     int PotValue { get; set; } = 0;
 
     public class A2DandRelayValues
     {
         public int PotValue { get; set; } = 0;
-        public SoftataLib.PinState RelayValue { get; set; } = SoftataLib.PinState.LOW;
+        public SoftataLib.PinState RelayValue { get; set; } = SoftataLib.PinState.Low;
     }
 
     bool busy = false;
@@ -283,7 +283,7 @@ else if(AppState.Running)
         SoftataLib.Digital.SetPinMode(AppState.Relay, SoftataLib.PinMode.DigitalOutput);
         bool state = false;
         a2DandRelayValues.PotValue = 0;
-        a2DandRelayValues.RelayValue = SoftataLib.PinState.LOW;
+        a2DandRelayValues.RelayValue = SoftataLib.PinState.Low;
         queue.Enqueue(a2DandRelayValues);
         Thread.Sleep(500);
 
@@ -298,20 +298,20 @@ else if(AppState.Running)
                 {
                     if (!state)
                     {
-                        a2DandRelayValues.RelayValue = SoftataLib.PinState.HIGH;
+                        a2DandRelayValues.RelayValue = SoftataLib.PinState.High;
                         Console.WriteLine("\t\t\tRelay ON");
                         state = true;
-                        SoftataLib.Digital.SetPinState(AppState.Relay, SoftataLib.PinState.HIGH);
+                        SoftataLib.Digital.SetPinState(AppState.Relay, SoftataLib.PinState.High);
                     }
                 }
                 else
                 {
                     if (state)
                     {
-                        a2DandRelayValues.RelayValue = SoftataLib.PinState.LOW;
+                        a2DandRelayValues.RelayValue = SoftataLib.PinState.Low;
                         Console.WriteLine("\t\t\tRelay OFF");
                         state = false;
-                        SoftataLib.Digital.SetPinState(AppState.Relay, SoftataLib.PinState.LOW);
+                        SoftataLib.Digital.SetPinState(AppState.Relay, SoftataLib.PinState.Low);
                     }
                 }
             }

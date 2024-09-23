@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Softata;
+using Softata.Enums;
 using System.Diagnostics;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -74,6 +75,20 @@ namespace SoftataWebAPI.Controllers
             return Ok($"{sensorListIndex}");
         }
 
+
+        [Route("SetupDefaultfromList")]
+        [HttpPost] // Default setup for sensor
+        public IActionResult SetupDefaultfromList(SensorDevice isensor = 0)
+        {
+            int sensorListIndex = SoftataLib.Sensor.SetupDefault((byte)isensor);
+            if (sensorListIndex == -1)
+            {
+                return BadRequest("Sensor not found");
+            }
+            return Ok($"{sensorListIndex}");
+        }
+ 
+
         /// <summary>
         /// Setup sensor with custom settings
         /// Not fully implemented at this level
@@ -84,7 +99,7 @@ namespace SoftataWebAPI.Controllers
         /// <returns>OK with instance index or Fail</returns>
         [Route("Setup")]
         [HttpPost] // Setup for sensor
-        public IActionResult Setup(int isensor, int pin, List<byte> settings = null)
+        public IActionResult Setup(byte isensor, byte pin, List<byte> settings = null)
         {
             int sensorListIndex = SoftataLib.Sensor.Setup((byte)isensor, (byte)pin, settings);
             if (sensorListIndex == -1)

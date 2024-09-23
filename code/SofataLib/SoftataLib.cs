@@ -12,6 +12,11 @@ using System.Net.NetworkInformation;
 using Softata.Enums;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Runtime.Serialization;
+using System.Numerics;
+using static Softata.SoftataLib;
+using System.Reflection;
 
 
 namespace Softata
@@ -23,7 +28,7 @@ namespace Softata
 
         public const byte nullData = 0xfe;
 
-        public static  int port { get; set; } = 4242;
+        public static int port { get; set; } = 4242;
         public static string ipAddresStr { get; set; } = "192.168.0.12";
 
         private static Socket? _client;
@@ -44,9 +49,21 @@ namespace Softata
 
         private static bool Inited = false;
 
+        public enum RPiPicoMode { groveShield, generalMode, Undefined = 255 };
+        internal static RPiPicoMode _RPiPicoMode = RPiPicoMode.groveShield; //Default
+
+        
+
+
+        public static bool SetPicoShieldMode(RPiPicoMode mode)
+        {
+            _RPiPicoMode = mode;
+            return true;
+        }
+
         public static void Disconnect()
         {
- 
+
             try
             {
                 if (Client != null)
@@ -127,7 +144,7 @@ namespace Softata
                 return false;
             }
         }
-        public  static bool ConnectOld(string _ipAddresStr, int _port)
+        public static bool ConnectOld(string _ipAddresStr, int _port)
         {
             Console.WriteLine("Connecting to Softata Server from .NET");
             ipAddresStr = _ipAddresStr;
@@ -163,7 +180,7 @@ namespace Softata
             if (Client == null)
                 return false;
             else
-                return true;;
+                return true; ;
         }
 
 
@@ -175,7 +192,7 @@ namespace Softata
 
         // Add commands here that use param = 0xff
         // For others 0xff is not sent
-        private static List<Commands> WritingCmds = new List<Commands> { Commands.pwmWrite, Commands.serialWriteChar};
+        private static List<Commands> WritingCmds = new List<Commands> { Commands.pwmWrite, Commands.serialWriteChar };
 
 
 
@@ -191,8 +208,8 @@ namespace Softata
             { DeviceCategory.serial,new List<byte>(){6,0xB}}
         };
 
-    //////////////////////////////////////////
-    // NOTE enum order of DisplayDevice must match that returned by GroveDisplayCmds.getDisplays()
+        //////////////////////////////////////////
+        // NOTE enum order of DisplayDevice must match that returned by GroveDisplayCmds.getDisplays()
         //public enum DisplayDevice { OLEDSO096, LCD1602Display, NeopixelDisplay }
         //////////////////////////////////////////
 
@@ -206,21 +223,39 @@ namespace Softata
             ServoControl = 4,
             I2C = 6,
             OneWire = 7,
-            StepperControl = 8,
+            SteperControl = 8,
             Encoder = 9,
             Serial = 10,
             InputPullup = 11
         }
 
+        public enum GroveGPIOPinX { p16 = 16, p17 = 17, p18 = 18, p19 = 19, p20 = 20, p21 = 21 }
+
+        public enum GroveGPIOPin { p16, p17, p18, p19, p20, p21 }
+        public static List<string> GroveGPIOPinList = Enum.GetNames(typeof(GroveGPIOPin)).ToList();
+        public enum GroveAnalogPin { A0, A1, A2 } //,AVsys=29, ATemp=0xff }
+        public enum GroveAnalogPinX { A0 = 26, A1 = 27, A2 = 28 } //,AVsys=29, ATemp=0xff }
+
+        public static List<string> GroveAnalogPinList = Enum.GetNames(typeof(GroveAnalogPin)).ToList();
+
+        public enum GrovePWMPin { p16, p17, p18, p19, p20, p21 }
+        public enum GrovePWMPinX { p16 = 16, p17 = 17, p18 = 18, p19 = 19, p20 = 20, p21 = 21 }
+
+        public static List<string> GrovePWMPinList = Enum.GetNames(typeof(GrovePWMPin)).ToList();
+
+
+        public enum DigitalPinMode { Input = PinMode.DigitalInput, Output = PinMode.DigitalOutput }
+        public enum AnalogMode { ADC = PinMode.AnalogInput, PWM = PinMode.PwmOutput }
+
         public enum PinState
         {
-            LOW = 0x00,
-            HIGH = 0x01
+            Low = 0x00,
+            High = 0x01
         }
         public static string SendMessageCmd(string cmd)
         {
             if (Client == null)
-                    
+
                 throw new Exception("SendMessageCmd: Client is null");
 
             else if (!Client.Connected)
@@ -229,8 +264,8 @@ namespace Softata
             string result = "";
 
 
-                // Construct command and parameters as list of bytes
-                List<byte> sendmsg = new List<byte> { 1, (byte)cmd[0] };
+            // Construct command and parameters as list of bytes
+            List<byte> sendmsg = new List<byte> { 1, (byte)cmd[0] };
 
             byte[] sendBytes = sendmsg.ToArray<byte>();
             Console.WriteLine($"Sending {sendBytes.Length} data bytes");
@@ -250,14 +285,15 @@ namespace Softata
             switch (cmd)
             {
                 case "Begin":
+                    Analog.InitAnalogDevicePins();
                     return result;
-                    break;
+                //break;
                 case "Version":
                     return result;
-                    //break
+                //break
                 case "Devices":
                     return result;
-                    //break
+                //break
                 case "Null":
                     break;
                 case "End":
@@ -279,6 +315,63 @@ namespace Softata
             }
             return "";
         }
+
+
+        // State
+        private object Aval2 { get; set; } = "";
+        private Guid key { get; set; } = Guid.NewGuid();
+
+        public static Dictionary<Guid, SoftataLib> SoftataLibs = new Dictionary<Guid, SoftataLib>();
+        public static string NewSoftataLib()
+        {
+            SoftataLib av = new SoftataLib();
+            av.key = Guid.NewGuid();
+            SoftataLibs.Add(av.key, av);
+            return av.key.ToString();
+        }
+
+        public static SoftataLib? GetSoftataLib(string key)
+        {
+            if (Guid.TryParse(key, out Guid guid))
+            {
+                if(SoftataLibs.ContainsKey(guid))
+                    return SoftataLibs[guid];
+            }
+            return null;
+        }
+
+        public void SetAvalue(object aval)
+        {
+            SoftataLibs[key].Aval2 = aval;
+            return;
+        }
+
+        public object GetAvalue()
+        {
+            return SoftataLibs[key].Aval2;
+        }
+
+        public static void ClearAll()
+        {
+            SoftataLibs = new Dictionary<Guid, SoftataLib>();
+        }
+
+        public static bool Delete(string key)
+        {
+            if (Guid.TryParse(key, out Guid guid))
+            {
+                if (SoftataLibs.ContainsKey(guid))
+                {
+                    SoftataLibs.Remove(guid);
+                    return true;
+                }
+            }
+            return false;
+        }
+        
+
+
+
         public static string SendMessage(Commands MsgType, byte pin = 0xff, byte state = 0xff, string expect = "OK", byte other=0xff, byte[]? Data=null, bool debug=true )
         {
             if (Client == null)

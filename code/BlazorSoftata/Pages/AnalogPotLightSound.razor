@@ -310,7 +310,7 @@ else if(AppState.Running)
         {
             firstRun = false;
             SoftataLib.Analog.SetAnalogPin(SoftataLib.Analog.AnalogDevice.Potentiometer, AppState.Potentiometer);
-            SoftataLib.Analog.InitAnalogDevicePins(SoftataLib.Analog.RPiPicoMode.groveShield);
+            SoftataLib.Analog.InitAnalogDevicePins(SoftataLib.RPiPicoMode.groveShield);
             SoftataLib.Analog.SetAnalogPin(SoftataLib.Analog.AnalogDevice.Potentiometer, AppState.Potentiometer); //, 1023);
             SoftataLib.Analog.SetAnalogPin(SoftataLib.Analog.AnalogDevice.LightSensor, AppState.LightSensor);
             SoftataLib.Analog.SetAnalogPin(SoftataLib.Analog.AnalogDevice.SoundSensor, AppState.SoundSensor);

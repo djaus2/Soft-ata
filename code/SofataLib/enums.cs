@@ -1,14 +1,78 @@
-﻿namespace Softata.Enums
+﻿using System.ComponentModel;
+
+namespace Softata.Enums
 {
-    enum LCD1602MiscCmds : byte { home, autoscroll, noautoscroll, blink, noblink,/* Add Here, */ LCD1602MiscCmds_MAX }
-    enum NEOPIXELMiscCmds : byte { setpixelcolor, setpixelcolorAll, setpixelcolorOdds, setpixelcolorEvens, setBrightness, /* Add Here, */NEOPIXELMiscCmds_MAX }
-    enum OLEDMiscCmds : byte { drawCircle, drawFrame, /* Add Here, */ OLEDMiscCmds_MAX }
+
+    //Nb: https://stackoverflow.com/questions/13734746/combine-multiple-enums-into-master-enum-list
+    //  ... First Answer used
+    public enum AllDisplayMiscCommands : byte 
+    {
+        /* LCD1602MiscCmds */
+            home, autoscroll, noautoscroll, blink, noblink,/* Add Here, */ LCD1602MiscCmds_MAX,
+        /* NEOPIXELMiscCmds */
+            setpixelcolor, setpixelcolorAll, setpixelcolorOdds, setpixelcolorEvens, setBrightness, /* Add Here, */NEOPIXELMiscCmds_MAX ,
+        /* OLEDMiscCmds */
+        drawCircle, drawFrame, /* Add Here, */ OLEDMiscCmds_MAX ,
+        /*BARGRAPHMiscCmds */
+        flow, flow2, setLed, clrLed, toggleLed, setLevel, exercise, /* Add Here, */ BARGRAPHMiscCmds_MAX 
+    }
+
+   
+
+    enum LCD1602MiscCmds : byte { home = AllDisplayMiscCommands.home, autoscroll = AllDisplayMiscCommands.autoscroll, noautoscroll = AllDisplayMiscCommands.noautoscroll, blink = AllDisplayMiscCommands.blink, noblink = AllDisplayMiscCommands.noblink,/* Add Here, */ LCD1602MiscCmds_MAX = AllDisplayMiscCommands.LCD1602MiscCmds_MAX }
+    enum NEOPIXELMiscCmds : byte { setpixelcolor = AllDisplayMiscCommands.setpixelcolor, setpixelcolorAll  = AllDisplayMiscCommands.setpixelcolorAll, setpixelcolorOdds  = AllDisplayMiscCommands.setpixelcolorOdds, setpixelcolorEvens = AllDisplayMiscCommands.setpixelcolorEvens, setBrightness = AllDisplayMiscCommands.setBrightness, /* Add Here, */ NEOPIXELMiscCmds_MAX = AllDisplayMiscCommands.NEOPIXELMiscCmds_MAX }
+    public enum OLEDMiscCmds : byte { drawCircle = AllDisplayMiscCommands.drawCircle, drawFrame = AllDisplayMiscCommands.drawFrame, /* Add Here, */ OLEDMiscCmds_MAX = AllDisplayMiscCommands.OLEDMiscCmds_MAX }
+    public enum BARGRAPHMiscCmds: byte { flow = AllDisplayMiscCommands.flow, flow2 = AllDisplayMiscCommands.flow2, setLed = AllDisplayMiscCommands.setLed, clrLed = AllDisplayMiscCommands.clrLed, toggleLed = AllDisplayMiscCommands.toggleLed, setLevel = AllDisplayMiscCommands.setLevel, exercise = AllDisplayMiscCommands.exercise, /* Add Here, */ BARGRAPHMiscCmds_MAX = AllDisplayMiscCommands.BARGRAPHMiscCmds_MAX }
+
+    public static class DisplayMiscEnumFirstCmd
+    {
+        public static AllDisplayMiscCommands LCD1602MiscCmds = AllDisplayMiscCommands.home;
+        public static AllDisplayMiscCommands NEOPIXELMiscCmds = AllDisplayMiscCommands.setpixelcolor;
+        public static AllDisplayMiscCommands OLEDMiscCmds = AllDisplayMiscCommands.drawCircle;
+        public static AllDisplayMiscCommands BARGRAPHMiscCmds = AllDisplayMiscCommands.flow;
+    }
+
     public enum SensorDevice : byte { DHT11, BME280, UltrasonicRANGER,/* Add Here, */  Undefined = 0xFF }
-    public enum DisplayDevice : byte { OLED096, LCD1602, NEOPIXEL,BARGRAPH,GBARGRAPH, /* Add Here, */ Undefined = 0xFF }
-    public enum ActuatorDevice : byte { Servo, SIPO_74HC595,Relay,/* Add Here, */ Undefined = 0xFF }
+    public enum DisplayDevice : byte { OLED096, LCD1602, NEOPIXEL, BARGRAPH, GBARGRAPH, /* Add Here, */ Undefined = 0xFF }
+    public enum ActuatorDevice : byte { Servo, SIPO_74HC595, Relay,/* Add Here, */ Undefined = 0xFF }
     public enum SerialDevice : byte { Loopback, GPS, Undefined = 0xFF }
 
-    public enum BARGRAPHMiscCmds { flow, flow2, setLed, clrLed, toggleLed, setLevel, exercise }
+ 
+
+
+    /*public enum DisplayDevice : byte {
+        [Description("OLED096")]
+        OLED096,
+        [Description("LCD1602")]
+        LCD1602,
+        [Description("NEOPIXEL")]
+        NEOPIXEL,
+        [Description("BARGRAPH")]
+        BARGRAPH,
+        [Description("GBARGRAPH") ]
+
+        GBARGRAPH,
+        // Add Here,
+        [Description("Undefined")]
+        Undefined = 0xFF 
+    }*/
+
+    public static class DeviceTypesLists
+    {
+
+
+        public static List<string> DisplayNames = Enum.GetNames(typeof(DisplayDevice)).ToList();
+
+        public static List<string> SensorNames = Enum.GetNames(typeof(SensorDevice)).ToList();
+
+        public static List<string> ActuatorNames = Enum.GetNames(typeof(ActuatorDevice)).ToList();
+
+    }
+
+
+
+
+
 
     public enum Commands
     {
@@ -20,6 +84,9 @@
 
         //Analog_Potentiometer_and__LED/PWM
         analogRead = 0xA2,
+        analogSetResolution = 0xA3,
+
+        analogWriteResolution = 0xB0,
         pwmWrite = 0xB1,
 
         //Serial

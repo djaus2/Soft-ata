@@ -9,58 +9,89 @@ namespace Softata
 {
     public partial class SoftataLib
     {
-        public static class Analog
+        public static class Analog  
         {
-
             const int Max_Analog = 1023;//??
-            public enum AnalogDevice { LightSensor = 0, SoundSensor = 1, Potentiometer = 2, Undefined = 255 };
+            private static bool ValidateAnalogAssignedPin(int pinNumber)
+            {
+                if (!GroveAnalogPinList.Contains($"A{pinNumber-26}"))
+                {
+                    throw new ArgumentOutOfRangeException(nameof(pinNumber), "Messages.ArgumentEx_AnalogPinRange26to28");
+                }
+                foreach (var item in AnalogDevicePins)
+                {
+                    if (item.Value.PinNumber == pinNumber)
+                    {
+                        return true;
+                    }
+                }
+                throw new ArgumentOutOfRangeException(nameof(pinNumber), "Analog pin not assigned");
+            }
+
+            private static bool ValidateAnalogPin(int pinNumber)
+            {
+                if (!GroveAnalogPinList.Contains($"A{pinNumber-26}"))
+                {
+                    throw new ArgumentOutOfRangeException(nameof(pinNumber), "Messages.ArgumentEx_DigitalPinRange26to28");
+                }
+                foreach (var item in AnalogDevicePins)
+                {
+                    if (item.Value.PinNumber == pinNumber)
+                    {
+                        throw new ArgumentOutOfRangeException(nameof(pinNumber), "Analog pin already assigned");
+                    }
+                }
+                return true;
+            }
+
+            public enum ADCResolutionBits { Bits10, Bits12 };
+            public enum ADCResolutionBitsX { Bits10 = 10, Bits12 = 12 };
+            public enum AnalogDevice { LightSensor = 0, SoundSensor = 1, Potentiometer = 2, Other = 3, Undefined = 255 };
 
             public class ADevice
             {
                 public int PinNumber { get; set; }
                 public AnalogDevice DeviceType { get; set; }
-                public int MaxValue { get; set; }
-            }
-            public enum RPiPicoMode { groveShield,defaultMode, Undefined = 255 };
-            private static RPiPicoMode _RPiPicoMode = RPiPicoMode.groveShield;
+                public ADCResolutionBits ResolutionBits { get; set; } = ADCResolutionBits.Bits10; //1023
+                public byte BitsShiftRight { get; set; } = 0; }
+
 
             public static Dictionary<AnalogDevice, ADevice> AnalogDevicePins = new Dictionary<AnalogDevice, ADevice>();
 
-            private static  List<int> ValidAnalogPins = new List<int> { 26,27, 28 };
-            private static string csvValidAnalogPins = "26,27, 28";
+
             public static void InitAnalogDevicePins(RPiPicoMode rPiPicoMode)
             {
                 _RPiPicoMode = rPiPicoMode;
-                AnalogDevicePins = new Dictionary<AnalogDevice, ADevice>();
-                string csv = String.Join(",", ValidAnalogPins.Select(x => x.ToString()).ToArray());
+                AnalogDevicePins = new Dictionary<AnalogDevice, ADevice>();;
             }
 
-            public static void SetAnalogPin(AnalogDevice device, int pinNumber, int maxValue = 1023)
+            public static void InitAnalogDevicePins()
             {
-                if (!ValidAnalogPins.Contains(pinNumber))
-                    throw new ArgumentOutOfRangeException(nameof(pinNumber), $"Valid analog pins are {csvValidAnalogPins} with RPi Pico");
+                AnalogDevicePins = new Dictionary<AnalogDevice, ADevice>();
+            }
 
-                if (AnalogDevicePins.ContainsKey(device))
-                    throw new ArgumentOutOfRangeException(nameof(device), "That device already assigned. Only one allowed");
+            public static bool SetAnalogPin(AnalogDevice device, byte pinNumber, ADCResolutionBits resolutionsBits =  ADCResolutionBits.Bits10, byte bitsShiftRight=0)
+            {
+                if(!ValidateAnalogPin(pinNumber))
+                    return false;
 
-
-                foreach (var item in AnalogDevicePins)
+                if(resolutionsBits == ADCResolutionBits.Bits10)
                 {
-                    if (item.Value.PinNumber == pinNumber)
-                    {
-                        throw new ArgumentOutOfRangeException(nameof(pinNumber), "Analog_Potentiometer_and__LED pin already assigned");
-                        //break;
-                    }
+                    string state = SendMessage(Commands.analogSetResolution, pinNumber, 10, "AD:");
                 }
-
-                ADevice aDevice = new ADevice { PinNumber = pinNumber, DeviceType = device, MaxValue = maxValue };
+                else 
+                {
+                    string state = SendMessage(Commands.analogSetResolution, pinNumber, 12, "AD:");
+                }
+                ADevice aDevice = new ADevice { PinNumber = pinNumber, DeviceType = device, ResolutionBits = resolutionsBits, BitsShiftRight = bitsShiftRight };
                 AnalogDevicePins.Add(device, aDevice);
+                return true;
             }
             
-            public static int AnalogRead(int pinNumber)
+            public static int AnalogRead(byte pinNumber)
             {
-                if (!ValidAnalogPins.Contains(pinNumber))
-                    throw new ArgumentOutOfRangeException(nameof(pinNumber), $"Valid analog pins are {csvValidAnalogPins} with RPi Pico");
+                if (!ValidateAnalogAssignedPin(pinNumber))
+                    return int.MaxValue;
 
                 string state = SendMessage(Commands.analogRead, (byte)pinNumber, nullData, "AD:");
 
@@ -69,14 +100,19 @@ namespace Softata
                 {
                     if (int.TryParse(state, out int val))
                     {
-                        result = val;
-                        return result;
+                        foreach (var item in AnalogDevicePins)
+                        {
+                            if (item.Value.PinNumber == pinNumber)
+                            {
+                                byte bitsShiftRight = item.Value.BitsShiftRight;
+                                result = val >> bitsShiftRight;
+                                break;
+                            }
+                        }
+                        
                     }
-                    else
-                        return int.MaxValue;
                 }
-                else
-                    return int.MaxValue;
+                return result;
             }
 
             public static double  AnalogReadLightSensor()
@@ -84,9 +120,11 @@ namespace Softata
                 AnalogDevice device = AnalogDevice.LightSensor;
 
                 if (!AnalogDevicePins.ContainsKey(device))
-                    throw new ArgumentOutOfRangeException(nameof(device), "That device already assigned. Only one allowed");
+                    throw new ArgumentOutOfRangeException(nameof(device), "Analog: Light Sensor not assigned");
                 int pinNumber = AnalogDevicePins[device].PinNumber;
-                int maxValue = AnalogDevicePins[device].MaxValue;
+                int maxValue = 1023;
+                if (AnalogDevicePins[device].ResolutionBits == ADCResolutionBits.Bits12)
+                    maxValue = 4095;
 
                 string state = SendMessage(Commands.analogRead, (byte)pinNumber, nullData, "AD:");
 
@@ -110,9 +148,11 @@ namespace Softata
                 AnalogDevice device = AnalogDevice.SoundSensor;
 
                 if (!AnalogDevicePins.ContainsKey(device))
-                    throw new ArgumentOutOfRangeException(nameof(device), "That device already assigned. Only one allowed");
+                    throw new ArgumentOutOfRangeException(nameof(device), "Analog: Sound Sensor  not assigned.");
                 int pinNumber = AnalogDevicePins[device].PinNumber;
-                int maxValue = AnalogDevicePins[device].MaxValue;
+                int maxValue = 1023;
+                if (AnalogDevicePins[device].ResolutionBits == ADCResolutionBits.Bits12)
+                    maxValue = 4095;
 
                 string state = SendMessage(Commands.analogRead, (byte)pinNumber, nullData, "AD:");
 
@@ -131,14 +171,18 @@ namespace Softata
                     return double.MaxValue;
             }
 
+            // Note only one of each analog device type allowed
             public static double AnalogReadPotentiometer()
             {
                 AnalogDevice device = AnalogDevice.Potentiometer;
-
+                
                 if (!AnalogDevicePins.ContainsKey(device))
-                    throw new ArgumentOutOfRangeException(nameof(device), "That device already assigned. Only one allowed");
+                    throw new ArgumentOutOfRangeException(nameof(device), "Analog: Potentiometer not assigned.");
                 int pinNumber = AnalogDevicePins[device].PinNumber;
-                int maxValue = AnalogDevicePins[device].MaxValue;
+                int maxValue = 1023;
+                if(AnalogDevicePins[device].ResolutionBits==ADCResolutionBits.Bits12)
+                    maxValue = 4095;
+
 
                 string state = SendMessage(Commands.analogRead, (byte)pinNumber, nullData, "AD:");
 
@@ -158,14 +202,69 @@ namespace Softata
             }
         }
 
+
+
         public static class PWM
         {
-            public static void SetPWM(int pinNumber, byte value)
+            private static bool ValidatePWMPin(int pinNumber)
             {
-                if (pinNumber <= 0 || pinNumber >= PinMax)
-                    throw new ArgumentOutOfRangeException(nameof(pinNumber), "Messages.ArgumentEx_PinRange0_127");
+                if ((pinNumber < 0) || (pinNumber >= PinMax))
+                {
+                    throw new ArgumentOutOfRangeException(nameof(pinNumber), "Messages.ArgumentEx_PWMPinRange0to28");
+                    //return false;
+                }
 
-                SendMessage(Commands.pwmWrite, (byte)pinNumber, value);
+                if (_RPiPicoMode == RPiPicoMode.groveShield)
+                {
+                    if (!GroveGPIOPinList.Contains($"p{pinNumber}"))
+                    {
+                        throw new ArgumentOutOfRangeException(nameof(pinNumber), "Messages.ArgumentEx_PWMPinRange16to21");
+                    }
+                }
+                return true;
+            }
+
+
+            public static bool SetPinModePWM(byte pinNumber, byte pwmResolutionBits = 8)
+            {
+                if (pwmResolutionBits == 0)
+                    pwmResolutionBits = 8;
+                if (pwmResolutionBits < 4 || pwmResolutionBits > 16)
+                    throw new ArgumentOutOfRangeException(nameof(pwmResolutionBits), "Messages.ArgumentEx_PWMRange4to16Bits");
+
+                // Set pin as Digital Output
+                if (!ValidatePWMPin(pinNumber))
+                    return false;
+
+                string resp = SendMessage(Commands.pinMode, (byte)pinNumber, (byte)PinMode.DigitalOutput);
+                if (resp.Contains(":"))
+                {
+                    resp = SendMessage(Commands.analogWriteResolution, (byte)pinNumber, pwmResolutionBits,"PW");
+                    if (resp.Contains(":"))
+                        return true;
+                    else
+                        return false;
+                }
+                else
+                    return false;
+            }
+            public static bool  SetPWM(int pinNumber, int value)
+            {
+                // Need to check value against number of bits
+                if (!ValidatePWMPin(pinNumber))
+                    return false;
+
+                UInt16 Value = (UInt16)value;
+
+                byte[] bytes = BitConverter.GetBytes(Value);
+                byte[] data = bytes.Prepend((byte)bytes.Length).ToArray<byte>(); //Prepend string length +1
+
+
+                string result = SendMessage(Commands.pwmWrite, (byte)pinNumber, nullData,"PW",nullData,data);
+                if(result.Contains(":" ))
+                    return true;
+                else
+                    return false;
             }
 
         }

@@ -19,20 +19,9 @@ namespace Softata
             public enum ActuatorDevice { Servo = 0,Shift95ParaOut=1, Relay = 2, Undefined = 0xff };
 
 
-            public enum RPiPicoMode { groveShield,defaultMode, Undefined = 255 };
-            private static RPiPicoMode _RPiPicoMode = RPiPicoMode.groveShield;
-
             private static  List<int> ValidActuatorPins = new List<int> { 16,18,20 };
             private static string csvValidActuatorPins = "16,18,20";
-            public static void InitActuatorDevices(RPiPicoMode rPiPicoMode)
-            {
-                _RPiPicoMode = rPiPicoMode;
-                if(rPiPicoMode != RPiPicoMode.groveShield)
-                {
-                    ValidActuatorPins = Enumerable.Range(0, 26).ToList<int>();
-                }
-                string csv = string.Join(",", ValidActuatorPins.Select(x => x.ToString()).ToArray());
-            }
+
 
             public static string[] GetActuators()
             {

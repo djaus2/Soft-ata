@@ -66,6 +66,9 @@ namespace BlazorSoftata
         // Test Categories
         public DeviceCategory TestCategory { get => testCategory; set { testCategory = value; NotifyStateChanged(); } }
 
+        // Status info about sub/sub tests.
+        public string TestInfo { get => testInfo; set { testInfo = value; NotifyStateChanged(); } }
+
         // Lists of tests as a BlazorTestType
         public List<BlazorTestType> LDigitals { get => lDigitals; set { lDigitals = value; NotifyStateChanged(); } }
         public List<BlazorTestType> LAnalogs { get => lAnalogs; set { lAnalogs = value; NotifyStateChanged(); } }
@@ -226,6 +229,7 @@ public byte I2C { get => i2C; set { if ((value < 0) || (value > 1)) return; i2C 
         private bool servoGetPins;
         private bool defaultSettings = false;
         private DeviceCategory testCategory;
+        private string testInfo = "";
         private List<BlazorTestType> lDigitals;
         private List<BlazorTestType> lAnalogs;
         private List<BlazorTestType> lDisplays;
