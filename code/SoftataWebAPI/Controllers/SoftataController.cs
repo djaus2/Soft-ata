@@ -9,6 +9,8 @@ using static Softata.SoftataLib;
 using Microsoft.AspNetCore.Http;
 using System.Text.Json;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Xml.Linq;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -158,6 +160,12 @@ namespace SoftataWebAPI.Controllers
                     OKresult += $"\nSoftata Version:{value}";
                     value = SoftataLib.SendMessageCmd("Devices");
                     OKresult += $"\n{value}";
+                    var connection = new Tuple<string, int> ( ipAddress, _port );
+                    /*this.HttpContext.Session.Timeout // ASP.NET MVC controller
+                    Page.Session.Timeout // ASP.NET Web Forms code-behind
+                    HttpContext.Current.Session.Timeout // Elsewhere
+                    HttpContext.Session.Timeout = 20;*/
+                    HttpContext.Session.Set< Tuple<string, int>>("ConnectionDetails", connection);
                     return Ok(OKresult);
                 }
                 else
@@ -170,6 +178,43 @@ namespace SoftataWebAPI.Controllers
             {
                 return BadRequest($"Failed to connect to {ipAddress}:{_port}");
             }
+        }
+
+
+        /// <summary>
+        /// Connect to the Pico W Server and send the Begin, Version and Devices commands
+        /// </summary>
+        /// <returns>IActionResult(Ok or BadRequest)</returns>
+        // POST api/<SoftataController>
+        [Route("StartSession")]
+        [HttpPost]
+        public IActionResult StartSession()
+        {
+            string ipAddress = "192.168.0.12";
+            int port = 4242;
+            if (!HttpContext.Session.Keys.Contains("ConnectionDetails"))
+            {
+                return BadRequest("No Connection Details");;
+            }
+            else
+            {
+                var connectDetails = HttpContext.Session.Get<Tuple<string, int>>("ConnectionDetails");
+                if (connectDetails != null)
+                {
+                    string _ipAddress = connectDetails.Item1;
+                    if (!string.IsNullOrEmpty(_ipAddress))
+                    {
+                        ipAddress = _ipAddress;
+                        int? _port = connectDetails.Item2;
+                        if (_port != null)
+                        {
+                            port = (int)_port;
+                            return Start(ipAddress, port);
+                        }
+                    }
+                }             
+            }
+            return BadRequest("No or invalid Connection Details");
         }
 
         /// <summary>

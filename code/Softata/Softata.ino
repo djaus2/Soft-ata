@@ -345,8 +345,7 @@ void setup()
     // YN Menu will determine its state.
     useSerialDebug = true;
     skipMenus = false;
-    // Longer wait as first menu choice 
-    tristate resb = GetMenuChoiceYNS(trueButSkipMenus, 2*DEFAULT_MENU_TIMEOUT_SEC);
+    tristate resb = GetMenuChoiceYNS(trueButSkipMenus, DEFAULT_MENU_TIMEOUT_SEC);
     switch(resb)
     {
       case trueButSkipMenus:

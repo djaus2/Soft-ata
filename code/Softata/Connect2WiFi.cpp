@@ -214,13 +214,12 @@ namespace FlashStorage{
     }
     Ssid = vals[sv_SSID];
     Passwd = vals[sv_Password];
+#ifdef USINGIOTHUB
     DeviceName = vals[sv_hostname];
     Hubname = vals[sv_hubname];
     IoTHubDeviceConnectionString = vals[sv_deviceConnectionString];
+#endif
     Guid = vals[sv_guid];
-
-    Serial_println(DeviceName);
-
     return true;
   }
 
@@ -238,9 +237,11 @@ namespace FlashStorage{
     String vals[NUM_STORED_VALUES];
     vals[sv_SSID] = Ssid;
     vals[sv_Password] = Passwd;
+#ifdef USINGIOTHUB
     vals[sv_hostname] = DeviceName;
     vals[sv_hubname] = Hubname;
     vals[sv_deviceConnectionString] = IoTHubDeviceConnectionString;
+#endif
     vals[sv_guid] = Guid;
     
     bool res = WriteStringArray2EEProm(vals);
@@ -329,6 +330,8 @@ namespace FlashStorage{
         Serial_println(Ssid);
         Serial_print("Password:");
         Serial_println(Passwd);
+
+#ifdef USINGIOTHUB
         Serial_print("DeviceName:");
         Serial_println(DeviceName);
         Serial_print("Hubname:");
@@ -337,6 +340,7 @@ namespace FlashStorage{
         Serial_println(GetIOT_CONFIG_IOTHUB_FQDN());
         Serial_print("DeviceConnectionString:");
         Serial_println(IoTHubDeviceConnectionString);
+#endif
         Serial_print("Guid:");
         Serial_println(Guid);
 
@@ -396,6 +400,8 @@ namespace FlashStorage{
         SerialBT.println(Ssid);
         SerialBT.print("Password:");
         SerialBT.println(Passwd);
+
+#ifdef USINGIOTHUB
         SerialBT.print("DeviceName:");
         SerialBT.println(DeviceName);
         SerialBT.print("Hubname:");
@@ -404,6 +410,8 @@ namespace FlashStorage{
         SerialBT.println(GetIOT_CONFIG_IOTHUB_FQDN());
         SerialBT.print("DeviceConnectionString:");
         SerialBT.println(IoTHubDeviceConnectionString);
+#endif
+
         SerialBT.print("Guid:");
         SerialBT.println(Guid);
 
@@ -448,12 +456,13 @@ namespace FlashStorage{
     Passwd = SerialBT.readString();
     Passwd.trim();
     Serial_println();
-
+    String val="";
+#ifdef USINGIOTHUB
     //Get DeviceName
     SerialBT.print("Enter DeviceName. Default ");
     SerialBT.print(DeviceName);
     while (SerialBT.available() == 0) {}
-    String val = SerialBT.readString();
+    val = SerialBT.readString();
     val.trim();
     if (val.length()!=0)
       DeviceName=val;
@@ -478,6 +487,7 @@ namespace FlashStorage{
     if (val.length()!=0)
       IoTHubDeviceConnectionString=val; 
     Serial_println();
+#endif
 
     //Get GUID
     SerialBT.print("Enter Guid. Default ");
@@ -524,6 +534,7 @@ namespace FlashStorage{
     Serial_println();
 
     //Get Hubname
+#ifdef USINGIOTHUB
     Serial_print("Enter IoT Hubname. Default ");
     Serial_print(Hubname);
     while (Serial.available() == 0) {}
@@ -532,6 +543,7 @@ namespace FlashStorage{
     if (val.length()!=0)
       Hubname=val;
     Serial_println();
+
     
     // Get IoT Hub Device Connection String
     Serial_print("Enter IoT Hub Device Connection String. Default: ");
@@ -543,7 +555,8 @@ namespace FlashStorage{
       IoTHubDeviceConnectionString=val;
     Serial_println();
     Serial_println(IoTHubDeviceConnectionString);
- 
+ #endif
+
     // Get GUID
     Serial_print("Enter Guid. Default: ");
     Serial_print(Guid);
@@ -564,9 +577,11 @@ namespace FlashStorage{
   {
     Ssid = ssid;
     Passwd = pwd;
+#ifdef USINGIOTHUB
     DeviceName = hostname;
     Hubname = hubname;
     IoTHubDeviceConnectionString = deviceconnectionString;
+#endif
     Guid = guid;
   }
 
