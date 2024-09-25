@@ -161,10 +161,6 @@ namespace SoftataWebAPI.Controllers
                     value = SoftataLib.SendMessageCmd("Devices");
                     OKresult += $"\n{value}";
                     var connection = new Tuple<string, int> ( ipAddress, _port );
-                    /*this.HttpContext.Session.Timeout // ASP.NET MVC controller
-                    Page.Session.Timeout // ASP.NET Web Forms code-behind
-                    HttpContext.Current.Session.Timeout // Elsewhere
-                    HttpContext.Session.Timeout = 20;*/
                     HttpContext.Session.Set< Tuple<string, int>>("ConnectionDetails", connection);
                     return Ok(OKresult);
                 }
