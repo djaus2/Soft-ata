@@ -41,6 +41,162 @@ namespace SoftataWebAPI.Controllers
         const int port = 4242;
         const string ipaddressStr = "192.168.0.12";
 
+
+
+
+
+
+        /// <summary>
+        /// Connect to the Pico W Server and send the Begin, Version and Devices commands
+        /// </summary>
+        /// <param name="ipAddress"></param>
+        /// <param name="_port"></param>
+        /// <returns>IActionResult(Ok or BadRequest)</returns>
+        // POST api/<SoftataController>
+        [Route("Start")]
+        [HttpPost]
+        public IActionResult Start(string ipAddress = "0.tcp.ngrok.io", int _port = port)
+        {
+            bool result = _Connect(ipAddress, _port);
+            if (result)
+            {
+                string beginValue = SoftataLib.SendMessageCmd("Begin");
+                if (beginValue == "Ready")
+                {
+                    string OKresult = $"Connected to {ipAddress}:{_port} and Ready";
+                    string value = SoftataLib.SendMessageCmd("Version");
+                    OKresult += $"\nSoftata Version:{value}";
+                    value = SoftataLib.SendMessageCmd("Devices");
+                    OKresult += $"\n{value}";
+                    var connection = new Tuple<string, int>(ipAddress, _port);
+                    HttpContext.Session.Set<Tuple<string, int>>("ConnectionDetails", connection);
+                    return Ok(OKresult);
+                }
+                else
+                {
+                    SoftataLib.Disconnect();
+                    return BadRequest($"Connected to {ipAddress}:{_port} but Begin not ready. Disconnecting");
+                }
+            }
+            else
+            {
+                return BadRequest($"Failed to connect to {ipAddress}:{_port}");
+            }
+        }
+
+        // POST api/<SoftataController>
+        /// <summary>
+        /// Connect to the Pico W Server and send the Begin, Version and Devices commands
+        /// Use Ngrok tunnel
+        /// </summary>
+        /// <param name="ngrokIndex"></param>
+        /// <param name="_port"></param>
+        /// <returns>IActionResult(Ok or BadRequest)</returns>
+        [Route("NgrokStart")]
+        [HttpPost]
+        public IActionResult NgrokStart(int ngrokIndex = 0, int _port = port)
+        {
+            string ipAddress = $"{ngrokIndex}.tcp.ngrok.io";
+            return Start(ipAddress, _port);
+        }
+
+
+        /// <summary>
+        /// Connect to the Pico W Server using Session stored details and send the Begin, Version and Devices commands
+        /// First start with Start() or NgrokStart() to cache the connection details in teh current Session
+        /// </summary>
+        /// <returns>IActionResult(Ok or BadRequest)</returns>
+        // POST api/<SoftataController>
+        [Route("StartSession")]
+        [HttpPost]
+        public IActionResult StartSession()
+        {
+            string ipAddress = "192.168.0.12";
+            int port = 4242;
+            if (!HttpContext.Session.Keys.Contains("ConnectionDetails"))
+            {
+                return BadRequest("No Connection Details"); ;
+            }
+            else
+            {
+                var connectDetails = HttpContext.Session.Get<Tuple<string, int>>("ConnectionDetails");
+                if (connectDetails != null)
+                {
+                    string _ipAddress = connectDetails.Item1;
+                    if (!string.IsNullOrEmpty(_ipAddress))
+                    {
+                        ipAddress = _ipAddress;
+                        int? _port = connectDetails.Item2;
+                        if (_port != null)
+                        {
+                            port = (int)_port;
+                            return Start(ipAddress, port);
+                        }
+                    }
+                }
+            }
+            return BadRequest("No or invalid Connection Details");
+        }
+
+        private bool _Connect(string ipAddress, int _port)
+        {
+            //if (ValidateIPv4(ipAddress))
+            //{
+            bool result = SoftataLib.Connect(ipAddress, _port);
+            if (result)
+            {
+                return true;
+            }
+            else
+                return false;
+        }
+
+
+        /// <summary>
+        /// Connect to the Pico W Server (only). No Begin command is sent.
+        /// </summary>
+        /// <param name="ipAddress"></param>
+        /// <param name="_port"></param>
+        /// <returns></returns>
+        // POST api/<SoftataController>
+        [Route("Connect")]
+        [HttpPost]
+        public IActionResult Connect(string ipAddress = "192.168.0.12", int _port = port)
+        {
+            if (_Connect(ipAddress, _port))
+            {
+                return Ok($"Connected to {ipAddress}:{_port}");
+            }
+            else
+            {
+                return BadRequest("Server not available or invalid IPAdress");
+            }
+        }
+
+
+
+        /// <summary>
+        /// Connect to the Pico W Server (only). No Begin command is sent.
+        /// Use Ngrok tunnel
+        /// </summary>
+        /// <param name="ngrokIndex"></param>
+        /// <param name="_port"></param>
+        /// <returns></returns>
+        // POST api/<SoftataController>
+        [Route("NgrokConnect")]
+        [HttpPost]
+        public IActionResult NgrokConnect(int ngrokIndex = 0, int _port = port)
+        {
+            string ipAddress = $"{ngrokIndex}.tcp.ngrok.io";
+            return Connect(ipAddress, _port);
+        }
+
+
+
+
+
+        //////////////////////////////////////////////////////////////////////////////////
+
         /// <summary>
         /// Convert int to string
         /// </summary>
@@ -100,27 +256,7 @@ namespace SoftataWebAPI.Controllers
             return false;
         }
 
-        private bool _Connect(string ipAddress, int _port)
-        {
-            //if (ValidateIPv4(ipAddress))
-            //{
-                bool result = SoftataLib.Connect(ipAddress, _port);
-                if (result)
-                {
-                    return true;
-                }
-            //}
-            //else
-            //{
-            //    bool result = SoftataLib.ConnectAlt(ipAddress, _port);
-            //    if (result)
-            //    {
-            //        return true;
-            //    }
-            //}
-            else
-            return false;
-        }
+
 
         /// <summary>
         /// (Optional) Set Shield Mode to Grove (Default: Restrict GPIO/PWM to pins 16-21 only etc)
@@ -139,148 +275,18 @@ namespace SoftataWebAPI.Controllers
 
 
         /// <summary>
-        /// Connect to the Pico W Server and send the Begin, Version and Devices commands
+        /// Send a "raw" message to the Pico W Server
+        /// Other controllers use this method to send commands to the server
         /// </summary>
-        /// <param name="ipAddress"></param>
-        /// <param name="_port"></param>
-        /// <returns>IActionResult(Ok or BadRequest)</returns>
-        // POST api/<SoftataController>
-        [Route("Start")]
-        [HttpPost]
-        public IActionResult Start(string ipAddress = "0.tcp.ngrok.io", int _port = port)
-        {
-            bool result = _Connect(ipAddress, _port);
-            if (result)
-            {
-                string beginValue = SoftataLib.SendMessageCmd("Begin");
-                if (beginValue == "Ready")
-                {
-                    string OKresult = $"Connected to {ipAddress}:{_port} and Ready";
-                    string value = SoftataLib.SendMessageCmd("Version");
-                    OKresult += $"\nSoftata Version:{value}";
-                    value = SoftataLib.SendMessageCmd("Devices");
-                    OKresult += $"\n{value}";
-                    var connection = new Tuple<string, int> ( ipAddress, _port );
-                    HttpContext.Session.Set< Tuple<string, int>>("ConnectionDetails", connection);
-                    return Ok(OKresult);
-                }
-                else
-                {
-                    SoftataLib.Disconnect();
-                    return BadRequest($"Connected to {ipAddress}:{_port} but Begin not ready. Disconnecting");
-                }
-            }
-            else
-            {
-                return BadRequest($"Failed to connect to {ipAddress}:{_port}");
-            }
-        }
-
-
-        /// <summary>
-        /// Connect to the Pico W Server and send the Begin, Version and Devices commands
-        /// </summary>
-        /// <returns>IActionResult(Ok or BadRequest)</returns>
-        // POST api/<SoftataController>
-        [Route("StartSession")]
-        [HttpPost]
-        public IActionResult StartSession()
-        {
-            string ipAddress = "192.168.0.12";
-            int port = 4242;
-            if (!HttpContext.Session.Keys.Contains("ConnectionDetails"))
-            {
-                return BadRequest("No Connection Details");;
-            }
-            else
-            {
-                var connectDetails = HttpContext.Session.Get<Tuple<string, int>>("ConnectionDetails");
-                if (connectDetails != null)
-                {
-                    string _ipAddress = connectDetails.Item1;
-                    if (!string.IsNullOrEmpty(_ipAddress))
-                    {
-                        ipAddress = _ipAddress;
-                        int? _port = connectDetails.Item2;
-                        if (_port != null)
-                        {
-                            port = (int)_port;
-                            return Start(ipAddress, port);
-                        }
-                    }
-                }             
-            }
-            return BadRequest("No or invalid Connection Details");
-        }
-
-        /// <summary>
-        /// Connect to the Pico W Server (only). No Begin command is sent.
-        /// </summary>
-        /// <param name="ipAddress"></param>
-        /// <param name="_port"></param>
+        /// <param name="msgOrDeviceType"></param>
+        /// <param name="pin"></param>
+        /// <param name="state"></param>
+        /// <param name="expect"></param>
+        /// <param name="other"></param>
+        /// <param name="Data"></param>
         /// <returns></returns>
         // POST api/<SoftataController>
-        [Route("Connect")]
-        [HttpPost]
-        public IActionResult Connect(string ipAddress = "192.168.0.12", int _port = port)
-        {
-            if (_Connect(ipAddress, _port))
-            {
-                return Ok($"Connected to {ipAddress}:{_port}");
-            }
-            else
-            {
-                return BadRequest("Server not available or invalid IPAdress");
-            }
-        }
-
-
-
-        /// <summary>
-        /// Connect to the Pico W Server (only). No Begin command is sent.
-        /// Use Ngrok tunnel
-        /// </summary>
-        /// <param name="ngrokIndex"></param>
-        /// <param name="_port"></param>
-        /// <returns></returns>
-        // POST api/<SoftataController>
-        [Route("NgrokConnect")]
-        [HttpPost]
-        public IActionResult NgrokConnect(int ngrokIndex = 0, int _port = port)
-        {
-            string ipAddress = $"{ngrokIndex}.tcp.ngrok.io";
-            return Connect(ipAddress, _port);
-        }
-
-        // POST api/<SoftataController>
-        /// <summary>
-        /// Connect to the Pico W Server and send the Begin, Version and Devices commands
-        /// Use Ngrok tunnel
-        /// </summary>
-        /// <param name="ngrokIndex"></param>
-        /// <param name="_port"></param>
-        /// <returns>IActionResult(Ok or BadRequest)</returns>
-        [Route("NgrokStart")]
-        [HttpPost]
-        public IActionResult NgrokStart(int ngrokIndex = 0 , int _port = port)
-        {
-            string ipAddress = $"{ngrokIndex}.tcp.ngrok.io";
-            return Start(ipAddress, _port);
-        }
-
-            /// <summary>
-            /// Send a "raw" message to the Pico W Server
-            /// Other controllers use this method to send commands to the server
-            /// </summary>
-            /// <param name="msgOrDeviceType"></param>
-            /// <param name="pin"></param>
-            /// <param name="state"></param>
-            /// <param name="expect"></param>
-            /// <param name="other"></param>
-            /// <param name="Data"></param>
-            /// <returns></returns>
-            // POST api/<SoftataController>
-            [Route("SendMessage")]
+        [Route("SendMessage")]
         [HttpPost]
         public IActionResult SendMessage(int msgOrDeviceType, byte pin = 0xff,int state = 0xff  , string expect="OK:", int other = 0xff, byte[]? Data = null)
         {

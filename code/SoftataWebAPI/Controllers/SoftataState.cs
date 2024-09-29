@@ -105,7 +105,7 @@ namespace SoftataWebAPI.Controllers
             var lib = SoftataLib.GetSoftataLib(key);
             if (lib != null)
             {
-                if( SoftataLib.Delete(key))
+                if (SoftataLib.Delete(key))
                 {
                     return Ok();
                 }
@@ -125,12 +125,12 @@ namespace SoftataWebAPI.Controllers
         [HttpDelete]
         public void ClearAll()
         {
-             SoftataLib.ClearAll();
+            SoftataLib.ClearAll();
         }
         //////////////////////////////////////////////////////////
         //Using Session for state example
         /////////////////////////////////////////////////////////
- 
+
         public const string SessionKeyName = "_Name";
         public const string SessionKeyAge = "_Age";
 

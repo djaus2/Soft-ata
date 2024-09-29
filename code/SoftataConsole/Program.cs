@@ -26,12 +26,12 @@ namespace SoftataBasic
         static string ipaddressStr = "192.168.0.12";
 
         // Configure hardware pin connections thus:
-        static byte LED = 12;
-        static byte BUTTON = 13;
+        static byte LED = 16;
+        static byte BUTTON = 18;
         static byte POTENTIOMETER = 26;//A0
         static byte LIGHTSENSOR = 27;  //A1
         static byte SOUNDSENSOR = 28;  //A2 
-        static byte RELAY = 16;
+        static byte RELAY = 20;
 
         static byte MAX_NUM_NEOPIXEL_PIXELS = 8;
 

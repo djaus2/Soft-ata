@@ -137,8 +137,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{0CBAE3E8-9D7
 		SoftataOptSerial\src\SIPO_74HC595.cpp = SoftataOptSerial\src\SIPO_74HC595.cpp
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RPiPicoWArduinoBuildDeploy", "RPiPicoWArduinoBuildDeploy\RPiPicoWArduinoBuildDeploy.csproj", "{38DB456F-AB20-401E-A3F1-ECE08A4C94D6}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "eepromwifi", "eepromwifi", "{8482F3A4-F77A-42A9-A9A2-D2DD82DEA428}"
 	ProjectSection(SolutionItems) = preProject
 		MiscArduinoSketches\eepromWiFi\eepromWiFi.h = MiscArduinoSketches\eepromWiFi\eepromWiFi.h
@@ -171,9 +169,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BinZip", "BinZip", "{D49768
 		MiscArduinoSketches\BinZip\OTALedFlash.ino.uf2 = MiscArduinoSketches\BinZip\OTALedFlash.ino.uf2
 		MiscArduinoSketches\BinZip\SoftataOTAnoSerialDebug.ino.bin = MiscArduinoSketches\BinZip\SoftataOTAnoSerialDebug.ino.bin
 		MiscArduinoSketches\BinZip\SoftataOTAnoSerialDebug.ino.uf2 = MiscArduinoSketches\BinZip\SoftataOTAnoSerialDebug.ino.uf2
+		MiscArduinoSketches\BinZip\SoftataOTAwithSerialDebug.ino.bin = MiscArduinoSketches\BinZip\SoftataOTAwithSerialDebug.ino.bin
 		MiscArduinoSketches\BinZip\SoftataOTAwithSerialDebug.ino.uf2 = MiscArduinoSketches\BinZip\SoftataOTAwithSerialDebug.ino.uf2
 		MiscArduinoSketches\BinZip\USBSerialCopyUf2.bat = MiscArduinoSketches\BinZip\USBSerialCopyUf2.bat
-		MiscArduinoSketches\BinZip\SoftataOTAwithSerialDebug.ino.bin = MiscArduinoSketches\BinZip\SoftataOTAwithSerialDebug.ino.bin
 	EndProjectSection
 EndProject
 Global
@@ -208,10 +206,6 @@ Global
 		{E524B9E4-D353-4695-B0E6-7FB2F0847D24}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E524B9E4-D353-4695-B0E6-7FB2F0847D24}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E524B9E4-D353-4695-B0E6-7FB2F0847D24}.Release|Any CPU.Build.0 = Release|Any CPU
-		{38DB456F-AB20-401E-A3F1-ECE08A4C94D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{38DB456F-AB20-401E-A3F1-ECE08A4C94D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{38DB456F-AB20-401E-A3F1-ECE08A4C94D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{38DB456F-AB20-401E-A3F1-ECE08A4C94D6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

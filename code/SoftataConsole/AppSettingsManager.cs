@@ -11,6 +11,7 @@ namespace SoftataBasic
             {
                 var configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
                 var settings = configFile.AppSettings.Settings;
+                Console.WriteLine( configFile.FilePath);
                 if (settings[key] == null)
                 {
                     settings.Add(key, value);
