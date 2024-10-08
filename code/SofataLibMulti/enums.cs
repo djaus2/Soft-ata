@@ -124,7 +124,7 @@ namespace Softata.Enums
         Potentiometer_and_Actuator = 0x9,
         GPS_Serial = 0xA,
         Test_OTA_Or_WDT = 0xB,
-        AnalogDevice_Only = 0xC,
+        Analog_Device_Raw = 0xC,
         MaxType = 0xD,       
         Undefined = 0xFF,
     }

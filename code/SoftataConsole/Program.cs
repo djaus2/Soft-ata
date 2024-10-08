@@ -284,6 +284,7 @@ namespace SoftataBasic
                         case ConsoleTestType.PWM:
                         case ConsoleTestType.Analog_Potentiometer_Light_and_Sound:
                         case ConsoleTestType.Potentiometer_and_Actuator:
+                        case ConsoleTestType.Analog_Device_Raw:
                             Calibrate();
                             break;
                     }
@@ -1655,7 +1656,7 @@ namespace SoftataBasic
 
                             }
                             break;
-                        case ConsoleTestType.AnalogDevice_Only:
+                        case ConsoleTestType.Analog_Device_Raw:
                             Console.WriteLine($"Analog Device Raw Test");
                             Console.WriteLine($"Analog Device connected to pin {POTENTIOMETER}, {LIGHTSENSOR} or {SOUNDSENSOR} ");
                             Console.WriteLine("Select from 0: A0 1: A1 2: A2 (Default A0)");
