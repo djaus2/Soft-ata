@@ -2,7 +2,11 @@
 
 namespace Softata.Enums
 {
-
+    public static class Factors
+    {
+        // Found that max LDR value from ADC equates to 61/100
+        public const double LightSensorMax = 61.0; // /100
+    }
     //Nb: https://stackoverflow.com/questions/13734746/combine-multiple-enums-into-master-enum-list
     //  ... First Answer used
     public enum AllDisplayMiscCommands : byte 
@@ -120,7 +124,8 @@ namespace Softata.Enums
         Potentiometer_and_Actuator = 0x9,
         GPS_Serial = 0xA,
         Test_OTA_Or_WDT = 0xB,
-        MaxType = 0xC,       
+        AnalogDevice_Only = 0xC,
+        MaxType = 0xD,       
         Undefined = 0xFF,
     }
 

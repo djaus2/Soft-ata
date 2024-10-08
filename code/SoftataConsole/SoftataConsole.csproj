@@ -6,9 +6,15 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="ProgramS_tatic.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ProgramS_tatic.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="8.0.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SofataLib\SofataLib.csproj" />
+    <ProjectReference Include="..\SofataLibMulti\SofataLibMulti.csproj" />
   </ItemGroup>
 </Project>

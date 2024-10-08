@@ -11,22 +11,16 @@ using System.Threading;
 using Softata;
 using Softata.Enums;
 using System.Collections.Generic;
+using static Softata.SoftataLib.Display;
 using System.Collections;
-using static Softata.SoftataLib;
-//using SoftataConsole;
 
 
 
 namespace SoftataBasic
 {
-    internal partial class Program
+    internal class Program
     {
-        const double PotMin = 0;
-        const double PotMax = 100;
-        const double LightMin = 0;
-        const double LightMax = 61;
-        const double SoundMin = 0;
-        const double SoundMax = 100;
+
         // Set the same as Arduino:
         static int port = 4242;
         static string ipaddressStr = "192.168.0.12";
@@ -37,56 +31,38 @@ namespace SoftataBasic
         static byte POTENTIOMETER = 26;//A0
         static byte LIGHTSENSOR = 27;  //A1
         static byte SOUNDSENSOR = 28;  //A2 
-        static byte RELAY = 16;
+        static byte RELAY = 20;
 
         static byte MAX_NUM_NEOPIXEL_PIXELS = 8;
-        const string Tab5 = "\t\t\t\t\t";
 
         // Choose test DEFAULT type (There is now a menu to select from)
-        //static softatalib.ConsoleTestType Testtype = ConsoleTestType.Sensors;
-        //static softatalib.ConsoleTestType Testtype = ConsoleTestType.Analog_Potentiometer_Light_and_Sound;
-        //static softatalib.ConsoleTestType Testtype = ConsoleTestType.LCD1602Display;
-        //static softatalib.ConsoleTestType Testtype = ConsoleTestType.NeopixelDisplay;
-        //static softatalib.ConsoleTestType Testtype = ConsoleTestType.Digital_Button_and_LED;
-        //static softatalib.ConsoleTestType Testtype = ConsoleTestType.Serial;
+        //static SoftataLib.ConsoleTestType Testtype = ConsoleTestType.Sensors;
+        //static SoftataLib.ConsoleTestType Testtype = ConsoleTestType.Analog_Potentiometer_Light_and_Sound;
+        //static SoftataLib.ConsoleTestType Testtype = ConsoleTestType.LCD1602Display;
+        //static SoftataLib.ConsoleTestType Testtype = ConsoleTestType.NeopixelDisplay;
+        //static SoftataLib.ConsoleTestType Testtype = ConsoleTestType.Digital_Button_and_LED;
+        //static SoftataLib.ConsoleTestType Testtype = ConsoleTestType.Serial;
         static ConsoleTestType Testtype = ConsoleTestType.Digital_Button_and_LED;
         //Set Serial1 or Serial2 for send and receive.
         //Nb: If both true or both false then loopback on same serial port.
         //static bool Send1 = true;
         //static bool Recv1 = true;
         // Next two are the same test
-        //static softatalib.ConsoleTestType Testtype = ConsoleTestType.Analog_Potentiometer_and__LED;
-        //static softatalib.ConsoleTestType Testtype = ConsoleTestType.PWM;
+        //static SoftataLib.ConsoleTestType Testtype = ConsoleTestType.Analog_Potentiometer_and__LED;
+        //static SoftataLib.ConsoleTestType Testtype = ConsoleTestType.PWM;
 
-        private static Softata.SoftataLib _softatalib;
-
-        static Softata.SoftataLib softatalib { get {return  _softatalib; } set {_softatalib = value; } }
-
-
-        public static bool connected
-        {
-            get
-            {
-                if (softatalib == null)
-                    return false;
-                return softatalib.Connected;
-            }
-        }
         static void Main(string[] args)
         {
-            softatalib  = new SoftataLib();
-            AnalogInit();
 
             Console.WriteLine("Hello from Soft-ata!");
             Console.WriteLine();
             Console.WriteLine("For details see https://davidjones.sportronics.com.au/cats/softata/");
             Console.WriteLine();
-
-            
+;
             //SettingsManager.ClearAllSettings();
             SettingsManager.ReadAllSettings();
 
-            string? _ipaddressStr = SettingsManager.ReadSetting("IpaddressStr");
+            string _ipaddressStr = SettingsManager.ReadSetting("IpaddressStr");
             if (!string.IsNullOrEmpty(_ipaddressStr))
             {
                 if (_ipaddressStr.Count(c => c == '.') == 3)
@@ -108,7 +84,7 @@ namespace SoftataBasic
             string _port = SettingsManager.ReadSetting("Port");
             if (!string.IsNullOrEmpty(_port))
             {
-                if (int.TryParse(_port, out int _portNo))
+                if(int.TryParse(_port, out int _portNo))
                 {
                     port = _portNo;
                 }
@@ -122,38 +98,16 @@ namespace SoftataBasic
 
             string IpAddress = ipaddressStr;
             int Port = port;
-            /*string? s_ipaddress = Environment.GetEnvironmentVariable("SOFTATA_IPADDRESS");
-            if(!string.IsNullOrEmpty(s_ipaddress))
-            {
-                if (s_ipaddress.Count(c => c == '.') == 3)
-                {
-                    if (IPAddress.TryParse(s_ipaddress, out IPAddress? address))
-                    {
-                        IpAddress = s_ipaddress;
-                    };
-                }
-            }
-            string? s_portstr = Environment.GetEnvironmentVariable("SOFTATA_PORT");
-            if (!string.IsNullOrEmpty(s_portstr))
-            {
-                if (int.TryParse(s_portstr, out int port))
-                {
-                    Port = port;
-                }
-            }*/
 
             Console.WriteLine("TESTS");
             bool quit = false;
-
-
-            
+            bool connected = false;
             while (!quit)
             {
                 try
                 {
                     if (!connected)
                     {
-
                         Console.WriteLine($"Default Softata Server is at {ipaddressStr}:{port}");
                         Console.WriteLine("Enter new values or press [Enter] to continue:");
                         Console.Write("Plz Enter IPAdress: ");
@@ -230,9 +184,10 @@ namespace SoftataBasic
 
                     if (!connected)
                     {
-                        bool res = softatalib.Connect(IpAddress, Port);
+                        bool res = SoftataLib.Connect(IpAddress, Port);
                         if (!res)
                         {
+                            connected = false;
                             Console.WriteLine($"Failed to connect to {IpAddress}:{Port}");
                             Console.WriteLine("Press [Enter] to try again or [Q] to quit");
                             string? key = Console.ReadLine();
@@ -245,58 +200,36 @@ namespace SoftataBasic
                         }
                         else
                         {
-
-                            //Environment.SetEnvironmentVariable("SOFTATA_IPADDRESS", IpAddress);
-                            //Environment.SetEnvironmentVariable("SOFTATA_PORT", Port.ToString());
+                            connected = true;
                             Console.WriteLine($"Connected to {IpAddress}:{Port}");
                             Console.WriteLine();
-                            quit = YesNoQuit("Press [Enter] to continue or [Q] to quit", true);
+                            Console.WriteLine("Press [Enter] to continue or [Q] to quit");
+                            string? key = Console.ReadLine();
+                            if (!string.IsNullOrEmpty(key))
+                            {
+                                if (key.ToUpper() == "Q")
+                                    quit = true;
+                            }
                         }
                         if (quit)
                             return;
-                    
-
-
-
-                        softatalib.SendMessageCmd("Begin");
-                        Thread.Sleep(500);
-                        string Version = softatalib.SendMessageCmd("Version");
-                        Console.WriteLine($"Softata Version: {Version}");
-                        Thread.Sleep(500);
-                        string devicesCSV = softatalib.SendMessageCmd("Devices");
-                        Console.WriteLine($"{devicesCSV}");
-                        Thread.Sleep(500);
                     }
 
-                    // Explicitly declare subclasses
-                    // Instantiate where needed.
-                    SoftataLib.Digital softatalibDigital;
-                    //SoftataLib.Analog softatalibAnalog;
-                    SoftataLib.PWM softatalibPWM;
-                    SoftataLib.Serial softatalibSerial1;
-                    SoftataLib.Serial softatalibSerial2;
-                    SoftataLib.Sensor softatalibSensor;
-                    SoftataLib.Actuator softatalibActuator;
-                    SoftataLib.Display softatalibDisplay;
-                    switch (Testtype)
-                    {
-                        case ConsoleTestType.Analog_Potentiometer_and__LED:
-                        case ConsoleTestType.PWM:
-                        case ConsoleTestType.Analog_Potentiometer_Light_and_Sound:
-                        case ConsoleTestType.Potentiometer_and_Actuator:
-                            Calibrate();
-                            break;
-                    }
-
+                    SoftataLib.SendMessageCmd("Begin");
+                    Thread.Sleep(500);
+                    string Version = SoftataLib.SendMessageCmd("Version");
+                    Console.WriteLine($"Softata Version: {Version}");
+                    Thread.Sleep(500);
+                    string devicesCSV = SoftataLib.SendMessageCmd("Devices");
+                    Console.WriteLine($"{devicesCSV}");
+                    Thread.Sleep(500);
 
                     switch (Testtype)
                     {
                         case ConsoleTestType.Test_OTA_Or_WDT:
-                            softatalibDigital = new SoftataLib.Digital(softatalib);
-
-                            softatalibDigital.SetPinMode(BUTTON, SoftataLib.PinMode.DigitalInput);
-                            softatalibDigital.SetPinMode(LED, SoftataLib.PinMode.DigitalOutput);
-                            softatalibDigital.SetPinState(LED, SoftataLib.PinState.High);
+                            SoftataLib.Digital.SetPinMode(BUTTON, SoftataLib.PinMode.DigitalInput);
+                            SoftataLib.Digital.SetPinMode(LED, SoftataLib.PinMode.DigitalOutput);
+                            SoftataLib.Digital.SetPinState(LED, SoftataLib.PinState.High);
 
                             Console.WriteLine("WDT Test: Enable WDT in softata.h, deploy and boot then press [Return]");
                             Console.WriteLine("OTA Test: Enable OTA (optonally disable WDT) in softata.h, deploy and boot then press [Return]");
@@ -305,41 +238,37 @@ namespace SoftataBasic
 
                             for (int i = 0; i < 4; i++)
                             {
-                                softatalibDigital.TogglePinState(LED);
+                                SoftataLib.Digital.TogglePinState(LED);
                                 Console.WriteLine($"{i} secs");
                                 Thread.Sleep(1000);
                             }
                             Console.WriteLine($"Turning off WDT/OTA Updates with busy wait on device. Press [Enter]");
                             Console.ReadLine();
-                            softatalibDigital.TurnOffWDTUpdates();
+                            SoftataLib.Digital.TurnOffWDTUpdates();
                             for (int i = 0; i < 100; i++)
                             {
                                 Console.WriteLine($"{i} secs");
-                                softatalibDigital.TogglePinState(LED);
+                                SoftataLib.Digital.TogglePinState(LED);
                                 Thread.Sleep(1000);
                             }
                             break;
                         // LED-Button test
                         case ConsoleTestType.Digital_Button_and_LED:
-                            softatalibDigital = new SoftataLib.Digital(softatalib);
+                            SoftataLib.Digital.SetPinMode(BUTTON, SoftataLib.PinMode.DigitalInput);
+                            SoftataLib.Digital.SetPinMode(LED, SoftataLib.PinMode.DigitalOutput);
+                            SoftataLib.Digital.SetPinState(LED, SoftataLib.PinState.High);
 
-                            softatalibDigital.SetPinMode(BUTTON, SoftataLib.PinMode.DigitalInput);
-                            softatalibDigital.SetPinMode(LED, SoftataLib.PinMode.DigitalOutput);
-                            softatalibDigital.SetPinState(LED, SoftataLib.PinState.High);
+                            // Next is errant as no pin 50 on Pico
+                            //Digital_Button_and_LED.SetAnalogPin(50, PinMode.DigitalInput);
 
-                            Console.WriteLine($"Button connected to pin {BUTTON}");
-                            Console.WriteLine($"LED connected to pin {LED}");
-                            Console.WriteLine("LED will toggle when button not pressed.");
-                            Console.WriteLine("Press any key to continue");
-                            Console.ReadLine();
+                            // Next is errant as no such command
+                            //SoftataLib.SendMessage(SoftataLib.Commands.Undefined, (byte)26, (byte)PinMode.DigitalInput);
 
-                            int digMax = 0x10;
-                            for (int i = 0; i < digMax; i++)
+                            for (int i = 0; i < 0x10; i++)
                             {
-                                Console.WriteLine($"{i + 1}/{digMax}");
-                                while (softatalibDigital.GetPinState(BUTTON))
+                                while (SoftataLib.Digital.GetPinState(BUTTON))
                                     Thread.Sleep(100);
-                                softatalibDigital.TogglePinState(LED);
+                                SoftataLib.Digital.TogglePinState(LED);
                             }
                             break;
 
@@ -347,30 +276,17 @@ namespace SoftataBasic
                         case ConsoleTestType.Analog_Potentiometer_and__LED:
                         case ConsoleTestType.PWM:
                             // Note no pin setup needed for analog
-                            softatalibDigital = new SoftataLib.Digital(softatalib);
-                            //softatalibAnalog = new SoftataLib.Analog(softatalib);
-                            softatalibPWM = new SoftataLib.PWM(softatalib);
-
-                            byte numPWMBits = 10;
-                            Console.WriteLine($"Potentiometer connected to pin {POTENTIOMETER}");
-                            Console.WriteLine($"Light Sensor connected to pin {LIGHTSENSOR}");
-                            Console.WriteLine($"{numPWMBits} Bit PWM being used. 10 ADC bits");
-                            Console.WriteLine("LED brightness depends upon potentiometer.");
-                            Console.WriteLine("Press any key to continue");
-                            Console.ReadLine();
-
-                            softatalibDigital.SetPinMode(LED, SoftataLib.PinMode.DigitalOutput);
-                            softatalibPWM.SetPinModePWM(LED, numPWMBits);
+                            SoftataLib.Digital.SetPinMode(LED, SoftataLib.PinMode.DigitalOutput);
                             for (int i = 0; i < 50; i++)
                             {
-                                int val = softatalibAnalog!.AnalogRead(POTENTIOMETER);
+                                int val = SoftataLib.Analog.AnalogRead(POTENTIOMETER);
                                 if (val != int.MaxValue)
                                 {
                                     Console.WriteLine($"AnalogRead({POTENTIOMETER}) = {val}");
-                                    int pwmVal = val;
+                                    byte pwmVal = (byte)(val >> 2);
                                     if (val > 1023)
-                                        pwmVal = 1023;
-                                    softatalibPWM.SetPWM(LED, pwmVal);
+                                        pwmVal = 255;
+                                    SoftataLib.PWM.SetPWM(LED, (byte)(pwmVal));
                                 }
                                 else
                                     Console.WriteLine($"AnalogRead({POTENTIOMETER}) failed");
@@ -379,9 +295,6 @@ namespace SoftataBasic
                             }
                             break;
                         case ConsoleTestType.Loopback:
-                            softatalibSerial1 = new SoftataLib.Serial(softatalib);
-                            softatalibSerial2 = new SoftataLib.Serial(softatalib);
-
                             byte[] txPins = new byte[] { 0, 0, 4 }; //Nb: Recv are Tx+1
 
 
@@ -508,13 +421,13 @@ namespace SoftataBasic
                                 }
                                 if (!serialFound)
                                     Console.WriteLine("Invalid");
-                                else if (!softatalib.Baudrates.Contains(baudRate))
+                                else if (!SoftataLib.Baudrates.Contains(baudRate))
                                     Console.WriteLine("Invalid");
-                            } while (!softatalib.Baudrates.Contains(baudRate));
+                            } while (!SoftataLib.Baudrates.Contains(baudRate));
 
 
-                            softatalibSerial1.serialSetup(txPins[1], baudRate, 1);
-                            softatalibSerial2.serialSetup(txPins[2], baudRate, 2);
+                            SoftataLib.Serial.serialSetup(txPins[1], baudRate, 1);
+                            SoftataLib.Serial.serialSetup(txPins[2], baudRate, 2);
 
 
                             if (iserialMode == 1) // ASCII test
@@ -522,9 +435,9 @@ namespace SoftataBasic
                                 for (char sendCh = ' '; sendCh <= '~'; sendCh++)
                                 {
                                     char recvCh;
-                                    softatalibSerial1.serialWriteChar(comTx, sendCh);
+                                    SoftataLib.Serial.serialWriteChar(comTx, sendCh);
                                     Thread.Sleep(100);
-                                    recvCh = softatalibSerial1.serialGetChar(comRx);
+                                    recvCh = SoftataLib.Serial.serialGetChar(comRx);
                                     if (recvCh == sendCh)
                                         Console.WriteLine($"Serial{comTx} Sent {sendCh} Got {recvCh} on Serial{comRx},OK");
                                     else
@@ -537,8 +450,8 @@ namespace SoftataBasic
                                 for (byte sendByte = 0x00; sendByte <= 0xff; sendByte++)
                                 {
                                     byte recvByte;
-                                    softatalibSerial1.serialWriteByte(comTx, sendByte);
-                                    recvByte = softatalibSerial1.serialGetByte(comRx);
+                                    SoftataLib.Serial.serialWriteByte(comTx, sendByte);
+                                    recvByte = SoftataLib.Serial.serialGetByte(comRx);
                                     if (recvByte == sendByte)
                                         Console.WriteLine($"Serial{comTx} Sent {sendByte} Got {recvByte} on Serial{comRx},OK");
                                     else
@@ -557,7 +470,7 @@ namespace SoftataBasic
                                 Thread.Sleep(0500);
                                 while (true)
                                 {
-                                    string msg = softatalibSerial1.readLine(comRx, false);
+                                    string msg = SoftataLib.Serial.readLine(comRx, false);
                                     Console.WriteLine($"\t{msg}");
 
                                     if (Console.KeyAvailable)
@@ -572,9 +485,8 @@ namespace SoftataBasic
                             }
                             break;
                         case ConsoleTestType.Sensors:
-                            softatalibSensor = new SoftataLib.Sensor(softatalib);
                             bool debug = false;
-                            string[] Sensors = softatalibSensor.GetSensors();
+                            string[] Sensors = SoftataLib.Sensor.GetSensors();
                             if (Sensors.Length == 0)
                                 Console.WriteLine($"No sensors found");
                             else
@@ -602,7 +514,7 @@ namespace SoftataBasic
                                 } while (!found);
                                 string sensor = Sensors[isensor];
 
-                                string pins = softatalibSensor.GetPins(isensor);
+                                string pins = SoftataLib.Sensor.GetPins(isensor);
                                 if (string.IsNullOrEmpty(pins))
                                     Console.WriteLine($"{sensor} getPins() failed");
                                 else
@@ -612,13 +524,13 @@ namespace SoftataBasic
                                 }
                                 Console.WriteLine("Press any key to setup sensor");
                                 Console.ReadLine();
-                                byte sensorLinkedListIndex = (byte)softatalibSensor.SetupDefault(isensor);
+                                byte sensorLinkedListIndex = (byte)SoftataLib.Sensor.SetupDefault(isensor);
                                 if (sensorLinkedListIndex < 0)
                                     Console.WriteLine($"Instantiated sensor {sensor} not found");
                                 else
                                 {
                                     Console.WriteLine($"Instantiated {sensor} found at {sensorLinkedListIndex}");
-                                    string[] properties = softatalibSensor.GetProperties(isensor);
+                                    string[] properties = SoftataLib.Sensor.GetProperties(isensor);
                                     if (properties.Length == 0)
                                         Console.WriteLine($"{sensor} getProperties() failed");
                                     else
@@ -739,14 +651,14 @@ namespace SoftataBasic
                                         }
                                         else if (sensorMode == 2)
                                         {
-                                            string json = softatalibSensor.GetTelemetry((byte)sensorLinkedListIndex, debug);
+                                            string json = SoftataLib.Sensor.GetTelemetry((byte)sensorLinkedListIndex, debug);
                                             Console.WriteLine($"\t\t Telemetry: {json}");
                                             Console.WriteLine("Press [Esc] to stop");
                                             Thread.Sleep((int)period);
                                         }
                                         else if (sensorMode == 3)
                                         {
-                                            string indxStr = softatalibSensor.StartSendingTelemetryBT((byte)sensorLinkedListIndex);
+                                            string indxStr = SoftataLib.Sensor.StartSendingTelemetryBT((byte)sensorLinkedListIndex);
                                             if (int.TryParse(indxStr, out int val))
                                                 Console.WriteLine($"Streaming to BT started. List No:{val}");
                                             else
@@ -755,7 +667,7 @@ namespace SoftataBasic
                                         }
                                         else if (sensorMode == 4)
                                         {
-                                            string indxStr = softatalibSensor.StartSendingTelemetryToIoTHub((byte)sensorLinkedListIndex);
+                                            string indxStr = SoftataLib.Sensor.StartSendingTelemetryToIoTHub((byte)sensorLinkedListIndex);
                                             if (int.TryParse(indxStr, out int val))
                                             {
                                                 Console.WriteLine($"Streaming to Azure IoT Hub started. List No:{val}");
@@ -770,20 +682,20 @@ namespace SoftataBasic
                                         }
                                         else if (sensorMode == 5)
                                         {
-                                            string json = softatalibSensor.PauseSendTelemetry((byte)sensorLinkedListIndex);
+                                            string json = SoftataLib.Sensor.PauseSendTelemetry((byte)sensorLinkedListIndex);
                                             if (!string.IsNullOrEmpty(json))
                                                 Console.WriteLine($"json {json}");
                                         }
                                         else if (sensorMode == 6)
                                         {
-                                            string json = softatalibSensor.ContinueSendTelemetry((byte)sensorLinkedListIndex);
+                                            string json = SoftataLib.Sensor.ContinueSendTelemetry((byte)sensorLinkedListIndex);
                                             if (!string.IsNullOrEmpty(json))
                                                 Console.WriteLine($"json {json}");
                                         }
 
                                         else if (sensorMode == 1)
                                         {
-                                            double[]? values = softatalibSensor.ReadAll((byte)sensorLinkedListIndex, debug);
+                                            double[]? values = SoftataLib.Sensor.ReadAll((byte)sensorLinkedListIndex, debug);
                                             if (values == null)
                                                 Console.WriteLine($"{sensor} readAll() failed");
                                             else
@@ -798,7 +710,7 @@ namespace SoftataBasic
                                             Console.WriteLine("Individual Read():");
                                             for (byte p = 0; p < properties.Length; p++)
                                             {
-                                                double? value = softatalibSensor.Read((byte)sensorLinkedListIndex, p, debug);
+                                                double? value = SoftataLib.Sensor.Read((byte)sensorLinkedListIndex, p, debug);
                                                 if (value == null)
                                                     Console.WriteLine($"{sensor} read() failed");
                                                 else
@@ -821,20 +733,11 @@ namespace SoftataBasic
                                 }
                             }
                             break;
-
                         case ConsoleTestType.Displays:
-                            softatalibDisplay = new SoftataLib.Display(softatalib);
-
-                            SoftataLib.Display.Neopixel softataLibDisplayNeopixel;
-                            SoftataLib.Display.BARGRAPHDisplay softataLibDisplayBargraphDisplay;
-                            //SoftataLib.Display.BARGRAPHDisplay softataLibDisplayGBargraphDisplay;
-                            SoftataLib.Display.LCD1602Display softataLibDisplayLCD1602Display;
-                            SoftataLib.Display.Oled096 softataLibDisplayOled096;
-
                             byte idisplay = 0;
                             string display = "";
                             string[] Miscs = new string[0];
-                            string[] Displays = softatalibDisplay.GetDisplays();
+                            string[] Displays = SoftataLib.Display.GetDisplays();
                             if (Displays.Length == 0)
                                 Console.WriteLine($"No displays found");
                             else
@@ -869,7 +772,7 @@ namespace SoftataBasic
                                 } while (!found);
                                 display = Displays[idisplay];
 
-                                string pins = softatalibDisplay.GetPins(idisplay);
+                                string pins = SoftataLib.Display.GetPins(idisplay);
                                 if (string.IsNullOrEmpty(pins))
                                     Console.WriteLine($"{display} getPins() failed");
                                 else
@@ -878,7 +781,7 @@ namespace SoftataBasic
                                     Console.WriteLine($"{display} Pins = {pins}");
                                 }
 
-                                Miscs = softatalibDisplay.GetMiscCmds(idisplay);
+                                Miscs = SoftataLib.Display.GetMiscCmds(idisplay);
                                 if (Miscs == null)
                                     Console.WriteLine($"{display} getMiscCmds() failed");
                                 else
@@ -902,15 +805,13 @@ namespace SoftataBasic
                             DisplayDevice displayDevice = (DisplayDevice)idisplay;
                             //////////////////////////////////////////
 
-
-                            byte numPixels = 0; //// softatalibDisplayNeopixel.MaxNumPixels;
+                            byte numPixels = SoftataLib.Display.Neopixel.MaxNumPixels;
 
                             // Only do non-default setup for Neopixel
                             if (displayDevice == DisplayDevice.NEOPIXEL)
                             {
-                                softataLibDisplayNeopixel = new SoftataLib.Display.Neopixel(softatalib);
                                 Console.WriteLine($"Select number of Pixels:");
-                                for (byte i = 1; i <= softataLibDisplayNeopixel.MaxNumPixels; i++)
+                                for (byte i = 1; i <= SoftataLib.Display.Neopixel.MaxNumPixels; i++)
                                 {
                                     Console.WriteLine($"{i} Pixels");
                                 }
@@ -932,30 +833,19 @@ namespace SoftataBasic
                                         }
                                     }
                                 } while (!found);
-                                displayLinkedListIndex = (byte)softatalibDisplay.Setup(idisplay, 16, numPixels);
+                                displayLinkedListIndex = (byte)SoftataLib.Display.Setup(idisplay, 16, numPixels);
                             }
                             else if ((displayDevice == DisplayDevice.BARGRAPH)) //|| (displayDevice == DisplayDevice.GBARGRAPH))
                             {
-                                softataLibDisplayBargraphDisplay = new SoftataLib.Display.BARGRAPHDisplay(softatalib);
+
                                 // Use default settings
-                                //displayLinkedListIndex = (byte)softatalibDisplay.SetupDefault(idisplay); 
+                                //displayLinkedListIndex = (byte)SoftataLib.Display.SetupDefault(idisplay); 
                                 //Or use custom settings: {data,latch,clock} GPIO Pins
                                 List<byte> settings = new List<byte> { 20, 21 }; // Send the  data pin as 16
-                                displayLinkedListIndex = (byte)softatalibDisplay.Setup(idisplay, 16, settings);
-                            }
-                            else if (displayDevice == DisplayDevice.OLED096)
-                            {
-                                softataLibDisplayOled096 = new SoftataLib.Display.Oled096(softatalib);
-                                displayLinkedListIndex = (byte)softatalibDisplay.SetupDefault(idisplay);
-                            }
-                            else if (displayDevice == DisplayDevice.LCD1602)
-                            {
-                                softataLibDisplayLCD1602Display = new SoftataLib.Display.LCD1602Display(softatalib);
-                                displayLinkedListIndex = (byte)softatalibDisplay.SetupDefault(idisplay);
+                                displayLinkedListIndex = (byte)SoftataLib.Display.Setup(idisplay, 16, settings);
                             }
                             else
-                                displayLinkedListIndex = (byte)softatalibDisplay.SetupDefault(idisplay);
-
+                                displayLinkedListIndex = (byte)SoftataLib.Display.SetupDefault(idisplay);
                             int bargraphPin = 0;
                             Console.WriteLine($"displayLinkedListIndex: {displayLinkedListIndex}");
                             if (displayLinkedListIndex < 0)
@@ -976,7 +866,7 @@ namespace SoftataBasic
                                             misc = Miscs[i];
                                             Console.WriteLine($"{i + 1}.\t\t{misc}");
                                         }
-                                        Console.WriteLine($"{Miscs.Length + 1}.\t\tClear Display");
+                                        Console.WriteLine($"{Miscs.Length+1}.\t\tClear Display");
                                         Console.WriteLine($"{Miscs.Length + 2}.\t\tWrite Value");
                                         Console.WriteLine("Default: 0.");
                                         Console.Write("Selection:");
@@ -1010,18 +900,18 @@ namespace SoftataBasic
                                             //Console.WriteLine("Note: Not passing any params to Misc command at this stage.");
                                             byte[]? data = null;
                                             if (displayDevice == DisplayDevice.GBARGRAPH)
-                                            {
-                                                if (
+                                            {                           
+                                                if(
                                                     ((BARGRAPHMiscCmds)imisc >= BARGRAPHMiscCmds.setLed)
-                                                    &&
-                                                    ((BARGRAPHMiscCmds)imisc <= BARGRAPHMiscCmds.toggleLed)
+                                                    && 
+                                                    ((BARGRAPHMiscCmds)imisc <=BARGRAPHMiscCmds.toggleLed)
                                                   )
-
+   
                                                 {
                                                     Console.WriteLine("Enter Bargraph Pin.");
                                                     Console.Write($"Default: {bargraphPin}");
                                                     string? indxStr = Console.ReadLine();
-                                                    if (!string.IsNullOrEmpty(indxStr))
+                                                    if(!string.IsNullOrEmpty(indxStr))
                                                     {
                                                         if (byte.TryParse(indxStr, out byte indx))
                                                         {
@@ -1041,13 +931,13 @@ namespace SoftataBasic
                                                     {
                                                         if (byte.TryParse(levelStr, out byte indx))
                                                         {
-                                                            if ((indx >= 0) && (indx <= 10))
+                                                            if ((indx>= 0) && (indx <= 10))
                                                                 bargraphLevel = indx;
                                                         }
                                                     }
                                                     data = new byte[] { bargraphLevel };
                                                 }
-                                                else if (imisc == (ExtendedMiscs.Length - 2))
+                                                else if (imisc == (ExtendedMiscs.Length-2))
                                                 {
                                                     //Clear Display
                                                     data = new byte[] { 0 };
@@ -1068,13 +958,13 @@ namespace SoftataBasic
                                                                 bargraphValue = indx;
                                                         }
                                                     }
-                                                    bargraphResult = softatalibDisplay.WriteString(displayLinkedListIndex, bargraphValue.ToString());
+                                                    bargraphResult = SoftataLib.Display.WriteString(displayLinkedListIndex, bargraphValue.ToString());
                                                 }
                                             }
 
                                             if (imisc != (ExtendedMiscs.Length - 1))
                                             {
-                                                bargraphResult = softatalibDisplay.Misc(displayLinkedListIndex, (byte)imisc, data);
+                                                bargraphResult = SoftataLib.Display.Misc(displayLinkedListIndex, (byte)imisc, data);
                                             }
                                             if (bargraphResult)
                                                 Console.WriteLine($"Misc command {misc} ran OK");
@@ -1090,64 +980,63 @@ namespace SoftataBasic
                                 {
                                     case DisplayDevice.NEOPIXEL:
                                         {
-                                            SoftataLib.Display.Neopixel softatalibDisplayNeopixel = new SoftataLib.Display.Neopixel(softatalib);
                                             Console.WriteLine($"Instantiated {display} linked at {displayLinkedListIndex}");
-                                            softatalibDisplayNeopixel.Clear(displayLinkedListIndex); ;
+                                            SoftataLib.Display.Neopixel.Clear(displayLinkedListIndex); ;
                                             Thread.Sleep(2000);
-                                            softatalibDisplayNeopixel.Misc_SetAll(displayLinkedListIndex, 255, 0, 0);
+                                            SoftataLib.Display.Neopixel.Misc_SetAll(displayLinkedListIndex, 255, 0, 0);
                                             Thread.Sleep(100);
-                                            softatalibDisplayNeopixel.Misc_SetAll(displayLinkedListIndex, 0xFF, 0xA5, 0);   //Orange
+                                            SoftataLib.Display.Neopixel.Misc_SetAll(displayLinkedListIndex, 0xFF, 0xA5, 0);   //Orange
                                             Thread.Sleep(100);
-                                            softatalibDisplayNeopixel.Misc_SetAll(displayLinkedListIndex, 255, 255, 0);     //Yellow
+                                            SoftataLib.Display.Neopixel.Misc_SetAll(displayLinkedListIndex, 255, 255, 0);     //Yellow
                                             Thread.Sleep(2000);
-                                            softatalibDisplayNeopixel.Misc_SetAll(displayLinkedListIndex, 0, 255, 0);
+                                            SoftataLib.Display.Neopixel.Misc_SetAll(displayLinkedListIndex, 0, 255, 0);
                                             Thread.Sleep(2000);
-                                            softatalibDisplayNeopixel.Misc_SetAll(displayLinkedListIndex, 0, 0, 255);
+                                            SoftataLib.Display.Neopixel.Misc_SetAll(displayLinkedListIndex, 0, 0, 255);
                                             Thread.Sleep(2000);
-                                            softatalibDisplayNeopixel.Misc_SetAll(displayLinkedListIndex, 0xA0, 0x20, 0xf0);//Purple
+                                            SoftataLib.Display.Neopixel.Misc_SetAll(displayLinkedListIndex, 0xA0, 0x20, 0xf0);//Purple
                                             Thread.Sleep(2000);
-                                            softatalibDisplayNeopixel.Misc_SetAll(displayLinkedListIndex, 255, 255, 255);   //White
+                                            SoftataLib.Display.Neopixel.Misc_SetAll(displayLinkedListIndex, 255, 255, 255);   //White
                                             Thread.Sleep(2000);
-                                            softatalibDisplayNeopixel.Clear(displayLinkedListIndex);
+                                            SoftataLib.Display.Neopixel.Clear(displayLinkedListIndex);
                                             Thread.Sleep(2000);
-                                            softatalibDisplayNeopixel.Misc_SetOdd(displayLinkedListIndex, 255, 0, 0);
+                                            SoftataLib.Display.Neopixel.Misc_SetOdd(displayLinkedListIndex, 255, 0, 0);
                                             Thread.Sleep(2000);
-                                            softatalibDisplayNeopixel.Clear(displayLinkedListIndex);
+                                            SoftataLib.Display.Neopixel.Clear(displayLinkedListIndex);
                                             Thread.Sleep(100);
-                                            softatalibDisplayNeopixel.Misc_SetEvens(displayLinkedListIndex, 0, 255, 0);
+                                            SoftataLib.Display.Neopixel.Misc_SetEvens(displayLinkedListIndex, 0, 255, 0);
                                             Thread.Sleep(2000);
-                                            softatalibDisplayNeopixel.Clear(displayLinkedListIndex);
+                                            SoftataLib.Display.Neopixel.Clear(displayLinkedListIndex);
                                             Thread.Sleep(2000);
-                                            softatalibDisplayNeopixel.Misc_SetOdd(displayLinkedListIndex, 0, 0, 255);
+                                            SoftataLib.Display.Neopixel.Misc_SetOdd(displayLinkedListIndex, 0, 0, 255);
                                             Thread.Sleep(2000);
-                                            softatalibDisplayNeopixel.Clear(displayLinkedListIndex);
+                                            SoftataLib.Display.Neopixel.Clear(displayLinkedListIndex);
                                             Thread.Sleep(100);
-                                            softatalibDisplayNeopixel.Misc_SetEvens(displayLinkedListIndex, 255, 255, 0);
+                                            SoftataLib.Display.Neopixel.Misc_SetEvens(displayLinkedListIndex, 255, 255, 0);
                                             Thread.Sleep(2000);
-                                            softatalibDisplayNeopixel.Clear(displayLinkedListIndex);
+                                            SoftataLib.Display.Neopixel.Clear(displayLinkedListIndex);
                                             Thread.Sleep(2000);
-                                            softatalibDisplayNeopixel.Misc_SetOdd(displayLinkedListIndex, 0, 255, 255);
+                                            SoftataLib.Display.Neopixel.Misc_SetOdd(displayLinkedListIndex, 0, 255, 255);
                                             Thread.Sleep(2000);
-                                            softatalibDisplayNeopixel.Clear(displayLinkedListIndex);
+                                            SoftataLib.Display.Neopixel.Clear(displayLinkedListIndex);
                                             Thread.Sleep(100);
-                                            softatalibDisplayNeopixel.Misc_SetEvens(displayLinkedListIndex, 255, 255, 255);
+                                            SoftataLib.Display.Neopixel.Misc_SetEvens(displayLinkedListIndex, 255, 255, 255);
                                             Thread.Sleep(500);
-                                            softatalibDisplayNeopixel.Clear(displayLinkedListIndex);
+                                            SoftataLib.Display.Neopixel.Clear(displayLinkedListIndex);
                                             Thread.Sleep(500);
-                                            softatalibDisplayNeopixel.Misc_SetEvens(displayLinkedListIndex, 255, 255, 255);
+                                            SoftataLib.Display.Neopixel.Misc_SetEvens(displayLinkedListIndex, 255, 255, 255);
                                             Thread.Sleep(500);
-                                            softatalibDisplayNeopixel.Clear(displayLinkedListIndex);
+                                            SoftataLib.Display.Neopixel.Clear(displayLinkedListIndex);
                                             Thread.Sleep(500);
-                                            softatalibDisplayNeopixel.Misc_SetEvens(displayLinkedListIndex, 255, 255, 255);
+                                            SoftataLib.Display.Neopixel.Misc_SetEvens(displayLinkedListIndex, 255, 255, 255);
                                             Thread.Sleep(2000);
-                                            softatalibDisplayNeopixel.Clear(displayLinkedListIndex);
+                                            SoftataLib.Display.Neopixel.Clear(displayLinkedListIndex);
                                             Thread.Sleep(500);
-                                            for (byte n = 0; n <= softatalibDisplayNeopixel.MaxNumPixels; n++)
+                                            for (byte n = 0; n <= SoftataLib.Display.Neopixel.MaxNumPixels; n++)
                                             {
-                                                softatalibDisplayNeopixel.Misc_SetN(displayLinkedListIndex, 255, 255, 255, n);
+                                                SoftataLib.Display.Neopixel.Misc_SetN(displayLinkedListIndex, 255, 255, 255, n);
                                                 Thread.Sleep(1000);
                                             }
-                                            softatalibDisplayNeopixel.Clear(displayLinkedListIndex);
+                                            SoftataLib.Display.Neopixel.Clear(displayLinkedListIndex);
                                             Thread.Sleep(500);
                                             Console.WriteLine("OK");
                                         }
@@ -1155,26 +1044,26 @@ namespace SoftataBasic
                                     case DisplayDevice.LCD1602:
                                         {
                                             Console.WriteLine($"Instantiated {display} linked at {displayLinkedListIndex}");
-                                            softatalibDisplay.Clear(displayLinkedListIndex);
-                                            softatalibDisplay.SetCursor(displayLinkedListIndex, 0, 0);
-                                            softatalibDisplay.WriteString(displayLinkedListIndex, "First Line");
-                                            softatalibDisplay.SetCursor(displayLinkedListIndex, 0, 1);
-                                            softatalibDisplay.WriteString(displayLinkedListIndex, "Wait 5sec");
+                                            SoftataLib.Display.Clear(displayLinkedListIndex);
+                                            SoftataLib.Display.SetCursor(displayLinkedListIndex, 0, 0);
+                                            SoftataLib.Display.WriteString(displayLinkedListIndex, "First Line");
+                                            SoftataLib.Display.SetCursor(displayLinkedListIndex, 0, 1);
+                                            SoftataLib.Display.WriteString(displayLinkedListIndex, "Wait 5sec");
                                             Thread.Sleep(5000);
-                                            softatalibDisplay.Clear(displayLinkedListIndex);
-                                            softatalibDisplay.WriteString(displayLinkedListIndex, 4, 0, "(4,0):Cursor");
-                                            softatalibDisplay.WriteString(displayLinkedListIndex, 2, 1, "(2,1):Write");
+                                            SoftataLib.Display.Clear(displayLinkedListIndex);
+                                            SoftataLib.Display.WriteString(displayLinkedListIndex, 4, 0, "(4,0):Cursor");
+                                            SoftataLib.Display.WriteString(displayLinkedListIndex, 2, 1, "(2,1):Write");
                                             Thread.Sleep(5000);
                                             {
-                                                softatalibDisplay.WriteString(displayLinkedListIndex, 2, 1, "(2,1):Write");
+                                                SoftataLib.Display.WriteString(displayLinkedListIndex, 2, 1, "(2,1):Write");
                                                 Thread.Sleep(1000);
                                                 if (true)
                                                 {
-                                                    softatalibDisplay.Clear(displayLinkedListIndex);
+                                                    SoftataLib.Display.Clear(displayLinkedListIndex);
                                                     Thread.Sleep(1000);
-                                                    softatalibDisplay.SetCursor(displayLinkedListIndex, 0, 0);
+                                                    SoftataLib.Display.SetCursor(displayLinkedListIndex, 0, 0);
 
-                                                    softatalibDisplay.WriteString(displayLinkedListIndex, "Time:");
+                                                    SoftataLib.Display.WriteString(displayLinkedListIndex, "Time:");
                                                     int numTimes = 10;
                                                     for (int i = 0; i < numTimes; i++)
                                                     {
@@ -1182,35 +1071,34 @@ namespace SoftataBasic
                                                         string format = "HH:mm:ss";
                                                         string time = now.ToString(format);
                                                         string msg = $"{i + 1}/{numTimes} {time}";
-                                                        softatalibDisplay.WriteString(displayLinkedListIndex, 0, 1, msg);
+                                                        SoftataLib.Display.WriteString(displayLinkedListIndex, 0, 1, msg);
                                                         Thread.Sleep(1000);
                                                     }
                                                 }
                                             }
                                         }
-                                        softatalibDisplay.Clear(displayLinkedListIndex);
+                                        SoftataLib.Display.Clear(displayLinkedListIndex);
                                         Thread.Sleep(1000);
                                         break;
                                     case DisplayDevice.OLED096:
-                                        SoftataLib.Display.Oled096 softatalibDisplayOled096 = new SoftataLib.Display.Oled096(softatalib);
-                                        softatalibDisplay.Clear(displayLinkedListIndex);
+                                        SoftataLib.Display.Clear(displayLinkedListIndex);
                                         Thread.Sleep(500);
                                         //Dummy test to see if simple Misc test works (with no date).
-                                        softatalibDisplayOled096.misctest(displayLinkedListIndex);
+                                        SoftataLib.Display.Oled096.misctest(displayLinkedListIndex);
                                         Thread.Sleep(1000);
-                                        softatalibDisplayOled096.drawFrame(displayLinkedListIndex);
+                                        SoftataLib.Display.Oled096.drawFrame(displayLinkedListIndex);
                                         Thread.Sleep(4000);
-                                        softatalibDisplayOled096.drawCircle(displayLinkedListIndex);
+                                        SoftataLib.Display.Oled096.drawCircle(displayLinkedListIndex);
                                         Thread.Sleep(4000);
-                                        softatalibDisplayOled096.drawCircle(displayLinkedListIndex, 60, 32, 10);
+                                        SoftataLib.Display.Oled096.drawCircle(displayLinkedListIndex, 60, 32, 10);
                                         Thread.Sleep(4000);
-                                        softatalibDisplay.Clear(displayLinkedListIndex);
+                                        SoftataLib.Display.Clear(displayLinkedListIndex);
                                         Thread.Sleep(500);
-                                        softatalibDisplay.WriteString(displayLinkedListIndex, 0, 0, "Hello Joe!");
+                                        SoftataLib.Display.WriteString(displayLinkedListIndex, 0, 0, "Hello Joe!");
                                         Thread.Sleep(2500);
-                                        softatalibDisplay.WriteString(displayLinkedListIndex, 1, 1, "Hi there!");
+                                        SoftataLib.Display.WriteString(displayLinkedListIndex, 1, 1, "Hi there!");
                                         Thread.Sleep(2500);
-                                        softatalibDisplay.Clear(displayLinkedListIndex);
+                                        SoftataLib.Display.Clear(displayLinkedListIndex);
                                         Thread.Sleep(500);
                                         int numbr = 10;
                                         for (int i = 0; i < numbr; i++)
@@ -1219,95 +1107,87 @@ namespace SoftataBasic
                                             string format = "HH:mm:ss";
                                             string time = now.ToString(format);
                                             string msg = $"{i + 1}/{numbr} {time}";
-                                            softatalibDisplay.WriteString(displayLinkedListIndex, 0, 1, msg);
+                                            SoftataLib.Display.WriteString(displayLinkedListIndex, 0, 1, msg);
                                             Thread.Sleep(2000);
                                         }
-                                        softatalibDisplay.Clear(displayLinkedListIndex);
-                                        softatalibDisplay.Home(displayLinkedListIndex);
-                                        softatalibDisplay.WriteString(displayLinkedListIndex, 0, 1, "Done");
+                                        SoftataLib.Display.Clear(displayLinkedListIndex);
+                                        SoftataLib.Display.Home(displayLinkedListIndex);
+                                        SoftataLib.Display.WriteString(displayLinkedListIndex, 0, 1, "Done");
                                         Thread.Sleep(500);
 
                                         break;
                                     case DisplayDevice.BARGRAPH:
                                     case DisplayDevice.GBARGRAPH:
                                         Console.WriteLine($"Instantiated {display} linked at {displayLinkedListIndex}");
-                                        softatalibDisplay.Clear(displayLinkedListIndex);
+                                        SoftataLib.Display.Clear(displayLinkedListIndex);
                                         Thread.Sleep(1000);
-                                        softatalibDisplay.WriteString(displayLinkedListIndex, "1");
+                                        SoftataLib.Display.WriteString(displayLinkedListIndex, "1");
                                         Thread.Sleep(1000);
-                                        softatalibDisplay.WriteString(displayLinkedListIndex, "2");
+                                        SoftataLib.Display.WriteString(displayLinkedListIndex, "2");
                                         Thread.Sleep(1000);
-                                        softatalibDisplay.WriteString(displayLinkedListIndex, "4");
+                                        SoftataLib.Display.WriteString(displayLinkedListIndex, "4");
                                         Thread.Sleep(1000);
-                                        softatalibDisplay.WriteString(displayLinkedListIndex, "8");
+                                        SoftataLib.Display.WriteString(displayLinkedListIndex, "8");
                                         Thread.Sleep(1000);
-                                        softatalibDisplay.WriteString(displayLinkedListIndex, "16");
+                                        SoftataLib.Display.WriteString(displayLinkedListIndex, "16");
                                         Thread.Sleep(1000);
-                                        softatalibDisplay.WriteString(displayLinkedListIndex, "32");
+                                        SoftataLib.Display.WriteString(displayLinkedListIndex, "32");
                                         Thread.Sleep(1000);
-                                        softatalibDisplay.WriteString(displayLinkedListIndex, "64");
+                                        SoftataLib.Display.WriteString(displayLinkedListIndex, "64");
                                         Thread.Sleep(1000);
-                                        softatalibDisplay.WriteString(displayLinkedListIndex, "128");
+                                        SoftataLib.Display.WriteString(displayLinkedListIndex, "128");
                                         Thread.Sleep(1000);
-                                        softatalibDisplay.WriteString(displayLinkedListIndex, "256");
+                                        SoftataLib.Display.WriteString(displayLinkedListIndex, "256");
                                         Thread.Sleep(1000);
-                                        softatalibDisplay.WriteString(displayLinkedListIndex, "512");
+                                        SoftataLib.Display.WriteString(displayLinkedListIndex, "512");
                                         Thread.Sleep(1000);
-                                        softatalibDisplay.Clear(displayLinkedListIndex);
+                                        SoftataLib.Display.Clear(displayLinkedListIndex);
                                         Thread.Sleep(1000);
                                         for (byte i = 0; i < 11; i++)
                                         {
                                             byte[] data = new byte[] { i };
-                                            bool bargraphLeelResult = softatalibDisplay.Misc(displayLinkedListIndex, (byte)BARGRAPHMiscCmds.setLevel, data);
+                                            bool bargraphLeelResult = SoftataLib.Display.Misc(displayLinkedListIndex, (byte)BARGRAPHMiscCmds.setLevel, data);
                                             Thread.Sleep(1000);
                                         }
-                                        softatalibDisplay.Clear(displayLinkedListIndex);
+                                        SoftataLib.Display.Clear(displayLinkedListIndex);
                                         break;
                                 }
                             }
                             break;
                         case ConsoleTestType.Analog_Potentiometer_Light_and_Sound:
+                            SoftataLib.Analog.InitAnalogDevicePins(SoftataLib.RPiPicoMode.groveShield);
+ 
+                            SoftataLib.Analog.SetAnalogPin(SoftataLib.Analog.AnalogDevice.Potentiometer, POTENTIOMETER);
+                            SoftataLib.Analog.SetAnalogPin(SoftataLib.Analog.AnalogDevice.LightSensor, LIGHTSENSOR);
+                            SoftataLib.Analog.SetAnalogPin(SoftataLib.Analog.AnalogDevice.SoundSensor, SOUNDSENSOR);
 
-                            Console.WriteLine($"Potentiometer connected to pin {POTENTIOMETER}");
-                            Console.WriteLine($"Light Sensor connected to pin {LIGHTSENSOR}");
-                            Console.WriteLine($"Sound Sensor connected to pin {SOUNDSENSOR}");
-                            Console.WriteLine("Press any key to continue");
-                            Console.ReadLine();
-
-                            int maxLoop = 20;
-                            for (int i = 0; i < maxLoop; i++)
+                            for (int i = 0; i < 100; i++)
                             {
                                 double value;
-                                value = softatalibAnalog!.AnalogReadLightSensor();
+                                value = SoftataLib.Analog.AnalogReadLightSensor();
                                 if (value != double.MaxValue)
-                                    Console.WriteLine($"{Tab5} {i+1}/{maxLoop}. Light: {value:0.##}");
+                                    Console.WriteLine($"\tLight: {value:0.##}");
                                 else
-                                    Console.WriteLine($"{Tab5} {i+1}/{maxLoop}. Light Sensor: failed");
-                                Thread.Sleep(100);
+                                    Console.WriteLine($"\tLight Sensor: failed");
+                                Thread.Sleep(2000);
 
-                                value = softatalibAnalog!.AnalogReadPotentiometer();
+                                value = SoftataLib.Analog.AnalogReadPotentiometer();
                                 if (value != double.MaxValue)
-                                {
-                                    value = Scale(value, Analog.AnalogDevice.Potentiometer, 100.00);
-                                    Console.WriteLine($"{Tab5} {i+1}/{maxLoop}. Potentiometer: {value:0.##}");
-                                }
+                                    Console.WriteLine($"\tPotentiometer: {value:0.##}");
                                 else
-                                    Console.WriteLine($"{Tab5} {i+1}/{maxLoop}. Potentiometer: failed");
-                                Thread.Sleep(100);
+                                    Console.WriteLine($"\tPotentiometer: failed");
+                                Thread.Sleep(2000);
 
-                                value = softatalibAnalog!.AnalogReadSoundSensor();
+                                value = SoftataLib.Analog.AnalogReadSoundSensor();
                                 if (value != double.MaxValue)
-                                    Console.WriteLine($"{Tab5} {i+1}/{maxLoop}. Sound: {value:0.##}");
+                                    Console.WriteLine($"\tSound: {value:0.##}");
                                 else
-                                    Console.WriteLine($"{Tab5} {i+1}/{maxLoop}. Sound: failed");
-                                Thread.Sleep(800);
+                                    Console.WriteLine($"\tSound Sensor: failed");
+                                Thread.Sleep(2000);
                             }
                             break;
                         case ConsoleTestType.Potentiometer_and_Actuator:
-                            softatalibActuator = new Actuator(softatalib);
-                            softatalibDigital = new SoftataLib.Digital(softatalib);
-
-                            string[] Actuators = softatalibActuator.GetActuators();
+                            string[] Actuators = SoftataLib.Actuator.GetActuators();
                             if (Actuators.Length == 0)
                                 Console.WriteLine($"No actuators found");
                             else
@@ -1344,29 +1224,22 @@ namespace SoftataBasic
                                 ActuatorDevice actuatorDevice = (ActuatorDevice)iactuator;
 
                                 Console.WriteLine("Testing Actuator");
-                                int numLoopsAR = 30;
-                                int delayAR = 333;
-
-                                //softatalibAnalog.InitAnalogDevicePins(SoftataLib.RPiPicoMode.groveShield);
-                                //softatalibAnalog.SetAnalogPin(SoftataLib.Analog.AnalogDevice.Potentiometer, POTENTIOMETER);
-
-
                                 switch (actuatorDevice)
                                 {
-                                    case ActuatorDevice.Relay:
+                                    case ActuatorDevice.SIPO_74HC595:
                                         {
                                             Console.WriteLine();
-                                            Console.WriteLine($"{Tab5}Potentiometer-Relay Test");
-                                            Console.WriteLine($"{Tab5}Potentiometer controls relay. On if >50%");
-                                            Console.WriteLine($"{Tab5}Potentiometer connected to A0, Relay to D16/18 or 20");
+                                            Console.WriteLine("Potentiometer-Relay Test");
+                                            Console.WriteLine("Potentiometer controls relay. On if >50%");
+                                            Console.WriteLine("Potentiometer connected to A0, Relay to D16/18 or 20");
 
-                                            Console.WriteLine($"{Tab5}1. D16: Digital IO (Default)");
-                                            Console.WriteLine($"{Tab5}2. Actuator-Relay Class( Default Settings (Pin 16)");
-                                            Console.WriteLine($"{Tab5}3. Actuator-Relay Class( Setting: (Pin 18");
-                                            Console.WriteLine($"{Tab5}4. Actuator-Relay Class( Setting: (Pin 20)");
-                                            Console.WriteLine($"{Tab5}5. Quit");
+                                            Console.WriteLine("1. D16: Digital IO (Default)");
+                                            Console.WriteLine("2. Actuator-Relay Class( Default Settings (Pin 16)");
+                                            Console.WriteLine("3. Actuator-Relay Class( Setting: (Pin 18");
+                                            Console.WriteLine("4. Actuator-Relay Class( Setting: (Pin 20)");
+                                            Console.WriteLine("5. Quit");
 
-                                            Console.Write($"{Tab5}Selection:");
+                                            Console.Write("Selection:");
                                             bool potRelaySelectionFound = false;
                                             byte potRelaySelection = 1;
                                             do
@@ -1405,52 +1278,52 @@ namespace SoftataBasic
                                             switch (potRelaySelection)
                                             {
                                                 case 1:
-                                                    softatalibDigital.SetPinMode(RELAY, SoftataLib.PinMode.DigitalOutput);
+                                                    SoftataLib.Digital.SetPinMode(RELAY, SoftataLib.PinMode.DigitalOutput);
                                                     break;
                                                 case 2:
-                                                    actuatorIndex = (byte)softatalibActuator.SetupDefault(SoftataLib.Actuator.ActuatorDevice.Relay);
+                                                    actuatorIndex = (byte)SoftataLib.Actuator.SetupDefault(SoftataLib.Actuator.ActuatorDevice.Relay);
                                                     break;
                                                 case 3:
                                                     relayPin = 18;
-                                                    actuatorIndex = (byte)softatalibActuator.Setup(SoftataLib.Actuator.ActuatorDevice.Relay, relayPin);
+                                                    actuatorIndex = (byte)SoftataLib.Actuator.Setup(SoftataLib.Actuator.ActuatorDevice.Relay, relayPin);
                                                     break;
                                                 case 4:
                                                     relayPin = 20;
-                                                    actuatorIndex = (byte)softatalibActuator.Setup(SoftataLib.Actuator.ActuatorDevice.Relay, relayPin);
+                                                    actuatorIndex = (byte)SoftataLib.Actuator.Setup(SoftataLib.Actuator.ActuatorDevice.Relay, relayPin);
                                                     break;
                                             }
 
 
 
-
-                                            Console.WriteLine($"{Tab5}Press any key to continue.");
+                                            SoftataLib.Analog.InitAnalogDevicePins(SoftataLib.RPiPicoMode.groveShield);
+                                            SoftataLib.Analog.SetAnalogPin(SoftataLib.Analog.AnalogDevice.Potentiometer, POTENTIOMETER);
+                                            Console.WriteLine("Press any key to continue.");
                                             Console.ReadLine();
 
                                             bool state = false;
-                                            Console.WriteLine($"{Tab5}Relay OFF");
-                                            Console.WriteLine($"{Tab5}{numLoopsAR} loopd.");
-                                            for (int i = 0; i < numLoopsAR; i++)
+                                            Console.WriteLine("Relay OFF");
+                                            for (int i = 0; i < 20; i++)
                                             {
-                                                double val = softatalibAnalog!.AnalogReadPotentiometer();
+                                                double val = SoftataLib.Analog.AnalogReadPotentiometer();
                                                 if (val != double.MaxValue)
                                                 {
-                                                    Console.WriteLine($"{Tab5}AnalogRead({POTENTIOMETER}) = {val:0.##}");
+                                                    Console.WriteLine($"AnalogRead({POTENTIOMETER}) = {val:0.##}");
                                                     if (val > 50)
                                                     {
                                                         if (!state)
                                                         {
-                                                            Console.WriteLine($"{Tab5}Setting Relay ON");
+                                                            Console.WriteLine("\t\t\tRelay ON");
                                                             state = !state;
 
                                                             switch (potRelaySelection)
                                                             {
                                                                 case 1:
-                                                                    softatalibDigital.SetPinState(RELAY, SoftataLib.PinState.High);
+                                                                    SoftataLib.Digital.SetPinState(RELAY, SoftataLib.PinState.High);
                                                                     break;
                                                                 case 2:
                                                                 case 3:
                                                                 case 4:
-                                                                    softatalibActuator.SetBit(actuatorIndex, 0);
+                                                                    SoftataLib.Actuator.SetBit(actuatorIndex, 0);
                                                                     break;
                                                             }
                                                         }
@@ -1459,46 +1332,46 @@ namespace SoftataBasic
                                                     {
                                                         if (state)
                                                         {
-                                                            Console.WriteLine($"{Tab5}Setting Relay OFF");
+                                                            Console.WriteLine("\t\t\tRelay OFF");
                                                             state = !state;
                                                             switch (potRelaySelection)
                                                             {
                                                                 case 1:
-                                                                    softatalibDigital.SetPinState(RELAY, SoftataLib.PinState.Low);
+                                                                    SoftataLib.Digital.SetPinState(RELAY, SoftataLib.PinState.Low);
                                                                     break;
                                                                 case 2:
                                                                 case 3:
                                                                 case 4:
-                                                                    softatalibActuator.ClearBit(actuatorIndex, 0);
+                                                                    SoftataLib.Actuator.ClearBit(actuatorIndex, 0);
                                                                     break;
                                                             }
                                                         }
                                                     }
                                                 }
                                                 else
-                                                    Console.WriteLine($"{Tab5}AnalogRead({POTENTIOMETER}) failed");
-                                                Console.WriteLine($"{Tab5}{i}/{numLoopsAR} =====");
-                                                Thread.Sleep(delayAR);
+                                                    Console.WriteLine($"\t\tAnalogRead({POTENTIOMETER}) failed");
+                                                Console.WriteLine();
+                                                Thread.Sleep(2000);
                                             }
                                         }
                                         break;
-                                    case ActuatorDevice.SIPO_74HC595:
+                                    case ActuatorDevice.Relay:
                                         {
                                             Console.WriteLine();
-                                            Console.WriteLine($"{Tab5}Potentiometer 74HC59 SIPO Test"); ;
-                                            Console.WriteLine($"{Tab5}Potentiometer controls which 8 bits are set");
-                                            Console.WriteLine($"{Tab5}0% Pot = none, 50% Pot = 4 bits, 100% = all 8 bits etc.");
-                                            Console.WriteLine($"{Tab5}Potentiometer connected to A0");
-                                            Console.WriteLine($"{Tab5}Default '74HC595 setup:");
-                                            Console.WriteLine($"{Tab5}595 Datapin = 16"); //Not 18 as in blog post
-                                            Console.WriteLine($"{Tab5}505 LatchPin = 20");
-                                            Console.WriteLine($"{Tab5}595 ClockPin = 21");
+                                            Console.WriteLine("Potentiometer 74HC59 SIPO Test"); ;
+                                            Console.WriteLine("Potentiometer controls which 8 bits are set");
+                                            Console.WriteLine("0% Pot = none, 50% Pot = 4 bits, 100% = all 8 bits etc.");
+                                            Console.WriteLine("Potentiometer connected to A0");
+                                            Console.WriteLine("Default '74HC595 setup:");
+                                            Console.WriteLine("595 Datapin = 16"); //Not 18 as in blog post
+                                            Console.WriteLine("505 LatchPin = 20");
+                                            Console.WriteLine("595 ClockPin = 21");
 
 
-                                            Console.WriteLine($"{Tab5}1. Default setup");
-                                            Console.WriteLine($"{Tab5}5. Quit");
+                                            Console.WriteLine("1. Default setup");
+                                            Console.WriteLine("5. Quit");
 
-                                            Console.Write($"{Tab5}Selection:");
+                                            Console.Write("Selection:");
                                             bool potShift595ParaOutFound = false;
                                             byte potShift595ParaOutSelection = 1;
                                             do
@@ -1536,39 +1409,47 @@ namespace SoftataBasic
                                             switch (potShift595ParaOutSelection)
                                             {
                                                 case 1:
-                                                    actuatorParaIndex = (byte)softatalibActuator.SetupDefault(SoftataLib.Actuator.ActuatorDevice.Shift95ParaOut);
+                                                    actuatorParaIndex = (byte)SoftataLib.Actuator.SetupDefault(SoftataLib.Actuator.ActuatorDevice.Shift95ParaOut);
                                                     break; ;
                                             }
 
 
-                                            Console.WriteLine($"{Tab5}Setting 0 to 8 bits depending upon Pot.");
+
+                                            SoftataLib.Analog.InitAnalogDevicePins(SoftataLib.RPiPicoMode.groveShield);
+                                            SoftataLib.Analog.SetAnalogPin(SoftataLib.Analog.AnalogDevice.Potentiometer, POTENTIOMETER);
+                                            Console.WriteLine("Press any key to continue.");
+                                            Console.ReadLine();
+
+                                            Console.WriteLine("Setting 0 to 8 bits depending upon Pot.");
                                             bool paraState = false;
                                             byte prevBits = 0;
-                                            softatalibActuator.ActuatorWrite(actuatorParaIndex, prevBits);
-                                            Console.WriteLine($"{Tab5}Clear all 8 bits");
-                                            for (int i = 0; i < (numLoopsAR / 2); i++)
+                                            SoftataLib.Actuator.ActuatorWrite(actuatorParaIndex, prevBits);
+                                            Console.WriteLine($"\t\t\tClear all 8 bits");
+                                            for (int i = 0; i < 30; i++)
                                             {
-                                                double val = softatalibAnalog!.AnalogReadPotentiometer();
-                                                val = Scale(val, Analog.AnalogDevice.Potentiometer, 255);
-                                                byte bits = (byte)Math.Round(val);
-                                                Console.WriteLine($"{Tab5}AnalogRead({POTENTIOMETER}) = {val:0.##}");
-                                                Console.Write($"{Tab5}Bits: ");
+                                                double val = SoftataLib.Analog.AnalogReadPotentiometer();
+                                                double max = 91.3;
+                                                double min = 0.29;
+                                                byte bits = (byte)(256 * (val - min) / (max - min));
+                                                Console.WriteLine($"AnalogRead({POTENTIOMETER}) = {val:0.##}");
+                                                Console.Write("\t\t\tBits: ");
                                                 string hex = Convert.ToString(bits, 2);
                                                 string paddedString = hex.PadLeft(8, '0');
                                                 Console.WriteLine(paddedString);
-                                                Console.WriteLine($"{Tab5}{i}/{numLoopsAR / 2} =====");
-                                                Thread.Sleep(delayAR);
+                                                Thread.Sleep(1000);
                                             }
 
                                             prevBits = 0;
-                                            softatalibActuator.ActuatorWrite(actuatorParaIndex, prevBits);
-                                            Console.WriteLine($"{Tab5}Clear all 8 bits");
-                                            for (int i = 0; i < (numLoopsAR / 2); i++)
+                                            SoftataLib.Actuator.ActuatorWrite(actuatorParaIndex, prevBits);
+                                            Console.WriteLine($"\t\t\tClear all 8 bits");
+                                            for (int i = 0; i < 30; i++)
                                             {
-                                                double val = softatalibAnalog!.AnalogReadPotentiometer();
-                                                byte bits = (byte)Scale(val, Analog.AnalogDevice.Potentiometer, 8);
-                                                Console.WriteLine($"{Tab5}AnalogRead({POTENTIOMETER}) = {val:0.##}");
-                                                Console.Write($"{Tab5}Bits: ");
+                                                double val = SoftataLib.Analog.AnalogReadPotentiometer();
+                                                double max = 91.3;
+                                                double min = 0.29;
+                                                byte bits = (byte)(8 * (val - min) / (max - min));
+                                                Console.WriteLine($"AnalogRead({POTENTIOMETER}) = {val:0.##}");
+                                                Console.Write("\t\t\tBits: ");
                                                 string pat = "";
                                                 switch (bits)
                                                 {
@@ -1597,142 +1478,75 @@ namespace SoftataBasic
                                                         pat = "10000000";
                                                         break;
                                                 }
-                                                Console.WriteLine($"{Tab5}{pat}");
-                                                Console.WriteLine($"{Tab5}{i}/{numLoopsAR / 2} =====");
-                                                Thread.Sleep(delayAR);
+                                                Console.WriteLine(pat);
+                                                Thread.Sleep(1000);
                                             }
                                         }
                                         break;
                                     case ActuatorDevice.Servo:
-                                        Console.WriteLine($"{Tab5}Connect Servo to D16");
-                                        Console.WriteLine($"{Tab5}Press any key to continue.");
+                                        Console.WriteLine("Connect Servo to D16");
+                                        Console.WriteLine("Press any key to continue.");
                                         Console.ReadLine();
-                                        byte id = (byte)softatalibActuator.SetupDefault(SoftataLib.Actuator.ActuatorDevice.Servo);
+                                        byte id = (byte)SoftataLib.Actuator.SetupDefault(SoftataLib.Actuator.ActuatorDevice.Servo);
                                         for (int i = 0; i < 2; i++)
                                         {
-                                            softatalibActuator.ActuatorWrite(id, 90);
-                                            Console.WriteLine($"{Tab5}Angle: 90");
+                                            SoftataLib.Actuator.ActuatorWrite(id, 90);
+                                            Console.WriteLine($"\t\t\tAngle: 90");
                                             Thread.Sleep(2000);
-                                            softatalibActuator.ActuatorWrite(id, 180);
-                                            Console.WriteLine($"{Tab5}Angle: 180");
+                                            SoftataLib.Actuator.ActuatorWrite(id, 180);
+                                            Console.WriteLine($"\t\t\tAngle: 180");
                                             Thread.Sleep(2000);
-                                            softatalibActuator.ActuatorWrite(id, 90);
-                                            Console.WriteLine($"{Tab5}Angle: 90");
+                                            SoftataLib.Actuator.ActuatorWrite(id, 90);
+                                            Console.WriteLine($"\t\t\tAngle: 90");
                                             Thread.Sleep(2000);
-                                            softatalibActuator.ActuatorWrite(id, 0);
-                                            Console.WriteLine($"{Tab5}Angle: 0");
+                                            SoftataLib.Actuator.ActuatorWrite(id, 0);
+                                            Console.WriteLine($"\t\t\tAngle: 0");
                                             Thread.Sleep(2000);
                                         }
-                                        Console.WriteLine($"{Tab5}Connect Servo to D16");
-                                        Console.WriteLine($"{Tab5}Connect Potentiometer to A0.");
-                                        Console.WriteLine($"{Tab5}Press any key to continue.");
+                                        Console.WriteLine("Connect Servo to D16");
+                                        Console.WriteLine("Connect Potentiometer to A0.");
+                                        Console.WriteLine("Press any key to continue.");
                                         Console.ReadLine();
-
-                                        //softatalibAnalog.
-                                        Console.WriteLine($"{Tab5}Turn potetiometer periodically.");
-                                        Console.WriteLine($"{Tab5}Press any key to start.");
+                                        SoftataLib.Analog.SetAnalogPin(SoftataLib.Analog.AnalogDevice.Potentiometer, POTENTIOMETER);
+                                        Console.WriteLine("Turn potetiometer full in one direction.");
+                                        Console.WriteLine("Press any key to continue.");
                                         Console.ReadLine();
-                                        Console.WriteLine($"{Tab5}Runs for {numLoopsAR} steps.");
-                                        for (int i = 0; i < numLoopsAR; i++)
+                                        double max1 = SoftataLib.Analog.AnalogReadPotentiometer();
+                                        Console.WriteLine("Turn potetiometer full in other direction.");
+                                        Console.WriteLine("Press any key to continue.");
+                                        Console.ReadLine();
+                                        double max2 = SoftataLib.Analog.AnalogReadPotentiometer();
+                                        if (max1 > max2)
                                         {
-                                            double val = softatalibAnalog!.AnalogReadPotentiometer();
-                                            byte angle = (byte)Scale(val, Analog.AnalogDevice.Potentiometer, 180);
-                                            Console.WriteLine($"{Tab5}Angle: {angle}");
-
-                                            softatalibActuator.ActuatorWrite(id, angle);
-                                            Console.WriteLine($"{Tab5}{i}/{numLoopsAR} =====");
-                                            Thread.Sleep(delayAR);
+                                            double temp = max2;
+                                            max2 = max1;
+                                            max1 = temp;
                                         }
+                                        Console.WriteLine("Turn potetiometer periodically.");
+                                        Console.WriteLine("Press any key to start.");
+                                        Console.ReadLine();
+                                        Console.WriteLine("Runs for 20 steps.");
+                                        for (int i = 0; i < 20; i++)
+                                        {
+                                            double val = SoftataLib.Analog.AnalogReadPotentiometer();
+                                            byte angle = (byte)(180 * (val - max1) / (max2 - max1));
+                                            Console.WriteLine($"\t\t\t\tAngle: {angle}");
+
+                                            SoftataLib.Actuator.ActuatorWrite(id, angle);
+                                            Thread.Sleep(500);
+                                        }
+
+
                                         break;
                                     default:
-                                        Console.WriteLine($"{Tab5}Actuator not yet implemented for this test.");
+                                        Console.WriteLine("Actuator not yet implemented for this test.");
                                         break;
                                 }
-                                Console.WriteLine($"{Tab5}Finished test");
-                                Console.WriteLine($"{Tab5}Press any key to continue.");
+                                Console.WriteLine("Finished test");
+                                Console.WriteLine("Press any key to continue.");
                                 Console.ReadLine();
 
 
-                            }
-                            break;
-                        case ConsoleTestType.AnalogDevice_Only:
-                            Console.WriteLine($"Analog Device Raw Test");
-                            Console.WriteLine($"Analog Device connected to pin {POTENTIOMETER}, {LIGHTSENSOR} or {SOUNDSENSOR} ");
-                            Console.WriteLine("Select from 0: A0 1: A1 2: A2 (Default A0)");
-
-                            byte pin = 26;
-                            bool foundPin = false;
-                            Analog.ADCResolutionBits resolution = Analog.ADCResolutionBits.Bits10;
-
-                            while (!foundPin)
-                            {
-                                string? sAnalog = Console.ReadLine();
-                                if (!string.IsNullOrEmpty(sAnalog))
-                                {
-                                    if (int.TryParse(sAnalog, out int prSelection))
-                                    {
-                                        if ((prSelection >= 0) && (prSelection < 3))
-                                        {
-                                            foundPin = true;
-                                            pin = (byte)(POTENTIOMETER + prSelection);
-
-                                        }
-                                    }
-                                    else
-                                    {
-                                        foundPin = true;
-                                        pin = POTENTIOMETER;
-                                    }
-                                }
-                            }
-                            Console.WriteLine("ADC Resolution");
-                            Console.WriteLine("Enter from 10 or 12 (Default 10), (alt 0 | 2)");
-
-
-                            foundPin = false;
-                            
-                            while (!foundPin)
-                            {
-                                string? sAnalog = Console.ReadLine();
-                                if (!string.IsNullOrEmpty(sAnalog))
-                                {
-                                    if (int.TryParse(sAnalog, out int prSelection2))
-                                    {
-                                        if ((prSelection2 == 10) || (prSelection2 == 12) ||(prSelection2 == 0) || (prSelection2 == 2))
-                                        {
-                                            if (prSelection2 == 0)
-                                                prSelection2 = 10;
-                                            else if (prSelection2 == 2)
-                                                prSelection2 = 12;
-
-                                            if (prSelection2 == 12)
-                                            {
-                                                resolution = Analog.ADCResolutionBits.Bits12;
-                                            }
-                                            foundPin = true;
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    foundPin = true;
-                                }
-                            }
-
-
-                            OtherGetMaxMin( pin, resolution);
-                            softatalibAnalog!.SetAnalogPin(Analog.AnalogDevice.Other,pin, true,resolution);
-
-
-                            for (int i = 0; i < 30; i++)
-                            {
-                                double value;
-                                value = softatalibAnalog!.AnalogRead(pin);
-                                if (value != double.MaxValue)
-                                    Console.WriteLine($"{Tab5} Analog Device: {value:0.##}");
-                                else
-                                    Console.WriteLine($"{Tab5} Analog Device: failed");
-                                Thread.Sleep(100);
                             }
                             break;
                     }
@@ -1743,8 +1557,8 @@ namespace SoftataBasic
                 }
             }
             if (connected)
-            {
-                softatalib.SendMessageCmd("End");
+            { 
+                SoftataLib.SendMessageCmd("End");
                 Thread.Sleep(500);
             }
 

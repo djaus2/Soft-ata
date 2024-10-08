@@ -46,6 +46,16 @@ namespace Softata
         public  Socket? Client { get => client; set => client = value; }// { get => Client1; set => Client1 = value; }
         /*public  Socket? Client1 { get => client; set => client = value; }*/
 
+        public  bool Connected
+        {
+            get
+            {
+                if (Client == null)
+                    return false;
+                return Client.Connected;
+            }
+        }
+
         private  bool Inited = false;
 
         public enum RPiPicoMode { groveShield, generalMode, Undefined = 255 };

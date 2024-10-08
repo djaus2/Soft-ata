@@ -35,12 +35,15 @@ namespace Softata
                 throw new ArgumentOutOfRangeException(nameof(pinNumber), "Analog pin not assigned");
             }
 
-            private  bool ValidateAnalogPin(int pinNumber)
+            private  bool ValidateAnalogPin(int pinNumber, bool update)
             {
                 if (!softatalib.GroveAnalogPinList.Contains($"A{pinNumber-26}"))
                 {
                     throw new ArgumentOutOfRangeException(nameof(pinNumber), "Messages.ArgumentEx_DigitalPinRange26to28");
                 }
+                if(update)
+                { return true; }
+
                 foreach (var item in AnalogDevicePins)
                 {
                     if (item.Value.PinNumber == pinNumber)
@@ -53,14 +56,17 @@ namespace Softata
 
             public enum ADCResolutionBits { Bits10, Bits12 };
             public enum ADCResolutionBitsX { Bits10 = 10, Bits12 = 12 };
-            public enum AnalogDevice { LightSensor = 0, SoundSensor = 1, Potentiometer = 2, Other = 3, Undefined = 255 };
+            public enum AnalogDevice { LightSensor = 0, SoundSensor = 1, Potentiometer = 2, Other = 3,  Undefined = 255 };
 
+            public enum OtherAnalogDevice { ADOther1=1,ADOther2=2, ADOther3=3, ADOther4=4, MaxType = 5, };    
             public class ADevice
             {
                 public int PinNumber { get; set; }
                 public AnalogDevice DeviceType { get; set; }
                 public ADCResolutionBits ResolutionBits { get; set; } = ADCResolutionBits.Bits10; //1023
-                public byte BitsShiftRight { get; set; } = 0; }
+                public byte BitsShiftRight { get; set; } = 0;
+            }
+
 
 
             public  Dictionary<AnalogDevice, ADevice> AnalogDevicePins = new Dictionary<AnalogDevice, ADevice>();
@@ -77,9 +83,9 @@ namespace Softata
                 AnalogDevicePins = new Dictionary<AnalogDevice, ADevice>();
             }
 
-            public  bool SetAnalogPin(AnalogDevice device, byte pinNumber, ADCResolutionBits resolutionsBits =  ADCResolutionBits.Bits10, byte bitsShiftRight=0)
+            public  bool SetAnalogPin(AnalogDevice device, byte pinNumber, bool update = false, ADCResolutionBits resolutionsBits =  ADCResolutionBits.Bits10, byte bitsShiftRight=0)
             {
-                if(!ValidateAnalogPin(pinNumber))
+                if(!ValidateAnalogPin(pinNumber, update))
                     return false;
 
                 if(resolutionsBits == ADCResolutionBits.Bits10)
@@ -91,7 +97,14 @@ namespace Softata
                     string state = softatalib.SendMessage(Commands.analogSetResolution, pinNumber, 12, "AD:");
                 }
                 ADevice aDevice = new ADevice { PinNumber = pinNumber, DeviceType = device, ResolutionBits = resolutionsBits, BitsShiftRight = bitsShiftRight };
-                AnalogDevicePins.Add(device, aDevice);
+                if (AnalogDevicePins.ContainsKey(device))
+                {
+                    if((!update) && (device != AnalogDevice.Other))
+                        return false;
+                    AnalogDevicePins[device] = aDevice;
+                }
+                else
+                    AnalogDevicePins.Add(device, aDevice);
                 return true;
             }
             
@@ -129,9 +142,9 @@ namespace Softata
                 if (!AnalogDevicePins.ContainsKey(device))
                     throw new ArgumentOutOfRangeException(nameof(device), "Analog: Light Sensor not assigned");
                 int pinNumber = AnalogDevicePins[device].PinNumber;
-                int maxValue = 1023;
+                int maxADCValue = 1023;
                 if (AnalogDevicePins[device].ResolutionBits == ADCResolutionBits.Bits12)
-                    maxValue = 4095;
+                    maxADCValue = 4095;
 
                 string state = softatalib.SendMessage(Commands.analogRead, (byte)pinNumber, nullData, "AD:");
 
@@ -140,7 +153,7 @@ namespace Softata
                 {
                     if (int.TryParse(state, out int val))
                     {
-                        result = (100.0 * val) / maxValue;
+                        result = (100.0 * ((double)val)) / ((double)maxADCValue);
                         return result;
                     }
                     else
@@ -154,12 +167,13 @@ namespace Softata
             {
                 AnalogDevice device = AnalogDevice.SoundSensor;
 
+
                 if (!AnalogDevicePins.ContainsKey(device))
                     throw new ArgumentOutOfRangeException(nameof(device), "Analog: Sound Sensor  not assigned.");
                 int pinNumber = AnalogDevicePins[device].PinNumber;
-                int maxValue = 1023;
+                int maxADCValue = 1023;
                 if (AnalogDevicePins[device].ResolutionBits == ADCResolutionBits.Bits12)
-                    maxValue = 4095;
+                    maxADCValue = 4095;
 
                 string state = softatalib.SendMessage(Commands.analogRead, (byte)pinNumber, nullData, "AD:");
 
@@ -168,7 +182,7 @@ namespace Softata
                 {
                     if (int.TryParse(state, out int val))
                     {
-                        result = (100.0 * val) / maxValue;
+                        result = (100.0 * ((double)val)) / ((double)maxADCValue);
                         return result;
                     }
                     else
@@ -182,13 +196,14 @@ namespace Softata
             public  double AnalogReadPotentiometer()
             {
                 AnalogDevice device = AnalogDevice.Potentiometer;
-                
+
+
                 if (!AnalogDevicePins.ContainsKey(device))
                     throw new ArgumentOutOfRangeException(nameof(device), "Analog: Potentiometer not assigned.");
                 int pinNumber = AnalogDevicePins[device].PinNumber;
-                int maxValue = 1023;
+                int maxADCValue = 1023;
                 if(AnalogDevicePins[device].ResolutionBits==ADCResolutionBits.Bits12)
-                    maxValue = 4095;
+                    maxADCValue = 4095;
 
 
                 string state = softatalib.SendMessage(Commands.analogRead, (byte)pinNumber, nullData, "AD:");
@@ -198,7 +213,7 @@ namespace Softata
                 {
                     if (int.TryParse(state, out int val))
                     {
-                        result = (100.0 * val) / maxValue;
+                        result = (100.0 * ((double)val)) / ((double)maxADCValue);
                         return result;
                     }
                     else
