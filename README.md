@@ -1,10 +1,5 @@
 # Soft-ata Version 10.900
 
----
-> Note: This main branch has been merged from V10.001 development branch  
-> In that, all code folders were been moved to  /code folder.
----
-
 ## Updates
 - V 10.900
   - Using Nueget package [ConsoleTextFormat](https://www.nuget.org/packages/ConsoleTextFormat) to color format Console text int the Console app.
