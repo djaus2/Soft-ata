@@ -1,4 +1,4 @@
-# Soft-ata Version 10.200
+# Soft-ata Version 10.900
 
 ---
 > Note: This main branch has been merged from V10.001 development branch  
@@ -6,6 +6,8 @@
 ---
 
 ## Updates
+- V 10.900
+  - Using Nueget package [ConsoleTextFormat](https://www.nuget.org/packages/ConsoleTextFormat) to color format Console text int the Console app.
 - V10.199/200
   - Added Grove.Bargraph/Linksprite.bargraph as per [linksprite.bargraph.rpipico](https://github.com/djaus2/linksprite.bargraph.rpipico)
     - Added extra Misc commands now: flow,flow2,setLed,clrLed,toggleLed,setLevel,exercise
