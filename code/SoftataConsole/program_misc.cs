@@ -112,11 +112,14 @@ namespace SoftataBasic
         {
             double max = maxMin.Item1;
             double min = maxMin.Item2;
-            double calc = scaleTo * ((val - min) / (max - min));
-            if (calc < min)
-                calc = min;
-            else if (calc > max)
-                calc = max;
+            
+            double calc = 0;
+            if (val < min)
+                calc = 0;
+            else if (val > max)
+                calc = scaleTo;
+            else
+                calc = scaleTo * ((val - min) / (max - min));
             return calc;
         }
 
@@ -144,14 +147,19 @@ namespace SoftataBasic
         {
             if (!(softatalibAnalog == null))
             {
-                if (!(YesNoQuit("Calibrate Analog Devices", false)))
-                    return;
+                // Run calibration at least once
+                if (hasRunCalibrationOnce)
+                {
+                    if (!(YesNoQuit("Calibrate Analog Devices", false)))
+                        return;
+                }
             }
             else
             {
                 AnalogInit();
             }
 
+            // Each of these does a setup before getting option to opt out
             PotGetMaxMin();
             LightGetMaxMin();
             SoundGetMaxMin();

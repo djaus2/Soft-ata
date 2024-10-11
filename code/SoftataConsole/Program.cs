@@ -15,6 +15,10 @@ using System.Collections;
 using static Softata.SoftataLib;
 //using SoftataConsole;
 
+using B = ConsoleTextFormat.Fmt.Bold;
+using F = ConsoleTextFormat.Fmt;
+using ConsoleTextFormat;
+
 
 
 namespace SoftataBasic
@@ -27,9 +31,12 @@ namespace SoftataBasic
         const double LightMax = 61;
         const double SoundMin = 0;
         const double SoundMax = 100;
+        const int numLoops = 20;
         // Set the same as Arduino:
         static int port = 4242;
         static string ipaddressStr = "192.168.0.12";
+
+        static bool hasRunCalibrationOnce = false;
 
         // Configure hardware pin connections thus:
         static byte LED = 16;
@@ -62,6 +69,12 @@ namespace SoftataBasic
 
         static Softata.SoftataLib softatalib { get {return  _softatalib; } set {_softatalib = value; } }
 
+        internal static void ShowHeading()
+        {
+            Console.Clear();
+            Fmt.RainbowHeading("SOFTATA");
+            Console.WriteLine("--------------------");
+        }
 
         public static bool connected
         {
@@ -74,11 +87,11 @@ namespace SoftataBasic
         }
         static void Main(string[] args)
         {
+            hasRunCalibrationOnce = false;
             softatalib  = new SoftataLib();
             AnalogInit();
-
-            Console.WriteLine("Hello from Soft-ata!");
-            Console.WriteLine();
+            Console.Clear();
+            ShowHeading();
             Console.WriteLine("For details see https://davidjones.sportronics.com.au/cats/softata/");
             Console.WriteLine();
 
@@ -142,7 +155,7 @@ namespace SoftataBasic
                 }
             }*/
 
-            Console.WriteLine("TESTS");
+            Fmt.Heading("Softata Tests", Fmt.Col.blue);
             bool quit = false;
 
 
@@ -154,7 +167,7 @@ namespace SoftataBasic
                     if (!connected)
                     {
 
-                        Console.WriteLine($"Default Softata Server is at {ipaddressStr}:{port}");
+                        Console.WriteLine($"{B.fgblu}Default Softata Server is at{B.fgYel} {ipaddressStr}:{port}{Fmt.clr}");
                         Console.WriteLine("Enter new values or press [Enter] to continue:");
                         Console.Write("Plz Enter IPAdress: ");
                         string? ip = Console.ReadLine();
@@ -186,7 +199,10 @@ namespace SoftataBasic
                             else
                                 Console.WriteLine("\t\tInvalid Port");
                         }
-                        Console.WriteLine($"Selected Softata Server is at {IpAddress}:{Port}");
+                        ShowHeading();
+                        Console.WriteLine($"{B.fgblu}The selected Softata Server is at{B.fgYel} {ipaddressStr}:{port}{Fmt.clr}");
+                        Console.WriteLine("Make sure the Pico has has booted ...");
+                        Console.WriteLine(" ... and is waiting (4s slow flash) before proceeding:");                      Console.WriteLine();
                     }
                     int num = 0;
                     for (int i = 0; i < (int)ConsoleTestType.MaxType; i++)
@@ -200,7 +216,7 @@ namespace SoftataBasic
                     }
                     Console.WriteLine("[Q]\t\tQuit");
                     Console.WriteLine();
-                    Console.Write($"Please make a selection (Default is {(int)Testtype + 1}):");
+                    Fmt.Info("Please make a selection:", $"(Default is {(int)Testtype + 1}):");
                     bool foundTestType = false;
 
                     do
@@ -1345,7 +1361,7 @@ namespace SoftataBasic
                                 ActuatorDevice actuatorDevice = (ActuatorDevice)iactuator;
 
                                 Console.WriteLine("Testing Actuator");
-                                int numLoopsAR = 30;
+
                                 int delayAR = 333;
 
                                 //softatalibAnalog.InitAnalogDevicePins(SoftataLib.RPiPicoMode.groveShield);
@@ -1428,19 +1444,20 @@ namespace SoftataBasic
                                             Console.ReadLine();
 
                                             bool state = false;
-                                            Console.WriteLine($"{Tab5}Relay OFF");
-                                            Console.WriteLine($"{Tab5}{numLoopsAR} loopd.");
-                                            for (int i = 0; i < numLoopsAR; i++)
+                                            Console.WriteLine($"{Tab5}\tRelay OFF");
+                                            Console.WriteLine();
+                                            Console.WriteLine($"{Tab5}{numLoops} loops.");
+                                            for (int i = 0; i < numLoops; i++)
                                             {
                                                 double val = softatalibAnalog!.AnalogReadPotentiometer();
                                                 if (val != double.MaxValue)
                                                 {
-                                                    Console.WriteLine($"{Tab5}AnalogRead({POTENTIOMETER}) = {val:0.##}");
+                                                    Console.WriteLine($"{Tab5} {i+1}/{numLoops} AnalogRead({POTENTIOMETER}) = {val:0.##}");
                                                     if (val > 50)
                                                     {
                                                         if (!state)
                                                         {
-                                                            Console.WriteLine($"{Tab5}Setting Relay ON");
+                                                            Console.WriteLine($"\n{Tab5}\tSetting Relay ON");
                                                             state = !state;
 
                                                             switch (potRelaySelection)
@@ -1460,7 +1477,7 @@ namespace SoftataBasic
                                                     {
                                                         if (state)
                                                         {
-                                                            Console.WriteLine($"{Tab5}Setting Relay OFF");
+                                                            Console.WriteLine($"\n{Tab5}\tSetting Relay OFF");
                                                             state = !state;
                                                             switch (potRelaySelection)
                                                             {
@@ -1477,8 +1494,7 @@ namespace SoftataBasic
                                                     }
                                                 }
                                                 else
-                                                    Console.WriteLine($"{Tab5}AnalogRead({POTENTIOMETER}) failed");
-                                                Console.WriteLine($"{Tab5}{i}/{numLoopsAR} =====");
+                                                    Console.WriteLine($"{Tab5}{i + 1}/{numLoops}AnalogRead({POTENTIOMETER}) failed");
                                                 Thread.Sleep(delayAR);
                                             }
                                         }
@@ -1547,7 +1563,7 @@ namespace SoftataBasic
                                             byte prevBits = 0;
                                             softatalibActuator.ActuatorWrite(actuatorParaIndex, prevBits);
                                             Console.WriteLine($"{Tab5}Clear all 8 bits");
-                                            for (int i = 0; i < (numLoopsAR / 2); i++)
+                                            for (int i = 0; i < (numLoops / 2); i++)
                                             {
                                                 double val = softatalibAnalog!.AnalogReadPotentiometer();
                                                 val = Scale(val, Analog.AnalogDevice.Potentiometer, 255);
@@ -1557,14 +1573,14 @@ namespace SoftataBasic
                                                 string hex = Convert.ToString(bits, 2);
                                                 string paddedString = hex.PadLeft(8, '0');
                                                 Console.WriteLine(paddedString);
-                                                Console.WriteLine($"{Tab5}{i}/{numLoopsAR / 2} =====");
+                                                Console.WriteLine($"{Tab5}{i+1}/{numLoops / 2} =====");
                                                 Thread.Sleep(delayAR);
                                             }
 
                                             prevBits = 0;
                                             softatalibActuator.ActuatorWrite(actuatorParaIndex, prevBits);
                                             Console.WriteLine($"{Tab5}Clear all 8 bits");
-                                            for (int i = 0; i < (numLoopsAR / 2); i++)
+                                            for (int i = 0; i < (numLoops / 2); i++)
                                             {
                                                 double val = softatalibAnalog!.AnalogReadPotentiometer();
                                                 byte bits = (byte)Scale(val, Analog.AnalogDevice.Potentiometer, 8);
@@ -1599,7 +1615,7 @@ namespace SoftataBasic
                                                         break;
                                                 }
                                                 Console.WriteLine($"{Tab5}{pat}");
-                                                Console.WriteLine($"{Tab5}{i}/{numLoopsAR / 2} =====");
+                                                Console.WriteLine($"{Tab5}{i}/{numLoops / 2} =====");
                                                 Thread.Sleep(delayAR);
                                             }
                                         }
@@ -1633,15 +1649,15 @@ namespace SoftataBasic
                                         Console.WriteLine($"{Tab5}Turn potetiometer periodically.");
                                         Console.WriteLine($"{Tab5}Press any key to start.");
                                         Console.ReadLine();
-                                        Console.WriteLine($"{Tab5}Runs for {numLoopsAR} steps.");
-                                        for (int i = 0; i < numLoopsAR; i++)
+                                        Console.WriteLine($"{Tab5}Runs for {numLoops} steps.");
+                                        for (int i = 0; i < numLoops; i++)
                                         {
                                             double val = softatalibAnalog!.AnalogReadPotentiometer();
+
                                             byte angle = (byte)Scale(val, Analog.AnalogDevice.Potentiometer, 180);
-                                            Console.WriteLine($"{Tab5}Angle: {angle}");
+                                            Console.WriteLine($"{Tab5}{i+1}/{numLoops} Angle: {angle}");
 
                                             softatalibActuator.ActuatorWrite(id, angle);
-                                            Console.WriteLine($"{Tab5}{i}/{numLoopsAR} =====");
                                             Thread.Sleep(delayAR);
                                         }
                                         break;
@@ -1724,15 +1740,15 @@ namespace SoftataBasic
                             OtherGetMaxMin( pin, resolution);
                             softatalibAnalog!.SetAnalogPin(Analog.AnalogDevice.Other,pin, true,resolution);
 
-
-                            for (int i = 0; i < 30; i++)
+ 
+                            for (int i = 0; i < numLoops; i++)
                             {
                                 double value;
                                 value = softatalibAnalog!.AnalogRead(pin);
                                 if (value != double.MaxValue)
-                                    Console.WriteLine($"{Tab5} Analog Device: {value:0.##}");
+                                    Console.WriteLine($"{Tab5} {i + 1}/{numLoops} Analog Device: {value:0.##}");
                                 else
-                                    Console.WriteLine($"{Tab5} Analog Device: failed");
+                                    Console.WriteLine($"{Tab5} {i + 1}/{numLoops} Analog Device: failed");
                                 Thread.Sleep(100);
                             }
                             break;
