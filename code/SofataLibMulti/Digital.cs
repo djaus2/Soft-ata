@@ -11,8 +11,6 @@ namespace Softata
 {
     public partial class SoftataLib
     {
-        
-
         public  class Digital
         {
             private SoftataLib softatalib;

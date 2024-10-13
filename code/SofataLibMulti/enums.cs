@@ -86,7 +86,7 @@ namespace Softata.Enums
         digitalRead = 0xD2,
         digitalToggle = 0xD3,
 
-        //Analog_Potentiometer_and__LED/PWM
+        //Analog_Potentiometer_and_LED/PWM
         analogRead = 0xA2,
         analogSetResolution = 0xA3,
 
@@ -113,7 +113,7 @@ namespace Softata.Enums
     public enum ConsoleTestType : byte
     {
         Digital_Button_and_LED = 0,
-        Analog_Potentiometer_and__LED = 1,
+        Analog_Potentiometer_and_LED = 1,
         PWM = 2,
         Servo = 3,
         Sensors = 4,

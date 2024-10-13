@@ -1,10 +1,15 @@
-﻿using Softata;
+﻿using ConsoleTextFormat;
+using Softata;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static Softata.SoftataLib;
+
+using B = ConsoleTextFormat.Fmt.Bold;
+using F = ConsoleTextFormat.Fmt;
+using ConsoleTextFormat;
 
 namespace SoftataBasic
 {
@@ -20,7 +25,7 @@ namespace SoftataBasic
             }
             else
             {
-                Console.WriteLine($"{prompt}");
+                Console.WriteLine($"{Fmt.fgblu}{prompt}{Fmt.clr}");
                 ch = 'Q';
             }
 
@@ -62,15 +67,15 @@ namespace SoftataBasic
             min = maxMin.Item2;
 
 
-            Console.WriteLine($"{Tab5}Set device to max.");
-            Console.WriteLine($"{Tab5}Press any key to continue.");
+            Console.WriteLine($"{Tab5}{B.bgblu}Set device to max.{Fmt.clr}");
+            Console.WriteLine($"{Tab5}{B.bgGre}Press any key to continue.{Fmt.clr}");
             Console.ReadLine();
             if (readADC == null)
                 min = softatalibAnalog.AnalogRead(pin);
             else
                 min = readADC();
-            Console.WriteLine($"{Tab5}Set device to min (0).");
-            Console.WriteLine($"{Tab5}Press any key to continue.");
+            Console.WriteLine($"{Tab5}{B.bgblu}Set device to min (0).{Fmt.clr}");
+            Console.WriteLine($"{Tab5}{B.bgGre}Press any key to continue.{Fmt.clr}");
             Console.ReadLine();
             if (readADC == null)
                 max = softatalibAnalog.AnalogRead(pin);
@@ -82,7 +87,7 @@ namespace SoftataBasic
                 max = min;
                 min = temp;
             }
-            Console.WriteLine($"{Tab5}Press any key to continue.");
+            Console.WriteLine($"{Tab5}{Fmt.bgGre}Press any key to continue.{Fmt.clr}");
             Console.ReadLine();
             MaxMins[device] = new Tuple<double, double>(max, min);
 
