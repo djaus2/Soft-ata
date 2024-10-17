@@ -352,12 +352,12 @@ namespace SoftataBasic
                             softatalibDigital.SetPinMode(LED, SoftataLib.PinMode.DigitalOutput);
                             softatalibPWM.SetPinModePWM(LED, numPWMBits);
                             
-                            for (int i = 0; i < 50; i++)
+                            for (int i = 0; i < numLoops; i++)
                             {
                                 int val = softatalibAnalog!.AnalogRead(POTENTIOMETER);
                                 if (val != int.MaxValue)
                                 {
-                                    Console.WriteLine($"AnalogRead({POTENTIOMETER}) = {val}");
+                                    Console.WriteLine($"{i + 1}/{numLoops}. AnalogRead({POTENTIOMETER}) = {val}");
                                     int pwmVal = val;
                                     if (val > 1023)
                                         pwmVal = 1023;
@@ -1425,7 +1425,7 @@ namespace SoftataBasic
                                                 double val = softatalibAnalog!.AnalogReadPotentiometer();
                                                 if (val != double.MaxValue)
                                                 {
-                                                    Console.WriteLine($"{Tab5} {i+1}/{numLoops} AnalogRead({POTENTIOMETER}) = {val:0.##}");
+                                                    Console.WriteLine($"{Tab5} {i+1}/{numLoops}. AnalogRead({POTENTIOMETER}) = {val:0.##}");
                                                     if (val > 50)
                                                     {
                                                         if (!state)
@@ -1467,7 +1467,7 @@ namespace SoftataBasic
                                                     }
                                                 }
                                                 else
-                                                    Console.WriteLine($"{Tab5}{i + 1}/{numLoops}AnalogRead({POTENTIOMETER}) failed");
+                                                    Console.WriteLine($"{Tab5}{i + 1}/{numLoops}. AnalogRead({POTENTIOMETER}) failed");
                                                 Thread.Sleep(delayAR);
                                             }
                                         }
@@ -1541,7 +1541,7 @@ namespace SoftataBasic
                                                 double val = softatalibAnalog!.AnalogReadPotentiometer();
                                                 val = Scale(val, Analog.AnalogDevice.Potentiometer, 255);
                                                 byte bits = (byte)Math.Round(val);
-                                                Console.WriteLine($"{Tab5}AnalogRead({POTENTIOMETER}) = {val:0.##}");
+                                                Console.WriteLine($"{Tab5}{i + 1}/{numLoops/2}. AnalogRead({POTENTIOMETER}) = {val:0.##}");
                                                 Console.Write($"{Tab5}Bits: ");
                                                 string hex = Convert.ToString(bits, 2);
                                                 string paddedString = hex.PadLeft(8, '0');
@@ -1557,7 +1557,7 @@ namespace SoftataBasic
                                             {
                                                 double val = softatalibAnalog!.AnalogReadPotentiometer();
                                                 byte bits = (byte)Scale(val, Analog.AnalogDevice.Potentiometer, 8);
-                                                Console.WriteLine($"{Tab5}AnalogRead({POTENTIOMETER}) = {val:0.##}");
+                                                Console.WriteLine($"{Tab5}{i+1}/{numLoops/2}. AnalogRead({POTENTIOMETER}) = {val:0.##}");
                                                 Console.Write($"{Tab5}Bits: ");
                                                 string pat = "";
                                                 switch (bits)
