@@ -17,6 +17,7 @@ using static Softata.SoftataLib;
 
 using B = ConsoleTextFormat.Fmt.Bold;
 using F = ConsoleTextFormat.Fmt;
+using L = ConsoleTextFormat.Layout;
 using ConsoleTextFormat;
 using System.Runtime.Intrinsics.X86;
 
@@ -73,7 +74,7 @@ namespace SoftataBasic
         internal static void ShowHeading(string test="")
         {
             test = string.IsNullOrEmpty(test) ? "" : $": {test}";
-            Fmt.RainbowHeading($"SOFTATA TESTS{test}");
+            Layout.RainbowHeading($"SOFTATA TESTS{test}");
             Console.WriteLine("--------------------------");
             Console.WriteLine("For details see https://davidjones.sportronics.com.au/cats/softata/");
         }
@@ -169,9 +170,8 @@ namespace SoftataBasic
                 {
                     if (!connected)
                     {
-
                         Console.WriteLine($"{B.fgblu}Default Softata Server is at{B.fgYel} {ipaddressStr}:{port}{Fmt.clr}");
-                        Fmt.Info("Enter new values"," or press [Enter] to continue:");
+                        Layout.Info("Enter new values"," or press [Enter] to continue:");
                         Console.Write("Plz Enter IPAdress: ");
                         string? ip = Console.ReadLine();
                         if (!string.IsNullOrEmpty(ip))
@@ -207,46 +207,15 @@ namespace SoftataBasic
                         Console.WriteLine("Make sure the Pico has has booted ...");
                         Console.WriteLine(" ... and is waiting (4s slow flash) before proceeding:");                      Console.WriteLine();
                     }
-                    int num = 0;
-                    for (int i = 0; i < (int)ConsoleTestType.MaxType; i++)
-                    {
-                        num++;
-
-                        ConsoleTestType cmd = (ConsoleTestType)i;
-                        string msg = $"{i + 1}.\t\t{cmd}";
-                        msg = msg.Replace("_", " ");
-                        Console.WriteLine(msg);
-                    }
-                    Console.WriteLine("[Q]\t\tQuit");
-                    Console.WriteLine();
-                    Fmt.Prompt("Please make a selection:", $"(Default is {(int)Testtype + 1}):");
-                    bool foundTestType = false;
-
-                    do
-                    {
-                        string? s = Console.ReadLine();
-                        if (string.IsNullOrEmpty(s))
-                            break;
-                        if (byte.TryParse(s, out byte icmd))
-                        {
-                            if (icmd > 0 && icmd <= num)
-                            {
-                                Testtype = (ConsoleTestType)(icmd - 1);
-                                foundTestType = true;
-                            }
-                        }
-                        else if (s.ToUpper() == "Q")
-                        {
-                            foundTestType = true;
-                            quit = true;
-                        }
-                    } while (!foundTestType);
+                    
+                    quit = false;
+                    Testtype = Layout.SelectEnum<ConsoleTestType>((int)Testtype + 1, ref quit, true);
 
                     if (quit)
                         return;
 
                     ShowHeading();
-                    F.Info($"Selected Test: ",$" {Testtype}");
+                    Layout.Info($"Selected Test: ",$" {Testtype}");
 
                     if (!connected)
                     {
@@ -309,7 +278,7 @@ namespace SoftataBasic
                             break;
                     }
 
-                    F.RainbowHeading($"Softata Test: { Testtype}");
+                    Layout.RainbowHeading($"Softata Test: { Testtype}");
                     switch (Testtype)
                     {
                         case ConsoleTestType.Test_OTA_Or_WDT:
@@ -349,10 +318,10 @@ namespace SoftataBasic
                             softatalibDigital.SetPinMode(LED, SoftataLib.PinMode.DigitalOutput);
                             softatalibDigital.SetPinState(LED, SoftataLib.PinState.High);
 
-                            F.Info("Button connected to pin", $" {BUTTON}");
-                            F.Info($"LED connected to pin", $" {LED}");
-                            F.Info("LED will toggle when button NOT pressed.");
-                            F.Press2con();
+                            Layout.Info("Button connected to pin", $" {BUTTON}");
+                            Layout.Info($"LED connected to pin", $" {LED}");
+                            Layout.Info("LED will toggle when button NOT pressed.");
+                            Layout.Press2Continue();
 
 
                             int digMax = 0x10;
@@ -374,11 +343,11 @@ namespace SoftataBasic
                             softatalibPWM = new SoftataLib.PWM(softatalib);
 
                             byte numPWMBits = 10;
-                            F.Info($"Potentiometer connected to pin", $" {POTENTIOMETER}");
-                            F.Info($"Light Sensor connected to pin", $" {LIGHTSENSOR}");
-                            F.Info($"{numPWMBits}", $" Bit PWM being used. 10 ADC bits");
-                            F.Info("LED brightness depends upon potentiometer.");
-                            F.Press2con();
+                            Layout.Info($"Potentiometer connected to pin", $" {POTENTIOMETER}");
+                            Layout.Info($"Light Sensor connected to pin", $" {LIGHTSENSOR}");
+                            Layout.Info($"{numPWMBits}", $" Bit PWM being used. 10 ADC bits");
+                            Layout.Info("LED brightness depends upon potentiometer.");
+                            Layout.Press2Continue();
 
                             softatalibDigital.SetPinMode(LED, SoftataLib.PinMode.DigitalOutput);
                             softatalibPWM.SetPinModePWM(LED, numPWMBits);
@@ -1290,10 +1259,10 @@ namespace SoftataBasic
                             break;
                         case ConsoleTestType.Analog_Potentiometer_Light_and_Sound:
 
-                            Fmt.Info($"Potentiometer connected to pin"," {POTENTIOMETER}");
-                            Fmt.Info($"Light Sensor connected to pin"," {LIGHTSENSOR}");
-                            Fmt.Info($"Sound Sensor connected to pin"," {SOUNDSENSOR}");
-                            Fmt.Press2con();
+                            Layout.Info($"Potentiometer connected to pin"," {POTENTIOMETER}");
+                            Layout.Info($"Light Sensor connected to pin"," {LIGHTSENSOR}");
+                            Layout.Info($"Sound Sensor connected to pin"," {SOUNDSENSOR}");
+                            Layout.Press2Continue();
 
                             int maxLoop = 20;
                             for (int i = 0; i < maxLoop; i++)
