@@ -165,8 +165,8 @@ This BSP is as per previous repositories here as well as in some blog posts:
   - Direct library install from Arduino. Search for **BMx280BMI**
 - [Grove_Ultrasonic_Ranger](https://github.com/Seeed-Studio/Seeed_Arduino_UltrasonicRanger)
   - Zip file install from [here](https://github.com/Seeed-Studio/Seeed_Arduino_UltrasonicRanger/archive/master.zip)
-- [ubg2](https://github.com/olikraus/u8g2) For [Grove OLED096 Display](https://wiki.seeedstudio.com/Grove-OLED_Display_0.96inch/)
-  - Direct library install from Arduino. Search for **ubg2**
+- [u8g2](https://github.com/olikraus/u8g2) For [Grove OLED096 Display](https://wiki.seeedstudio.com/Grove-OLED_Display_0.96inch/)
+  - Direct library install from Arduino. Search for **u8g2**  ***<-- Correction 29 Oct /24 8 not B***
 - [Grove_LCD_RGB_Backlight](https://github.com/Seeed-Studio/Grove_LCD_RGB_Backlight) For Grove-LCD RGB V4.00
   - Zip file install from [here](https://github.com/Seeed-Studio/Grove_LCD_RGB_Backlight/archive/master.zip) 
 - [Adafruit NeoPixel](https://github.com/adafruit/Adafruit_NeoPixel)
