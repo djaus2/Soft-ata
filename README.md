@@ -161,8 +161,6 @@ This BSP is as per previous repositories here as well as in some blog posts:
 
 ### Update 29 Oct 2024 (Been installing to new PC so working through any issues:
 
-- [DHT11_Temperature_And_Humidity_Sensor](https://github.com/RobTillaart/Arduino/tree/master/libraries/DHTlib)
-  - Direct library install from Arduino. Search for **DHTlib**
 - ~~[BMx280BMI](https://bitbucket.org/christandlg/bmx280mi/src/master/)~~ ***<-- Updated 29 Oct /24***
   - ~~Direct library install from Arduino. Search for **BMx280BMI**~~
 - [BME280](https://github.com/finitespace/BME280) by Tyler Glenn (finitespace)
@@ -185,6 +183,14 @@ This BSP is as per previous repositories here as well as in some blog posts:
 - **PS:** If you get **static_assert(ENABLE_CLASSIC** build error:
   - Tools->Bluetooth Stack set to Bluetooth and IPV4
   - Also need Flash Size 1M and 1M _(last option)_
+- Re: DHT11 _(Watch this space)_
+  - ~~[DHT11_Temperature_And_Humidity_Sensor](https://github.com/RobTillaart/Arduino/tree/master/libraries/DHTlib)~~
+    - ~~Direct library install from Arduino. Search for **DHTlib**~~
+  - Setup for the DHT11 (Maybe use DHTNew lib)??) Resolving this
+    - Add this DHT11 library:
+      - The FrenoveStarter Kit for the Rpi Pico was used:
+      - Clone the repoitory https://github.com/Freenove/Freenove_Ultimate_Starter_Kit_for_Raspberry_Pi_Pico (Get the zip file and thene expand it.)
+      - Open Arduino>Sketch>Include Library>Add .ZIP Library... ```Freenove_Ultimate_Starter_Kit_for_Raspberry_Pi_Pico-master\C\Libraries\DHT.zip```
 ------
 
 ## Settings
