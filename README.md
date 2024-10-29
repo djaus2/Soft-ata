@@ -186,7 +186,7 @@ This BSP is as per previous repositories here as well as in some blog posts:
 - Re: DHT11 _(Watch this space)_
   - ~~[DHT11_Temperature_And_Humidity_Sensor](https://github.com/RobTillaart/Arduino/tree/master/libraries/DHTlib)~~
     - ~~Direct library install from Arduino. Search for **DHTlib**~~
-  - Setup for the DHT11 (Maybe use DHTNew lib)??) Resolving this
+  - Setup for the DHT11 (Maybe use DHTNew lib)?? Resolving this: _Will migrate to this library for DHTXX as this lib can sense wheich DHTXX and is in Arduino lib_)
     - Add this DHT11 library:
       - The FrenoveStarter Kit for the Rpi Pico was used:
       - Clone the repoitory https://github.com/Freenove/Freenove_Ultimate_Starter_Kit_for_Raspberry_Pi_Pico (Get the zip file and then expand it.)
