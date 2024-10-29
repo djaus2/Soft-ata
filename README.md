@@ -189,7 +189,7 @@ This BSP is as per previous repositories here as well as in some blog posts:
   - Setup for the DHT11 (Maybe use DHTNew lib)??) Resolving this
     - Add this DHT11 library:
       - The FrenoveStarter Kit for the Rpi Pico was used:
-      - Clone the repoitory https://github.com/Freenove/Freenove_Ultimate_Starter_Kit_for_Raspberry_Pi_Pico (Get the zip file and thene expand it.)
+      - Clone the repoitory https://github.com/Freenove/Freenove_Ultimate_Starter_Kit_for_Raspberry_Pi_Pico (Get the zip file and then expand it.)
       - Open Arduino>Sketch>Include Library>Add .ZIP Library... ```Freenove_Ultimate_Starter_Kit_for_Raspberry_Pi_Pico-master\C\Libraries\DHT.zip```
 ------
 
