@@ -182,7 +182,7 @@ This BSP is as per previous repositories here as well as in some blog posts:
   - Zip install from [azure-sdk-for-c-arduino/releases](https://github.com/Azure/azure-sdk-for-c-arduino/releases)
 - [Servo](https://docs.arduino.cc/libraries/servo/) by Michael Margolis
   - Direct library install from Arduino. Search for **Servo**
-- **PS:** If you get ```static_assert(ENABLE_CLASSIC`` build error:
+- **PS:** If you get **static_assert(ENABLE_CLASSIC** build error:
   - Tools->Bluetooth Stack set to Bluetooth and IPV4
   - Also need Flash Size 1M and 1M _(last option)_
 ------
