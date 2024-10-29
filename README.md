@@ -205,17 +205,21 @@ The Softata sketch requires at least, a WiFi SSID and Password. If sending telem
 See the [Console app](/code/SoftataConsole). The IpAddress as determined when the Pico W runs must match that in the library. The ports must also match.
 The Console test app has multiple options:
 
-- 1  Digital
-- 2  Analog
-- 3  PWM
-- 4  Servo
-- 5  Sensors
-- 6  Displays
-- 7  Serial
-- 8  PotLightSoundAnalog
-- 9  UltrasonicRange
-- 10  PotRelay
-- 11  PotServo
+```
+1.      Digital Button and LED
+2.      Analog Potentiometer and LED
+3.      PWM
+4.      Servo
+5.      Sensors
+6.      Displays
+7.      Loopback
+8.      Analog Potentiometer Light and Sound
+9.      USonicRange
+A.      Potentiometer and Actuator
+B.      GPS Serial
+C.      Test OTA Or WDT
+D.      Analog Device Raw
+```
 
 The Blazor app has similar functionality.
 
