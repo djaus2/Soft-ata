@@ -159,9 +159,11 @@ This BSP is as per previous repositories here as well as in some blog posts:
 
 ## "Some" of the required Arduino Libraries
 
+### Update 29 Oct 2024 (Been installing to new PC so working through any issues:
+
 - [DHT11_Temperature_And_Humidity_Sensor](https://github.com/RobTillaart/Arduino/tree/master/libraries/DHTlib)
   - Direct library install from Arduino. Search for **DHTlib**
-- ~~[BMx280BMI](https://bitbucket.org/christandlg/bmx280mi/src/master/)~~ ***<-- Updated 29 Oct /24 8***
+- ~~[BMx280BMI](https://bitbucket.org/christandlg/bmx280mi/src/master/)~~ ***<-- Updated 29 Oct /24***
   - ~~Direct library install from Arduino. Search for **BMx280BMI**~~
 - [BME280](https://github.com/finitespace/BME280) by Tyler Glenn (finitespace)
   - Direct library install from Arduino. Search for BME280
@@ -178,6 +180,7 @@ This BSP is as per previous repositories here as well as in some blog posts:
 - [Azure SDK for C - Arduino](https://github.com/Azure/azure-sdk-for-c-arduino)
   - Direct library install from Arduino. Search for **Azure SDK for C** b Microsoft.
   - Zip install from [azure-sdk-for-c-arduino/releases](https://github.com/Azure/azure-sdk-for-c-arduino/releases)
+- Servo TBA
 ------
 
 ## Settings
