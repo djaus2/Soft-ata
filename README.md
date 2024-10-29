@@ -157,9 +157,12 @@ This BSP is as per previous repositories here as well as in some blog posts:
 
 ------
 
-## "Some" of the required Arduino Libraries
 
-### Update 29 Oct 2024 (Been installing to new PC so working through any issues:
+## The required Arduino Libraries
+
+### Update 29 Oct 2024 
+
+> _(Been reinstalling PC so checking these libraries)_
 
 - ~~[BMx280BMI](https://bitbucket.org/christandlg/bmx280mi/src/master/)~~ ***<-- Updated 29 Oct /24***
   - ~~Direct library install from Arduino. Search for **BMx280BMI**~~
