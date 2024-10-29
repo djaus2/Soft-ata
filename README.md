@@ -161,8 +161,10 @@ This BSP is as per previous repositories here as well as in some blog posts:
 
 - [DHT11_Temperature_And_Humidity_Sensor](https://github.com/RobTillaart/Arduino/tree/master/libraries/DHTlib)
   - Direct library install from Arduino. Search for **DHTlib**
-- [BMx280BMI](https://bitbucket.org/christandlg/bmx280mi/src/master/)
-  - Direct library install from Arduino. Search for **BMx280BMI**
+- ~~[BMx280BMI](https://bitbucket.org/christandlg/bmx280mi/src/master/)~~ ***<-- Updated 29 Oct /24 8***
+  - ~~Direct library install from Arduino. Search for **BMx280BMI**~~
+- [BME280](https://github.com/finitespace/BME280) by Tyler Glenn (finitespace)
+  - Direct library install from Arduino. Search for BME280
 - [Grove_Ultrasonic_Ranger](https://github.com/Seeed-Studio/Seeed_Arduino_UltrasonicRanger)
   - Zip file install from [here](https://github.com/Seeed-Studio/Seeed_Arduino_UltrasonicRanger/archive/master.zip)
 - [u8g2](https://github.com/olikraus/u8g2) For [Grove OLED096 Display](https://wiki.seeedstudio.com/Grove-OLED_Display_0.96inch/)
