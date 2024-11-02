@@ -395,3 +395,5 @@ FodyWeavers.xsd
 /code/SoftataWebAPI/Properties/ServiceDependencies/SoftataWebAPI20240321114706 - Web Deploy/profile.arm.json
 /code/BlazorSoftata/Properties/ServiceDependencies/SoftataBlazor - Web Deploy/profile.arm.json
 /code/SofataLibMulti
+/code/Softata/.vscode/arduino.json
+/code/Softata/src/.vscode/settings.json
