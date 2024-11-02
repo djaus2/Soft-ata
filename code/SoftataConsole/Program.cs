@@ -786,6 +786,7 @@ namespace SoftataBasic
                                                 for (int p = 0; p < properties.Length; p++)
                                                     Console.WriteLine($"\t\t{sensor} {properties[p]} = {values[p]}");
                                             }
+
                                             Console.WriteLine("Individual Read():");
                                             for (byte p = 0; p < properties.Length; p++)
                                             {

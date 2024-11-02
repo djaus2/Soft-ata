@@ -1094,6 +1094,11 @@ void loop() {
                           client.print(Grove_DHT11::GetPins());
                         }
                         break;
+                      case DHTXX:
+                        {
+                          client.print(Grove_DHTXX::GetPins());
+                        }
+                        break;
                       case BME280:
                         {
                           client.print(Grove_BME280::GetPins());
@@ -1130,6 +1135,11 @@ void loop() {
                           client.print(Grove_DHT11::GetListofProperties());
                         }
                         break;
+                       case DHTXX:
+                        {
+                          client.print(Grove_DHTXX::GetListofProperties());
+                        }
+                        break;                       
                       case BME280:
                         {
                           client.print(Grove_BME280::GetListofProperties());
@@ -1167,7 +1177,14 @@ void loop() {
                     {
                       case DHT11:
                         {
-                          grove_Sensor  = new Grove_DHT11();
+                          grove_Sensor  = new Grove_DHT11(16);
+                          _done = true;
+                        }
+                        break;
+                      case DHTXX:
+                        {
+                          String inf = Grove_DHTXX::GetListofProperties();
+                          grove_Sensor  = new Grove_DHTXX();
                           _done = true;
                         }
                         break;

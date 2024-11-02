@@ -1,3 +1,43 @@
+#ifndef GROVE_DHTXX
+#define GROVE_DHTXX
+#include "grove_sensor.h"
+#include "../Softata.h"
+
+#include <float.h>
+#define ERRORDBL  DBL_MAX;
+
+
+class Grove_DHTXX: public Grove_Sensor
+{
+    public:
+      Grove_DHTXX();
+      Grove_DHTXX(int SetupPin);
+
+      static String GetPins()
+      {
+        String msg="OK:";
+        msg.concat(DHT11_PINNOUT);
+        return msg;        
+      }
+      static String GetListofProperties()
+      {
+        String msg="OK:";
+        msg.concat(DHT11_PROPERTIES);
+        return msg; 
+      }
+      virtual bool Setup();
+      virtual bool Setup(byte * settings, byte numSettings=1);
+      virtual bool ReadAll(double * values);
+      virtual String GetTelemetry();
+      virtual double Read(int property);
+      virtual CallbackInfo * GetCallbackInfo();
+    protected:
+      CallbackInfo info;
+      int Pin;
+      bool SetupPin(int pin);
+};
+#endif
+
 #ifndef GROVE_DH11H
 #define GROVE_DH11H
 #include "grove_sensor.h"
@@ -5,6 +45,7 @@
 
 #include <float.h>
 #define ERRORDBL  DBL_MAX;
+
 
 class Grove_DHT11: public Grove_Sensor
 {

@@ -9,7 +9,7 @@
 enum SyncedCommands : byte {pauseTelemetryorBT=0,continueTelemetryorBT=1,stopTelemetryorBT=2,svrConnected=10, initialSynch=137, stopCore2=200};
 #define SynchMultiplier 1000
 
-#define APP_VERSION "10.500"  //Nb: As SoftataLib is updated, this is incremented even if no changes to Arduino code.
+#define APP_VERSION "11.000"  //Nb: As SoftataLib is updated, this is incremented even if no changes to Arduino code.
 
 //#define RPI_PICO_DEFAULT
 #define GROVE_RPI_PICO_SHIELD
@@ -72,7 +72,7 @@ static int bitStuffing[] = {256,16,16,16,16,256,16};
 #define G_DEVICETYPES C(sensor)C(actuator)C(communication)C(display)C(serial)
 
 //Add other sensors/actuators here C bracketed, on end.
-#define G_SENSORS C(DHT11)C(BME280)C(UltrasonicRanger)C(Simulator)
+#define G_SENSORS C(DHT11)C(BME280)C(UltrasonicRanger)C(Simulator)C(DHTXX)
 #define G_ACTUATORS C(SERVO)C(SIPO_74HC595)C(RELAY)
 #define G_DISPLAYS C(OLED096)C(LCD1602)C(NEOPIXEL)C(BARGRAPH)C(GBARGRAPH)
 #define G_SERIAL C(LOOPBACK)C(GPS)
@@ -145,6 +145,10 @@ enum GroveSensorCmds{s_getpinsCMD, s_getPropertiesCMD, s_setupdefaultCMD, s_setu
 
 #define DEFAULT_DHT11_PIN 16
 #define DEFAULT_URANGE_PIN 16
+
+#define DHTXX_MIN_TIME_BTW_READS_MS 1000;
+#define DHTXX_MIN_TIME_BTW_READS_MS_INCR 250;
+
 
 
 

@@ -32,12 +32,12 @@ namespace Softata.Enums
         public static AllDisplayMiscCommands BARGRAPHMiscCmds = AllDisplayMiscCommands.flow;
     }
 
-    public enum SensorDevice : byte { DHT11, BME280, UltrasonicRANGER,/* Add Here, */  Undefined = 0xFF }
+    public enum SensorDevice : byte { DHT11, BME280, UltrasonicRANGER,DHTXX,/* Add Here, */  Undefined = 0xFF }
     public enum DisplayDevice : byte { OLED096, LCD1602, NEOPIXEL, BARGRAPH, GBARGRAPH, /* Add Here, */ Undefined = 0xFF }
     public enum ActuatorDevice : byte { Servo, SIPO_74HC595, Relay,/* Add Here, */ Undefined = 0xFF }
     public enum SerialDevice : byte { Loopback, GPS, Undefined = 0xFF }
 
- 
+   
 
 
     /*public enum DisplayDevice : byte {

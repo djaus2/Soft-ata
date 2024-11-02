@@ -1,3 +1,12 @@
+/*
+#include <A2DPSink.h>
+#include <A2DPSource.h>
+#include <BluetoothAudio.h>
+#include <BluetoothAudioConsumer.h>
+#include <BluetoothAudioConsumerI2S.h>
+#include <BluetoothAudioConsumerPWM.h>
+#include <BluetoothMediaConfigurationSBC.h>
+*/
 #ifndef IOTHUBH
 #define IOTHUBH
 
