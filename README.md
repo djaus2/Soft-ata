@@ -5,7 +5,7 @@
   - Includes auto adjusted min time btw reads.
     - Gets increased til no error. _(Starts at 1000mS and incr by 250mS. Seems that 2000mS works)_
     - If read is earlier than min time after last read, uses data from previous read.
-    - Bonus: ```DHTXX.txt``` in root of repository: Upload in Blockly Is DHTXX sensor with 10 reads.
+    - Bonus: ```DHTXX.txt``` in BlocklyBonusExamplestoUpload folder: Upload in Blockly Is DHTXX sensor with 10 reads.
 - V 10.900
   - Using Nuget package [ConsoleTextFormat](https://www.nuget.org/packages/ConsoleTextFormat) to color format Console text in the Console app.
     - [ConsoleTextFormat- GitHub](https://github.com/djaus2/ConsoleTextFormat)
