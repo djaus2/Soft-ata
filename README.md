@@ -1,6 +1,7 @@
-# Soft-ata Version 10.900
+# Soft-ata Version 11.000
 
 ## Updates
+- V 11.000 _(Coming)_ Added sensor DHTXX that uses the DHTNew lib package available from lib in Arduino IDE. Can be used for DHT11,22 etc.
 - V 10.900
   - Using Nuget package [ConsoleTextFormat](https://www.nuget.org/packages/ConsoleTextFormat) to color format Console text in the Console app.
     - [ConsoleTextFormat- GitHub](https://github.com/djaus2/ConsoleTextFormat)
@@ -186,11 +187,11 @@ This BSP is as per previous repositories here as well as in some blog posts:
 - **PS:** If you get **static_assert(ENABLE_CLASSIC** build error:
   - Tools->Bluetooth Stack set to Bluetooth and IPV4
   - Also need Flash Size 1M and 1M _(last option)_
-- Re: DHT11 _(Watch this space)_
-  - ~~[DHT11_Temperature_And_Humidity_Sensor](https://github.com/RobTillaart/Arduino/tree/master/libraries/DHTlib)~~
-    - ~~Direct library install from Arduino. Search for **DHTlib**~~
+- Re: DHTNew _(Watch this space)_
+  - [DHTNew_Temperature_And_Humidity_Sensor](https://github.com/RobTillaart/DHTNEW)
+    - Direct library install from Arduino. Search for **DHTNew**
   - Setup for the DHT11 (Maybe use DHTNew lib)?? Resolving this: _Will migrate to this library for DHTXX as this lib can sense wheich DHTXX and is in Arduino lib_)
-    - Add this DHT11 library:
+    - Add this DHT11 library: _(Will be removed)_
       - The FrenoveStarter Kit for the Rpi Pico was used:
       - Clone the repoitory https://github.com/Freenove/Freenove_Ultimate_Starter_Kit_for_Raspberry_Pi_Pico (Get the zip file and then expand it.)
       - Open Arduino>Sketch>Include Library>Add .ZIP Library... ```Freenove_Ultimate_Starter_Kit_for_Raspberry_Pi_Pico-master\C\Libraries\DHT.zip```
