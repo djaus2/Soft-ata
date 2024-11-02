@@ -1,7 +1,10 @@
 # Soft-ata Version 11.000
 
 ## Updates
-- V 11.000 _(Coming)_ Added sensor DHTXX that uses the DHTNew lib package available from lib in Arduino IDE. Can be used for DHT11,22 etc.
+- V 11.000 Added sensor DHTXX that uses the DHTNew lib package available from lib in Arduino IDE. Can be used for DHT11,22 etc.
+  - Includes auto adjusted min time btw reads.
+    - Gets increased til no error. _(Starts at 1000mS and incr by 250mS. Seems that 2000mS works)_
+    - If read is earlier than min time after last read, uses data from previous read.
 - V 10.900
   - Using Nuget package [ConsoleTextFormat](https://www.nuget.org/packages/ConsoleTextFormat) to color format Console text in the Console app.
     - [ConsoleTextFormat- GitHub](https://github.com/djaus2/ConsoleTextFormat)
