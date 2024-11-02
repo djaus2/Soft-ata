@@ -1,6 +1,7 @@
-# Soft-ata Version 10.900
+# Soft-ata Version 11.000
 
 ## Updates
+- V 11.000 _(Coming)_ Added sensor DHTXX that uses the DHTNew lib package available from lib in Arduino IDE. Can be used for DHT11,22 etc.
 - V 10.900
   - Using Nuget package [ConsoleTextFormat](https://www.nuget.org/packages/ConsoleTextFormat) to color format Console text in the Console app.
     - [ConsoleTextFormat- GitHub](https://github.com/djaus2/ConsoleTextFormat)
@@ -157,16 +158,21 @@ This BSP is as per previous repositories here as well as in some blog posts:
 
 ------
 
-## "Some" of the required Arduino Libraries
 
-- [DHT11_Temperature_And_Humidity_Sensor](https://github.com/RobTillaart/Arduino/tree/master/libraries/DHTlib)
-  - Direct library install from Arduino. Search for **DHTlib**
-- [BMx280BMI](https://bitbucket.org/christandlg/bmx280mi/src/master/)
-  - Direct library install from Arduino. Search for **BMx280BMI**
+## The required Arduino Libraries
+
+### Update 29 Oct 2024 
+
+> _(Been reinstalling PC so checking these libraries)_
+
+- ~~[BMx280BMI](https://bitbucket.org/christandlg/bmx280mi/src/master/)~~ ***<-- Updated 29 Oct /24***
+  - ~~Direct library install from Arduino. Search for **BMx280BMI**~~
+- [BME280](https://github.com/finitespace/BME280) by Tyler Glenn (finitespace)
+  - Direct library install from Arduino. Search for BME280
 - [Grove_Ultrasonic_Ranger](https://github.com/Seeed-Studio/Seeed_Arduino_UltrasonicRanger)
   - Zip file install from [here](https://github.com/Seeed-Studio/Seeed_Arduino_UltrasonicRanger/archive/master.zip)
-- [ubg2](https://github.com/olikraus/u8g2) For [Grove OLED096 Display](https://wiki.seeedstudio.com/Grove-OLED_Display_0.96inch/)
-  - Direct library install from Arduino. Search for **ubg2**
+- [u8g2](https://github.com/olikraus/u8g2) For [Grove OLED096 Display](https://wiki.seeedstudio.com/Grove-OLED_Display_0.96inch/)
+  - Direct library install from Arduino. Search for **u8g2**  ***<-- Correction 29 Oct /24 8 not B***
 - [Grove_LCD_RGB_Backlight](https://github.com/Seeed-Studio/Grove_LCD_RGB_Backlight) For Grove-LCD RGB V4.00
   - Zip file install from [here](https://github.com/Seeed-Studio/Grove_LCD_RGB_Backlight/archive/master.zip) 
 - [Adafruit NeoPixel](https://github.com/adafruit/Adafruit_NeoPixel)
@@ -176,6 +182,19 @@ This BSP is as per previous repositories here as well as in some blog posts:
 - [Azure SDK for C - Arduino](https://github.com/Azure/azure-sdk-for-c-arduino)
   - Direct library install from Arduino. Search for **Azure SDK for C** b Microsoft.
   - Zip install from [azure-sdk-for-c-arduino/releases](https://github.com/Azure/azure-sdk-for-c-arduino/releases)
+- [Servo](https://docs.arduino.cc/libraries/servo/) by Michael Margolis
+  - Direct library install from Arduino. Search for **Servo**
+- **PS:** If you get **static_assert(ENABLE_CLASSIC** build error:
+  - Tools->Bluetooth Stack set to Bluetooth and IPV4
+  - Also need Flash Size 1M and 1M _(last option)_
+- Re: DHTNew _(Watch this space)_
+  - [DHTNew_Temperature_And_Humidity_Sensor](https://github.com/RobTillaart/DHTNEW)
+    - Direct library install from Arduino. Search for **DHTNew**
+  - Setup for the DHT11 (Maybe use DHTNew lib)?? Resolving this: _Will migrate to this library for DHTXX as this lib can sense wheich DHTXX and is in Arduino lib_)
+    - Add this DHT11 library: _(Will be removed)_
+      - The FrenoveStarter Kit for the Rpi Pico was used:
+      - Clone the repoitory https://github.com/Freenove/Freenove_Ultimate_Starter_Kit_for_Raspberry_Pi_Pico (Get the zip file and then expand it.)
+      - Open Arduino>Sketch>Include Library>Add .ZIP Library... ```Freenove_Ultimate_Starter_Kit_for_Raspberry_Pi_Pico-master\C\Libraries\DHT.zip```
 ------
 
 ## Settings
@@ -187,17 +206,21 @@ The Softata sketch requires at least, a WiFi SSID and Password. If sending telem
 See the [Console app](/code/SoftataConsole). The IpAddress as determined when the Pico W runs must match that in the library. The ports must also match.
 The Console test app has multiple options:
 
-- 1  Digital
-- 2  Analog
-- 3  PWM
-- 4  Servo
-- 5  Sensors
-- 6  Displays
-- 7  Serial
-- 8  PotLightSoundAnalog
-- 9  UltrasonicRange
-- 10  PotRelay
-- 11  PotServo
+```
+1.      Digital Button and LED
+2.      Analog Potentiometer and LED
+3.      PWM
+4.      Servo
+5.      Sensors
+6.      Displays
+7.      Loopback
+8.      Analog Potentiometer Light and Sound
+9.      USonicRange
+A.      Potentiometer and Actuator
+B.      GPS Serial
+C.      Test OTA Or WDT
+D.      Analog Device Raw
+```
 
 The Blazor app has similar functionality.
 
