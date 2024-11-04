@@ -375,41 +375,20 @@ namespace SoftataBasic
 
                             byte[] txPins = new byte[] { 0, 0, 4 }; //Nb: Recv are Tx+1
 
-
-                            Console.WriteLine("Serial Test");
-                            Console.WriteLine("1. Serial 1");
-                            Console.WriteLine("2. Serial 2");
-                            Console.WriteLine("3. (Tx)Serial 1 -> (Rx)Serial 2");
-                            Console.WriteLine("4. (Tx)Serial 2 -> (Rx)Serial 1");
-                            Console.WriteLine("5. Quit");
-
-                            Console.Write("Selection:");
-                            bool serialFound = false;
-                            byte iserialTxRx = 1;
-                            do
+                            List<string> SerialModes = new List<string>
                             {
-                                string? s = Console.ReadLine();
-                                if (byte.TryParse(s, out byte numTxRx))
-                                {
-                                    if ((numTxRx > 0) && (numTxRx <= 5))
-                                    {
-                                        serialFound = true;
-                                        iserialTxRx = numTxRx;
-                                    }
-                                }
-                                else if (!string.IsNullOrEmpty(s))
-                                {
-                                    string key = s;
-                                    if (key.ToUpper() == "Q")
-                                    {
-                                        iserialTxRx = 5;
-                                        serialFound = true;
-                                    }
-                                }
-                            } while (!serialFound);
+                                "Serial 1 Loopback",
+                                "Serial 2 Loopback",
+                                "(Tx)Serial 1 -> (Rx)Serial 2",
+                                "(Tx)Serial 2 -> (Rx)Serial 1"
+                            };
 
-                            if (iserialTxRx == 5)
+                            byte iserialTxRx = 1;
+                            L.Info("Serial Test"); 
+                            int res = Layout.DisplayMenu(iserialTxRx, SerialModes.ToList<string>(), true);
+                            if (res < 0)
                                 break;
+                            iserialTxRx = (byte)res;
 
                             byte comTx = 1;
                             byte comRx = 1;
@@ -437,51 +416,28 @@ namespace SoftataBasic
                             }
 
                             Console.WriteLine("");
-                            Console.WriteLine("Serial mode Selection:");
-                            Console.WriteLine("1. ASCII");
-                            Console.WriteLine("2. Byte");
-                            ;
+                            L.Info("Serial mode Selection:");
+                            SerialModes = new List<string>
+                            {
+                                "ASCII",
+                                " Byte"
+                            };
                             if (iserialTxRx < 3)
                             {
-                                Console.WriteLine("3. GPS");
+                                SerialModes.Add(" GPS");
                             }
-                            Console.WriteLine("4. Quit");
-
-                            Console.Write("Selection:");
-                            serialFound = false;
                             int iserialMode = 1;
-                            do
-                            {
-                                string? s = Console.ReadLine();
-                                if (byte.TryParse(s, out byte numMode))
-                                {
-                                    if ((numMode > 0) && (numMode <= 4) && (!((numMode == 3) && (iserialTxRx > 2))))
-                                    {
-                                        serialFound = true;
-                                        iserialMode = numMode;
-
-                                    }
-                                }
-                                else if (!string.IsNullOrEmpty(s))
-                                {
-                                    string key = s;
-                                    if (key.ToUpper() == "Q")
-                                    {
-                                        iserialMode = 4;
-                                        serialFound = true;
-                                    }
-                                }
-                            } while (!serialFound);
-                            if (iserialMode == 4)
+                            res = Layout.DisplayMenu(iserialMode, SerialModes.ToList<string>(), true);
+                            if (res < 0)
                                 break;
-
+                            iserialMode = 1 + res;
 
                             Console.WriteLine();
-                            Console.WriteLine("BAUD Rate (Default 9600).");
+                            L.Info("BAUD Rate (Default 9600).");
                             int baudRate = 9600;
                             do
                             {
-                                serialFound = false;
+                                bool serialFound = false;
                                 baudRate = 9600;
                                 while (!serialFound)
                                 {
@@ -517,9 +473,9 @@ namespace SoftataBasic
                                     Thread.Sleep(100);
                                     recvCh = softatalibSerial1.serialGetChar(comRx);
                                     if (recvCh == sendCh)
-                                        Console.WriteLine($"Serial{comTx} Sent {sendCh} Got {recvCh} on Serial{comRx},OK");
+                                        Console.WriteLine($"{Tab5}Serial{comTx} Sent {sendCh} Got {recvCh} on Serial{comRx},OK");
                                     else
-                                        Console.WriteLine($"Serial{comTx} Sent {sendCh} Got {recvCh} on Serial{comRx},NOK!");
+                                        Console.WriteLine($"{Tab5}Serial{comTx} Sent {sendCh} Got {recvCh} on Serial{comRx},NOK!");
                                     Thread.Sleep(200);
                                 }
                             }
@@ -531,9 +487,9 @@ namespace SoftataBasic
                                     softatalibSerial1.serialWriteByte(comTx, sendByte);
                                     recvByte = softatalibSerial1.serialGetByte(comRx);
                                     if (recvByte == sendByte)
-                                        Console.WriteLine($"Serial{comTx} Sent {sendByte} Got {recvByte} on Serial{comRx},OK");
+                                        Console.WriteLine($"{Tab5}Serial{comTx} Sent {sendByte} Got {recvByte} on Serial{comRx},OK");
                                     else
-                                        Console.WriteLine($"Serial{comTx} Sent {sendByte} Got {recvByte} on Serial{comRx},NOK!");
+                                        Console.WriteLine($"{Tab5}Serial{comTx} Sent {sendByte} Got {recvByte} on Serial{comRx},NOK!");
 
                                     Thread.Sleep(200);
                                     if (sendByte == 0xff)
@@ -549,7 +505,7 @@ namespace SoftataBasic
                                 while (true)
                                 {
                                     string msg = softatalibSerial1.readLine(comRx, false);
-                                    Console.WriteLine($"\t{msg}");
+                                    Console.WriteLine($"{Tab5}{msg}");
 
                                     if (Console.KeyAvailable)
                                     {
@@ -570,27 +526,14 @@ namespace SoftataBasic
                                 Console.WriteLine($"No sensors found");
                             else
                             {
-                                Console.WriteLine($"Sensors found:");
-                                for (byte i = 0; i < Sensors.Length; i++)
-                                {
-                                    string _sensor = Sensors[i];
-                                    Console.WriteLine($"{i + 1}.\t\t{_sensor}");
-                                }
-                                Console.Write("Selection:");
+                                L.Info($"Select Sensor:");
                                 bool found = false;
                                 byte isensor = 0;
-                                do
-                                {
-                                    string? s = Console.ReadLine();
-                                    if (byte.TryParse(s, out byte isen))
-                                    {
-                                        if (isen > 0 && isen <= Sensors.Length)
-                                        {
-                                            isensor = (byte)(isen - 1);
-                                            found = true;
-                                        }
-                                    }
-                                } while (!found);
+  
+                                res = Layout.DisplayMenu(isensor, Sensors.ToList<string>(), true);
+                                if (res<0)
+                                    break;
+                                isensor = (byte)res;
                                 string sensor = Sensors[isensor];
 
                                 string pins = softatalibSensor.GetPins(isensor);
@@ -624,28 +567,24 @@ namespace SoftataBasic
                                     Console.ReadLine();
                                     Console.WriteLine();
 
+
+
                                     //////////////////////////////////
                                     int sensorMode = 1;
                                     /////////////////////////////////
                                     Console.WriteLine("(START) SELECT SENSOR MODE");
-                                    Console.WriteLine("1. Read Sensor Values.");
-                                    Console.WriteLine("2. Get Telemetry");
-                                    Console.WriteLine("3. Start Stream Telemetry to Bluetooth");
-                                    Console.WriteLine("4. Start Stream Telemetry to Azure IoT Hub");
-                                    Console.WriteLine("Default 1.");
-                                    Console.Write("Selection:");
-                                    do
-                                    {
-                                        string? s = Console.ReadLine();
-                                        if (byte.TryParse(s, out byte mode))
-                                        {
-                                            if (mode > 0 && mode <= 4)
-                                            {
-                                                sensorMode = (byte)mode;
-                                                found = true;
-                                            }
-                                        }
-                                    } while (!found);
+                                    List<string> sensorModes = new List<string> { 
+                                        "Read Sensor Values",
+                                        "Get Telemetry",
+                                        "Start Stream Telemetry to Bluetooth",
+                                        "Start Stream Telemetry to Azure IoT Hub",
+                                        "Pause BT or IoT Telemetry Stream",
+                                        "Continue BT IoT Telemetry Stream"
+                                    };
+                                    res = Layout.DisplayMenu(sensorMode, sensorModes, true);
+                                    if (res < 0)
+                                        break;
+                                    sensorMode = (byte)(1+res);
                                     bool showMenu = false;
                                     bool keepRunning = true;
 
@@ -678,41 +617,15 @@ namespace SoftataBasic
                                     {
                                         if (showMenu)
                                         {
-                                            sensorMode = 1;
-                                            Console.WriteLine(" SELECT SENSOR MODE");
-                                            Console.WriteLine("1. Read Sensor Values.");
-                                            Console.WriteLine("2. Get Telemetry");
-                                            Console.WriteLine("5. Pause BT or IoT Telemetry Stream");
-                                            Console.WriteLine("6. Continue BT IoT Telemetry Stream");
-                                            Console.WriteLine("7. Quit");
-                                            Console.WriteLine("Default 1.");
-
-                                            Console.Write("Selection:");
-                                            do
+                                            //sensorMode = 1;
+                                            res = Layout.DisplayMenu(sensorMode, sensorModes, true);
+                                            if (res < 0)
                                             {
-                                                string? s = Console.ReadLine();
-                                                if (byte.TryParse(s, out byte mode))
-                                                {
-                                                    if ((mode > 0) && (mode <= sensorQuitModeNo) && (mode != 3) && (mode != 4))
-                                                    {
-                                                        sensorMode = (byte)mode;
-                                                        found = true;
-                                                        if (sensorMode == 7)
-                                                        {
-                                                            keepRunning = false;
-                                                        }
-                                                    }
-                                                }
-                                                else if (!string.IsNullOrEmpty(s))
-                                                {
-                                                    string key = s;
-                                                    if (key.ToUpper() == "Q")
-                                                    {
-                                                        sensorMode = sensorQuitModeNo;
-                                                        keepRunning = false;
-                                                    }
-                                                }
-                                            } while (!found);
+                                                sensorMode = sensorQuitModeNo;
+                                                keepRunning = false;
+                                            }
+                                            else
+                                                sensorMode = (byte)(1 + res);
                                             showMenu = true;
                                             switch (sensorMode)
                                             {
