@@ -1,4 +1,4 @@
-# Soft-ata Version 11.000
+# Soft-ata Version 11.001
 
 ## Updates
 - V 11.000 Added sensor DHTXX that uses the DHTNew lib package available from lib in Arduino IDE. Can be used for DHT11,22 etc.
