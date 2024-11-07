@@ -431,6 +431,7 @@ void setup()
   {
     Serial_println("\t\t==== Core1-Core2 Setup Sync Fail ====");
   }
+  flash(10, 8, ULTRA_SHORTPULSE);
   #ifdef ENABLE_WATCHDOG
     watchdog_enable(WATCHDOG_SECS * 1000, false);
   #endif

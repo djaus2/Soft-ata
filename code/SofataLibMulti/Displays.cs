@@ -321,7 +321,7 @@ namespace Softata
 
                 public  bool Misc_Set(byte displayLinkedListIndex, byte pixel, byte red, byte green, byte blue)
                 {
-                    byte[] data = new byte[] { 0x5, (byte)NEOPIXELMiscCmds.setpixelcolor, red, green, blue, pixel };
+                    byte[] data = new byte[] { 0x5, (byte)NEOPIXELMiscCmds.setpixelcolor, pixel,red, green, blue };
                     string result = softatalib.SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", displayLinkedListIndex, data);
                     return true;
                 }
@@ -329,6 +329,12 @@ namespace Softata
                 public  bool Misc_SetOdd(byte displayLinkedListIndex, byte red, byte green, byte blue)
                 {
                     byte[] data = new byte[] { 0x4, (byte)NEOPIXELMiscCmds.setpixelcolorOdds, red, green, blue };
+                    string result = softatalib.SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", displayLinkedListIndex, data);
+                    return true;
+                }
+                public bool Misc_SetBrightness(byte displayLinkedListIndex, byte level)
+                {
+                    byte[] data = new byte[] { 0x2, (byte)NEOPIXELMiscCmds.setBrightness, level };
                     string result = softatalib.SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", displayLinkedListIndex, data);
                     return true;
                 }

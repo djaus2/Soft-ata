@@ -12,7 +12,7 @@
     <None Include="ProgramS_tatic.cs" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="ConsoleTextFormat" Version="1.1.0" />
+    <PackageReference Include="ConsoleTextFormat" Version="1.2.3" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="8.0.0" />
   </ItemGroup>
   <ItemGroup>

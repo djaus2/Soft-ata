@@ -77,6 +77,10 @@ bool Adafruit_NeoPixel8::Misc(byte cmd, byte * data, byte length)
         case setpixelcolorOdds:
             if (length<3)
                 return false;
+            for(int i=0;i<numPixels;i=i+2)
+            {
+                pixels->setPixelColor(i, pixels->Color(0,0,0));
+            }
             for(int i=1;i<numPixels;i=i+2)
             {
                 pixels->setPixelColor(i, pixels->Color(data[0], data[1], data[2]));
@@ -86,6 +90,10 @@ bool Adafruit_NeoPixel8::Misc(byte cmd, byte * data, byte length)
         case setpixelcolorEvens: 
             if (length<3)
                 return false;
+            for(int i=1;i<numPixels;i=i+2)
+            {
+                pixels->setPixelColor(i, pixels->Color(0,0,0));
+            }
             for(int i=0;i<numPixels;i=i+2)
             {
                 pixels->setPixelColor(i, pixels->Color(data[0], data[1], data[2]));
@@ -95,6 +103,8 @@ bool Adafruit_NeoPixel8::Misc(byte cmd, byte * data, byte length)
         case setBrightness:
             if (length<1)
                 return false;
+            Serial_print("SetBrightness ");
+            Serial_println(data[0]);
             pixels->setBrightness((byte)data[0]);
             pixels->show(); 
             break;

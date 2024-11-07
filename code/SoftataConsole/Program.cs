@@ -209,8 +209,10 @@ namespace SoftataBasic
                     }
                     
                     quit = false;
+                    Layout.AddHideMenuItems("MaxType");
+                    Layout.AddHideMenuItems("Undefined");
                     Testtype = Layout.SelectEnum<ConsoleTestType>((int)Testtype + 1, ref quit, true);
-
+                    Layout.ClearHideMenuItems();
                     if (quit)
                         return;
 
@@ -727,16 +729,17 @@ namespace SoftataBasic
                             }
                             break;
 
-                        case ConsoleTestType.Displays:
+                        case ConsoleTestType.Displays_Suite_of_Tests:
+                        case ConsoleTestType.Displays_Individual_Cmds:
                             softatalibDisplay = new SoftataLib.Display(softatalib);
 
-                            SoftataLib.Display.Neopixel softataLibDisplayNeopixel;
+                            SoftataLib.Display.Neopixel? softataLibDisplayNeopixel=null;
                             SoftataLib.Display.BARGRAPHDisplay softataLibDisplayBargraphDisplay;
                             //SoftataLib.Display.BARGRAPHDisplay softataLibDisplayGBargraphDisplay;
                             SoftataLib.Display.LCD1602Display softataLibDisplayLCD1602Display;
                             SoftataLib.Display.Oled096 softataLibDisplayOled096;
 
-                            byte idisplay = 0;
+                            byte idisplay = 1;
                             string display = "";
                             string[] Miscs = new string[0];
                             string[] Displays = softatalibDisplay.GetDisplays();
@@ -745,34 +748,15 @@ namespace SoftataBasic
                             else
                             {
                                 Console.WriteLine($"Displays found:");
-                                for (byte i = 0; i < Displays.Length; i++)
-                                {
-                                    display = Displays[i];
-                                    Console.WriteLine($"{i + 1}.\t\t{display}");
-                                }
                                 Console.WriteLine("Default: 1.");
-                                //Console.WriteLine("Nb: Option 1. not yet available.");
+                                res = Layout.DisplayMenu(idisplay, Displays.ToList<string>(), true);
+                                if (res < 0)
+                                    break;
+                                idisplay = (byte)res;
 
-                                Console.Write("Selection:");
-                                bool found = false;
-
-                                do
-                                {
-                                    string? s = Console.ReadLine();
-                                    if (byte.TryParse(s, out byte idis))
-                                    {
-                                        if ((idis > 0) && (idis <= Displays.Length)) // && (idis != 1))
-                                        {
-                                            idisplay = (byte)(idis - 1);
-                                            found = true;
-                                        }
-                                        else if (string.IsNullOrEmpty(s))
-                                        {
-                                            found = true;
-                                        }
-                                    }
-                                } while (!found);
                                 display = Displays[idisplay];
+
+
 
                                 string pins = softatalibDisplay.GetPins(idisplay);
                                 if (string.IsNullOrEmpty(pins))
@@ -790,11 +774,11 @@ namespace SoftataBasic
                                 {
                                     Console.WriteLine($"{display} getMiscCmds OK");
                                     Console.WriteLine($"{display} Misc Cmds:");
-                                    for (byte i = 0; i < Miscs.Length; i++)
+                                   /* for (byte i = 0; i < Miscs.Length; i++)
                                     {
                                         string misc = Miscs[i];
                                         Console.WriteLine($"{misc}");
-                                    }
+                                    }*/
                                 }
                             }
                             byte displayLinkedListIndex;
@@ -806,37 +790,33 @@ namespace SoftataBasic
                             // NOTE: enum order of DisplayDevice must match that returned by GroveDisplayCmds.getDisplays
                             DisplayDevice displayDevice = (DisplayDevice)idisplay;
                             //////////////////////////////////////////
+                            if (displayDevice != DisplayDevice.NEOPIXEL)
+                            {
+                                L.Press2Continue("That display not yet supported in Displays_Individual_Cmds mode (7)");
+                                break;
+                            }
 
-
-                            byte numPixels = 0; //// softatalibDisplayNeopixel.MaxNumPixels;
+                            byte numPixels = 0; //// softataLibDisplayNeopixel.MaxNumPixels;
 
                             // Only do non-default setup for Neopixel
                             if (displayDevice == DisplayDevice.NEOPIXEL)
                             {
-                                softataLibDisplayNeopixel = new SoftataLib.Display.Neopixel(softatalib);
+                                if(softataLibDisplayNeopixel==null)
+                                    softataLibDisplayNeopixel = new SoftataLib.Display.Neopixel(softatalib);
                                 Console.WriteLine($"Select number of Pixels:");
+                                List<string> pixelsStr = new List<string> { };
+                                numPixels = softataLibDisplayNeopixel.MaxNumPixels;
                                 for (byte i = 1; i <= softataLibDisplayNeopixel.MaxNumPixels; i++)
                                 {
-                                    Console.WriteLine($"{i} Pixels");
-                                }
-                                Console.WriteLine($"Default: {numPixels}.");
-                                bool found = false;
-                                do
-                                {
-                                    string? s = Console.ReadLine();
-                                    if (byte.TryParse(s, out byte idis))
-                                    {
-                                        if ((idis > 0) && (idis <= MAX_NUM_NEOPIXEL_PIXELS))
-                                        {
-                                            numPixels = idis;
-                                            found = true;
-                                        }
-                                        else if (string.IsNullOrEmpty(s))
-                                        {
-                                            found = true;
-                                        }
-                                    }
-                                } while (!found);
+                                    pixelsStr.Add($"Pixels");
+                                }                        
+                                numPixels = 8;
+                                res = Layout.DisplayMenu(numPixels, pixelsStr, true);
+                                if (res < 0)
+                                    break;
+                                numPixels = (byte)(res+1);
+                                L.Info($"{numPixels} Pixels chosen");
+
                                 displayLinkedListIndex = (byte)softatalibDisplay.Setup(idisplay, 16, numPixels);
                             }
                             else if ((displayDevice == DisplayDevice.BARGRAPH)) //|| (displayDevice == DisplayDevice.GBARGRAPH))
@@ -861,198 +841,181 @@ namespace SoftataBasic
                             else
                                 displayLinkedListIndex = (byte)softatalibDisplay.SetupDefault(idisplay);
 
-                            int bargraphPin = 0;
+                            //int bargraphPin = 0;
                             Console.WriteLine($"displayLinkedListIndex: {displayLinkedListIndex}");
                             if (displayLinkedListIndex < 0)
-                                Console.WriteLine($"Instantiated sensor {display} not found");
+                                Console.WriteLine($"Instantiated display {display} not found");
                             else
                             {
-                                bool bargraphResult = true;
-                                if (Miscs.Length > 0)
+                                //bool bargraphResult = true;
+
+
+                                if (Testtype == ConsoleTestType.Displays_Individual_Cmds)
                                 {
+                                    //SoftataLib.Display.Neopixel softataLibDisplayNeopixel = null;
+
+                                    Tuple<byte, byte, byte> rgb = new Tuple<byte, byte, byte>(0x40, 0, 0);
                                     int imisc = 0xff;
-                                    do
+                                    while (true)
                                     {
-                                        string misc = "";
-                                        Console.WriteLine($"Select a Display Misc Cmd to run:");
-                                        Console.WriteLine($"{0}.\t\tSkip/Done");
-                                        for (byte i = 0; i < Miscs.Length; i++)
+                                        
+                                        if (Miscs != null)
                                         {
-                                            misc = Miscs[i];
-                                            Console.WriteLine($"{i + 1}.\t\t{misc}");
+                                            if (Miscs.Length > 0)
+                                            {
+                                                List<string> miscsStrs = Miscs.ToList<string>();
+                                                miscsStrs.Add("Set_Indiv_Pixel_Color");
+                                                res = Layout.DisplayMenu(imisc, miscsStrs, true);
+                                                if (res < 0)
+                                                    break;
+                                                imisc = (byte)(1+res);
+                                                L.Info($"{miscsStrs[imisc-1]} chosen");
+                                            }
                                         }
-                                        Console.WriteLine($"{Miscs.Length + 1}.\t\tClear Display");
-                                        Console.WriteLine($"{Miscs.Length + 2}.\t\tWrite Value");
-                                        Console.WriteLine("Default: 0.");
-                                        Console.Write("Selection:");
-                                        bool found = false;
-                                        var ExtendedMiscsTemp = Miscs.Append("Clear Display");
-                                        string[] ExtendedMiscs = ExtendedMiscsTemp.Append("Write Value").ToArray();
-
-                                        do
+                                        switch (displayDevice)
                                         {
-                                            string? s = Console.ReadLine();
-                                            if (byte.TryParse(s, out byte imis))
-                                            {
-                                                if ((imis >= 0) && (imis <= ExtendedMiscs.Length)) // && (idis != 1))
-                                                {
-                                                    if (imis == 0)
-                                                        imisc = 0xff;
-                                                    else
-                                                        imisc = (byte)(imis - 1);
-                                                    found = true;
-                                                }
-                                                else if (string.IsNullOrEmpty(s))
-                                                {
-                                                    found = true;
-                                                }
-                                            }
-                                        } while (!found);
-                                        if (imisc < ExtendedMiscs.Length)
-                                        {
-                                            misc = ExtendedMiscs[imisc];
-                                            Console.WriteLine($"Selected {misc} Misc command");
-                                            //Console.WriteLine("Note: Not passing any params to Misc command at this stage.");
-                                            byte[]? data = null;
-                                            if (displayDevice == DisplayDevice.GBARGRAPH)
-                                            {
-                                                if (
-                                                    ((BARGRAPHMiscCmds)imisc >= BARGRAPHMiscCmds.setLed)
-                                                    &&
-                                                    ((BARGRAPHMiscCmds)imisc <= BARGRAPHMiscCmds.toggleLed)
-                                                  )
 
-                                                {
-                                                    Console.WriteLine("Enter Bargraph Pin.");
-                                                    Console.Write($"Default: {bargraphPin}");
-                                                    string? indxStr = Console.ReadLine();
-                                                    if (!string.IsNullOrEmpty(indxStr))
-                                                    {
-                                                        if (byte.TryParse(indxStr, out byte indx))
+                                            case DisplayDevice.NEOPIXEL:
+                                                if (softataLibDisplayNeopixel == null)//Shouldn't get here
+                                                    break;
+                                                switch (imisc)
+                                                { 
+                                                    case 1:
+                                                        //setpixelcolorAll()                                           
+                                                        rgb = ConColors.SelectRGB();
+                                                        Console.WriteLine($"({rgb.Item1},{rgb.Item2},{rgb.Item3})");
+                                                        softataLibDisplayNeopixel.Misc_SetAll(displayLinkedListIndex, rgb.Item1, rgb.Item2, rgb.Item3);
+                                                        break;
+                                                    case 2:
+                                                        //setpixelcolorAll()
+                                                        softataLibDisplayNeopixel.Misc_SetAll(displayLinkedListIndex, rgb.Item1, rgb.Item2, rgb.Item3);
+                                                        break;
+                                                    case 3:
+                                                        //SetOdd
+                                                        softataLibDisplayNeopixel.Misc_SetOdd(displayLinkedListIndex, rgb.Item1, rgb.Item2, rgb.Item3);
+                                                        break;
+                                                    case 4:
+                                                        //SetEvens
+                                                        softataLibDisplayNeopixel.Misc_SetEvens(displayLinkedListIndex, rgb.Item1, rgb.Item2, rgb.Item3);
+                                                        break;
+                                                    case 5:
+                                                        int levl = 256;
+                                                        for (int level = 0; level<9;   level--)
                                                         {
-                                                            bargraphPin = indx;
-                                                        }
-                                                    }
-                                                    //setLed,clrLed,toggleLed
-                                                    data = new byte[] { (byte)bargraphPin };
-                                                }
-                                                else if ((BARGRAPHMiscCmds)imisc == BARGRAPHMiscCmds.setLevel)
-                                                {
-                                                    Console.WriteLine("Enter Bargraph Level 0-10");
-                                                    Console.Write($"Default: 0");
-                                                    string? levelStr = Console.ReadLine();
-                                                    byte bargraphLevel = 0;
-                                                    if (!string.IsNullOrEmpty(levelStr))
-                                                    {
-                                                        if (byte.TryParse(levelStr, out byte indx))
-                                                        {
-                                                            if ((indx >= 0) && (indx <= 10))
-                                                                bargraphLevel = indx;
-                                                        }
-                                                    }
-                                                    data = new byte[] { bargraphLevel };
-                                                }
-                                                else if (imisc == (ExtendedMiscs.Length - 2))
-                                                {
-                                                    //Clear Display
-                                                    data = new byte[] { 0 };
-                                                    imisc = 5;
-                                                }
-                                                else if (imisc == (ExtendedMiscs.Length - 1))
-                                                {
-                                                    //Set Value
-                                                    Console.WriteLine("Enter valuel 0-2^10-1");
-                                                    Console.Write($"Default: 0");
-                                                    string? levelStr = Console.ReadLine();
-                                                    int bargraphValue = 0;
-                                                    if (!string.IsNullOrEmpty(levelStr))
-                                                    {
-                                                        if (int.TryParse(levelStr, out int indx))
-                                                        {
-                                                            if ((indx >= 0) && (indx < 1024))
-                                                                bargraphValue = indx;
-                                                        }
-                                                    }
-                                                    bargraphResult = softatalibDisplay.WriteString(displayLinkedListIndex, bargraphValue.ToString());
-                                                }
-                                            }
+                                                            Console.WriteLine($"Lev {levl}");
+                                                            Thread.Sleep(1000);
+                                                            softataLibDisplayNeopixel.Misc_SetAll(displayLinkedListIndex, (byte)(rgb.Item1 / levl), (byte)(rgb.Item2 / levl), (byte)(rgb.Item3 / levl));
 
-                                            if (imisc != (ExtendedMiscs.Length - 1))
-                                            {
-                                                bargraphResult = softatalibDisplay.Misc(displayLinkedListIndex, (byte)imisc, data);
-                                            }
-                                            if (bargraphResult)
-                                                Console.WriteLine($"Misc command {misc} ran OK");
-                                            else
-                                                Console.WriteLine($"Misc command {misc} failed");
+                                                            ////////////////////////////
+                                                            // Documentation says only use SetBrightness once in setup.
+                                                            // Not for animation.
+                                                            /////////////////////////////
+                                                            /*byte lev = (byte)(levl - 1);
+                                                            Console.WriteLine($"Lev {lev}");
+                                                            softataLibDisplayNeopixel.Misc_SetBrightness(displayLinkedListIndex, lev);*/
+                                                            levl /= 2;
+                                                            if (levl < 1)
+                                                                break;
+                                                        }
+                                                        /*
+                                                         * for (byte i = 0; i < 8; i++)
+                                                        {
+                                                            rgb = ConColors.SelectRGB();
+                                                            Console.WriteLine($"({rgb.Item1},{rgb.Item2},{rgb.Item3})");
+                                                            softataLibDisplayNeopixel.Misc_Set(displayLinkedListIndex,i, rgb.Item1, rgb.Item2, rgb.Item3);
+                                                        }*/
+                                                        break;
+                                                    case 6:
+                                                        //setN();
+                                                        for (byte i = 0; i < 9; i++)
+                                                        {
+                                                            softataLibDisplayNeopixel.Misc_SetN(displayLinkedListIndex, rgb.Item1, rgb.Item2, rgb.Item3, i);
+                                                            Thread.Sleep(1500);
+                                                        }
+                                                        break;
+                                                    case 7:
+
+                                                        for (byte i = 0; i < 8; i++)
+                                                        {
+                                                            rgb = ConColors.SelectRGB();
+                                                            Console.WriteLine($"({rgb.Item1},{rgb.Item2},{rgb.Item3})");
+                                                            softataLibDisplayNeopixel.Misc_Set(displayLinkedListIndex,i, rgb.Item1, rgb.Item2, rgb.Item3);
+                                                        }
+                                                        break;
+                                                }
+                                                break;
+                                            default:
+                                                L.Press2Continue("That display not yet supported in Displays_Individual_Cmds mode (7)");
+                                                break;
                                         }
-                                        else
-                                            Console.WriteLine($"Skipping/Exiting Misc command/s");
-                                    } while (imisc != 0xff);
+
+                                    }
                                 }
 
+                                if (Testtype == ConsoleTestType.Displays_Suite_of_Tests)
                                 switch (displayDevice)
                                 {
                                     case DisplayDevice.NEOPIXEL:
                                         {
-                                            SoftataLib.Display.Neopixel softatalibDisplayNeopixel = new SoftataLib.Display.Neopixel(softatalib);
+                                            if (softataLibDisplayNeopixel == null)//Shouldn't get here
+                                                break;
                                             Console.WriteLine($"Instantiated {display} linked at {displayLinkedListIndex}");
-                                            softatalibDisplayNeopixel.Clear(displayLinkedListIndex); ;
+                                            softataLibDisplayNeopixel.Clear(displayLinkedListIndex); ;
                                             Thread.Sleep(2000);
-                                            softatalibDisplayNeopixel.Misc_SetAll(displayLinkedListIndex, 255, 0, 0);
+                                            softataLibDisplayNeopixel.Misc_SetAll(displayLinkedListIndex, 255, 0, 0);
                                             Thread.Sleep(100);
-                                            softatalibDisplayNeopixel.Misc_SetAll(displayLinkedListIndex, 0xFF, 0xA5, 0);   //Orange
+                                            softataLibDisplayNeopixel.Misc_SetAll(displayLinkedListIndex, 0xFF, 0xA5, 0);   //Orange
                                             Thread.Sleep(100);
-                                            softatalibDisplayNeopixel.Misc_SetAll(displayLinkedListIndex, 255, 255, 0);     //Yellow
+                                            softataLibDisplayNeopixel.Misc_SetAll(displayLinkedListIndex, 255, 255, 0);     //Yellow
                                             Thread.Sleep(2000);
-                                            softatalibDisplayNeopixel.Misc_SetAll(displayLinkedListIndex, 0, 255, 0);
+                                            softataLibDisplayNeopixel.Misc_SetAll(displayLinkedListIndex, 0, 255, 0);
                                             Thread.Sleep(2000);
-                                            softatalibDisplayNeopixel.Misc_SetAll(displayLinkedListIndex, 0, 0, 255);
+                                            softataLibDisplayNeopixel.Misc_SetAll(displayLinkedListIndex, 0, 0, 255);
                                             Thread.Sleep(2000);
-                                            softatalibDisplayNeopixel.Misc_SetAll(displayLinkedListIndex, 0xA0, 0x20, 0xf0);//Purple
+                                            softataLibDisplayNeopixel.Misc_SetAll(displayLinkedListIndex, 0xA0, 0x20, 0xf0);//Purple
                                             Thread.Sleep(2000);
-                                            softatalibDisplayNeopixel.Misc_SetAll(displayLinkedListIndex, 255, 255, 255);   //White
+                                            softataLibDisplayNeopixel.Misc_SetAll(displayLinkedListIndex, 255, 255, 255);   //White
                                             Thread.Sleep(2000);
-                                            softatalibDisplayNeopixel.Clear(displayLinkedListIndex);
+                                            softataLibDisplayNeopixel.Clear(displayLinkedListIndex);
                                             Thread.Sleep(2000);
-                                            softatalibDisplayNeopixel.Misc_SetOdd(displayLinkedListIndex, 255, 0, 0);
+                                            softataLibDisplayNeopixel.Misc_SetOdd(displayLinkedListIndex, 255, 0, 0);
                                             Thread.Sleep(2000);
-                                            softatalibDisplayNeopixel.Clear(displayLinkedListIndex);
+                                            softataLibDisplayNeopixel.Clear(displayLinkedListIndex);
                                             Thread.Sleep(100);
-                                            softatalibDisplayNeopixel.Misc_SetEvens(displayLinkedListIndex, 0, 255, 0);
+                                            softataLibDisplayNeopixel.Misc_SetEvens(displayLinkedListIndex, 0, 255, 0);
                                             Thread.Sleep(2000);
-                                            softatalibDisplayNeopixel.Clear(displayLinkedListIndex);
+                                            softataLibDisplayNeopixel.Clear(displayLinkedListIndex);
                                             Thread.Sleep(2000);
-                                            softatalibDisplayNeopixel.Misc_SetOdd(displayLinkedListIndex, 0, 0, 255);
+                                            softataLibDisplayNeopixel.Misc_SetOdd(displayLinkedListIndex, 0, 0, 255);
                                             Thread.Sleep(2000);
-                                            softatalibDisplayNeopixel.Clear(displayLinkedListIndex);
+                                            softataLibDisplayNeopixel.Clear(displayLinkedListIndex);
                                             Thread.Sleep(100);
-                                            softatalibDisplayNeopixel.Misc_SetEvens(displayLinkedListIndex, 255, 255, 0);
+                                            softataLibDisplayNeopixel.Misc_SetEvens(displayLinkedListIndex, 255, 255, 0);
                                             Thread.Sleep(2000);
-                                            softatalibDisplayNeopixel.Clear(displayLinkedListIndex);
+                                            softataLibDisplayNeopixel.Clear(displayLinkedListIndex);
                                             Thread.Sleep(2000);
-                                            softatalibDisplayNeopixel.Misc_SetOdd(displayLinkedListIndex, 0, 255, 255);
+                                            softataLibDisplayNeopixel.Misc_SetOdd(displayLinkedListIndex, 0, 255, 255);
                                             Thread.Sleep(2000);
-                                            softatalibDisplayNeopixel.Clear(displayLinkedListIndex);
+                                            softataLibDisplayNeopixel.Clear(displayLinkedListIndex);
                                             Thread.Sleep(100);
-                                            softatalibDisplayNeopixel.Misc_SetEvens(displayLinkedListIndex, 255, 255, 255);
+                                            softataLibDisplayNeopixel.Misc_SetEvens(displayLinkedListIndex, 255, 255, 255);
                                             Thread.Sleep(500);
-                                            softatalibDisplayNeopixel.Clear(displayLinkedListIndex);
+                                            softataLibDisplayNeopixel.Clear(displayLinkedListIndex);
                                             Thread.Sleep(500);
-                                            softatalibDisplayNeopixel.Misc_SetEvens(displayLinkedListIndex, 255, 255, 255);
+                                            softataLibDisplayNeopixel.Misc_SetEvens(displayLinkedListIndex, 255, 255, 255);
                                             Thread.Sleep(500);
-                                            softatalibDisplayNeopixel.Clear(displayLinkedListIndex);
+                                            softataLibDisplayNeopixel.Clear(displayLinkedListIndex);
                                             Thread.Sleep(500);
-                                            softatalibDisplayNeopixel.Misc_SetEvens(displayLinkedListIndex, 255, 255, 255);
+                                            softataLibDisplayNeopixel.Misc_SetEvens(displayLinkedListIndex, 255, 255, 255);
                                             Thread.Sleep(2000);
-                                            softatalibDisplayNeopixel.Clear(displayLinkedListIndex);
+                                            softataLibDisplayNeopixel.Clear(displayLinkedListIndex);
                                             Thread.Sleep(500);
-                                            for (byte n = 0; n <= softatalibDisplayNeopixel.MaxNumPixels; n++)
+                                            for (byte n = 0; n <= softataLibDisplayNeopixel.MaxNumPixels; n++)
                                             {
-                                                softatalibDisplayNeopixel.Misc_SetN(displayLinkedListIndex, 255, 255, 255, n);
+                                                softataLibDisplayNeopixel.Misc_SetN(displayLinkedListIndex, 255, 255, 255, n);
                                                 Thread.Sleep(1000);
                                             }
-                                            softatalibDisplayNeopixel.Clear(displayLinkedListIndex);
+                                            softataLibDisplayNeopixel.Clear(displayLinkedListIndex);
                                             Thread.Sleep(500);
                                             Console.WriteLine("OK");
                                         }
