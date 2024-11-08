@@ -87,6 +87,11 @@ bool Custom_Bargraph::WriteString(byte x, byte y, String msg)
 
 bool Custom_Bargraph::Misc(byte cmd, byte * data, byte length)
 {
+  Serial_println("Custom_Bargraph::Misc");
+  Serial_println(cmd);
+  Serial_println(length);
+  if(length >0)
+    Serial_println(data[0]);
   BARGRAPHMiscCmds Cmd = (BARGRAPHMiscCmds)cmd;
   switch(Cmd)
   {

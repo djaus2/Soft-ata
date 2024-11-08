@@ -1,7 +1,7 @@
 #include <Arduino.h>
-#include "grove_displays.h"
+#include "src/grove_displays.h"
 #include <Grove_LED_Bar.h>
-#include "../rpiwatchdog.h"
+#include "rpiwatchdog.h"
 
 // Grove_Bargraph
 Grove_LED_Bar * pBar;
@@ -11,17 +11,20 @@ int dio = 16;
 // Default Setup
 bool Grove_Bargraph::Setup()
 {
+  Serial_println("Bar Default");
   clk = 17;
   dio = 16;
   pBar = new Grove_LED_Bar(clk, dio, 0, LED_BAR_10);
   pBar->begin();
   delay(200);
-  pBar->setBits(0);
+  //pBar->setBits(0);
+  pBar->setBits(0x3ff);
   return true;
 }
 
 bool Grove_Bargraph::Setup(byte * settings, byte numSettings)
 {
+  Serial_println("Bar NonDef");
   if(numSettings<2)
     return false;
   clk = settings[0];
@@ -29,14 +32,16 @@ bool Grove_Bargraph::Setup(byte * settings, byte numSettings)
   pBar = new Grove_LED_Bar(clk, dio, 0, LED_BAR_10);
   pBar->begin();
   delay(200);
-  pBar->setBits(0);
+  //pBar->setBits(0);
+  pBar->setBits(0x3ff);
   return true;
 }
 
 bool Grove_Bargraph::Clear()
 {
   // Switch off all LEDs
-  pBar->setLevel(0);
+  //pBar->setLevel(0);
+  pBar->setBits(0x0);
   return true;
 }
 
@@ -105,7 +110,12 @@ bool Grove_Bargraph::WriteString(byte x, byte y, String msg)
 
 bool Grove_Bargraph::Misc(byte cmd, byte * data, byte length)
 {
-  BARGRAPHMiscCmds Cmd = (BARGRAPHMiscCmds)cmd;
+  /*erial.println("Bargraph::Misc");
+  Serial_println(cmd);
+  Serial_println(length);
+  if(length >0)
+    Serial_println(data[0]);*/
+  BARGRAPHMiscCmds Cmd = (BARGRAPHMiscCmds)(cmd);
   switch(Cmd)
   {
     case flow:
@@ -117,9 +127,13 @@ bool Grove_Bargraph::Misc(byte cmd, byte * data, byte length)
       break;
     case flow2:
       //Just set even  segment for now.
-            Serial.println("XX flow2()");
+      Serial.println("XX flow2()");
       pBar->setBits(0b000001010101010);
-      Serial_println("flow2()");;
+      Serial_println("flow2()");
+      break;
+    case allOn:
+      // Switch on all LEDs
+      pBar->setBits(0x3ff);
       break;
     case setLed:
     case clrLed:
@@ -128,15 +142,17 @@ bool Grove_Bargraph::Misc(byte cmd, byte * data, byte length)
         // Set or toggle a specific LED
         if (length < 1)
           return false;
-
         int bargraphSegment = data[0];
-
         if (Cmd == setLed)
           pBar->setLed(bargraphSegment,1);
         else if (Cmd == clrLed)
           pBar->setLed(bargraphSegment,0);
         else
+        {
+          Serial_println("Toggle");
           pBar->toggleLed(bargraphSegment);
+        }
+          
       }
       break;
     case setLevel:

@@ -18,7 +18,7 @@ namespace Softata.Enums
         /* OLEDMiscCmds */
         drawCircle, drawFrame, /* Add Here, */ OLEDMiscCmds_MAX ,
         /*BARGRAPHMiscCmds */
-        flow, flow2, setLed, clrLed, toggleLed, setLevel, exercise, /* Add Here, */ BARGRAPHMiscCmds_MAX 
+        flow, flow2, setLed, clrLed, toggleLed, setLevel, exercise,allOn, /* Add Here, */ BARGRAPHMiscCmds_MAX 
     }
 
    
@@ -26,7 +26,7 @@ namespace Softata.Enums
     enum LCD1602MiscCmds : byte { home = AllDisplayMiscCommands.home, autoscroll = AllDisplayMiscCommands.autoscroll, noautoscroll = AllDisplayMiscCommands.noautoscroll, blink = AllDisplayMiscCommands.blink, noblink = AllDisplayMiscCommands.noblink,/* Add Here, */ LCD1602MiscCmds_MAX = AllDisplayMiscCommands.LCD1602MiscCmds_MAX }
     enum NEOPIXELMiscCmds : byte { setpixelcolor = AllDisplayMiscCommands.setpixelcolor, setpixelcolorAll  = AllDisplayMiscCommands.setpixelcolorAll, setpixelcolorOdds  = AllDisplayMiscCommands.setpixelcolorOdds, setpixelcolorEvens = AllDisplayMiscCommands.setpixelcolorEvens, setBrightness = AllDisplayMiscCommands.setBrightness, /* Add Here, */ NEOPIXELMiscCmds_MAX = AllDisplayMiscCommands.NEOPIXELMiscCmds_MAX }
     public enum OLEDMiscCmds : byte { drawCircle = AllDisplayMiscCommands.drawCircle, drawFrame = AllDisplayMiscCommands.drawFrame, /* Add Here, */ OLEDMiscCmds_MAX = AllDisplayMiscCommands.OLEDMiscCmds_MAX }
-    public enum BARGRAPHMiscCmds: byte { flow = AllDisplayMiscCommands.flow, flow2 = AllDisplayMiscCommands.flow2, setLed = AllDisplayMiscCommands.setLed, clrLed = AllDisplayMiscCommands.clrLed, toggleLed = AllDisplayMiscCommands.toggleLed, setLevel = AllDisplayMiscCommands.setLevel, exercise = AllDisplayMiscCommands.exercise, /* Add Here, */ BARGRAPHMiscCmds_MAX = AllDisplayMiscCommands.BARGRAPHMiscCmds_MAX }
+    public enum BARGRAPHMiscCmds: byte { flow = AllDisplayMiscCommands.flow, flow2 = AllDisplayMiscCommands.flow2, setLed = AllDisplayMiscCommands.setLed, clrLed = AllDisplayMiscCommands.clrLed, toggleLed = AllDisplayMiscCommands.toggleLed, setLevel = AllDisplayMiscCommands.setLevel, exercise = AllDisplayMiscCommands.exercise, allOn = AllDisplayMiscCommands.allOn, /* Add Here, */ BARGRAPHMiscCmds_MAX = AllDisplayMiscCommands.BARGRAPHMiscCmds_MAX }
 
     public static class DisplayMiscEnumFirstCmd
     {

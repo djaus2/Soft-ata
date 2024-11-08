@@ -192,7 +192,7 @@ enum GroveDisplayCmds{d_getpinsCMD, d_tbdCMD, d_setupDefaultCMD, d_setupCMD, d_c
 enum LCD1602MiscCmds {home,autoscroll,noautoscroll,blink,noblink,LCD1602MiscCmds_MAX};
 enum NEOPIXELMiscCmds {setpixelcolor,setpixelcolorAll,setpixelcolorOdds,setpixelcolorEvens,setBrightness,setN,NEOPIXELMiscCmds_MAX};
 enum OLEDMiscCmds {drawCircle,drawFrame,test,OLEDMiscCmds_MAX};
-enum BARGRAPHMiscCmds {flow,flow2,setLed,clrLed,toggleLed,setLevel,exercise,BARGRAPHMiscCmds_MAX};
+enum BARGRAPHMiscCmds {flow,flow2,setLed,clrLed,toggleLed,setLevel,exercise,allOn,BARGRAPHMiscCmds_MAX};
 enum numStringType {_DEC, _BIN, _HEX, _NONE};
 enum range_units {mm,cm,inch};
 

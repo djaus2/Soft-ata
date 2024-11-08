@@ -734,7 +734,7 @@ namespace SoftataBasic
                             softatalibDisplay = new SoftataLib.Display(softatalib);
 
                             SoftataLib.Display.Neopixel? softataLibDisplayNeopixel=null;
-                            SoftataLib.Display.BARGRAPHDisplay softataLibDisplayBargraphDisplay;
+                            SoftataLib.Display.BARGRAPHDisplay softataLibDisplayBargraphDisplay = null;
                             //SoftataLib.Display.BARGRAPHDisplay softataLibDisplayGBargraphDisplay;
                             SoftataLib.Display.LCD1602Display softataLibDisplayLCD1602Display;
                             SoftataLib.Display.Oled096 softataLibDisplayOled096;
@@ -790,7 +790,7 @@ namespace SoftataBasic
                             // NOTE: enum order of DisplayDevice must match that returned by GroveDisplayCmds.getDisplays
                             DisplayDevice displayDevice = (DisplayDevice)idisplay;
                             //////////////////////////////////////////
-                            if (displayDevice != DisplayDevice.NEOPIXEL)
+                            if ((displayDevice != DisplayDevice.NEOPIXEL)&& (displayDevice != DisplayDevice.GBARGRAPH))
                             {
                                 L.Press2Continue("That display not yet supported in Displays_Individual_Cmds mode (7)");
                                 break;
@@ -819,14 +819,14 @@ namespace SoftataBasic
 
                                 displayLinkedListIndex = (byte)softatalibDisplay.Setup(idisplay, 16, numPixels);
                             }
-                            else if ((displayDevice == DisplayDevice.BARGRAPH)) //|| (displayDevice == DisplayDevice.GBARGRAPH))
+                            else if (  (displayDevice == DisplayDevice.BARGRAPH) || (displayDevice == DisplayDevice.GBARGRAPH) )
                             {
                                 softataLibDisplayBargraphDisplay = new SoftataLib.Display.BARGRAPHDisplay(softatalib);
                                 // Use default settings
-                                //displayLinkedListIndex = (byte)softatalibDisplay.SetupDefault(idisplay); 
+                                displayLinkedListIndex = (byte)softatalibDisplay.SetupDefault(idisplay); 
                                 //Or use custom settings: {data,latch,clock} GPIO Pins
-                                List<byte> settings = new List<byte> { 20, 21 }; // Send the  data pin as 16
-                                displayLinkedListIndex = (byte)softatalibDisplay.Setup(idisplay, 16, settings);
+                                //List<byte> settings = new List<byte> { 20, 21 }; // Send the  data pin as 16
+                                //displayLinkedListIndex = (byte)softatalibDisplay.Setup(idisplay, 16, settings);
                             }
                             else if (displayDevice == DisplayDevice.OLED096)
                             {
@@ -864,7 +864,18 @@ namespace SoftataBasic
                                             if (Miscs.Length > 0)
                                             {
                                                 List<string> miscsStrs = Miscs.ToList<string>();
-                                                miscsStrs.Add("Set_Indiv_Pixel_Color");
+                                                switch (displayDevice)
+                                                {
+                                                    case DisplayDevice.NEOPIXEL:
+                                                        miscsStrs.Add("Set_Indiv_Pixel_Color");
+                                                        break;
+                                                    case DisplayDevice.BARGRAPH:
+                                                    case DisplayDevice.GBARGRAPH:
+                                                        miscsStrs.Add("Clear");
+                                                        miscsStrs.Add("All_On");
+                                                        break;
+                                                }
+                                                
                                                 res = Layout.DisplayMenu(imisc, miscsStrs, true);
                                                 if (res < 0)
                                                     break;
@@ -874,6 +885,45 @@ namespace SoftataBasic
                                         }
                                         switch (displayDevice)
                                         {
+                                            case DisplayDevice.GBARGRAPH:
+                                                byte led = 0;
+                                                byte bglevel = 0;
+                                                if (softataLibDisplayBargraphDisplay == null)//Shouldn't get here
+                                                    break;
+                                                switch (imisc)
+                                                {
+                                                    case 1:  //flow
+                                                        softataLibDisplayBargraphDisplay.Flow(displayLinkedListIndex);
+                                                        break;
+                                                    case 2://flow2
+                                                        softataLibDisplayBargraphDisplay.Flow2(displayLinkedListIndex);
+                                                        break;
+                                                    case 3: //setLed
+                                                        led = (byte)Layout.Prompt4Num(led, 10, false); 
+                                                        softataLibDisplayBargraphDisplay.setLED(displayLinkedListIndex, led);
+                                                        break;
+                                                    case 4: //clrLed
+                                                        led = (byte)Layout.Prompt4Num(led, 10, false);
+                                                        softataLibDisplayBargraphDisplay.clrLED(displayLinkedListIndex, led);
+                                                        break;
+                                                    case 5:  //toggleLed
+                                                        led = (byte)Layout.Prompt4Num(led, 10, false);
+                                                        softataLibDisplayBargraphDisplay.toggleLED(displayLinkedListIndex, led);
+                                                        break;
+                                                    case 6:  //setLevel
+                                                        bglevel = (byte)Layout.Prompt4Num(led, 0xff, false);
+                                                        softataLibDisplayBargraphDisplay.setLED(displayLinkedListIndex, bglevel);
+                                                        break;
+                                                   case  7:  //exercise
+                                                        break;
+                                                    case 8: //Clear
+                                                        softatalibDisplay.Clear(displayLinkedListIndex);
+                                                        break;
+                                                    case 9: //All on
+                                                        softataLibDisplayBargraphDisplay.allOn(displayLinkedListIndex);
+                                                        break;
+                                                }
+                                                break;
 
                                             case DisplayDevice.NEOPIXEL:
                                                 if (softataLibDisplayNeopixel == null)//Shouldn't get here

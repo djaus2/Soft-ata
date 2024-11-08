@@ -400,6 +400,24 @@ namespace Softata
                 // Misc commands
                 internal SoftataLib softatalib;
 
+
+
+                
+                /////////////////////////////////////////////////////////////////////////////////////////////////////////
+                // Display Class generic methods
+                /////////////////////////////////////////////////////////////////////////////////////////////////////////
+                
+                public bool clear(byte displayLinkedListIndex)
+                {
+                    string result = softatalib.SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.clear, "OK:", displayLinkedListIndex);
+                    return true;
+                }
+
+
+                /////////////////////////////////////////////////////////////////////////////////////////////////////////
+                /// Misc commands
+                /////////////////////////////////////////////////////////////////////////////////////////////////////////
+              
                 public BARGRAPHDisplay(SoftataLib parent)
                 {
                     this.softatalib = parent;
@@ -407,7 +425,55 @@ namespace Softata
 
                 public  bool Flow(byte displayLinkedListIndex)
                 {
-                    byte[] data = new byte[] { 0x1, (byte)BARGRAPHMiscCmds.flow };
+                    byte[] data = new byte[] { 0x1, (byte)((byte)BARGRAPHMiscCmds.flow - (byte)DisplayMiscEnumFirstCmd.BARGRAPHMiscCmds) };
+                    string result = softatalib.SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", displayLinkedListIndex, data);
+                    return true;
+                }
+
+                public bool Flow2(byte displayLinkedListIndex)
+                {
+                    byte[] data = new byte[] { 0x1, (byte)((byte)BARGRAPHMiscCmds.flow2 - (byte)DisplayMiscEnumFirstCmd.BARGRAPHMiscCmds) };
+                    string result = softatalib.SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", displayLinkedListIndex, data);
+                    return true;
+                }
+
+                public bool allOn(byte displayLinkedListIndex)
+                {
+                    byte[] data = new byte[] { 0x1, (byte)((byte)BARGRAPHMiscCmds.allOn - (byte)DisplayMiscEnumFirstCmd.BARGRAPHMiscCmds) };
+                    string result = softatalib.SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", displayLinkedListIndex, data);
+                    return true;
+                }
+
+                /// <summary>
+                /// Note: For the following led is called as 0...9. mapping to Arduino Softata numbers the pins 1 ...10
+                /// </summary>
+                /// <param name="displayLinkedListIndex"></param>
+                /// <param name="led"></param>
+                /// <returns></returns>
+                public bool setLED(byte displayLinkedListIndex, byte led)
+                {
+                    byte[] data = new byte[] { 0x2, (byte)((byte)BARGRAPHMiscCmds.setLed - (byte)DisplayMiscEnumFirstCmd.BARGRAPHMiscCmds) ,(byte)(led +1) };
+                    string result = softatalib.SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", displayLinkedListIndex, data);
+                    return true;
+                }
+
+                public bool clrLED(byte displayLinkedListIndex, byte led)
+                {
+                    byte[] data = new byte[] { 0x2, (byte)((byte)BARGRAPHMiscCmds.clrLed - (byte)DisplayMiscEnumFirstCmd.BARGRAPHMiscCmds) , (byte)(led + 1) };
+                    string result = softatalib.SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", displayLinkedListIndex, data);
+                    return true;
+                }
+
+                public bool toggleLED(byte displayLinkedListIndex, byte led)
+                {
+                    byte[] data = new byte[] { 0x2, (byte)((byte)BARGRAPHMiscCmds.toggleLed - (byte)DisplayMiscEnumFirstCmd.BARGRAPHMiscCmds) , (byte)(led + 1) };
+                    string result = softatalib.SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", displayLinkedListIndex, data);
+                    return true;
+                }
+
+                public bool setLevel(byte displayLinkedListIndex, byte level)
+                {
+                    byte[] data = new byte[] { 0x2, (byte)((byte)BARGRAPHMiscCmds.setLevel - (byte)DisplayMiscEnumFirstCmd.BARGRAPHMiscCmds) , level };
                     string result = softatalib.SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", displayLinkedListIndex, data);
                     return true;
                 }
