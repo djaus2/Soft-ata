@@ -1,9 +1,11 @@
-# Soft-ata Version 11.001
+# Soft-ata Version 11.200
 
 ## Updates
+- V 11.200 As per 11.200 Individual misc commnds for GBargraph in Console app
+  - Also added GBargraph misc commands in SoftataLib so can be directly used elsewehere.
 - V 11.100 Extended Console App fuctionality
   - Can run fixed suite of tests for a display, as previous.
-  - Or run indiviaul commands, as selected. Only implemented for Pixel display thus far.
+  - Or run indiviaul misc commands, as selected. Only implemented for Pixel display thus far and GBargraph (Grove LED Bar).
 - V 11.000 Added sensor DHTXX that uses the DHTNew lib package available from lib in Arduino IDE. Can be used for DHT11,22 etc.
   - Includes auto adjusted min time btw reads.
     - Gets increased til no error. _(Starts at 1000mS and incr by 250mS. Seems that 2000mS works)_
