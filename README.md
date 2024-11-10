@@ -1,7 +1,11 @@
 # Soft-ata Version 11.200
 
 ## Updates
-- V 11.200 As per 11.200 Individual misc commnds for GBargraph in Console app
+- V11.300 As per 11.100 and 11.200  Individual misc commnds for LCD in Console app
+  - Also fixed misc switch case miscode for LCD!
+- V 11.200 As per 11.100 Individual misc commnds for GBargraph in Console app
+  - ```ConsoleTestType.Displays_Suite_of_Tests```
+  - viz ```ConsoleTestType.Displays_Suite_of_Tests```
   - Also added GBargraph misc commands in SoftataLib so can be directly used elsewehere.
 - V 11.100 Extended Console App fuctionality
   - Can run fixed suite of tests for a display, as previous.
