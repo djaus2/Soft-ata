@@ -21,6 +21,8 @@ using L = ConsoleTextFormat.Layout;
 using ConsoleTextFormat;
 using System.Runtime.Intrinsics.X86;
 using static System.Runtime.CompilerServices.RuntimeHelpers;
+using System.Diagnostics.Eventing.Reader;
+using System.Transactions;
 
 
 
@@ -732,6 +734,7 @@ namespace SoftataBasic
 
                         case ConsoleTestType.Displays_Suite_of_Tests:
                         case ConsoleTestType.Displays_Individual_Cmds:
+                        case ConsoleTestType.Displays_Generic:
                             softatalibDisplay = new SoftataLib.Display(softatalib);
 
                             SoftataLib.Display.Neopixel? softataLibDisplayNeopixel=null;
@@ -851,9 +854,90 @@ namespace SoftataBasic
                             else
                             {
                                 //bool bargraphResult = true;
+                                if (Testtype == ConsoleTestType.Displays_Generic)
+                                {
+                                    int line = 1;
+                                    int pos = 1;
+                                    while (true)
+                                    {
+                                        // Don't display these on menu
+                                        L.AddHideMenuItems("misc" );
+                                        L.AddHideMenuItems("dispose");
+                                        L.AddHideMenuItems( "getDisplays");
+                                        L.AddHideMenuItems("setup");
+                                        L.AddHideMenuItems("SetupDefault");
+                                        var menu = L.GenerateEnumMenuList<GroveDisplayCmds>();
+                                        L.ClearHideMenuItems();
 
+                                        res = (int)Layout.DisplayMenu(2, menu, true);
+                                        if (res < 0)
+                                            break;  
+                                        // Compensate from 2 removed setups.
+                                        if (((GroveDisplayCmds)res) > GroveDisplayCmds.getMiscCmds)
+                                            res += 2;
+                                        GroveDisplayCmds cmd = (GroveDisplayCmds)res;
+                                        L.Info($"{cmd} ({res}) chosen");
 
-                                if (Testtype == ConsoleTestType.Displays_Individual_Cmds)
+                                        string? msg = "";
+                                        string response = "";
+
+                                        switch (cmd)
+                                        {
+                                            case GroveDisplayCmds.getpins:
+                                            case GroveDisplayCmds.getMiscCmds:
+                                            case GroveDisplayCmds.clear:
+                                            case GroveDisplayCmds.homeCMD:
+                                                response = softatalibDisplay.GenericDisplayCmd(displayDevice, (byte)cmd, displayLinkedListIndex);
+                                                break;
+                                            case GroveDisplayCmds.backlight:
+                                                break;
+                                            case GroveDisplayCmds.writestrngCMD:
+                                                while (string.IsNullOrEmpty(msg))
+                                                {
+                                                    msg= Console.ReadLine();
+                                                }
+                                                if (msg is not null)
+                                                {
+                                                    if (softatalibDisplay.WriteString(displayLinkedListIndex, msg))
+                                                        response = "OK";
+                                                    else
+                                                        response = "NOT OK";
+                                                }
+                                                break;
+                                            case GroveDisplayCmds.cursor_writestringCMD:
+                                                L.Info("Enter line 1 or 2");
+                                                line = L.Prompt4Num(line, 2, false);
+                                                L.Info("Enter line position  1 to 40");
+                                                pos = L.Prompt4Num(pos, 40, false);
+                                                while (string.IsNullOrEmpty(msg))
+                                                {
+                                                    msg = Console.ReadLine();
+                                                }
+                                                if (msg is not null)
+                                                {
+                                                    if (softatalibDisplay.WriteString(displayLinkedListIndex, msg))
+                                                        response = "OK";
+                                                    else
+                                                        response = "NOT OK";
+                                                }
+                                                break;
+                                            case GroveDisplayCmds.setCursor:
+                                                L.Info("Enter line 1 or 2");
+                                                line = L.Prompt4Num(line, 2, false);
+                                                L.Info("Enter line position  1 to 40");
+                                                pos = L.Prompt4Num(pos, 40, false);
+                                                if (softatalibDisplay.SetCursor(displayLinkedListIndex, pos, line))
+                                                    response = "OK";
+                                                else
+                                                    response = "NOT OK";
+                                                break;
+                                        }
+                           
+                                        L.Info(response);
+                                    }
+                                    break;
+                                }
+                                else    if (Testtype == ConsoleTestType.Displays_Individual_Cmds)
                                 {
                                     //SoftataLib.Display.Neopixel softataLibDisplayNeopixel = null;
 

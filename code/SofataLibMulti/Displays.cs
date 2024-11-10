@@ -47,6 +47,12 @@ namespace Softata
                     return new string[0];
             }
 
+            public string GenericDisplayCmd(DisplayDevice displayType, byte cmd,byte displayLinkedListIndex)
+            {
+                string result = softatalib.SendMessage(Commands.groveDisplay, 0, (byte)cmd, "OK:", displayLinkedListIndex);
+                return result;
+            }
+
             public  string GetPins(byte displayType)
             {
 
