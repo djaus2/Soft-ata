@@ -20,6 +20,7 @@ using F = ConsoleTextFormat.Fmt;
 using L = ConsoleTextFormat.Layout;
 using ConsoleTextFormat;
 using System.Runtime.Intrinsics.X86;
+using static System.Runtime.CompilerServices.RuntimeHelpers;
 
 
 
@@ -736,8 +737,8 @@ namespace SoftataBasic
                             SoftataLib.Display.Neopixel? softataLibDisplayNeopixel=null;
                             SoftataLib.Display.BARGRAPHDisplay softataLibDisplayBargraphDisplay = null;
                             //SoftataLib.Display.BARGRAPHDisplay softataLibDisplayGBargraphDisplay;
-                            SoftataLib.Display.LCD1602Display softataLibDisplayLCD1602Display;
-                            SoftataLib.Display.Oled096 softataLibDisplayOled096;
+                            SoftataLib.Display.LCD1602Display softataLibDisplayLCD1602Display=null;
+                            SoftataLib.Display.Oled096 softataLibDisplayOled096=null;
 
                             byte idisplay = 1;
                             string display = "";
@@ -790,7 +791,9 @@ namespace SoftataBasic
                             // NOTE: enum order of DisplayDevice must match that returned by GroveDisplayCmds.getDisplays
                             DisplayDevice displayDevice = (DisplayDevice)idisplay;
                             //////////////////////////////////////////
-                            if ((displayDevice != DisplayDevice.NEOPIXEL)&& (displayDevice != DisplayDevice.GBARGRAPH))
+                            if ((displayDevice != DisplayDevice.NEOPIXEL)&&
+                                (displayDevice != DisplayDevice.LCD1602) &&
+                                (displayDevice != DisplayDevice.GBARGRAPH))
                             {
                                 L.Press2Continue("That display not yet supported in Displays_Individual_Cmds mode (7)");
                                 break;
@@ -874,6 +877,12 @@ namespace SoftataBasic
                                                         miscsStrs.Add("Clear");
                                                         miscsStrs.Add("All_On");
                                                         break;
+                                                    case DisplayDevice.LCD1602:
+                                                        miscsStrs.Add("Clear");
+                                                        miscsStrs.Add("Enter_Text");
+                                                        miscsStrs.Add("First_Line");
+                                                        miscsStrs.Add("Second_Line");
+                                                        break;
                                                 }
                                                 
                                                 res = Layout.DisplayMenu(imisc, miscsStrs, true);
@@ -885,6 +894,52 @@ namespace SoftataBasic
                                         }
                                         switch (displayDevice)
                                         {
+                                            case DisplayDevice.LCD1602:
+                                                if (softataLibDisplayLCD1602Display == null)//Shouldn't get here
+                                                    break;
+                                                //LCD1602MiscCmds { home, autoscroll, noautoscroll, blink, noblink, LCD1602MiscCmds_MAX }
+                                                switch (imisc)
+                                                {
+                                                    case 1:  //home
+                                                        softatalibDisplay.Home(displayLinkedListIndex);
+                                                        break;
+                                                    case 2://autoscroll
+                                                        softataLibDisplayLCD1602Display.Autoscroll(displayLinkedListIndex);
+                                                        break;
+                                                    case 3://autoscroll
+                                                        softataLibDisplayLCD1602Display.NoAutoscroll(displayLinkedListIndex);
+                                                        break;
+                                                    case 4: //blink
+                                                        softataLibDisplayLCD1602Display.Blink(displayLinkedListIndex);
+                                                        break;
+                                                    case 5: //noblink
+                                                        softataLibDisplayLCD1602Display.NoBlink(displayLinkedListIndex);
+                                                        break;
+                                                    case 6: //Clear
+                                                        softatalibDisplay.Clear(displayLinkedListIndex);
+                                                        break;
+                                                    case 7: //Enter text
+                                                        char ch = ' ';
+                                                        L.Info("Enter text to display", "(Enter to finish)");
+                                                        do
+                                                        {
+                                                            var keyCode = Console.ReadKey();
+                                                            if (keyCode.Key == ConsoleKey.Enter)
+                                                                break;
+                                                            ch = keyCode.KeyChar;
+                                                            if(ch != '.')
+                                                                softatalibDisplay.WriteString(displayLinkedListIndex, $"{ch}");
+                                                        }
+                                                        while (true);
+                                                        break;
+                                                    case 8: // First line
+                                                        softatalibDisplay.SetCursor(displayLinkedListIndex, 0, 0);
+                                                        break;
+                                                    case 9: //Second Line
+                                                        softatalibDisplay.SetCursor(displayLinkedListIndex, 0, 1);
+                                                        break;
+                                                }
+                                                break;
                                             case DisplayDevice.GBARGRAPH:
                                                 byte led = 0;
                                                 byte bglevel = 0;

@@ -358,12 +358,6 @@ namespace Softata
                 // Misc commands
                 enum LCD1602MiscCmds { home, autoscroll, noautoscroll, blink, noblink, LCD1602MiscCmds_MAX };
 
-                public  bool Home(byte displayLinkedListIndex)
-                {
-                    byte[] data = new byte[] { 0x1, (byte)LCD1602MiscCmds.home };
-                    string result = softatalib.SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", displayLinkedListIndex, data);
-                    return true;
-                }
 
                 public  bool Autoscroll(byte displayLinkedListIndex)
                 {

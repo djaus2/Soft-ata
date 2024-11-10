@@ -1690,6 +1690,20 @@ void loop() {
                     }
                   } 
                   break;
+                case d_home:
+                  {
+                    int index = other;
+                    Grove_Display * grove_Display = GetDisplayFromList(index);
+                    if(grove_Display->Home())
+                    {
+                      client.print("OK:Home");
+                    }
+                    else
+                    {
+                      client.print("Fail:Home");
+                    }
+                  } 
+                  break;
                 case d_backlightCMD:
                   {
                     int index = other;

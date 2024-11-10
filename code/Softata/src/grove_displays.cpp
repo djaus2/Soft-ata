@@ -282,27 +282,39 @@ bool Grove_LCD1602::Misc(byte cmd, byte * data, byte length)
   else if(cmd>(int) LCD1602MiscCmds_MAX)
     return false;
   LCD1602MiscCmds Cmd = (LCD1602MiscCmds)cmd;
-  switch (Cmd)
+  switch (cmd)
   {
-    home:
+  case home:
       lcd.home(); // Could remove this from here now
       break;
-    autoscroll:
+  case autoscroll:
+      Serial_print("Autoscroll:");
+      Serial_println(cmd);
       lcd.autoscroll();
       break;
-    noautoscroll:
+  case noautoscroll:
+      Serial_print("noautoscroll:");
+      Serial_println(cmd);
       lcd.noAutoscroll();
       break;
-    blink:
+  case blink:
+      Serial_print("blink:");
+      Serial_println(cmd);
       lcd.blink();
       break;
-    nonlink:
+  case noblink:
+      Serial_print("nonlink:");
+      Serial_println(cmd);
       lcd.noBlink();
       break;
-    LCD1602MiscCmds_MAX:
+  case LCD1602MiscCmds_MAX:
+      Serial_print("Max:");
+      Serial_println(cmd);
       return false;
       break;
-    default:
+  default:
+      Serial_print("Default:");
+      Serial_println(cmd);
       return false;
       break;
   }
