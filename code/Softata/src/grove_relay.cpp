@@ -33,7 +33,7 @@ bool Grove_Relay::Setup(byte * settings, byte numSettings)
         return false;
    }
     Serial_print("Setting up relay on pin: ");
-    Serial_println(relayPin);
+    Serial.println(relayPin);
     pinMode(relayPin, OUTPUT);
     digitalWrite(relayPin, false);
     return true;
@@ -55,28 +55,28 @@ bool Grove_Relay::Write(int value, int index, int numBytes )
 
 bool Grove_Relay::SetBitState(bool state,int bitNo)
 {
-    Serial_println("Setting relay state");
+    Serial.println("Setting relay state");
     digitalWrite(relayPin, state);
     return true;
 }
 
 bool Grove_Relay::SetBit(int bitNo )
 {
-    Serial_println("Setting relay");
+    Serial.println("Setting relay");
     digitalWrite(relayPin, true);
     return true;
 }
 
 bool Grove_Relay::ClearBit(int bitNo)
 {
-    Serial_println("Clearing relay");
+    Serial.println("Clearing relay");
     digitalWrite(relayPin, false);
     return true;
 }
 
 bool Grove_Relay::ToggleBit(int bitNo)
 {
-    Serial_println("Toggling relay");
+    Serial.println("Toggling relay");
     bool state = digitalRead(relayPin);
     digitalWrite(relayPin, !state);
     return true;

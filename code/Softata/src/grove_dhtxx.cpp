@@ -1,7 +1,7 @@
 #include "grove_environsensors.h"
 #include <arduino.h>
 #include <dhtnew.h>
-#include "../Softata.h"
+#include "Softata.h"
 
 
 #ifdef GROVE_RPI_PICO_SHIELD
@@ -42,7 +42,7 @@ int XPins[] = {XPINS};
       _pins.concat(Xpins);
       _pins.concat(" Default:");
       _pins.concat(DEFAULT_PIN);
-      Serial_println(_pins);
+      Serial.println(_pins);
       return String(_pins); //pins;
     }*/
 
@@ -73,11 +73,11 @@ int XPins[] = {XPINS};
       whileNotSerial(){delay(100);};
       Serial_print("DHT");
       Serial_print(mySensor->getType());
-      Serial_println(" Grove");
+      Serial.println(" Grove");
       Serial_print("LIBRARY VERSION: ");
-      Serial_println(DHTNEW_LIB_VERSION);
-      Serial_println();
-      //Serial_println("Type,\tstatus,\tHumidity (%),\tTemperature (C)");
+      Serial.println(DHTNEW_LIB_VERSION);
+      Serial.println();
+      //Serial.println("Type,\tstatus,\tHumidity (%),\tTemperature (C)");
       return true;
     }
 
@@ -107,7 +107,7 @@ int XPins[] = {XPINS};
     {
       // READ DATA
       Serial_print("DHT");
-      Serial_println(mySensor->getType());
+      Serial.println(mySensor->getType());
       // Allow 3 retries
       bool OK = false;
       // Don't reread too soon
@@ -118,14 +118,14 @@ int XPins[] = {XPINS};
           // Wait
           while((millis() - mySensor->lastRead()) < minTimeBtwReads_ms)
             delay(50);
-          Serial_println("Reading DHTXX");
+          Serial.println("Reading DHTXX");
           int chk = mySensor->read();
           Serial_print("Returned: ");
           Serial.println(chk);
           switch (chk)
           {
             case DHTLIB_OK:
-              Serial_println("OK,\t");
+              Serial.println("OK,\t");
               OK=true;
               break;
             case DHTLIB_ERROR_CHECKSUM:
@@ -163,7 +163,7 @@ int XPins[] = {XPINS};
           else
           // If fail then increase minTimeBtwReads_ms
           minTimeBtwReads_ms += DHTXX_MIN_TIME_BTW_READS_MS_INCR;
-          Serial_println(minTimeBtwReads_ms);
+          Serial.println(minTimeBtwReads_ms);
           delay(100);
         }
 
@@ -209,20 +209,20 @@ int XPins[] = {XPINS};
 
     double Grove_DHTXX::Read(int property)
     {
-      Serial_println("ReadAll()");
+      Serial.println("ReadAll()");
       if((property<0) || (property>1))
       {
-        Serial_println("ReadAll() Invalid property");
+        Serial.println("ReadAll() Invalid property");
         return ERRORDBL;
       }
       double values[2];
       if(ReadAll(values))
       {
-        Serial_println("ReadAll() Done");
+        Serial.println("ReadAll() Done");
         return values[property];
       }
       else {
-        Serial_println("ReadAll() Fail");
+        Serial.println("ReadAll() Fail");
         return ERRORDBL;
       }
     }

@@ -2,13 +2,29 @@
 #define GROVE_DISPLAYH
 #include "grove.h"
 
+
+
+#define STRINGIFY(x) #x
+#define TOSTRING(x) STRINGIFY(x)
+
+
+#define C(x) #x,
+const char * const CMDS[] = { DISPLAY_COMMANDS  };
+#undef C
+
+#define C(x) x,
+enum GroveDisplayCmds { DISPLAY_COMMANDS DISPLAY_COMMANDS_NONE };
+#undef C
+
+////////////////////////////////////////////////////////
+
 #define C(x) x,
 enum GroveDisplay { DISPLAYS DISPLAY_NONE};
 #undef C
+
 #define C(x) #x,    
 const char * const display_name[] = { DISPLAYS };
 #undef C
-
 
 
 
@@ -28,6 +44,23 @@ class Grove_Display: public Grove
         return list;
       }
 
+      static String GetListofCmds()
+      {
+        String list ="Display Cmds:";
+        int numCMDS = (int) DISPLAY_COMMANDS_NONE;
+        for (int n=0;n<numCMDS;n++)
+        {
+          
+          String cmd = String(CMDS[n]);
+          //cmd.replace("d_","");
+          list.concat(cmd);
+          if (n != (numCMDS-1))
+            list.concat(',');
+        }
+        return list;
+      }
+
+
       static int GetIndexOf(String displayName)
       {
         int numDisplays = (int) DISPLAY_NONE;
@@ -41,7 +74,7 @@ class Grove_Display: public Grove
           }
         }
         return INT_MAX;
-      }      
+      }  
 
       virtual String GetListofx()
       {
@@ -50,16 +83,19 @@ class Grove_Display: public Grove
 
   
       virtual bool Setup();
-      virtual bool Home();
       virtual bool Setup(byte * settings, byte numSettings);
-      // Index for if there are an array of actuators here.
-      virtual bool Clear();
-      virtual bool Backlight();
-      virtual bool SetCursor(byte x, byte y);
-      virtual bool WriteString(String msg);
-      virtual bool CursorWriteStringAvailable();
-      virtual bool WriteString(byte x, byte y, String msg);
-      virtual bool Misc(byte cmd, byte * data, byte length=0);
+      virtual String GetListofMiscCmds();
+
+      virtual Tristate Dummy();
+
+      virtual Tristate Home();
+      virtual Tristate Clear();
+      virtual Tristate Backlight();
+      virtual Tristate SetCursor(byte x, byte y);
+      virtual Tristate WriteString(String msg);
+      virtual Tristate CursorWriteStringAvailable();
+      virtual Tristate WriteString(byte x, byte y, String msg);
+      virtual Tristate Misc(byte cmd, byte * data, byte length=0);
 
       DeviceType deviceType = display;
     protected:
@@ -73,6 +109,8 @@ class Grove_Display: public Grove
 class Grove_OLED096: public Grove_Display
 {
   public:
+
+
       static String GetPins()
       {
         String msg="OK:";
@@ -81,15 +119,20 @@ class Grove_OLED096: public Grove_Display
       }
       virtual bool Setup();
       virtual bool Setup(byte * settings, byte numSettings);
-      virtual bool Clear();
-      virtual bool Home();
+      virtual String GetListofMiscCmds();
 
-      virtual bool Backlight();
-      virtual bool SetCursor(byte x, byte y);
-      virtual bool WriteString(String msg);
-      virtual bool CursorWriteStringAvailable();
-      virtual bool WriteString(byte col, byte line, String msg);
-      virtual bool Misc(byte cmd, byte * data, byte length=0);
+      virtual Tristate Clear();
+      virtual Tristate Home();
+
+      virtual Tristate Dummy();
+
+      virtual Tristate Backlight();
+      virtual Tristate SetCursor(byte x, byte y);
+      virtual Tristate WriteString(String msg);
+      // No cursor and or no writestring:
+      virtual Tristate CursorWriteStringAvailable();
+      virtual Tristate WriteString(byte col, byte line, String msg);
+      virtual Tristate Misc(byte cmd, byte * data, byte length=0);
   protected:
 };
 
@@ -112,16 +155,20 @@ class Grove_LCD1602: public Grove_Display
       virtual bool Setup();
       virtual bool Setup(byte * settings, byte numSettings);
       // Index for if there are an array of actuators here.
-      virtual bool Clear();
-      virtual bool Home();
+      virtual String GetListofMiscCmds();
 
-      virtual bool Backlight();
+      virtual Tristate Dummy();
 
-      virtual bool SetCursor(byte x, byte y);
-      virtual bool WriteString(String msg);
-      virtual bool CursorWriteStringAvailable();
-      virtual bool WriteString(byte x, byte y, String msg);
-      virtual bool Misc(byte cmd, byte * data, byte length=0);
+      virtual Tristate Home();
+      virtual Tristate Clear();
+      virtual Tristate Backlight();
+      virtual Tristate SetCursor(byte x, byte y);
+      virtual Tristate WriteString(String msg);
+      // No cursor and or no writestring:
+      virtual Tristate CursorWriteStringAvailable();
+      virtual Tristate WriteString(byte x, byte y, String msg);
+      virtual Tristate Misc(byte cmd, byte * data, byte length=0);
+
   protected:
 };
 
@@ -142,15 +189,19 @@ class Adafruit_NeoPixel8: public Grove_Display
       virtual bool Setup();
       virtual bool Setup(byte * settings, byte numSettings);
       // Index for if there are an array of actuators here.
-      virtual bool Clear();
-      virtual bool Home();
-      virtual bool Misc(byte cmd, byte * data, byte length=0);
+      virtual String GetListofMiscCmds();
 
-      virtual bool Backlight();
-      virtual bool SetCursor(byte x, byte y);
-      virtual bool WriteString(String msg);
-      virtual bool CursorWriteStringAvailable();
-      virtual bool WriteString(byte x, byte y, String msg); 
+      virtual Tristate Dummy();
+
+      virtual Tristate Home();
+      virtual Tristate Clear();
+      virtual Tristate Backlight();
+      virtual Tristate SetCursor(byte x, byte y);
+      virtual Tristate WriteString(String msg);
+      // No cursor and or no writestring:
+      virtual Tristate CursorWriteStringAvailable();
+      virtual Tristate WriteString(byte x, byte y, String msg);
+      virtual Tristate Misc(byte cmd, byte * data, byte length=0); 
 
       int numPixels = NEOPIXEL_NUMPIXELS;
       int grovePin = NEOPIXEL_PIN;
@@ -176,14 +227,19 @@ class Custom_Bargraph: public Grove_Display
       virtual bool Setup();
       virtual bool Setup(byte * settings, byte numSettings);
       // Index for if there are an array of actuators here.
-      virtual bool Clear();
-      virtual bool Home();
-      virtual bool Backlight();
-      virtual bool SetCursor(byte x, byte y);
-      virtual bool WriteString(String msg);
-      virtual bool CursorWriteStringAvailable();
-      virtual bool WriteString(byte x, byte y, String msg);
-      virtual bool Misc(byte cmd, byte * data, byte length=0);
+      virtual String GetListofMiscCmds();
+
+      virtual Tristate Dummy();
+
+      virtual Tristate Home();
+      virtual Tristate Clear();
+      virtual Tristate Backlight();
+      virtual Tristate SetCursor(byte x, byte y);
+      virtual Tristate WriteString(String msg);
+      // No cursor and or no writestring:
+      virtual Tristate CursorWriteStringAvailable();
+      virtual Tristate WriteString(byte x, byte y, String msg);
+      virtual Tristate Misc(byte cmd, byte * data, byte length=0);
     protected:
       IC_74HC595_ShiftRegister * ic595;
 };
@@ -207,14 +263,19 @@ class Grove_Bargraph: public Grove_Display
       virtual bool Setup();
       virtual bool Setup(byte * settings, byte numSettings);
       // Index for if there are an array of actuators here.
-      virtual bool Clear();
-      virtual bool Home();
-      virtual bool Backlight();
-      virtual bool SetCursor(byte x, byte y);
-      virtual bool WriteString(String msg);
-      virtual bool CursorWriteStringAvailable();
-      virtual bool WriteString(byte x, byte y, String msg);
-      virtual bool Misc(byte cmd, byte * data, byte length=0);
+      virtual String GetListofMiscCmds();
+
+      virtual Tristate Dummy();
+
+      virtual Tristate Home();
+      virtual Tristate Clear();
+      virtual Tristate Backlight();
+      virtual Tristate SetCursor(byte x, byte y);
+      virtual Tristate WriteString(String msg);
+      // No cursor and or no writestring:
+      virtual Tristate CursorWriteStringAvailable();
+      virtual Tristate WriteString(byte x, byte y, String msg);
+      virtual Tristate Misc(byte cmd, byte * data, byte length=0);
     protected:
       IC_74HC595_ShiftRegister * ic595;
 };

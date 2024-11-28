@@ -1,7 +1,7 @@
 #include "grove_environsensors.h"
 #include <arduino.h>
 
-#include "../Softata.h"
+#include "Softata.h"
 
 
 #ifdef GROVE_RPI_PICO_SHIELD

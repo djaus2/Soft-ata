@@ -2,7 +2,7 @@
 #define GROVE_SENSORH
 #include <Arduino.h>
 #include "grove.h"
-#include "../Softata.h"
+#include "Softata.h"
 
 #define NUM_PROPERTIES 0
 
@@ -11,6 +11,7 @@
 #define C(x) x,
 enum GroveSensor { SENSORS SENSOR_NONE};
 #undef C
+
 #define C(x) #x,    
 const char * const sensor_name[] = { SENSORS };
 #undef C
@@ -25,12 +26,12 @@ class Grove_Sensor: public Grove
         int numSensors = (int) SENSOR_NONE;
         for (int n=0;n<numSensors;n++)
         {
-          Serial_println(sensor_name[n]);
+          Serial.println(sensor_name[n]);
           list.concat(sensor_name[n]);
           if (n != (numSensors-1))
             list.concat(',');
         }
-        Serial_println(list);
+        Serial.println(list);
         return list;
       }
 

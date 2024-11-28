@@ -2,7 +2,7 @@
 #include <arduino.h>
 #include <Wire.h>
 #include <float.h>
-#include "../Softata.h"
+#include "Softata.h"
 
 #include <BME280I2C.h> 
 
@@ -78,7 +78,7 @@ bool Grove_BME280::SetupBME280()
     //and reads compensation parameters.
     if (!bme.begin())
     {
-        Serial_println("begin() failed. check your BMx280 Interface and I2C Address.");
+        Serial.println("begin() failed. check your BMx280 Interface and I2C Address.");
         while (1);
     }
 

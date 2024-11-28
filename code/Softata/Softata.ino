@@ -1536,7 +1536,12 @@ void loop() {
               GroveDisplay display = (GroveDisplay)other;
               switch (param)
               {
-                case d_getpinsCMD: //getPins
+                case D_getCmdsCMD: //get Generic Display Cmds
+                {
+                  client.print(Grove_Display::GetListofCmds());
+                      break;
+                }
+                case D_getpinsCMD: //getPins
                 {
                   switch (display)
                   {
@@ -1560,7 +1565,7 @@ void loop() {
                       break;                 }
                 }
                   break;
-                case d_tbdCMD: //Get list of Msic commands for device
+                case d_miscGetListCMD: //Get list of Msic commands for device
                 {
                   Serial_println("Get Display.Miscs.");
                   String msg ="";
@@ -1587,8 +1592,8 @@ void loop() {
                   client.print(msg);              
                 }
                   break;
-                case d_setupDefaultCMD: //Setupdefault
-                case d_setupCMD: //Setup(params)
+                case D_setupDefaultCMD: //Setupdefault
+                case D_setupCMD: //Setup(params)
                   {
                     Grove_Display * grove_Display;
                     //GroveDisplay groveDisplay;
@@ -1632,7 +1637,7 @@ void loop() {
                     }
                     if(_done)
                     {
-                      if(param==d_setupDefaultCMD)
+                      if(param==D_setupDefaultCMD)
                       {
                         if(grove_Display->Setup())
                         {
@@ -1676,13 +1681,37 @@ void loop() {
                     }
                   }
                   break;
+                  case d_dummyCMD:
+                  {
+                    int index = other;
+                    Grove_Display * grove_Display = GetDisplayFromList(index);
+                    Tristate ts = grove_Display->Dummy();
+                    if(ts == _ok)
+                    {
+                      client.print("OK:Dummy");
+                    }
+                    else if (ts==notImplemented)
+                    {
+                      client.print("OK:Dummy Not Implemented");
+                    }
+                    else
+                    {
+                      client.print("Fail:Dummy");
+                    }
+                  } 
+                  break;
                 case d_clearCMD:
                   {
                     int index = other;
                     Grove_Display * grove_Display = GetDisplayFromList(index);
-                    if(grove_Display->Clear())
+                    Tristate ts = grove_Display->Clear();
+                    if(ts == _ok)
                     {
                       client.print("OK:Clear");
+                    }
+                    else if (ts==notImplemented)
+                    {
+                      client.print("OK:Clear Not Implemented");
                     }
                     else
                     {
@@ -1694,9 +1723,14 @@ void loop() {
                   {
                     int index = other;
                     Grove_Display * grove_Display = GetDisplayFromList(index);
-                    if(grove_Display->Home())
+                    Tristate ts = grove_Display->Home();
+                    if(ts == _ok)
                     {
                       client.print("OK:Home");
+                    }
+                    else if (ts==notImplemented)
+                    {
+                      client.print("OK:Home Not Implemented");
                     }
                     else
                     {
@@ -1708,13 +1742,18 @@ void loop() {
                   {
                     int index = other;
                     Grove_Display * grove_Display = GetDisplayFromList(index);
-                    if(grove_Display->Backlight())
+                    Tristate ts = grove_Display->Backlight();
+                    if(ts == _ok)
                     {
                       client.print("OK:Backlight");
                     }
+                    else if (ts==notImplemented)
+                    {
+                      client.print("OK:Backlight Not Implemented");
+                    }
                     else
                     {
-                      client.print("Fail;Backlight");
+                      client.print("Fail:Backlight");
                     }
                   }
                   break;
@@ -1730,9 +1769,14 @@ void loop() {
                     {
                       byte x = otherData[1];
                       byte y = otherData[2];
-                      if(grove_Display->SetCursor(x,y))
+                      Tristate ts = grove_Display->SetCursor(x,y);
+                      if(ts == _ok)
                       {
                         client.print("OK:SetCursor");
+                      }
+                      else if (ts==notImplemented)
+                      {
+                        client.print("OK:SetCursor Not Implemented");
                       }
                       else
                       {
@@ -1741,7 +1785,7 @@ void loop() {
                     }
                   }
                   break;
-                case d_writestrngCMD:
+                case d_writestringCMD:
                 {
                   int index = other;
                   Grove_Display * grove_Display = GetDisplayFromList(index);
@@ -1759,9 +1803,19 @@ void loop() {
                     }
                     Serial_print("Message:");
                     Serial_println(msgStr);
-                    if(grove_Display->WriteString(msgStr))
+                    Tristate ts = grove_Display->WriteString(msgStr);
+                    if(ts == _ok)
                     {
                       client.print("OK:WriteString");
+                    }
+                    else if (ts==notImplemented)
+                    {
+                      client.print("OK:WriteString Not Implemented");
+                    }
+                    else if (ts == _nan)
+                    {
+                      // For display that expects a number as string eg. Pixel
+                      client.print("OK:WriteString NAN");
                     }
                     else
                     {
@@ -1792,13 +1846,21 @@ void loop() {
                     // Nb: Use blank string if there is an issue.
                     Serial_print("Message:");
                     Serial_println(msgStr);
-                    if(!grove_Display->CursorWriteStringAvailable())
+                    Tristate ts = grove_Display->CursorWriteStringAvailable();
+                    if( ts == _nok)
                     {
-                      if(grove_Display->SetCursor(x,y))
+                      // Can set cursor then write string instead
+                      ts = grove_Display->SetCursor(x,y);
+                      if(ts == _ok)
                       {
-                        if(grove_Display->WriteString(msgStr))
+                        ts = grove_Display->WriteString(msgStr);
+                        if(ts == _ok )
                         {
                           client.print("OK:SetCursor-then-WriteString");
+                        }
+                        else if(ts==notImplemented )
+                        {
+                          client.print("OK:SetCursor-then-WriteString-at-WriteString Not Implemneted");
                         }
                         else
                         {
@@ -1810,23 +1872,33 @@ void loop() {
                         client.print("Fail:SetCursor-then-WriteString-at-SetCursor");
                       }
                     }
-                    else 
+                    else if (ts == _ok)
                     {
-                      if(grove_Display->WriteString(x,y,msgStr))
+                      // Can directly wiritestringat x,y
+                      Tristate ts = grove_Display->WriteString(x,y,msgStr);
+                      if(ts == _ok)
                       {
-                        client.print("OK:Cursor_WriteString");
+                        client.print("OK:Cursor_WriteStringXY");
+                      }
+                      else if(ts == notImplemented)
+                      {
+                        client.print("OK:Cursor_WritestringXY Not Implmented 1");
                       }
                       else
                       {
-                        client.print("Fail:SetCursor-WriteString");
+                        client.print("Fail:Cursor_WritestringXY");
                       }
+                    }
+                    else if (ts == notImplemented)
+                    {
+                      // No cursor and or no writestring
+                      client.print("OK:Cursor_WritestringXY Not Implmented 2");
                     }
                   }              
                 }
                 break;              
-                case d_miscCMD:
+                case D_miscCMD:
                   {
-                    Serial_print("d_miscCMD");Serial_print("-");Serial_println(d_miscCMD);
                     if(otherData[0]<1)
                     {
                       client.print("Fail:Display.Misc needs a command)");
@@ -1853,10 +1925,16 @@ void loop() {
                         }
                         Serial_print("miscDataLength: ");
                         Serial_println(miscDataLength);
-                        if(grove_Display->Misc(miscCMD,miscData,miscDataLength))
+                        Tristate ts = grove_Display->Misc(miscCMD,miscData,miscDataLength);
+                        if(ts == _ok)
                         {
                           Serial_println("Misc OK");
-                          client.print("OK:");
+                          client.print("OK:Display.Misc");
+                        }
+                        else if(ts==notImplemented)
+                        {
+                          Serial_println("Misc OK Not implemented");
+                          client.print("OK:Display.Misc Not Implemented");
                         }
                         else
                         {
@@ -1867,14 +1945,14 @@ void loop() {
                     }
                   }  
                   break;
-                case d_dispose:
+                case D_dispose:
                   {
                     int index=other;
                     Grove_Display * grove_Display = GetDisplayFromList(index);
                     RemoveDisplayFromList(index);
                   } 
                   break;                             
-                case d_getDisplaysCMD:
+                case D_getDisplaysCMD:
                   {
                     Serial_println("Get Displays.");
                     String msg = String("OK:");

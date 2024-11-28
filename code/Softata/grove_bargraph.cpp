@@ -37,32 +37,37 @@ bool Grove_Bargraph::Setup(byte * settings, byte numSettings)
   return true;
 }
 
-bool Grove_Bargraph::Clear()
+Tristate Grove_Bargraph::Dummy()
+{
+  return notImplemented;
+}
+
+Tristate Grove_Bargraph::Clear()
 {
   // Switch off all LEDs
   //pBar->setLevel(0);
   pBar->setBits(0x0);
-  return true;
+  return (Tristate)true;
 }
 
-bool Grove_Bargraph::Backlight()
+Tristate Grove_Bargraph::Backlight()
 {
-  return true;
+  return notImplemented;
 }
 
-bool Grove_Bargraph::Home()
+Tristate Grove_Bargraph::Home()
 {
-    return true;
+  return notImplemented;
 }
 
 
-bool Grove_Bargraph::SetCursor(byte x, byte y)
+Tristate Grove_Bargraph::SetCursor(byte x, byte y)
 {
-  return true;
+  return notImplemented;
 }
 
 
-bool Grove_Bargraph::WriteString(String msg)
+Tristate Grove_Bargraph::WriteString(String msg)
 {
   int len = msg.length();
   if (len>10) len = 10;
@@ -95,20 +100,20 @@ bool Grove_Bargraph::WriteString(String msg)
       break;
   }
   pBar->setBits(numVal);
-  return true;
+  return (Tristate)true;
 }
 
-bool Grove_Bargraph::CursorWriteStringAvailable()
+Tristate Grove_Bargraph::CursorWriteStringAvailable()
 {
-	return true;
+	return notImplemented;
 }
 
-bool Grove_Bargraph::WriteString(byte x, byte y, String msg)
+Tristate Grove_Bargraph::WriteString(byte x, byte y, String msg)
 {
-  return true;
+  return notImplemented;
 }
 
-bool Grove_Bargraph::Misc(byte cmd, byte * data, byte length)
+Tristate Grove_Bargraph::Misc(byte cmd, byte * data, byte length)
 {
   /*erial.println("Bargraph::Misc");
   Serial_println(cmd);
@@ -141,7 +146,7 @@ bool Grove_Bargraph::Misc(byte cmd, byte * data, byte length)
       {
         // Set or toggle a specific LED
         if (length < 1)
-          return false;
+          return (Tristate)false;
         int bargraphSegment = data[0];
         if (Cmd == setLed)
           pBar->setLed(bargraphSegment,1);
@@ -158,7 +163,7 @@ bool Grove_Bargraph::Misc(byte cmd, byte * data, byte length)
     case setLevel:
       // Set the level of the bar
       if (length < 1)
-        return false;
+        return (Tristate)false;
       pBar->setLevel(data[0]);
       break;
     case exercise:
@@ -209,8 +214,8 @@ bool Grove_Bargraph::Misc(byte cmd, byte * data, byte length)
         pBar->setBits(0);
       break;
     default:
-      return false;
+      return (Tristate)false;
       break;
   }
-  return true;
+  return (Tristate)true;
 }

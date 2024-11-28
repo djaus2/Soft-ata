@@ -9,7 +9,14 @@ using Softata.Enums;
 
 namespace Softata
 {
-    public enum GroveDisplayCmds{getpins=0, getMiscCmds=1, setupDefault=2, setup=3, clear=4,backlight=5,setCursor=6, writestrngCMD=7,cursor_writestringCMD=8,homeCMD=9, misc=10,dispose=11, getDisplays=255 }
+
+    public enum DISPLAY_COMMANDS { getCmdsCMD,  getDisplaysCMD, getpinsCMD, tbdCMD, setupDefaultCMD, setupCMD, clearCMD, backlightCMD, setCursorCMD, writestrngCMD, cursor_writestringCMD, home, dummyCMD, miscCMD, dispose };
+
+    //#define DISPLAY_COMMANDS C(D_getCmdsCMD)C(D_getDisplaysCMD)C(D_dispose)C(D_getpinsCMD)C(D_selectDisplayCMD)C(D_setupDefaultCMD)C(D_setupCMD)C(D_miscCMD)C(d_clearCMD)C(d_backlightCMD)C(d_setCursorCMD)C(d_writestrngCMD)C(d_cursor_writestringCMD)C(d_home)C(d_dummyCMD)
+
+
+    public enum GroveDisplayCmds { getListofGenericCMDs, getDisplays, getpins, setupDefault, setup, dispose ,
+        getListofMiscCmds, clear, backlight, setCursor, writestrngCMD , cursor_writestringCMD , homeCMD , dummyCMD , misc  }; //=255 }
     public partial class SoftataLib
     {
 
@@ -33,7 +40,34 @@ namespace Softata
                 ,{DisplayDevice.GBARGRAPH,"https://wiki.seeedstudio.com/Grove-LED_Bar/" }
                 /* ,Add here */
             };
-            public  string[] GetDisplays()
+
+
+            public string GetCmds()
+            {
+                Tuple<int,string, bool>[] DisplayableStrings = new Tuple<int,string, bool>[0];
+                //if (pinNumber <= 0 || pinNumber >= PinMax)
+                //    throw new ArgumentOutOfRangeException(nameof(pinNumber), "Messages.ArgumentEx_PinRange0_127");
+
+                string result = softatalib.SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.getListofGenericCMDs, "Display Cmds:", 0);
+                return result;
+                /*result = result.Replace("Display Cmds", "");
+                return result.Split(',;');
+                /*if (!string.IsNullOrEmpty(result))
+                {
+                    String[] _cmds = result.Split(',');
+                    for (int i = 0; i < _cmds.Length; i++)
+                    {
+                        DisplayableStrings.ad= new Tuple<int,string, bool>[_cmds.Length];
+                        bool viewable = _cmds[i].Substring(0, 2) == "D_";
+                        DisplayableStrings[i].Item1 = i;
+                        DisplayableStrings[i].Item2 = _cmds[i];
+                        DisplayableStrings[i].Item13= viewable;
+                    }
+                }
+                return DisplayableStrings;*/
+            }
+            
+            public string[] GetDisplays()
             {
 
                 //if (pinNumber <= 0 || pinNumber >= PinMax)
@@ -107,6 +141,8 @@ namespace Softata
             public  bool Clear(byte linkedListNo)
             {
                 string result = softatalib.SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.clear, "OK:", linkedListNo);
+                if (!string.IsNullOrEmpty(result))
+                    Console.WriteLine(result);
                 if (true) //TBD
                     return true;
                 else
@@ -115,6 +151,8 @@ namespace Softata
             public  bool Home(byte linkedListNo)
             {
                 string result = softatalib.SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.homeCMD, "OK:", linkedListNo);
+                if (!string.IsNullOrEmpty(result))
+                    Console.WriteLine(result);
                 if (true) //TBD
                     return true;
                 else
@@ -124,6 +162,8 @@ namespace Softata
             public  bool Backlight(byte linkedListNo, byte property)
             {
                 string result = softatalib.SendMessage(Commands.groveDisplay, property, (byte)GroveDisplayCmds.backlight, "OK:", linkedListNo);
+                if (!string.IsNullOrEmpty(result))
+                    Console.WriteLine(result);
                 if (true) //TBD
                     return true;
                 else
@@ -134,6 +174,8 @@ namespace Softata
             {
                 byte[] data = new byte[] { 0x2, (byte)x, (byte)y };
                 string result = softatalib.SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.setCursor, "OK:", linkedListNo, data);
+                if (!string.IsNullOrEmpty(result))
+                    Console.WriteLine(result);
                 if (true) //TBD
                     return true;
                 else
@@ -145,6 +187,8 @@ namespace Softata
                 byte[] bytes2 = dataIn.Append((byte)0).ToArray<byte>(); //Need to append 0
                 byte[] data = bytes2.Prepend((byte)bytes2.Length).ToArray<byte>(); //Prepend string length +1
                 string result = softatalib.SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.writestrngCMD, "OK:", linkedListNo, data);
+                if (!string.IsNullOrEmpty(result))
+                    Console.WriteLine(result);
                 if (true) //TBD
                     return true;
                 else
@@ -158,6 +202,8 @@ namespace Softata
                 byte[] data = bytes2.Prepend((byte)bytes2.Length).ToArray<byte>(); //Prepend string length +1
                 char[] cg = data.Select(b => (char)b).ToArray();
                 string result = softatalib.SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.writestrngCMD, "OK:", linkedListNo, data);
+                if (!string.IsNullOrEmpty(result))
+                    Console.WriteLine(result);
                 if (true) //TBD
                     return true;
                 else
@@ -174,6 +220,8 @@ namespace Softata
                 char[] cg = data.Select(b => (char)b).ToArray();
 
                 string result = softatalib.SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.cursor_writestringCMD, "OK:", linkedListNo, data);
+                if (!string.IsNullOrEmpty(result))
+                    Console.WriteLine(result);
                 if (true) //TBD
                     return true;
                 else
@@ -192,6 +240,8 @@ namespace Softata
                     }
                 }
                 string result = softatalib.SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", linkedListNo, data);
+                if (!string.IsNullOrEmpty(result))
+                    Console.WriteLine(result);
                 return true;
             }
 
@@ -243,6 +293,8 @@ namespace Softata
                     }
                 }
                 string result = softatalib.SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", linkedListNo, data);
+                if (!string.IsNullOrEmpty(result))
+                    Console.WriteLine(result);
                 return true;
             }
 
@@ -253,7 +305,7 @@ namespace Softata
                 //if (pinNumber <= 0 || pinNumber >= PinMax)
                 //    throw new ArgumentOutOfRangeException(nameof(pinNumber), "Messages.ArgumentEx_PinRange0_127");
 
-                string result = softatalib.SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.getMiscCmds, "OK:", displayType);
+                string result = softatalib.SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.getListofMiscCmds, "OK:", displayType);
                 result = result.Replace("Misc:", "");
                 if (!string.IsNullOrEmpty(result))
                     return result.Split(',');
@@ -274,6 +326,8 @@ namespace Softata
                 {
                     byte[] data = new byte[] { 0x4, (byte)OLEDMiscCmds.test, 0, 0, 0 };
                     string result = softatalib.SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", displayLinkedListIndex, data);
+                    if (!string.IsNullOrEmpty(result))
+                        Console.WriteLine(result);
                     return true;
                 }
 
@@ -282,6 +336,8 @@ namespace Softata
                 {
                     byte[] data = new byte[] { 0x4, (byte)OLEDMiscCmds.drawCircle, x, y, radius };
                     string result = softatalib.SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", displayLinkedListIndex, data);
+                    if (!string.IsNullOrEmpty(result))
+                        Console.WriteLine(result);
                     return true;
                 }
 
@@ -290,6 +346,8 @@ namespace Softata
                 {
                     byte[] data = new byte[] { 0x5, (byte)OLEDMiscCmds.drawFrame, x, y, w, h };
                     string result = softatalib.SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", displayLinkedListIndex, data);
+                    if (!string.IsNullOrEmpty(result))
+                        Console.WriteLine(result);
                     return true;
                 }
             }
@@ -309,12 +367,16 @@ namespace Softata
                 {
                     byte[] data = new byte[] { 0x4, (byte)NEOPIXELMiscCmds.setpixelcolorAll, 0, 0, 0 };
                     string result = softatalib.SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", displayLinkedListIndex, data);
+                    if (!string.IsNullOrEmpty(result))
+                        Console.WriteLine(result);
                     return true;
                 }
                 public  bool Misc_SetAll(byte displayLinkedListIndex, byte red, byte green, byte blue)
                 {
                     byte[] data = new byte[] { 0x4, (byte)NEOPIXELMiscCmds.setpixelcolorAll, red, green, blue };
                     string result = softatalib.SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", displayLinkedListIndex, data);
+                    if (!string.IsNullOrEmpty(result))
+                        Console.WriteLine(result);
                     return true;
                 }
 
@@ -322,6 +384,8 @@ namespace Softata
                 {
                     byte[] data = new byte[] { 0x5, (byte)NEOPIXELMiscCmds.setN, red, green, blue, n };
                     string result = softatalib.SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", displayLinkedListIndex, data);
+                    if (!string.IsNullOrEmpty(result))
+                        Console.WriteLine(result);
                     return true;
                 }
 
@@ -329,6 +393,8 @@ namespace Softata
                 {
                     byte[] data = new byte[] { 0x5, (byte)NEOPIXELMiscCmds.setpixelcolor, pixel,red, green, blue };
                     string result = softatalib.SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", displayLinkedListIndex, data);
+                    if (!string.IsNullOrEmpty(result))
+                        Console.WriteLine(result);
                     return true;
                 }
 
@@ -336,12 +402,16 @@ namespace Softata
                 {
                     byte[] data = new byte[] { 0x4, (byte)NEOPIXELMiscCmds.setpixelcolorOdds, red, green, blue };
                     string result = softatalib.SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", displayLinkedListIndex, data);
+                    if (!string.IsNullOrEmpty(result))
+                        Console.WriteLine(result);
                     return true;
                 }
                 public bool Misc_SetBrightness(byte displayLinkedListIndex, byte level)
                 {
                     byte[] data = new byte[] { 0x2, (byte)NEOPIXELMiscCmds.setBrightness, level };
                     string result = softatalib.SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", displayLinkedListIndex, data);
+                    if (!string.IsNullOrEmpty(result))
+                        Console.WriteLine(result);
                     return true;
                 }
 
@@ -349,6 +419,8 @@ namespace Softata
                 {
                     byte[] data = new byte[] { 0x4, (byte)NEOPIXELMiscCmds.setpixelcolorEvens, red, green, blue };
                     string result = softatalib.SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", displayLinkedListIndex, data);
+                    if (!string.IsNullOrEmpty(result))
+                        Console.WriteLine(result);
                     return true;
                 }
             }
@@ -369,6 +441,8 @@ namespace Softata
                 {
                     byte[] data = new byte[] { 0x1, (byte)LCD1602MiscCmds.autoscroll };
                     string result = softatalib.SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", displayLinkedListIndex, data);
+                    if (!string.IsNullOrEmpty(result))
+                        Console.WriteLine(result);
                     return true;
                 }
 
@@ -376,6 +450,8 @@ namespace Softata
                 {
                     byte[] data = new byte[] { 0x1, (byte)LCD1602MiscCmds.noautoscroll };
                     string result = softatalib.SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", displayLinkedListIndex, data);
+                    if (!string.IsNullOrEmpty(result))
+                        Console.WriteLine(result);
                     return true;
                 }
 
@@ -383,6 +459,8 @@ namespace Softata
                 {
                     byte[] data = new byte[] { 0x1, (byte)LCD1602MiscCmds.blink };
                     string result = softatalib.SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", displayLinkedListIndex, data);
+                    if (!string.IsNullOrEmpty(result))
+                        Console.WriteLine(result);
                     return true;
                 }
 
@@ -390,6 +468,8 @@ namespace Softata
                 {
                     byte[] data = new byte[] { 0x1, (byte)LCD1602MiscCmds.noblink };
                     string result = softatalib.SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", displayLinkedListIndex, data);
+                    if (!string.IsNullOrEmpty(result))
+                        Console.WriteLine(result);
                     return true;
                 }
 
@@ -410,6 +490,8 @@ namespace Softata
                 public bool clear(byte displayLinkedListIndex)
                 {
                     string result = softatalib.SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.clear, "OK:", displayLinkedListIndex);
+                    if (!string.IsNullOrEmpty(result))
+                        Console.WriteLine(result);
                     return true;
                 }
 
@@ -427,6 +509,8 @@ namespace Softata
                 {
                     byte[] data = new byte[] { 0x1, (byte)((byte)BARGRAPHMiscCmds.flow - (byte)DisplayMiscEnumFirstCmd.BARGRAPHMiscCmds) };
                     string result = softatalib.SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", displayLinkedListIndex, data);
+                    if (!string.IsNullOrEmpty(result))
+                        Console.WriteLine(result);
                     return true;
                 }
 
@@ -434,6 +518,8 @@ namespace Softata
                 {
                     byte[] data = new byte[] { 0x1, (byte)((byte)BARGRAPHMiscCmds.flow2 - (byte)DisplayMiscEnumFirstCmd.BARGRAPHMiscCmds) };
                     string result = softatalib.SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", displayLinkedListIndex, data);
+                    if (!string.IsNullOrEmpty(result))
+                        Console.WriteLine(result);
                     return true;
                 }
 
@@ -441,6 +527,8 @@ namespace Softata
                 {
                     byte[] data = new byte[] { 0x1, (byte)((byte)BARGRAPHMiscCmds.allOn - (byte)DisplayMiscEnumFirstCmd.BARGRAPHMiscCmds) };
                     string result = softatalib.SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", displayLinkedListIndex, data);
+                    if (!string.IsNullOrEmpty(result))
+                        Console.WriteLine(result);
                     return true;
                 }
 
@@ -454,6 +542,8 @@ namespace Softata
                 {
                     byte[] data = new byte[] { 0x2, (byte)((byte)BARGRAPHMiscCmds.setLed - (byte)DisplayMiscEnumFirstCmd.BARGRAPHMiscCmds) ,(byte)(led +1) };
                     string result = softatalib.SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", displayLinkedListIndex, data);
+                    if (!string.IsNullOrEmpty(result))
+                        Console.WriteLine(result);
                     return true;
                 }
 
@@ -461,6 +551,8 @@ namespace Softata
                 {
                     byte[] data = new byte[] { 0x2, (byte)((byte)BARGRAPHMiscCmds.clrLed - (byte)DisplayMiscEnumFirstCmd.BARGRAPHMiscCmds) , (byte)(led + 1) };
                     string result = softatalib.SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", displayLinkedListIndex, data);
+                    if (!string.IsNullOrEmpty(result))
+                        Console.WriteLine(result);
                     return true;
                 }
 
@@ -468,6 +560,8 @@ namespace Softata
                 {
                     byte[] data = new byte[] { 0x2, (byte)((byte)BARGRAPHMiscCmds.toggleLed - (byte)DisplayMiscEnumFirstCmd.BARGRAPHMiscCmds) , (byte)(led + 1) };
                     string result = softatalib.SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", displayLinkedListIndex, data);
+                    if (!string.IsNullOrEmpty(result))
+                        Console.WriteLine(result);
                     return true;
                 }
 
@@ -475,6 +569,8 @@ namespace Softata
                 {
                     byte[] data = new byte[] { 0x2, (byte)((byte)BARGRAPHMiscCmds.setLevel - (byte)DisplayMiscEnumFirstCmd.BARGRAPHMiscCmds) , level };
                     string result = softatalib.SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", displayLinkedListIndex, data);
+                    if (!string.IsNullOrEmpty(result))
+                        Console.WriteLine(result);
                     return true;
                 }
 

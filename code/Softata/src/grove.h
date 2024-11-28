@@ -1,6 +1,6 @@
 #ifndef GROVEH
 #define GROVEH
-#include "../softata.h"
+#include "Softata.h"
 #include <wString.h>
 #include <Wire.h>
 
@@ -21,6 +21,18 @@ const char * const device_name[] = { DEVICETYPES };
 class Grove
 {
     public:
+
+    static Grove()
+    {
+       
+    }
+
+    static Grove(Grove_Actutor * act)
+    {
+      deviceType = actuator;
+    }
+ 
+
     //To be called before Wire.begin()/Wire1.begin()
     static bool SetI2CPins(int i2c)
     {

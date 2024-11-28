@@ -23,6 +23,7 @@ using System.Runtime.Intrinsics.X86;
 using static System.Runtime.CompilerServices.RuntimeHelpers;
 using System.Diagnostics.Eventing.Reader;
 using System.Transactions;
+using System.Windows.Input;
 
 
 
@@ -568,11 +569,6 @@ namespace SoftataBasic
                                     }
                                     Console.WriteLine();
 
-                                    Console.WriteLine("Press any key to continue.");
-                                    Console.ReadLine();
-                                    Console.WriteLine();
-
-
 
                                     //////////////////////////////////
                                     int sensorMode = 1;
@@ -745,14 +741,39 @@ namespace SoftataBasic
 
                             byte idisplay = 1;
                             string display = "";
+                            string[] Cmds = new string[0];
                             string[] Miscs = new string[0];
+                            List<string> Cmds2Use = new List<string>();
+                            List<int> Cmds2UseEnums = new List<int>();
+ 
+                            string cmds = softatalibDisplay.GetCmds();
+                            if (string.IsNullOrEmpty(cmds))
+                                Console.WriteLine($"getCmds() failed");
+                            else
+                            {
+                                Console.WriteLine($"getCmds OK");
+                                Cmds = cmds.Split(',');
+                                Console.WriteLine($"Cmds:");
+                                for (int i = 0; i < Cmds.Count(); i++)
+                                {
+                                    string cmd = Cmds[i];
+                                    if (cmd.Length > 2)
+                                        if (cmd[0] != 'D')
+                                        {
+                                            Cmds2Use.Add( cmd.Substring(2));
+                                            Cmds2UseEnums.Add(i);
+                                        } 
+                                }
+                                L.Info($"Generic Display Class Cmds found");
+                            }
+                            L.Press2Continue();
                             string[] Displays = softatalibDisplay.GetDisplays();
+                           
                             if (Displays.Length == 0)
                                 Console.WriteLine($"No displays found");
                             else
                             {
                                 Console.WriteLine($"Displays found:");
-                                Console.WriteLine("Default: 1.");
                                 res = Layout.DisplayMenu(idisplay, Displays.ToList<string>(), true);
                                 if (res < 0)
                                     break;
@@ -760,15 +781,16 @@ namespace SoftataBasic
 
                                 display = Displays[idisplay];
 
-
+                                Layout.RainbowHeading($"Softata Test: {Testtype}");
+                                Layout.Info($"Display: {display}","",F.Col.yellow,F.Col.black);
 
                                 string pins = softatalibDisplay.GetPins(idisplay);
                                 if (string.IsNullOrEmpty(pins))
-                                    Console.WriteLine($"{display} getPins() failed");
+                                    L.Info($"{display} getPins() failed", "", F.Col.white, F.Col.red);
                                 else
                                 {
-                                    Console.WriteLine($"{display} getPins OK");
-                                    Console.WriteLine($"{display} Pins = {pins}");
+                                    L.Info($"{display} getPins OK:");
+                                    L.Info($"{display} Pins = {pins}");
                                 }
 
                                 Miscs = softatalibDisplay.GetMiscCmds(idisplay);
@@ -777,18 +799,11 @@ namespace SoftataBasic
                                 else
                                 {
                                     Console.WriteLine($"{display} getMiscCmds OK");
-                                    Console.WriteLine($"{display} Misc Cmds:");
-                                   /* for (byte i = 0; i < Miscs.Length; i++)
-                                    {
-                                        string misc = Miscs[i];
-                                        Console.WriteLine($"{misc}");
-                                    }*/
                                 }
                             }
                             byte displayLinkedListIndex;
 
-                            Console.WriteLine("Press any key to continue.");
-                            Console.ReadLine();
+                            L.Press2Continue();
 
                             //////////////////////////////////////////
                             // NOTE: enum order of DisplayDevice must match that returned by GroveDisplayCmds.getDisplays
@@ -860,55 +875,48 @@ namespace SoftataBasic
                                     int pos = 1;
                                     while (true)
                                     {
-                                        // Don't display these on menu
-                                        L.AddHideMenuItems("misc" );
-                                        L.AddHideMenuItems("dispose");
-                                        L.AddHideMenuItems( "getDisplays");
-                                        L.AddHideMenuItems("setup");
-                                        L.AddHideMenuItems("SetupDefault");
-                                        var menu = L.GenerateEnumMenuList<GroveDisplayCmds>();
+                                        
+                                        byte icmd = 0;
+                                        string command = "";
                                         L.ClearHideMenuItems();
-
-                                        res = (int)Layout.DisplayMenu(2, menu, true);
+                                        res = Layout.DisplayMenu(icmd, Cmds2Use, true);
                                         if (res < 0)
-                                            break;  
-                                        // Compensate from 2 removed setups.
-                                        if (((GroveDisplayCmds)res) > GroveDisplayCmds.getMiscCmds)
-                                            res += 2;
-                                        GroveDisplayCmds cmd = (GroveDisplayCmds)res;
-                                        L.Info($"{cmd} ({res}) chosen");
+                                            break;
+                                        if ((res > -1) && (res < Cmds2UseEnums.Count()))
+                                        {
+                                            icmd = (byte)Cmds2UseEnums[res];
+                                            command = Cmds2Use[res].ToLower();
+                                            L.Info($"{Cmds2Use[res]} ({res}) chosen which maps {icmd}th cmommand on Arduino");
+                                        }
+
+
+
 
                                         string? msg = "";
                                         string response = "";
 
-                                        switch (cmd)
+                                        if (command.Contains("writestring"))
                                         {
-                                            case GroveDisplayCmds.getpins:
-                                            case GroveDisplayCmds.getMiscCmds:
-                                            case GroveDisplayCmds.clear:
-                                            case GroveDisplayCmds.homeCMD:
-                                                response = softatalibDisplay.GenericDisplayCmd(displayDevice, (byte)cmd, displayLinkedListIndex);
-                                                break;
-                                            case GroveDisplayCmds.backlight:
-                                                break;
-                                            case GroveDisplayCmds.writestrngCMD:
-                                                while (string.IsNullOrEmpty(msg))
-                                                {
-                                                    msg= Console.ReadLine();
-                                                }
-                                                if (msg is not null)
-                                                {
-                                                    if (softatalibDisplay.WriteString(displayLinkedListIndex, msg))
-                                                        response = "OK";
-                                                    else
-                                                        response = "NOT OK";
-                                                }
-                                                break;
-                                            case GroveDisplayCmds.cursor_writestringCMD:
+
+                                            if (command.Contains("cursor"))
+                                            {
+                                                //case GroveDisplayCmds.setCursor:
                                                 L.Info("Enter line 1 or 2");
                                                 line = L.Prompt4Num(line, 2, false);
                                                 L.Info("Enter line position  1 to 40");
                                                 pos = L.Prompt4Num(pos, 40, false);
+                                                msg = Console.ReadLine();
+                                                if (msg is not null)
+                                                {
+                                                    if (softatalibDisplay.WriteString(displayLinkedListIndex, pos, line, msg))
+                                                        response = "OK";
+                                                    else
+                                                        response = "NOT OK";
+                                                }
+                                            }
+                                            else
+                                            {
+                                                //case GroveDisplayCmds.writestrngCMD:
                                                 while (string.IsNullOrEmpty(msg))
                                                 {
                                                     msg = Console.ReadLine();
@@ -920,22 +928,30 @@ namespace SoftataBasic
                                                     else
                                                         response = "NOT OK";
                                                 }
-                                                break;
-                                            case GroveDisplayCmds.setCursor:
-                                                L.Info("Enter line 1 or 2");
-                                                line = L.Prompt4Num(line, 2, false);
-                                                L.Info("Enter line position  1 to 40");
-                                                pos = L.Prompt4Num(pos, 40, false);
-                                                if (softatalibDisplay.SetCursor(displayLinkedListIndex, pos, line))
-                                                    response = "OK";
-                                                else
-                                                    response = "NOT OK";
-                                                break;
+                                            }
                                         }
-                           
+                                        else if (command.Contains("cursor"))
+                                        {
+                                            L.Info("Enter line 1 or 2");
+                                            line = L.Prompt4Num(line, 2, false);
+                                            L.Info("Enter line position  1 to 40");
+                                            pos = L.Prompt4Num(pos, 40, false);
+                                            if (softatalibDisplay.SetCursor(displayLinkedListIndex, pos, line))
+                                                response = "OK";
+                                            else
+                                                response = "NOT OK";
+                                        }
+                                        else if (command.Contains("getListofCMDs"))
+                                        {
+                                            //GroveDisplayCmds.getListofCMDs:
+                                            response = softatalibDisplay.GetCmds();
+                                        }
+                                        else
+                                        {
+                                            response = softatalibDisplay.GenericDisplayCmd(displayDevice, (byte)icmd, displayLinkedListIndex);
+                                        }
                                         L.Info(response);
                                     }
-                                    break;
                                 }
                                 else    if (Testtype == ConsoleTestType.Displays_Individual_Cmds)
                                 {

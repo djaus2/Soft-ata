@@ -3,7 +3,7 @@
 #include "Ultrasonic.h"
 
 #include <float.h>
-#include "../Softata.h"
+#include "Softata.h"
 
 Ultrasonic * ultrasonic;
 

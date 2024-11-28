@@ -1,7 +1,7 @@
 #include "grove_environsensors.h"
 #include <arduino.h>
 #include <dht.h>
-#include "../Softata.h"
+#include "Softata.h"
 
 
 #ifdef GROVE_RPI_PICO_SHIELD
@@ -42,7 +42,7 @@ int Pins[] = {PINS};
       _pins.concat(pins);
       _pins.concat(" Default:");
       _pins.concat(DEFAULT_PIN);
-      Serial_println(_pins);
+      Serial.println(_pins);
       return String(_pins); //pins;
     }*/
 
@@ -70,11 +70,11 @@ int Pins[] = {PINS};
       //Set the DHT11 pin
       Pin = pin;
       whileNotSerial(){delay(100);};
-      Serial_println("DHT Grove");
+      Serial.println("DHT Grove");
       Serial_print("LIBRARY VERSION: ");
-      Serial_println(DHT_LIB_VERSION);
-      Serial_println();
-      //Serial_println("Type,\tstatus,\tHumidity (%),\tTemperature (C)");
+      Serial.println(DHT_LIB_VERSION);
+      Serial.println();
+      //Serial.println("Type,\tstatus,\tHumidity (%),\tTemperature (C)");
       return true;
     }
 
@@ -113,17 +113,17 @@ int Pins[] = {PINS};
         switch (chk)
         {
           case DHTLIB_OK:  
-          Serial_println("OK"); 
+          Serial.println("OK"); 
           OK = true;
           break;
           case DHTLIB_ERROR_CHECKSUM: 
-          Serial_println("Checksum error"); 
+          Serial.println("Checksum error"); 
           break;
           case DHTLIB_ERROR_TIMEOUT: 
-          Serial_println("Time out error"); 
+          Serial.println("Time out error"); 
           break;
           default: 
-          Serial_println("Unknown error"); 
+          Serial.println("Unknown error"); 
           break;
         }
         if(OK)
@@ -182,17 +182,17 @@ CallbackInfo * Grove_DHT11::GetCallbackInfo()
         switch (chk)
         {
           case DHTLIB_OK:  
-          Serial_println("OK,"); 
+          Serial.println("OK,"); 
           OK = true;
           break;
           case DHTLIB_ERROR_CHECKSUM: 
-          Serial_println("Checksum error"); 
+          Serial.println("Checksum error"); 
           break;
           case DHTLIB_ERROR_TIMEOUT: 
-          Serial_println("Time out error"); 
+          Serial.println("Time out error"); 
           break;
           default: 
-          Serial_println("Unknown error"); 
+          Serial.println("Unknown error"); 
           break;
         }
         if(OK)

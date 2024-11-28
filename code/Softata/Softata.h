@@ -1,6 +1,8 @@
 #ifndef SOFTATAH
 #define SOFTATAH
 
+enum Tristate {_nok=0,_ok=1,notImplemented=-1, _nan = 2};
+
 
 #define ENABLE_OTA
 #define ENABLE_WATCHDOG
@@ -154,10 +156,14 @@ enum GroveSensorCmds{s_getpinsCMD, s_getPropertiesCMD, s_setupdefaultCMD, s_setu
 
 ///////////////////////// D I S P L A Y S /////////////////////////////////////////////////
 
-enum GroveDisplayCmds{d_getpinsCMD, d_tbdCMD, d_setupDefaultCMD, d_setupCMD, d_clearCMD,d_backlightCMD,d_setCursorCMD,
-                                    d_writestrngCMD,d_cursor_writestringCMD, d_home, d_miscCMD, d_dispose, d_getDisplaysCMD=255 };
-//enum GroveDisplayCmds{d_getpinsCMD=0, d_tbdCMD=1, d_setupDefaultCMD=2, d_setupCMD=3, d_clearCMD=4,d_backlightCMD=5,d_setCursorCMD=6, d_writestrngCMD=7,d_cursor_writestringCMD=8,d_miscCMD=9, d_getDisplaysCMD=255 }
+#define DISPLAY_COMMANDS C(D_getCmdsCMD)C(D_getDisplaysCMD)C(D_getpinsCMD)C(D_setupDefaultCMD)C(D_setupCMD)C(D_dispose)C(d_miscGetListCMD)C(d_clearCMD)C(d_backlightCMD)C(d_setCursorCMD)C(d_writestringCMD)C(d_cursor_writestringCMD)C(d_home)C(d_dummyCMD)C(D_miscCMD)
 
+
+
+/*enum GroveDisplayCmds{C(d_getDisplaysCMD),C(d_getDisplaysCMD)d_getpinsCMD,d_tbdCMD, d_setupDefaultCMD, d_setupCMD, d_clearCMD,d_backlightCMD,d_setCursorCMD,
+                                    d_writestrngCMD,d_cursor_writestringCMD, d_home, d_dummyCMD, d_miscCMD,  d_dispose, d_getDisplaysCMD=255 };
+//enum GroveDisplayCmds{d_getpinsCMD=0, d_tbdCMD=1, d_setupDefaultCMD=2, d_setupCMD=3, d_clearCMD=4,d_backlightCMD=5,d_setCursorCMD=6, d_writestrngCMD=7,d_cursor_writestringCMD=8,d_miscCMD=9, d_getDisplaysCMD}
+*/
 // Note: Adresses are typically defined in the device library which typically use I2C0
 #define OLEDDISPLAY_ADDR   0x78
 #define LCD1602LCD_V2_ADDR 0X3E
@@ -195,6 +201,12 @@ enum OLEDMiscCmds {drawCircle,drawFrame,test,OLEDMiscCmds_MAX};
 enum BARGRAPHMiscCmds {flow,flow2,setLed,clrLed,toggleLed,setLevel,exercise,allOn,BARGRAPHMiscCmds_MAX};
 enum numStringType {_DEC, _BIN, _HEX, _NONE};
 enum range_units {mm,cm,inch};
+
+#define LCD1602MiscCmdsListStr "home,autoscroll,noautoscroll,blink,noblink,LCD1602MiscCmds_MAX";
+#define NEOPIXELMiscCmdsStr  "etpixelcolor,setpixelcolorAll,setpixelcolorOdds,setpixelcolorEvens,setBrightness,setN,NEOPIXELMiscCmds_MAX";
+#define OLEDMiscCmdsStr  "drawCircle,drawFrame,test,OLEDMiscCmds_MAX";
+#define BARGRAPHMiscCmdsStr "flow,flow2,setLed,clrLed,toggleLed,setLevel,exercise,allOn,BARGRAPHMiscCmds_MAX";
+
 
 ///////////////////////////////////
 

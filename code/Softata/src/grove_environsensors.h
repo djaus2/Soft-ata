@@ -1,7 +1,7 @@
 #ifndef GROVE_DHTXX
 #define GROVE_DHTXX
 #include "grove_sensor.h"
-#include "../Softata.h"
+#include "Softata.h"
 
 #include <float.h>
 #define ERRORDBL  DBL_MAX;
@@ -41,7 +41,7 @@ class Grove_DHTXX: public Grove_Sensor
 #ifndef GROVE_DH11H
 #define GROVE_DH11H
 #include "grove_sensor.h"
-#include "../Softata.h"
+#include "Softata.h"
 
 #include <float.h>
 #define ERRORDBL  DBL_MAX;
@@ -96,7 +96,7 @@ class Grove_BME280: public Grove_Sensor
       {
         String msg="OK:";
         msg.concat(BME280_PROPERTIES);
-        Serial_println(msg);
+        Serial.println(msg);
         return msg; 
       }
       virtual bool Setup();

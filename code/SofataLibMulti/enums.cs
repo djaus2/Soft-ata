@@ -9,6 +9,9 @@ namespace Softata.Enums
     }
     //Nb: https://stackoverflow.com/questions/13734746/combine-multiple-enums-into-master-enum-list
     //  ... First Answer used
+
+    public enum GroveGenericClassCmds { getListofGenericCMDs, getDevices, getpins, setupDefault, setup, dispose }; //,
+
     public enum AllDisplayMiscCommands : byte 
     {
         /* LCD1602MiscCmds */

@@ -1,7 +1,7 @@
 grove_environsensors.h
 #include <arduino.h>
 //#include <????.h> // Header to teh device's Arduino librrary
-#include "../Softata.h"
+#include "Softata.h"
 
 
 #ifdef GROVE_RPI_PICO_SHIELD
