@@ -1,6 +1,9 @@
-# Soft-ata Version 11.200
+# Soft-ata Version 11.400
 
 ## Updates
+- V11.400 In Console app, implemented Generic Display methods option ```ConsoleTestType.Displays_Generic:``` which calls methods common to all displays, even if not implemented. Should just ignore those.
+  - getpins, getMiscCmds, clear, backlight, setCursor, writestrngCMD, cursor writestringCMD, homeCMD
+  -   - Tested on LCD thus far (backlight is null for that).
 - V11.300 As per 11.100 and 11.200  Individual misc commnds for LCD in Console app
   - Also fixed misc switch case miscode for LCD!
 - V 11.200 As per 11.100 Individual misc commnds for GBargraph in Console app
