@@ -3,6 +3,8 @@
 ## Updates
 - Softata/src folder is now a separate GitHub repository at [djaus2/SoftataDevices](https://github.com/djaus2/SoftataDevices)
   - Much renaming there such as Grove becomes SoftataDevices
+  - To run Softata sketch, install SoftataDevices library as a zip file
+  - Much reworking needed of C# code.
 - V11.400 In Console app, implemented Generic Display methods option ```ConsoleTestType.Displays_Generic:``` which calls methods common to all displays, even if not implemented. Should just ignore those.
   - getpins, getMiscCmds, clear, backlight, setCursor, writestrngCMD, cursor writestringCMD, homeCMD
   -   - Tested on LCD thus far (backlight is null for that).
