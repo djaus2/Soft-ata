@@ -10,9 +10,7 @@ using Softata.Enums;
 namespace Softata
 {
 
-    public enum GroveSensorCmds{getpins, getProperties, setupdefault, setup,  readall, read, getTelemetry, sendTelemetryBT, sendTelemetryToIoTHub, pause_sendTelemetry, continue_sendTelemetry, stop_sendTelemetry, getSensors =255
-      ,
-    }
+    public enum GroveSensorCmds{getpins, getProperties, setupdefault, setup,  readall, read, getTelemetry, sendTelemetryBT, sendTelemetryToIoTHub, pause_sendTelemetry, continue_sendTelemetry, stop_sendTelemetry, getSensors}
     // getpins, getProperties are specific sensor class  commands so send sensor type as other rather than linkedListNo
     // getSensors is a  sensor class command.
     public partial class SoftataLib

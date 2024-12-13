@@ -811,6 +811,8 @@ namespace SoftataBasic
                             //////////////////////////////////////////
                             if ((displayDevice != DisplayDevice.NEOPIXEL)&&
                                 (displayDevice != DisplayDevice.LCD1602) &&
+                                (displayDevice != DisplayDevice.OLED096) &&
+                                (displayDevice != DisplayDevice.BARGRAPH) &&
                                 (displayDevice != DisplayDevice.GBARGRAPH))
                             {
                                 L.Press2Continue("That display not yet supported in Displays_Individual_Cmds mode (7)");

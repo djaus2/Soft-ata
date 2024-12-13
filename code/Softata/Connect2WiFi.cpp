@@ -3,6 +3,7 @@
 #include <EEPROM.h>
 #include <SerialBT.h>
 
+#include "softata.h"
 #include "serial_macros.h"
 #include "Connect2WiFi.h"
 #include "menu.h"
@@ -212,7 +213,7 @@ namespace FlashStorage{
       Serial_println("ReadWiFiDataFromEEProm False");
       return false;
     }
-    Ssid = vals[sv_SSID];
+    Ssid  = vals[sv_SSID];
     Passwd = vals[sv_Password];
 #ifdef USINGIOTHUB
     DeviceName = vals[sv_hostname];

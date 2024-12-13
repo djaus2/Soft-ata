@@ -72,7 +72,7 @@ bool  GetMenuChoiceYN( bool defaultYN, int timeout)
     return defaultYN;
 }
 
-tristate  GetMenuChoiceYNS( tristate defaultYNS, int timeout)
+menu3State  GetMenuChoiceYNS( menu3State defaultYNS, int timeout)
 {
   char menuCh = GetMenuChoice(timeout);
   if ('Y' == menuCh)

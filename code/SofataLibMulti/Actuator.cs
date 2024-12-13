@@ -11,7 +11,7 @@ namespace Softata
 {
     public partial class SoftataLib
     {
-        public enum GroveActuatorCmds { a_getpinsCMD, a_getValueRangeCMD, a_setupDefaultCMD, a_setupCMD, a_writeDoubleValueCMD, a_writeByteValueCMD, a_writeWordValueCMD, a_SetBitStateCMD, a_SetBitCMD, a_ClearBitCMD, a_ToggleBitCMD, a_getActuatorsCMD = 255 };
+        public enum GroveActuatorCmds { a_getpinsCMD, a_getValueRangeCMD, a_setupDefaultCMD, a_setupCMD, a_writeDoubleValueCMD, a_writeByteValueCMD, a_writeWordValueCMD, a_SetBitStateCMD, a_SetBitCMD, a_ClearBitCMD, a_ToggleBitCMD, a_getActuatorsCMD };
 
         public  class Actuator
         {

@@ -35,10 +35,10 @@ int AddCallBack(CallbackInfo * info)
   return LEDListIndex;
 }
 
-bool DoActuator(int index, GroveActuatorCmds cmd )
+bool DoActuator(int index, SoftataActuatorCmds cmd )
 {
-  Grove_Actuator * grove_Actuator = GetActuatorFromList(index);
-  if(grove_Actuator != NULL)
+  SoftataDevice_Actuator * softataDevice_Actuator = GetActuatorFromList(index);
+  if(softataDevice_Actuator != NULL)
   {
     Serial_print("Actuator: ");
     Serial_print('-');
@@ -46,19 +46,19 @@ bool DoActuator(int index, GroveActuatorCmds cmd )
     switch(cmd)
     {
       case a_SetBitCMD:
-        if(grove_Actuator->SetBit())
+        if(softataDevice_Actuator->SetBit())
           /*client*/Serial.print("OK:Actuator-SetBit");
         else
           /*client*/Serial.print("Fail:Actuator-SetBit");
         break;                      
       case a_ClearBitCMD:
-          if(grove_Actuator->ClearBit())
+          if(softataDevice_Actuator->ClearBit())
           /*client*/Serial.print("OK:Actuator-ClearBit");
         else
           /*client*/Serial.print("Fail:Actuator-ClearBit");
         break;                     
       case a_ToggleBitCMD:
-        if(grove_Actuator->ToggleBit())
+        if(softataDevice_Actuator->ToggleBit())
           /*client*/Serial.print("OK:Actuator-ToggleBit");
         else
           /*client*/Serial.print("Fail:Actuator-ToggleBit");
@@ -244,8 +244,8 @@ void loop1()
     else if(cmd==stopTelemetryorBT)
     {
       Serial_println("\t\t==== Stopping Telemetry =====");
-      Grove_Sensor * grove_Sensor = GetSensorFromList(index);
-      delete grove_Sensor;
+      SoftataDevice_Sensor * softatadevice_Sensor = GetSensorFromList(index);
+      delete softatadevice_Sensor;
       RemoveSensorFromCore2List(index);
       res = true;
     }
@@ -291,8 +291,8 @@ void loop1()
         if (SerialBT) 
         {      
           int index = info->SensorIndex;
-          Grove_Sensor * grove_Sensor = GetSensorFromList(index);
-          String res = grove_Sensor->GetTelemetry();
+          SoftataDevice_Sensor * softatadevice_Sensor = GetSensorFromList(index);
+          String res = softatadevice_Sensor->GetTelemetry();
           if(!(res == String("")))
           {
             //Fwd json
@@ -319,8 +319,8 @@ void loop1()
       else if (!info->sendBT) 
       {
         int index = info->SensorIndex;
-        Grove_Sensor * grove_Sensor = GetSensorFromList(index);
-        String res = grove_Sensor->GetTelemetry();
+        SoftataDevice_Sensor * softatadevice_Sensor = GetSensorFromList(index);
+        String res = softatadevice_Sensor->GetTelemetry();
         if(!(res == String("")))
         {
           if (!mqtt_client.connected())

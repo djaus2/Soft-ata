@@ -1,6 +1,7 @@
 // RPi Pico BSP placed in the public domain by Earle F. Philhower, III, 2022
 
-#include "softata.h"
+#include "Softata.h"
+#include <softatadevice.h>
 #include "rpiboards.h"
 
 #include <WiFi.h>
@@ -12,12 +13,11 @@
 #include "Connect2Wifi.h"
 #include "menu.h"
 
-#include "rpiwatchdog.h"
-#include "src/grove.h"
-#include "src/grove_sensor.h"
-#include "src/grove_environsensors.h"
-#include "src/grove_actuator.h"
-#include "src/grove_displays.h"
+#include <rpiwatchdog.h>
+#include <softataDevice_sensor.h>
+#include <SoftataDevice_environsensors.h>
+#include <SoftataDevice_display.h>
+#include <SoftataDevice_actuator.h>
 
 #include <float.h>
 
@@ -39,7 +39,7 @@ bool hasConnected = false;
 //#define SERIAL1LOOPBACK
 //#define SERIAL2LOOPBACK
 
-//Grove_Sensor *grove_Sensor;
+//SoftataDevice_Sensor *softataDevice_Sensor;
 
 const char* ssid = STASSID;
 const char* password = STAPSK;
@@ -274,7 +274,7 @@ void ArduinoOTAloop() {
 //#define SERIAL1LOOPBACK
 //#define SERIAL2LOOPBACK
 
-//Grove_Sensor *grove_Sensor;
+//SoftataDevice_Sensor *softataDevice_Sensor;
 
 
 //Ref: https://www.thegeekpub.com/276838/how-to-reset-an-arduino-using-code/
@@ -345,7 +345,7 @@ void setup()
     // YN Menu will determine its state.
     useSerialDebug = true;
     skipMenus = false;
-    tristate resb = GetMenuChoiceYNS(trueButSkipMenus, DEFAULT_MENU_TIMEOUT_SEC);
+    menu3State resb = GetMenuChoiceYNS(trueButSkipMenus, DEFAULT_MENU_TIMEOUT_SEC);
     switch(resb)
     {
       case trueButSkipMenus:
@@ -628,7 +628,7 @@ void loop() {
         break;
        case (byte)'D':  //Get Device Types
        {
-        String devicesCSV = Grove::GetListofDevices();
+        String devicesCSV = SoftataDevice::GetListofDevices();
         Serial_println(devicesCSV);
         client.print(devicesCSV);
        }
@@ -1076,213 +1076,84 @@ void loop() {
               }
             }
             break;
-          case GROVE_SENSOR_CMD: //Grove Sensors
+          case SOFTATADEVICE_SENSOR_CMD: //Grove Sensors
             { 
               // Cmd = 0xF0,pin=Index of cmd in list,param=SubCmd,Other=
               // GroveSensorCmds{
               // s_getpinsCMD, s_getPropertiesCMD, 
               // s_setupdefaultCMD, s_setupCMD, s_readallCMD, s_readCMD, s_getSensorsCMD=255 
               //};
+              SoftataSensor _sensor = (SoftataSensor)other;
               switch (param)
               {
                 case s_getpinsCMD: 
-                  {            
-                    switch ((GroveSensor)other)
-                    {
-                      //#define G_SENSORS C(DHT11)C(BME280)C(UltrasonicRanger)
-                      case DHT11:
-                        {
-                          client.print(Grove_DHT11::GetPins());
-                        }
-                        break;
-                      case DHTXX:
-                        {
-                          client.print(Grove_DHTXX::GetPins());
-                        }
-                        break;
-                      case BME280:
-                        {
-                          client.print(Grove_BME280::GetPins());
-                        }
-                        break;
-                      case UltrasonicRanger:
-                        {
-                          client.print(Grove_URangeSensor::GetPins());
-                        }
-                        break;
-                        case Simulator:
-                        {
-                          client.print(Grove_SensorSimulator::GetPins());
-                        }
-                        break;
-                      // Add more here
-                      default:
-                        String msgFail = "Fail:Not a sensor-Get Pins:";
-                        msgFail += other;
-                        client.print(msgFail);
-                        break;
-                    }
+                  {        
+                    String pins =  "OK:";
+                    pins.concat(SoftataDevice_Sensor::GetPinout (_sensor));
+                    client.print(pins); 
                   }
                   break;
                 case s_getPropertiesCMD:
                   {
-                    Serial.println("Get Properties");
-                    Serial.println(other);
-                    switch ((GroveSensor)other)
-                    {
-                      //#define SENSORS C(DHT11)C(SWITCH)C(SOUND)C(BME280)
-                      case DHT11:
-                        {
-                          client.print(Grove_DHT11::GetListofProperties());
-                        }
-                        break;
-                       case DHTXX:
-                        {
-                          client.print(Grove_DHTXX::GetListofProperties());
-                        }
-                        break;                       
-                      case BME280:
-                        {
-                          client.print(Grove_BME280::GetListofProperties());
-                        }
-                        break;
-                      case UltrasonicRanger:
-                        {
-                          client.print(Grove_URangeSensor::GetListofProperties());
-                        }
-                        break; 
-                      case Simulator:
-                        {
-                          Serial.println("Simulator In");
-                          client.print(Grove_SensorSimulator::GetListofProperties());
-                          Serial.println("Simulator Out");
-                        } 
-                        break;                     
-                      // Add more here
-                      default:
-                      String msgFail = "Fail:Not a sensor-Get Properties:";
-                        msgFail += other;
-                        client.print(msgFail);
-                        break;
-                    }
-
+                    String props ="OK:";
+                    props.concat(SoftataDevice_Sensor::_GetListofProperties(_sensor));
+                    client.print(props);
                   }
                   break;
                 case s_setupdefaultCMD:
                 case s_setupCMD:
+                  SoftataDevice_Sensor * softatadevice_Sensor;
+                  if(param==s_setupdefaultCMD)
                   {
-                    Grove_Sensor * grove_Sensor;
-                    GroveSensor groveSensor;
-                    bool _done=false;
-                    switch ((GroveSensor)other)
+                    softatadevice_Sensor = SoftataDevice_Sensor::_Setup(_sensor);
+                    if(softatadevice_Sensor != NULL)
                     {
-                      case DHT11:
-                        {
-                          grove_Sensor  = new Grove_DHT11(16);
-                          _done = true;
-                        }
-                        break;
-                      case DHTXX:
-                        {
-                          String inf = Grove_DHTXX::GetListofProperties();
-                          grove_Sensor  = new Grove_DHTXX();
-                          _done = true;
-                        }
-                        break;
-                      case BME280:
-                        {
-                          grove_Sensor  = new Grove_BME280();
-                          _done = true;
-                        }
-                        break;
-                      case UltrasonicRanger:
-                        {
-                          grove_Sensor  = new Grove_URangeSensor(DEFAULT_URANGE_PIN);
-                          _done = true;
-                        }
-                        break;
-                      case Simulator:
-                        {
-                          grove_Sensor  = new Grove_SensorSimulator();
-                          _done = true;
-                        }
-                        break;
-                      // Add more here
-                      default:
-                        client.print("Fail:Not a sensor-Setup");
-                        break;
-                    }
-                    if(_done)
-                    {
-                      if(param==s_setupdefaultCMD)
-                      {
-                        //Default setup
-                        if(grove_Sensor->Setup())
-                        {
-                          int index = AddSensorToList(grove_Sensor);
-                          String msgSettings1 = "OK";
-                          msgSettings1.concat(':');
-                          msgSettings1.concat(index);
-                          client.print(msgSettings1);
-                        }
-                        else
-                          client.print("Fail:Setup");
-                        }
-                      else
-                      {
-                        // Non-default setup
-                        byte settings[1];
-                        settings[0] = pin;
-                        if(grove_Sensor->Setup(settings,1))
-                        {
-                          int index = AddSensorToList(grove_Sensor);
-                          String msgSettings2 = "OK";
-                          msgSettings2.concat(':');
-                          msgSettings2.concat(index);
-                          client.print(msgSettings2);
-                        }
-                        else
-                          client.print("Fail:Setup");
-                      }
-                    }
-                  }
-                  break;
-                case s_readallCMD:
-                  {
-                    int index = other;
-                    Grove_Sensor * grove_Sensor = GetSensorFromList(index);
-                    int numProps = grove_Sensor->num_properties;
-                    double values[MAX_SENSOR_PROPERTIES];
-                    if(grove_Sensor->ReadAll(values))
-                    {                 
-                      String msgGetAll = "OK:";
-                      for (int i=0;i< numProps;i++)
-                      {
-                        msgGetAll.concat(values[i]);
-                        if(i!= (numProps-1))
-                          msgGetAll.concat(',');
-                      }
-                      client.print(msgGetAll);
+                      Serial_println("Default Sensor Setup");
+                      int index = AddSensorToList(softatadevice_Sensor);
+                      Serial_print("Sensor Index: ");
+                      Serial.println(index);
+                      String msgSettingsS1 = "OK";
+                      msgSettingsS1.concat(':');
+                      msgSettingsS1.concat(index);
+                      client.print(msgSettingsS1);
                     }
                     else
-                    {
-                      client.print("Fail");
+                      client.print("Fail:Sensor.Setup");
                     }
+                  else
+                  {
+                    byte bsettings[1];
+                    Serial_print("Non-Default Sensor Setup Pin: ");
+                    Serial_print(pin);
+                    bsettings[0] = pin;
+                    softatadevice_Sensor = SoftataDevice_Sensor::_Setup(_sensor,bsettings,1);
+                    if(softatadevice_Sensor != NULL)
+                    {
+                      int index = AddSensorToList(softatadevice_Sensor);
+                      Serial_print("Sensor Index: ");
+                      Serial_println(index);
+                      String msgSettingsS2 = "OK";
+                      msgSettingsS2.concat(':');
+                      msgSettingsS2.concat(index);
+                      client.print(msgSettingsS2);
+                    }
+                    else
+                      client.print("Fail:Sensor.Setup");
                   }
                   break;
                 case s_readCMD:
                   {
 
-                    Grove_Sensor * grove_Sensor = GetSensorFromList(other);
+                    SoftataDevice_Sensor * softatadevice_Sensor = GetSensorFromList(other);
                     // A bit of reuse of real-estate here:
                     byte property = pin;
-                    if(property>(grove_Sensor->num_properties-1))
+                    if(property>(softatadevice_Sensor->num_properties-1))
                     {
                       client.print("Fail:Read Property no. > no. properties");
                     }
                     else
                     {
-                      double value = grove_Sensor->Read(property);
+                      double value = softatadevice_Sensor->Read(property);
                       if (value != DBL_MAX)
                       {
                         String msgGetOne = "OK:";
@@ -1299,8 +1170,8 @@ void loop() {
                 case s_getTelemetry:
                   {
                     int index = other;
-                    Grove_Sensor * grove_Sensor = GetSensorFromList(index);
-                    String json = grove_Sensor->GetTelemetry();
+                    SoftataDevice_Sensor * softatadevice_Sensor = GetSensorFromList(index);
+                    String json = softatadevice_Sensor->GetTelemetry();
                     String ret = "OK:";
                     ret.concat(json);
                     client.print(ret);
@@ -1314,9 +1185,9 @@ void loop() {
                     String msg;
                     if(node != NULL)
                     {
-                      Grove_Sensor * grove_Sensor  = node->Sensor;
+                      SoftataDevice_Sensor * softatadevice_Sensor  = node->Sensor;
                       // Note: Each sensor instance has a private CallbackInfo property
-                      CallbackInfo * info = grove_Sensor->GetCallbackInfo();
+                      CallbackInfo * info = softatadevice_Sensor->GetCallbackInfo();
                       if(info==NULL)
                       {
                         Serial_println("IsNull");
@@ -1371,9 +1242,9 @@ void loop() {
                     String msg;
                     if(node != NULL)
                     {
-                      Grove_Sensor * grove_Sensor  = node->Sensor;
+                      SoftataDevice_Sensor * softatadevice_Sensor  = node->Sensor;
                       // Note: Each sensor instance has a private CallbackInfo property
-                      CallbackInfo * info = grove_Sensor->GetCallbackInfo();
+                      CallbackInfo * info = softatadevice_Sensor->GetCallbackInfo();
 
                       unsigned long period=5000l;
                       byte settings[maxNumDisplaySettings]; // Allow 4 settings for nw.
@@ -1514,11 +1385,17 @@ void loop() {
                     Serial_println(msg);
                     client.print(msg);
                   }
-                  break;        
+                  break;   
+                case s_getCmdsCMD:
+                  {
+                    String scmmds ="OK:";
+                    scmmds.concat(SoftataDevice_Sensor::GetListofCmds());
+                    client.print(scmmds);
+                  }     
                 case s_getSensorsCMD:
                   {
                     String msg = String("OK:");
-                    msg.concat(Grove_Sensor::GetListof());
+                    msg.concat(SoftataDevice_Sensor::GetListofDevices());
                     Serial_println(msg);
                     client.print(msg);
                   }
@@ -1526,185 +1403,104 @@ void loop() {
               }
             }
             break;
-          case GROVE_DISPLAY_CMD: //Grove Displays
+          case SOFTATADEVICE_DISPLAY_CMD: //Grove Displays
             {
               //#define G_DISPLAYS C(OLED096)C(LCD1602)C(NEOPIXEL)
               // enum GroveDisplayCmds{
               // d_getpinsCMD, d_tbdCMD, d_setupDefaultCMD, d_setupCMD, 
               // d_clearCMD,d_backlightCND,d_setCursorCMD,homeCMD,d_miscCMD, d_getDisplaysCMD=255 
               // }
-              GroveDisplay display = (GroveDisplay)other;
+              SoftataDisplay _display = (SoftataDisplay)other;
+              SoftataDevice_Display * softataDevice_Display;
               switch (param)
               {
                 case D_getCmdsCMD: //get Generic Display Cmds
                 {
-                  client.print(Grove_Display::GetListofCmds());
-                      break;
+                  String cmds ="OK:";
+                  cmds.concat(SoftataDevice_Display::GetListofCmds());
+                  client.print(cmds);
                 }
+                break;
                 case D_getpinsCMD: //getPins
                 {
-                  switch (display)
-                  {
-                    case OLED096:
-                      client.print(Grove_OLED096::GetPins());
-                      break;
-                    case LCD1602:
-                      client.print(Grove_LCD1602::GetPins());
-                      break;
-                    case NEOPIXEL:
-                      client.print(Adafruit_NeoPixel8::GetPins());
-                      break;
-                    case BARGRAPH:
-                      client.print(Custom_Bargraph::GetPins());
-                      break;
-                    case GBARGRAPH:
-                      client.print(Grove_Bargraph::GetPins());
-                      break;
-                    default:
-                      client.print("Fail:Not a display");
-                      break;                 }
+                  String pins =  "OK:";
+                  pins.concat(SoftataDevice_Display::GetPinout (_display));
+                  client.print(pins);
                 }
-                  break;
+                break;
                 case d_miscGetListCMD: //Get list of Msic commands for device
                 {
-                  Serial_println("Get Display.Miscs.");
-                  String msg ="";
-                  switch (display)
-                  {
-                    case OLED096:
-                      msg = "OK:Misc:drawCircle,drawFrame,test";
-                      break;
-                    case LCD1602:
-                      msg = "OK:Misc:home,autoscroll,noautoscroll,blink,noblink";
-                      break;
-                    case NEOPIXEL:
-                      msg = "OK:Misc:setpixelcolor,setpixelcolorAll,setpixelcolorOdds,setpixelcolorEvens,setBrightness,setN";
-                      break;
-                    case BARGRAPH:
-                    case GBARGRAPH:
-                      msg = "OK:Misc:flow,flow2,setLed,clrLed,toggleLed,setLevel,exercise";
-                      break;
-                    default:
-                      msg = "Fail:Not a display";
-                      break;
-                  }
-                  Serial_println(msg);
-                  client.print(msg);              
+                  String misccmds ="OK:";
+                  misccmds.concat(SoftataDevice_Display::_GetListofMiscCmds(_display));
+                  client.print(misccmds);        
                 }
-                  break;
+                break;
                 case D_setupDefaultCMD: //Setupdefault
                 case D_setupCMD: //Setup(params)
+                {
+                  if(param==D_setupDefaultCMD)
                   {
-                    Grove_Display * grove_Display;
-                    //GroveDisplay groveDisplay;
-                    bool _done=false;
-                    switch ((GroveDisplay)other)
+                    softataDevice_Display = SoftataDevice_Display::_Setup(_display);
+                    if(softataDevice_Display != NULL)
                     {
-                      case OLED096:
-                        {
-                          grove_Display  = new Grove_OLED096();
-                          _done = true;
-                        }
-                        break;
-                      case LCD1602:
-                        {
-                          grove_Display  = new Grove_LCD1602();
-                          _done = true;
-                        }
-                        break;
-                      case NEOPIXEL:
-                        {
-                          grove_Display  = new Adafruit_NeoPixel8();
-                          _done = true;
-                        }
-                        break;
-                      case BARGRAPH:
-                        {
-                          grove_Display  = new Custom_Bargraph();
-                          _done = true;
-                        }
-                        break;
-                      case GBARGRAPH:
-                        {
-                          grove_Display  = new Grove_Bargraph();
-                          _done = true;
-                        }
-                        break;                       
-                      // Add more here
-                      default:
-                        client.print("Fail:Not a display");
-                        break;
-                    }
-                    if(_done)
-                    {
-                      if(param==D_setupDefaultCMD)
-                      {
-                        if(grove_Display->Setup())
-                        {
-                          Serial.println("Default Display Setup");
-                          int index = AddDisplayToList(grove_Display);
-                          String msgSettingsD1 = "OK";
-                          msgSettingsD1.concat(':');
-                          msgSettingsD1.concat(index);
-                          client.print(msgSettingsD1);
-                        }
-                        else
-                          client.print("Fail:Display.Setup");
-                        }
-                      else
-                      {
-
-                        byte settings[maxNumDisplaySettings]; // Allow 4 settings for nw.
-                        settings[0] = pin;
-                        int numSettings=1;
-                        Serial_print("Settings NON default pin:");
-                        Serial_println(pin);
-                        if (otherData!= NULL)
-                        {
-                          for (int i=0; ((i< otherData[0]) &&(i<=maxNumDisplaySettings));i++)
-                          {
-                            settings[i+1] = otherData[i+1];
-                            numSettings++;
-                          }
-                        }
-                        if(grove_Display->Setup(settings,numSettings))
-                        {
-                          int index = AddDisplayToList(grove_Display);
-                          String msgSettingsD2 = "OK";
-                          msgSettingsD2.concat(':');
-                          msgSettingsD2.concat(index);
-                          client.print(msgSettingsD2);
-                        }
-                        else
-                          client.print("Fail:Display.Setup");
-                      }
-                    }
-                  }
-                  break;
-                  case d_dummyCMD:
-                  {
-                    int index = other;
-                    Grove_Display * grove_Display = GetDisplayFromList(index);
-                    Tristate ts = grove_Display->Dummy();
-                    if(ts == _ok)
-                    {
-                      client.print("OK:Dummy");
-                    }
-                    else if (ts==notImplemented)
-                    {
-                      client.print("OK:Dummy Not Implemented");
+                      Serial_println("Default Display Setup");
+                      int index = AddDisplayToList(softataDevice_Display);
+                      Serial_print("Display Index: ");
+                      Serial.println(index);
+                      String msgSettingsD1 = "OK";
+                      msgSettingsD1.concat(':');
+                      msgSettingsD1.concat(index);
+                      client.print(msgSettingsD1);
                     }
                     else
+                      client.print("Fail:Display.Setup");
+                  }
+                  else
+                  {
+                    byte bsettings[1];
+                    Serial_print("Non-Default Display Setup Pin: ");
+                    Serial_print(pin);
+                    bsettings[0] = pin;
+                    softataDevice_Display = SoftataDevice_Display::_Setup(_display,bsettings,1);
+                    if(softataDevice_Display != NULL)
                     {
-                      client.print("Fail:Dummy");
+                      int index = AddDisplayToList(softataDevice_Display);
+                      Serial_print("Display Index: ");
+                      Serial_println(index);
+                      String msgSettingsD2 = "OK";
+                      msgSettingsD2.concat(':');
+                      msgSettingsD2.concat(index);
+                      client.print(msgSettingsD2);
                     }
-                  } 
-                  break;
+                    else
+                      client.print("Fail:Display.Setup");
+                  }
+                }
+                break;
+                case d_dummyCMD:
+                {
+                  int index = other;
+                  softataDevice_Display = GetDisplayFromList(index);
+                  Tristate ts = softataDevice_Display->Dummy();
+                  if(ts == _ok)
+                  {
+                    client.print("OK:Dummy");
+                  }
+                  else if (ts==notImplemented)
+                  {
+                    client.print("OK:Dummy Not Implemented");
+                  }
+                  else
+                  {
+                    client.print("Fail:Dummy");
+                  }
+                } 
+                break;
                 case d_clearCMD:
                   {
                     int index = other;
-                    Grove_Display * grove_Display = GetDisplayFromList(index);
-                    Tristate ts = grove_Display->Clear();
+                    softataDevice_Display = GetDisplayFromList(index);
+                    Tristate ts = softataDevice_Display->Clear();
                     if(ts == _ok)
                     {
                       client.print("OK:Clear");
@@ -1722,8 +1518,8 @@ void loop() {
                 case d_home:
                   {
                     int index = other;
-                    Grove_Display * grove_Display = GetDisplayFromList(index);
-                    Tristate ts = grove_Display->Home();
+                    softataDevice_Display = GetDisplayFromList(index);
+                    Tristate ts = softataDevice_Display->Home();
                     if(ts == _ok)
                     {
                       client.print("OK:Home");
@@ -1741,8 +1537,8 @@ void loop() {
                 case d_backlightCMD:
                   {
                     int index = other;
-                    Grove_Display * grove_Display = GetDisplayFromList(index);
-                    Tristate ts = grove_Display->Backlight();
+                    softataDevice_Display = GetDisplayFromList(index);
+                    Tristate ts = softataDevice_Display->Backlight();
                     if(ts == _ok)
                     {
                       client.print("OK:Backlight");
@@ -1760,7 +1556,7 @@ void loop() {
                 case d_setCursorCMD:
                   {
                     int index = other;
-                    Grove_Display * grove_Display = GetDisplayFromList(index);
+                    softataDevice_Display = GetDisplayFromList(index);
                     if(otherData[0]<2)
                     {
                       client.print("Fail:SetCursor needs (x,y)");
@@ -1769,7 +1565,7 @@ void loop() {
                     {
                       byte x = otherData[1];
                       byte y = otherData[2];
-                      Tristate ts = grove_Display->SetCursor(x,y);
+                      Tristate ts = softataDevice_Display->SetCursor(x,y);
                       if(ts == _ok)
                       {
                         client.print("OK:SetCursor");
@@ -1788,7 +1584,7 @@ void loop() {
                 case d_writestringCMD:
                 {
                   int index = other;
-                  Grove_Display * grove_Display = GetDisplayFromList(index);
+                  softataDevice_Display = GetDisplayFromList(index);
                   if(otherData[0]<0)
                   {
                     client.print("Fail:WriteString needs data");
@@ -1803,7 +1599,7 @@ void loop() {
                     }
                     Serial_print("Message:");
                     Serial_println(msgStr);
-                    Tristate ts = grove_Display->WriteString(msgStr);
+                    Tristate ts = softataDevice_Display->WriteString(msgStr);
                     if(ts == _ok)
                     {
                       client.print("OK:WriteString");
@@ -1827,7 +1623,7 @@ void loop() {
                 case d_cursor_writestringCMD:
                 {
                   int index = other;
-                  Grove_Display * grove_Display = GetDisplayFromList(index);
+                  softataDevice_Display = GetDisplayFromList(index);
                   if(otherData[0]<2)
                   {
                     Serial_print("Fail:SetCursor-WriteString needs (x,y)");
@@ -1846,14 +1642,14 @@ void loop() {
                     // Nb: Use blank string if there is an issue.
                     Serial_print("Message:");
                     Serial_println(msgStr);
-                    Tristate ts = grove_Display->CursorWriteStringAvailable();
+                    Tristate ts = softataDevice_Display->CursorWriteStringAvailable();
                     if( ts == _nok)
                     {
                       // Can set cursor then write string instead
-                      ts = grove_Display->SetCursor(x,y);
+                      ts = softataDevice_Display->SetCursor(x,y);
                       if(ts == _ok)
                       {
-                        ts = grove_Display->WriteString(msgStr);
+                        ts = softataDevice_Display->WriteString(msgStr);
                         if(ts == _ok )
                         {
                           client.print("OK:SetCursor-then-WriteString");
@@ -1875,7 +1671,7 @@ void loop() {
                     else if (ts == _ok)
                     {
                       // Can directly wiritestringat x,y
-                      Tristate ts = grove_Display->WriteString(x,y,msgStr);
+                      Tristate ts = softataDevice_Display->WriteString(x,y,msgStr);
                       if(ts == _ok)
                       {
                         client.print("OK:Cursor_WriteStringXY");
@@ -1907,8 +1703,8 @@ void loop() {
                     {
                       int index=other;
                       Serial_println("Display->Misc cmd");
-                      Grove_Display * grove_Display = GetDisplayFromList(index);
-                      if(grove_Display==NULL)
+                      softataDevice_Display = GetDisplayFromList(index);
+                      if(softataDevice_Display==NULL)
                       {
                         client.print("Fail:Display.Misc() NULL");
                       }
@@ -1925,7 +1721,7 @@ void loop() {
                         }
                         Serial_print("miscDataLength: ");
                         Serial_println(miscDataLength);
-                        Tristate ts = grove_Display->Misc(miscCMD,miscData,miscDataLength);
+                        Tristate ts = softataDevice_Display->Misc(miscCMD,miscData,miscDataLength);
                         if(ts == _ok)
                         {
                           Serial_println("Misc OK");
@@ -1948,7 +1744,7 @@ void loop() {
                 case D_dispose:
                   {
                     int index=other;
-                    Grove_Display * grove_Display = GetDisplayFromList(index);
+                    softataDevice_Display = GetDisplayFromList(index);
                     RemoveDisplayFromList(index);
                   } 
                   break;                             
@@ -1956,7 +1752,7 @@ void loop() {
                   {
                     Serial_println("Get Displays.");
                     String msg = String("OK:");
-                    msg.concat(Grove_Display::GetListof());
+                    msg.concat(SoftataDevice_Display::GetListofDevices());
                     Serial_println(msg);
                     client.print(msg);
                   }
@@ -1965,124 +1761,80 @@ void loop() {
               }
             }
             break;
-          case GROVE_ACTUATOR_CMD: //Grove Actuators
+          case SOFTATADEVICE_ACTUATOR_CMD: //Grove Actuators
             {
-              GroveActuator actuator = (GroveActuator)other;
+              SoftataActuator _actuator = (SoftataActuator)other;
               switch (param)
               {
                 case a_getpinsCMD: //getPins
-                {
-                  switch (actuator)
                   {
-                    case SERVO:
-                      client.print(Grove_Servo::GetPins());
-                      break;
-                    case SIPO_74HC595:
-                      client.print(Sipo74hc95::GetPins());
-                      break;
-                    case RELAY:
-                      client.print(Grove_Relay::GetPins());
-                      break;
-                    default:
-                      client.print("Fail:Not an Actuator");
-                      break;                 }
+                    String pins ="OK:";
+                    pins.concat(SoftataDevice_Actuator::GetPinout (_actuator));
+                    client.print(pins);
+                  }
+                  break;
+                  case a_getCmdsCMD: //get Generic Display Cmds
+                  {
+                    String cmds ="OK:";
+                    cmds.concat(SoftataDevice_Actuator::GetListofCmds());
+                    client.print(cmds);
                   }
                   break;
                 case a_getValueRangeCMD:
-                {
-                  switch (actuator)
                   {
-                    case SERVO:
-                      client.print(Grove_Servo::GetValueRange());
-                      break;
-                    case SIPO_74HC595:
-                      client.print(Sipo74hc95::GetValueRange());
-                      break;
-                    case RELAY:
-                      client.print(Grove_Relay::GetValueRange());
-                      break;
-                    default:
-                        client.print("Fail:Not an actuator");
-                        break;
+                    String valueRange ="OK:";
+                    valueRange.concat(SoftataDevice_Actuator::GetRange(_actuator));
+                    client.print(valueRange);
                   }
-                }
                   break;
                 case a_setupDefaultCMD: //Setupdefault
                 case a_setupCMD: //Setup(params)
                   {
                     Serial.println("Setup act");
-                    Grove_Actuator * grove_Actuator;
-                    //GroveActuator groveActuator;
-                    bool _done=false;
-                    switch ((GroveActuator)other)
+                    SoftataDevice_Actuator * softatadevice_Actuator;
+                    if(param==a_setupDefaultCMD)
                     {
-                      case SERVO:
-                        {
-                          grove_Actuator  = new Grove_Servo();
-                          _done = true;
-                        }
-                        break;
-                      case SIPO_74HC595:
-                        {
-                          grove_Actuator  = new Sipo74hc95();
-                          _done = true;
-                        }
-                        break;
-                      case RELAY:
-                        {
-                          grove_Actuator  = new Grove_Relay();
-                          _done = true;
-                        }
-                        break;
-                      // Add more here
-                      default:
-                        client.print("Fail:Not an actuator");
-                        break;
-                    }
-                    if(_done)
-                    {
-                      if(param==a_setupDefaultCMD)
+                      softatadevice_Actuator = SoftataDevice_Actuator::_Setup(_actuator);
+                      if(softatadevice_Actuator != NULL)
                       {
-                        if(grove_Actuator->Setup())
-                        {
-                          Serial_println("Default Actuator Setup");
-                          int index = AddActuatorToList(grove_Actuator);
-                          Serial_print("Actuator Index: ");
-                          Serial.println(index);
-                          String msgSettingsA1 = "OK";
-                          msgSettingsA1.concat(':');
-                          msgSettingsA1.concat(index);
-                          client.print(msgSettingsA1);
-                        }
-                        else
-                          client.print("Fail:Actuator.Setup");
-                        }
-                      else
-                      {
-                        byte asettings[1];
-                        Serial_print("Non-Default Actuator Setup Pin: ");
-                        Serial_print(pin);
-                        asettings[0] = pin;
-                        if(grove_Actuator->Setup(asettings,1))
-                        {
-                          int index = AddActuatorToList(grove_Actuator);
-                          Serial_print("Actuator Index: ");
-                          Serial_println(index);
-                          String msgSettingsA2 = "OK";
-                          msgSettingsA2.concat(':');
-                          msgSettingsA2.concat(index);
-                          client.print(msgSettingsA2);
-                        }
-                        else
-                          client.print("Fail:Actuator.Setup");
+                        Serial_println("Default Actuator Setup");
+                        int index = AddActuatorToList(softatadevice_Actuator);
+                        Serial_print("Actuator Index: ");
+                        Serial.println(index);
+                        String msgSettingsA1 = "OK";
+                        msgSettingsA1.concat(':');
+                        msgSettingsA1.concat(index);
+                        client.print(msgSettingsA1);
                       }
+                      else
+                        client.print("Fail:Actuator.Setup");
+                      }
+                    else
+                    {
+                      byte asettings[1];
+                      Serial_print("Non-Default Actuator Setup Pin: ");
+                      Serial_print(pin);
+                      asettings[0] = pin;
+                      softatadevice_Actuator = SoftataDevice_Actuator::_Setup(_actuator,asettings,1);
+                      if(softatadevice_Actuator != NULL)
+                      {
+                        int index = AddActuatorToList(softatadevice_Actuator);
+                        Serial_print("Actuator Index: ");
+                        Serial_println(index);
+                        String msgSettingsA2 = "OK";
+                        msgSettingsA2.concat(':');
+                        msgSettingsA2.concat(index);
+                        client.print(msgSettingsA2);
+                      }
+                      else
+                        client.print("Fail:Actuator.Setup");
                     }
                   }
                   break;                                       
                 case a_writeDoubleValueCMD:
                 {
                   int index = other;
-                  Grove_Actuator * grove_Actuator = GetActuatorFromList(index);
+                  SoftataDevice_Actuator * softatadevice_Actuator = GetActuatorFromList(index);
                   if(otherData[0]<1)
                   {
                     client.print("Fail:Actuator-WriteDoubleValue needs (a value");
@@ -2090,7 +1842,7 @@ void loop() {
                   else
                   {
                     double value = (double)otherData[1];
-                    if(grove_Actuator->Write(value,index))
+                    if(softatadevice_Actuator->Write(value,index))
                       client.print("OK:Actuator-WriteDoubleValue");
                     else
                       client.print("Fail:Actuator-WriteDoubleValue");
@@ -2100,7 +1852,7 @@ void loop() {
               case a_writeByteValueCMD:
                 {
                   int index = other;
-                  Grove_Actuator * grove_Actuator = GetActuatorFromList(index);
+                  SoftataDevice_Actuator * softatadevice_Actuator = GetActuatorFromList(index);
                   if(otherData[0]<1)
                   {
                     client.print("Fail:Actuator-WriteIntValue needs (a value");
@@ -2112,7 +1864,7 @@ void loop() {
                     Serial_print(value);
                     Serial_print('-');
                     Serial_println(index);
-                    if(grove_Actuator->Write(value,index))
+                    if(softatadevice_Actuator->Write(value,index))
                       client.print("OK:Actuator-WriteByte");
                     else
                       client.print("Fail:Actuator-WriteByte");
@@ -2122,7 +1874,7 @@ void loop() {
                case a_writeWordValueCMD:
                 {
                   int index = other;
-                  Grove_Actuator * grove_Actuator = GetActuatorFromList(index);
+                  SoftataDevice_Actuator * softatadevice_Actuator = GetActuatorFromList(index);
                   if(otherData[0]<1)
                   {
                     client.print("Fail:Actuator-WriteIntValue needs (a value");
@@ -2135,7 +1887,7 @@ void loop() {
                     Serial_print('-');
                     Serial_println(index);
 
-                    if(grove_Actuator->Write(value,index,2))
+                    if(softatadevice_Actuator->Write(value,index,2))
                       client.print("OK:Actuator-WriteWordValue");
                     else
                       client.print("Fail:Actuator-WriteWordValue");
@@ -2150,7 +1902,7 @@ void loop() {
                   int index = other;
                   bool bitState = false;
                   byte stateValue =0;
-                  Grove_Actuator * grove_Actuator = GetActuatorFromList(index);
+                  SoftataDevice_Actuator * softatadevice_Actuator = GetActuatorFromList(index);
                   if(otherData[0]<1)
                   {
                     client.print("Fail:Actuator-WriteIntValue needs a value");
@@ -2172,25 +1924,25 @@ void loop() {
                             bitState = true;
                         Serial_print('-');
                         Serial_print(bitState);
-                        if(grove_Actuator->SetBitState(bitState,bit))
+                        if(softatadevice_Actuator->SetBitState(bitState,bit))
                           client.print("OK:Actuator-SetBitState");
                         else
                           client.print("Fail:Actuator-SetBitState");
                         break;
                       case a_SetBitCMD:
-                        if(grove_Actuator->SetBit(bit))
+                        if(softatadevice_Actuator->SetBit(bit))
                           client.print("OK:Actuator-SetBit");
                         else
                           client.print("Fail:Actuator-SetBit");
                         break;                      
                       case a_ClearBitCMD:
-                          if(grove_Actuator->ClearBit(bit))
+                          if(softatadevice_Actuator->ClearBit(bit))
                           client.print("OK:Actuator-ClearBit");
                         else
                           client.print("Fail:Actuator-ClearBit");
                         break;                     
                       case a_ToggleBitCMD:
-                        if(grove_Actuator->ToggleBit(bit))
+                        if(softatadevice_Actuator->ToggleBit(bit))
                           client.print("OK:Actuator-ToggleBit");
                         else
                           client.print("Fail:Actuator-ToggleBit");
@@ -2204,7 +1956,7 @@ void loop() {
               case a_getActuatorsCMD:
                 {
                   String msg = String("OK:");
-                  msg.concat(Grove_Actuator::GetListof());
+                  msg.concat(SoftataDevice_Actuator::GetListofDevices());
                   client.print(msg);
                 }
                 break;

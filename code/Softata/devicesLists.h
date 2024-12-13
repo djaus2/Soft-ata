@@ -9,7 +9,7 @@
 class SensorListNode
 {
 public:
-    Grove_Sensor * Sensor=NULL;
+    SoftataDevice_Sensor * Sensor=NULL;
     int TelemetryStreamNo;
 protected:
 };
@@ -17,14 +17,14 @@ protected:
 class DisplayListNode
 {
 public: 
-    Grove_Display * Display=NULL;
+    SoftataDevice_Display * Display=NULL;
 protected:
 };
 
 class ActuatorListNode
 {
 public:
-    Grove_Actuator * Actuator = NULL;
+    SoftataDevice_Actuator * Actuator = NULL;
 protected:
 };
 
@@ -41,7 +41,7 @@ protected:
 SensorListNode * SensorList[MAX_SENSORS];
 int count =0;
 
-int AddSensorToList(Grove_Sensor * sensor )
+int AddSensorToList(SoftataDevice_Sensor * sensor )
 {
   if(count < (MAX_SENSORS-1))
   {
@@ -73,7 +73,7 @@ bool RemoveSensorFromList(int index)
     return false;
 }
 
-Grove_Sensor * GetSensorFromList(int index)
+SoftataDevice_Sensor * GetSensorFromList(int index)
 {
   if(SensorList[index]->Sensor != NULL)
     return SensorList[index]->Sensor;
@@ -101,7 +101,7 @@ int InitSensorList()
 DisplayListNode * DisplayList[MAX_DISPLAYS];
 int displaycount = 0;
 
-int AddDisplayToList(Grove_Display * display)
+int AddDisplayToList(SoftataDevice_Display * display)
 {
   if(displaycount < (MAX_DISPLAYS-1))
   {
@@ -139,7 +139,7 @@ bool RemoveDisplayFromList(int index)
     return false;
 }
 
-Grove_Display * GetDisplayFromList(int index)
+SoftataDevice_Display * GetDisplayFromList(int index)
 {
   if(DisplayList[index]->Display!= NULL)
     return DisplayList[index]->Display;
@@ -163,7 +163,7 @@ int InitDisplayList()
 ActuatorListNode * ActuatorList[MAX_ACTUATORS];
 int countActuators =0;
 
-int AddActuatorToList(Grove_Actuator * actuator)
+int AddActuatorToList(SoftataDevice_Actuator * actuator)
 {
   if(countActuators < (MAX_ACTUATORS-1))
   {
@@ -195,7 +195,7 @@ bool RemoveActuatorFromList(int index)
     return false;
 }
 
-Grove_Actuator * GetActuatorFromList(int index)
+SoftataDevice_Actuator * GetActuatorFromList(int index)
 {
   if(ActuatorList[index]->Actuator != NULL)
     return ActuatorList[index]->Actuator;

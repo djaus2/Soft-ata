@@ -1,7 +1,7 @@
 #ifndef SOFTATAH
 #define SOFTATAH
 
-enum Tristate {_nok=0,_ok=1,notImplemented=-1, _nan = 2};
+//enum Tristate {_nok=0,_ok=1,notImplemented=-1, _nan = 2};
 
 
 #define ENABLE_OTA
@@ -24,9 +24,9 @@ enum SyncedCommands : byte {pauseTelemetryorBT=0,continueTelemetryorBT=1,stopTel
 #include "serial_macros.h"
 #include "Connect2WiFi.h"
 
-
-enum bitStuffingIndex: byte {e_cmd,e_pin,e_param,e_other,e_otherDataCount,e_data1,e_data2, e_num};
-static int bitStuffing[] = {256,16,16,16,16,256,16};
+//In devices
+//enum bitStuffingIndex: byte {e_cmd,e_pin,e_param,e_other,e_otherDataCount,e_data1,e_data2, e_num};
+//static int bitStuffing[] = {256,16,16,16,16,256,16};
 
 
 //Server Port
@@ -38,6 +38,7 @@ static int bitStuffing[] = {256,16,16,16,16,256,16};
 
 #define MAX_SENSOR_PROPERTIES 10
 
+/*
 #ifdef RPI_PICO_DEFAULT
 #define DHT11Pin_D  13 // Whatever 0 to 26
 #define UART0TX   0  // GPIO0, GPIO16, GPIO22
@@ -62,15 +63,17 @@ static int bitStuffing[] = {256,16,16,16,16,256,16};
 #define I2C1_SDA  6
 #define I2C1_SCL  (I2C1_SDA +1)
 #endif
+*********************************************************************/
 
 //Maximum number of each that can be instantiated...added to list in deviceLists.h
 #define MAX_SENSORS   10
 #define MAX_ACTUATORS 10
 #define MAX_DISPLAYS  10
 
+
 // Max number of bytes in msgs from client to service here
 #define maxRecvdMsgBytes 32
-
+/********************************************************************
 #define G_DEVICETYPES C(sensor)C(actuator)C(communication)C(display)C(serial)
 
 //Add other sensors/actuators here C bracketed, on end.
@@ -86,9 +89,9 @@ static int bitStuffing[] = {256,16,16,16,16,256,16};
 #define DIGITAL_CMDS 0xD0
 #define SERIAL_CMDS 0xE0
 
-#define GROVE_SENSOR_CMD  0xF0
-#define GROVE_DISPLAY_CMD 0xF1
-#define GROVE_ACTUATOR_CMD 0xf2
+#define SoftataDevice_Sensor_CMD  0xF0
+#define SoftataDevice_Display_CMD 0xF1
+#define SoftataDevice_Actuaor_CMD 0xf2
 ///////////////////////// A C T U A T O R S /////////////////////////////////////////////////
 
 enum GroveActuatorCmds{a_getpinsCMD, a_getValueRangeCMD, a_setupDefaultCMD, a_setupCMD, a_writeDoubleValueCMD, a_writeByteValueCMD,a_writeWordValueCMD,a_SetBitStateCMD,a_SetBitCMD,a_ClearBitCMD,a_ToggleBitCMD, a_getActuatorsCMD=255 };
@@ -150,20 +153,18 @@ enum GroveSensorCmds{s_getpinsCMD, s_getPropertiesCMD, s_setupdefaultCMD, s_setu
 
 #define DHTXX_MIN_TIME_BTW_READS_MS 1000;
 #define DHTXX_MIN_TIME_BTW_READS_MS_INCR 250;
-
+*************************************************************************************/
 
 
 
 ///////////////////////// D I S P L A Y S /////////////////////////////////////////////////
 
+/**************************************************************************************************
+
 #define DISPLAY_COMMANDS C(D_getCmdsCMD)C(D_getDisplaysCMD)C(D_getpinsCMD)C(D_setupDefaultCMD)C(D_setupCMD)C(D_dispose)C(d_miscGetListCMD)C(d_clearCMD)C(d_backlightCMD)C(d_setCursorCMD)C(d_writestringCMD)C(d_cursor_writestringCMD)C(d_home)C(d_dummyCMD)C(D_miscCMD)
 
 
 
-/*enum GroveDisplayCmds{C(d_getDisplaysCMD),C(d_getDisplaysCMD)d_getpinsCMD,d_tbdCMD, d_setupDefaultCMD, d_setupCMD, d_clearCMD,d_backlightCMD,d_setCursorCMD,
-                                    d_writestrngCMD,d_cursor_writestringCMD, d_home, d_dummyCMD, d_miscCMD,  d_dispose, d_getDisplaysCMD=255 };
-//enum GroveDisplayCmds{d_getpinsCMD=0, d_tbdCMD=1, d_setupDefaultCMD=2, d_setupCMD=3, d_clearCMD=4,d_backlightCMD=5,d_setCursorCMD=6, d_writestrngCMD=7,d_cursor_writestringCMD=8,d_miscCMD=9, d_getDisplaysCMD}
-*/
 // Note: Adresses are typically defined in the device library which typically use I2C0
 #define OLEDDISPLAY_ADDR   0x78
 #define LCD1602LCD_V2_ADDR 0X3E
@@ -176,8 +177,10 @@ enum GroveSensorCmds{s_getpinsCMD, s_getPropertiesCMD, s_setupdefaultCMD, s_setu
 #define NEOPIXEL_PIN 16 //18,20 (Grove yellow cable).. 17,19,21 (Grove white cable)
 #endif
 
+*/
 #define maxNumDisplaySettings 4
 
+/*
 //Display connections
 
 #ifdef RPI_PICO_DEFAULT
@@ -191,10 +194,11 @@ enum GroveSensorCmds{s_getpinsCMD, s_getPropertiesCMD, s_setupdefaultCMD, s_setu
 #define BARGRAPH_PINNOUT "Pins 16 (DS of 74HC595-Pin14),20 (ST_CP of 74HC595-Pin12),21 (SH_CP of 74HC595-Pin11)(default)"
 #define GBARGRAPH_PINNOUT "Pin 16 DI (Data-MY9221) + Pin 17 DCKI (Clock-MY9221)"
 #endif
+*/
 
-
+/*
 // Add Misc commands to list here, before last one.
-// Implement in Grove_XXXX::Misc(int cmd, int * data, int length)
+// Implement in SoftataDevice_XXXX::Misc(int cmd, int * data, int length)
 enum LCD1602MiscCmds {home,autoscroll,noautoscroll,blink,noblink,LCD1602MiscCmds_MAX};
 enum NEOPIXELMiscCmds {setpixelcolor,setpixelcolorAll,setpixelcolorOdds,setpixelcolorEvens,setBrightness,setN,NEOPIXELMiscCmds_MAX};
 enum OLEDMiscCmds {drawCircle,drawFrame,test,OLEDMiscCmds_MAX};
@@ -206,11 +210,12 @@ enum range_units {mm,cm,inch};
 #define NEOPIXELMiscCmdsStr  "etpixelcolor,setpixelcolorAll,setpixelcolorOdds,setpixelcolorEvens,setBrightness,setN,NEOPIXELMiscCmds_MAX";
 #define OLEDMiscCmdsStr  "drawCircle,drawFrame,test,OLEDMiscCmds_MAX";
 #define BARGRAPHMiscCmdsStr "flow,flow2,setLed,clrLed,toggleLed,setLevel,exercise,allOn,BARGRAPHMiscCmds_MAX";
-
+*/
 
 ///////////////////////////////////
 
-
+#ifndef CALLBAKINFOH
+#define CALLBAKINFOH
 typedef String(*call_back)(void);
 
 
@@ -224,6 +229,7 @@ struct CallbackInfo
   bool isRunning; // Can stop and continue Telemetry
   call_back back;
 };
+#endif
 
 int AddCallBack(CallbackInfo * info);
 bool PauseTelemetrySend(int index);
