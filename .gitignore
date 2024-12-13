@@ -397,3 +397,5 @@ FodyWeavers.xsd
 /code/SofataLibMulti
 /code/Softata/.vscode/arduino.json
 /code/Softata/src/.vscode/settings.json
+/code/Softata/build/rp2040.rp2040.rpipicow/Softata.ino.map
+/code/Softata (2).zip
