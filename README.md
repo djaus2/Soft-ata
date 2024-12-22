@@ -1,6 +1,11 @@
 # Soft-ata Version 11.400
 
 ## Updates
+- SoftataConsole2 is the console app to use. Nb Blockly and Blazor apps are yet to be updated for this
+  - The big change is to push evrything down into Arduino such that the .NET app can query for meta infor rather than have to know anything.
+    - Can query for a list of device classes, then ...
+    - One assumption is that with Device Type classes, the first command (ndex 0) is GetCmds ... etc.
+  - KISS principle: Keep it Singke Sourced!
 - Softata/src folder is now a separate GitHub repository at [djaus2/SoftataDevices](https://github.com/djaus2/SoftataDevices)
   - Much renaming there such as Grove becomes SoftataDevices
   - To run Softata sketch, install SoftataDevices library as a zip file
