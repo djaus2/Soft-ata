@@ -5,14 +5,14 @@
 // defined in serial_macros.h:
 // #define SOFTATA_DEBUG_MODE
 
-#define WIFI_CONNECT_MODE from_eeprom
+#define WIFI_CONNECT_MODE is_defined //from_eeprom
 
 #define SERIAL_DEBUG true
 
 //WiFi
 #ifndef STASSID
-#define STASSID "<ssid>"
-#define STAPSK "<password>"
+#define STASSID "APQLZM" //"<ssid>"
+#define STAPSK "tallinn187isnotinaustralia" //"<password>"
 #endif
 
 #define IOT_CONFIG_WIFI_SSID STASSID

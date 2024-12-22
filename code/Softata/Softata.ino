@@ -633,6 +633,13 @@ void loop() {
         client.print(devicesCSV);
        }
         break;
+      case (byte)'S':  //Get base for sensor/display/actuator commands=0xf0
+       {
+        byte base = SoftataDevice::GetSoftataDeviceCmdBase();
+        Serial_println(base);
+        client.print(base);
+       }
+        break;
        case (byte)'O':
        case (byte)'W':  //Cause WatchDog or OTA failure with busy wait with no WDT or OTA updates.
        {
@@ -1086,24 +1093,24 @@ void loop() {
               SoftataSensor _sensor = (SoftataSensor)other;
               switch (param)
               {
-                case s_getpinsCMD: 
+                case S__getpinsCMD: 
                   {        
                     String pins =  "OK:";
                     pins.concat(SoftataDevice_Sensor::GetPinout (_sensor));
                     client.print(pins); 
                   }
                   break;
-                case s_getPropertiesCMD:
+                case S__getPropertiesCMD:
                   {
                     String props ="OK:";
                     props.concat(SoftataDevice_Sensor::_GetListofProperties(_sensor));
                     client.print(props);
                   }
                   break;
-                case s_setupdefaultCMD:
-                case s_setupCMD:
+                case S__setupdefaultCMD:
+                case S__setupCMD:
                   SoftataDevice_Sensor * softatadevice_Sensor;
-                  if(param==s_setupdefaultCMD)
+                  if(param==S__setupdefaultCMD)
                   {
                     softatadevice_Sensor = SoftataDevice_Sensor::_Setup(_sensor);
                     if(softatadevice_Sensor != NULL)
@@ -1386,13 +1393,13 @@ void loop() {
                     client.print(msg);
                   }
                   break;   
-                case s_getCmdsCMD:
+                case S_getCmdsCMD:
                   {
                     String scmmds ="OK:";
                     scmmds.concat(SoftataDevice_Sensor::GetListofCmds());
                     client.print(scmmds);
                   }     
-                case s_getSensorsCMD:
+                case S_getDevicesCMD:
                   {
                     String msg = String("OK:");
                     msg.concat(SoftataDevice_Sensor::GetListofDevices());
@@ -1421,24 +1428,24 @@ void loop() {
                   client.print(cmds);
                 }
                 break;
-                case D_getpinsCMD: //getPins
+                case D__getpinsCMD: //getPins
                 {
                   String pins =  "OK:";
                   pins.concat(SoftataDevice_Display::GetPinout (_display));
                   client.print(pins);
                 }
                 break;
-                case d_miscGetListCMD: //Get list of Msic commands for device
+                case D__miscGetListCMD: //Get list of Msic commands for device
                 {
                   String misccmds ="OK:";
                   misccmds.concat(SoftataDevice_Display::_GetListofMiscCmds(_display));
                   client.print(misccmds);        
                 }
                 break;
-                case D_setupDefaultCMD: //Setupdefault
-                case D_setupCMD: //Setup(params)
+                case D__setupDefaultCMD: //Setupdefault
+                case D__setupCMD: //Setup(params)
                 {
-                  if(param==D_setupDefaultCMD)
+                  if(param==D__setupDefaultCMD)
                   {
                     softataDevice_Display = SoftataDevice_Display::_Setup(_display);
                     if(softataDevice_Display != NULL)
@@ -1748,7 +1755,7 @@ void loop() {
                     RemoveDisplayFromList(index);
                   } 
                   break;                             
-                case D_getDisplaysCMD:
+                case D_getDevicesCMD:
                   {
                     Serial_println("Get Displays.");
                     String msg = String("OK:");
@@ -1766,33 +1773,33 @@ void loop() {
               SoftataActuator _actuator = (SoftataActuator)other;
               switch (param)
               {
-                case a_getpinsCMD: //getPins
+                case A__getpinsCMD: //getPins
                   {
                     String pins ="OK:";
                     pins.concat(SoftataDevice_Actuator::GetPinout (_actuator));
                     client.print(pins);
                   }
                   break;
-                  case a_getCmdsCMD: //get Generic Display Cmds
+                  case A_getCmdsCMD: //get Generic Display Cmds
                   {
                     String cmds ="OK:";
                     cmds.concat(SoftataDevice_Actuator::GetListofCmds());
                     client.print(cmds);
                   }
                   break;
-                case a_getValueRangeCMD:
+                case A__getValueRangeCMD:
                   {
                     String valueRange ="OK:";
                     valueRange.concat(SoftataDevice_Actuator::GetRange(_actuator));
                     client.print(valueRange);
                   }
                   break;
-                case a_setupDefaultCMD: //Setupdefault
-                case a_setupCMD: //Setup(params)
+                case A__setupDefaultCMD: //Setupdefault
+                case A__setupCMD: //Setup(params)
                   {
                     Serial.println("Setup act");
                     SoftataDevice_Actuator * softatadevice_Actuator;
-                    if(param==a_setupDefaultCMD)
+                    if(param==A__setupDefaultCMD)
                     {
                       softatadevice_Actuator = SoftataDevice_Actuator::_Setup(_actuator);
                       if(softatadevice_Actuator != NULL)
@@ -1953,7 +1960,7 @@ void loop() {
                   }
                 }
                 break;                                                                     
-              case a_getActuatorsCMD:
+              case A_getDevicesCMD:
                 {
                   String msg = String("OK:");
                   msg.concat(SoftataDevice_Actuator::GetListofDevices());

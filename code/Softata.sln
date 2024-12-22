@@ -176,6 +176,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BinZip", "BinZip", "{D49768
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SofataLibMulti", "SofataLibMulti\SofataLibMulti.csproj", "{CA525E5F-AC18-4020-8B1E-AC9398202AC9}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SoftataConsole2", "SoftataConsole2\SoftataConsole2.csproj", "{389068DF-3E8A-43E7-B5B0-DCD3C57AD1C9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SofataLibMulti2", "SofataLibMulti2\SofataLibMulti2.csproj", "{B76E91E9-BD83-4313-9D1E-248A164B012E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -212,6 +216,14 @@ Global
 		{CA525E5F-AC18-4020-8B1E-AC9398202AC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CA525E5F-AC18-4020-8B1E-AC9398202AC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CA525E5F-AC18-4020-8B1E-AC9398202AC9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{389068DF-3E8A-43E7-B5B0-DCD3C57AD1C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{389068DF-3E8A-43E7-B5B0-DCD3C57AD1C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{389068DF-3E8A-43E7-B5B0-DCD3C57AD1C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{389068DF-3E8A-43E7-B5B0-DCD3C57AD1C9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B76E91E9-BD83-4313-9D1E-248A164B012E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B76E91E9-BD83-4313-9D1E-248A164B012E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B76E91E9-BD83-4313-9D1E-248A164B012E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B76E91E9-BD83-4313-9D1E-248A164B012E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
