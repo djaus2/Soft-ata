@@ -3,7 +3,7 @@
 ## Updates
 - SoftataConsole2 is the console app to use. Nb Blockly and Blazor apps are yet to be updated for this
   - The big change is to push evrything down into Arduino such that the .NET app can query for meta infor rather than have to know anything.
-    - Can query for a list of device classes, then ...
+    - Can query for a list of Device Type classes, then ...
     - One assumption is that with Device Type classes, the first command (ndex 0) is GetCmds ... etc.
   - **KISS** principle: **K**eep it **S**ingle **S**ourced!
   - Watch this space
