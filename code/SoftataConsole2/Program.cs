@@ -212,6 +212,8 @@ namespace SoftataBasic
 
                     if (!quit)
                     {
+                        List<string> stringlist = new List<string>();// { "setup", "pins", "properties", "valuerange" };
+
                         if (DeviceTypesCSV == "")
 
                         {
@@ -249,38 +251,45 @@ namespace SoftataBasic
                             CommandsCSV = softatalib.SendTargetCommand(cmdTarget, 1, subCmd);
                             string[] temp = CommandsCSV.Split(":");
                             string[] GenericCommands = temp.Last().Split(",");
+                            List<string>? sensorProperties = null;
                             //Get commands to be diaplyed in menu
                             Dictionary<int,string> useGenericCommands = new Dictionary<int,string>();
                             for (int i = 0; i < GenericCommands.Length; i++)
                             {
                                 if (char.IsUpper(GenericCommands[i][0]))
                                 {
+                    
+    
+                                }
+                                else
+                                {
                                     // Will have leading A_ D_ or S_
                                     // OR
                                     // leading S__ D__ or S__
-                                    if(GenericCommands[i][2]!= '_')
+                                    if (GenericCommands[i].Substring(1, 2) == "__")
                                     {
+                                        // These commands are called from the device class type
+                                        // Using the specific device type ordinal
+                                        // Without using an instance
+                                        string cmd = GenericCommands[i].Substring(3);
+                                        stringlist.Add(cmd);
+                                        useGenericCommands.Add(i, cmd);
                                         // Will have leading A_ D_ or S_
                                         // General Actuator/Display/Sensor class info
                                     }
                                     else
                                     {
-                                        // leading S__ D__ or S__
-                                        // Actuator/Display/Sensor device info
+                                        //Will have leading a_ d_ or s_ 
+                                        string cmd = GenericCommands[i].Substring(2);
+                                        useGenericCommands.Add(i, cmd);
                                     }
-                                }
-                                else
-                                {
-                                    //Will have leading a_ d_ or s_ 
-                                    string cmd = GenericCommands[i].Substring(2);
-                                    useGenericCommands.Add(i,cmd);
                                 }
                             }
                             //define DISPLAY_COMMANDS C(D_getDevicesCMD)C(D_getCmdsCMD)C(D_getpinsCMD)C(D_setupDefaultCMD)C(D_setupCMD)C(D_dispose)C(d_miscGetListCMD)C(d_clearCMD)C(d_backlightCMD)C(d_setCursorCMD)C(d_writestringCMD)C(d_cursor_writestringCMD)C(d_home)C(d_dummyCMD)C(D_miscCMD)
                             
                             subCmd = GetGenericCmdIndex("getDevices", GenericCommands);
                             DevicesCSV = softatalib.SendTargetCommand(cmdTarget, 0, subCmd);
-
+                            int pinn = 0;
                             TargetDevice = Layout.PromptWithCSVList(TargetDevice.Index, DevicesCSV, true, true);
                             if (TargetDevice.Index < 0)
                             {
@@ -313,7 +322,7 @@ namespace SoftataBasic
                                 else
                                 {
                                     // Not yet implemented
-                                    int pinn = 16;
+                                    pinn = 16;
 
                                     if (int.TryParse(TargetPin.Item, out pinn))
                                     {
@@ -326,7 +335,7 @@ namespace SoftataBasic
                                 }
 
                                 cmdTarget =  (byte)TargetDeviceType.Index;
-                                subCmd = GetGenericCmdIndex("setupDefault", GenericCommands);
+                                subCmd = GetGenericCmdIndex("setupdefault", GenericCommands);
                                 string result = softatalib.SendTargetCommand(cmdTarget, 1, subCmd,(byte)TargetDevice.Index);
                                 byte linkedListNo = 0xff;
                                 if (byte.TryParse(result, out byte lln))
@@ -342,7 +351,7 @@ namespace SoftataBasic
 
                                 while ((!quit) && (!back))
                                 {
-
+                                    pinn = 0;
                                     TargetCommand = Layout.PromptWithDictionaryList(TargetCommand.Order, useGenericCommands, true, true);
                                     if (TargetCommand.Index < 0)
                                     {
@@ -354,6 +363,9 @@ namespace SoftataBasic
                                     }
                                     else
                                     {
+                                        string command = TargetCommand.Item.ToLower();
+                                        byte[]? data = new byte[0];
+                                        ///////////////////////////////////
                                         Layout.Info($"Selected target device command : ", $" {TargetCommand.Item}");
                                         if (TargetDeviceType.Item.ToLower() == "actuator")
                                         {
@@ -361,20 +373,39 @@ namespace SoftataBasic
                                         }
                                         else if (TargetDeviceType.Item.ToLower() == "sensor")
                                         {
-
+                                            if(sensorProperties == null)
+                                            {
+                                                subCmd = GetGenericCmdIndex("properties", GenericCommands);
+                                                result = softatalib.SendTargetCommand(cmdTarget, 1, subCmd, (byte)TargetDevice.Index);
+                                                sensorProperties = new List<string>(result.Split(","));
+                                            }
+                                            if ((command.ToLower().Contains("readall")) || (command.ToLower().Contains("gettelemetry")))
+                                            {
+                                                Layout.Info("Getting: ", result);
+                                            }
+                                            else if (command.ToLower().Contains("read"))
+                                            {
+                                                var seln = Layout.PromptWithCSVList(0,result, true, true);
+                                                pinn = seln.Index ;
+                                                if (pinn < 0)
+                                                {
+                                                    if (pinn == -1)
+                                                        quit = true;
+                                                    else if (pinn == -2)
+                                                        back = true;
+                                                    continue;
+                                                }
+                                                Layout.Info("Getting: ", sensorProperties[pinn]);
+                                            }
                                         }
                                         else if (TargetDeviceType.Item.ToLower() == "display")
                                         {
 
-                                            string command = TargetCommand.Item.ToLower();
-                                            ///////////////////////////////////
-
-                                            string response = "";
                                             int line = 0;
                                             int pos = 0;
                                             string? message = "";
-                                            byte[]? data = new byte[0];
-                                            if (command.Contains("cursor"))
+
+                                            if (command.ToLower().Contains("cursor"))
                                             {
                                                 //case GroveDisplayCmds.setCursor:
                                                 L.Info("Enter line 1 or 2");
@@ -383,7 +414,7 @@ namespace SoftataBasic
                                                 pos = L.Prompt4Num(pos, 40, false);
                                                 data = new byte[] { 0x2, (byte)pos, (byte)line };
                                             }
-                                            if (command.Contains("writestring"))
+                                            if (command.ToLower().Contains("writestring"))
                                             {
                                                 message = Console.ReadLine();
                                                 if (!string.IsNullOrEmpty(message))
@@ -392,22 +423,21 @@ namespace SoftataBasic
                                                     data = data.Concat(bytes).ToArray<byte>();
                                                 }
                                             }
-                                            if (data.Length == 0)
-                                            {
-                                                data = null;
-                                            }
-                                            // Normally targetDeviceIndex is 0xff, means ignore it and use linkedListIndex, ie use instantiated index
-                                            // For specific devicetype.device commands use its devicetype.device index.
-                                            byte targetDeviceIndex = 0xff;
-                                            List<string> stringlist = new List<string> { "setup", "pins", "properties", "valuerange" };
-                                            if (stringlist.Any(s => s.Contains(TargetCommand.Item)))
-                                            {
-                                                targetDeviceIndex = (byte)TargetDevice.Index;
-                                            }
-                                            response = softatalib.SendTargetCommand((byte)TargetDeviceType.Index,0, (byte)TargetCommand.Index, targetDeviceIndex,  linkedListNo, data);
-
-                                            L.Info(response);
                                         }
+                                        if (data.Length == 0)
+                                        {
+                                            data = null;
+                                        }
+                                        // Normally targetDeviceIndex is 0xff, means ignore it and use linkedListIndex, ie use instantiated index
+                                        // For specific devicetype.device commands use its devicetype.device index.
+                                        byte targetDeviceIndex = 0xff;
+                                        if (stringlist.Any(s => s.Contains(TargetCommand.Item)))
+                                        {
+                                            targetDeviceIndex = (byte)TargetDevice.Index;
+                                        }
+                                        string response = softatalib.SendTargetCommand((byte)TargetDeviceType.Index,(byte)pinn, (byte)TargetCommand.Index, targetDeviceIndex,  linkedListNo, data);
+
+                                        L.Info(response); 
                                     }
                                 }
                             }
@@ -434,7 +464,7 @@ namespace SoftataBasic
             byte subCmd = 0;
             for (int i=0;i< GenericCmds.Length;i++)
             {
-                if (GenericCmds[i].Contains(cmd))
+                if (GenericCmds[i].ToLower().Contains(cmd.ToLower()))
                 {
                     subCmd = (byte)i;
                     break;
@@ -448,7 +478,7 @@ namespace SoftataBasic
             byte subCmd = 0;
             foreach (var genCmd in useGenericCmds)
             {
-                if (genCmd.Value.Contains(cmd))
+                if (genCmd.Value.ToLower().Contains(cmd.ToLower()))
                 {
                     subCmd = (byte)genCmd.Key;
                     break;

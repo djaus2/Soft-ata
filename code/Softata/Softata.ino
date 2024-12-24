@@ -1087,30 +1087,32 @@ void loop() {
             { 
               // Cmd = 0xF0,pin=Index of cmd in list,param=SubCmd,Other=
               // GroveSensorCmds{
-              // s_getpinsCMD, s_getPropertiesCMD, 
-              // s_setupdefaultCMD, s_setupCMD, s_readallCMD, s_readCMD, s_getSensorsCMD=255 
+              // s_getPinsCMD, s_getPropertiesCMD, 
+              // s_setupDefaultCMD, s_setupCMD, s_readallCMD, s_readCMD, s_getSensorsCMD=255 
               //};
               SoftataSensor _sensor = (SoftataSensor)other;
+              Serial.print("Sensor: ");Serial.println(_sensor);
+              Serial.print("Sensor CMD: "); Serial.println(param);
               switch (param)
               {
-                case S__getpinsCMD: 
+                case S_getPinsCMD: 
                   {        
                     String pins =  "OK:";
                     pins.concat(SoftataDevice_Sensor::GetPinout (_sensor));
                     client.print(pins); 
                   }
                   break;
-                case S__getPropertiesCMD:
+                case s__getPropertiesCMD:
                   {
                     String props ="OK:";
                     props.concat(SoftataDevice_Sensor::_GetListofProperties(_sensor));
                     client.print(props);
                   }
                   break;
-                case S__setupdefaultCMD:
-                case S__setupCMD:
+                case S_setupDefaultCMD:
+                case S_setupCMD:
                   SoftataDevice_Sensor * softatadevice_Sensor;
-                  if(param==S__setupdefaultCMD)
+                  if(param==S_setupDefaultCMD)
                   {
                     softatadevice_Sensor = SoftataDevice_Sensor::_Setup(_sensor);
                     if(softatadevice_Sensor != NULL)
@@ -1148,9 +1150,24 @@ void loop() {
                       client.print("Fail:Sensor.Setup");
                   }
                   break;
+                case s_readallCMD:
+                  {
+                    SoftataDevice_Sensor * softatadevice_Sensor = GetSensorFromList(other);
+                    int num = SoftataDevice_Sensor::_GetNumofProperties(other);
+                    double values[num];
+                    softatadevice_Sensor->ReadAll(values);
+                    String msgGetAll = "OK:";
+                    for(int i=0;i<num;i++)
+                    {
+                      msgGetAll.concat(values[i]);
+                      if(i<(num-1))
+                        msgGetAll.concat(",");
+                    }
+                    client.print(msgGetAll);
+                  }
+                  break;
                 case s_readCMD:
                   {
-
                     SoftataDevice_Sensor * softatadevice_Sensor = GetSensorFromList(other);
                     // A bit of reuse of real-estate here:
                     byte property = pin;
@@ -1414,7 +1431,7 @@ void loop() {
             {
               //#define G_DISPLAYS C(OLED096)C(LCD1602)C(NEOPIXEL)
               // enum GroveDisplayCmds{
-              // d_getpinsCMD, d_tbdCMD, d_setupDefaultCMD, d_setupCMD, 
+              // d_getPinsCMD, d_tbdCMD, d_setupDefaultCMD, d_setupCMD, 
               // d_clearCMD,d_backlightCND,d_setCursorCMD,homeCMD,d_miscCMD, d_getDisplaysCMD=255 
               // }
               SoftataDisplay _display = (SoftataDisplay)other;
@@ -1428,24 +1445,24 @@ void loop() {
                   client.print(cmds);
                 }
                 break;
-                case D__getpinsCMD: //getPins
+                case D_getPinsCMD: //getPins
                 {
                   String pins =  "OK:";
                   pins.concat(SoftataDevice_Display::GetPinout (_display));
                   client.print(pins);
                 }
                 break;
-                case D__miscGetListCMD: //Get list of Msic commands for device
+                case d__miscGetListCMD: //Get list of Msic commands for device
                 {
                   String misccmds ="OK:";
                   misccmds.concat(SoftataDevice_Display::_GetListofMiscCmds(_display));
                   client.print(misccmds);        
                 }
                 break;
-                case D__setupDefaultCMD: //Setupdefault
-                case D__setupCMD: //Setup(params)
+                case D_setupDefaultCMD: //Setupdefault
+                case D_setupCMD: //Setup(params)
                 {
-                  if(param==D__setupDefaultCMD)
+                  if(param==D_setupDefaultCMD)
                   {
                     softataDevice_Display = SoftataDevice_Display::_Setup(_display);
                     if(softataDevice_Display != NULL)
@@ -1700,7 +1717,7 @@ void loop() {
                   }              
                 }
                 break;              
-                case D_miscCMD:
+                case d__miscCMD:
                   {
                     if(otherData[0]<1)
                     {
@@ -1773,7 +1790,7 @@ void loop() {
               SoftataActuator _actuator = (SoftataActuator)other;
               switch (param)
               {
-                case A__getpinsCMD: //getPins
+                case A_getPinsCMD: //getPins
                   {
                     String pins ="OK:";
                     pins.concat(SoftataDevice_Actuator::GetPinout (_actuator));
@@ -1787,19 +1804,19 @@ void loop() {
                     client.print(cmds);
                   }
                   break;
-                case A__getValueRangeCMD:
+                case a__getValueRangeCMD:
                   {
                     String valueRange ="OK:";
                     valueRange.concat(SoftataDevice_Actuator::GetRange(_actuator));
                     client.print(valueRange);
                   }
                   break;
-                case A__setupDefaultCMD: //Setupdefault
-                case A__setupCMD: //Setup(params)
+                case A_setupDefaultCMD: //Setupdefault
+                case A_setupCMD: //Setup(params)
                   {
                     Serial.println("Setup act");
                     SoftataDevice_Actuator * softatadevice_Actuator;
-                    if(param==A__setupDefaultCMD)
+                    if(param==A_setupDefaultCMD)
                     {
                       softatadevice_Actuator = SoftataDevice_Actuator::_Setup(_actuator);
                       if(softatadevice_Actuator != NULL)
