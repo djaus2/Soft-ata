@@ -12,6 +12,18 @@ namespace Softata.Enums
 
     public enum GroveGenericClassCmds { getListofGenericCMDs, getDevices, getpins, setupDefault, setup, dispose }; //,
 
+    /// <summary>
+    /// Actuators have centain functions implemented but not necessarily all
+    /// - singlebit means can only be set or reset, without a pin specification. eg Grove Relay
+    /// - bitonly means can set/clear/toggle but needs pin/bit number 1...8. SetState also works
+    /// - writeonly means can write a byte value which may inefect (bot not necessarliy) be interpretted as bits, eg Servo
+    /// - both means can maniuplate individual bits or write a byte value. eg QuadRelays
+    /// - Using these enums as part of the device divers means it is specified there not here.
+    /// Once Actuator is instatniated it is queried using GetActuatorCapabilities()
+    /// softatadevice_Actuator->GetActuatorCapabilities()
+    /// </summary>
+    public enum ActuatorCapabilities { a_singlebit, a_bitonly, a_writeonly, a_both };
+
     public enum AllDisplayMiscCommands : byte 
     {
         /* LCD1602MiscCmds */

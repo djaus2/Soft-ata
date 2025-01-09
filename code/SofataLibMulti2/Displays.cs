@@ -367,47 +367,66 @@ namespace Softata
                     this.softatalib = parent;
                 }
                 // Misc commands
-                enum NEOPIXELMiscCmds { setpixelcolor, setpixelcolorAll, setpixelcolorOdds, setpixelcolorEvens, setBrightness, setN, NEOPIXELMiscCmds_MAX };
+                enum NEOPIXELMiscCmds { setpixelcolor, setpixelcolAll, setpixelcolorOdds, setpixelcolorEvens, setBrightness, setNum,setPxl, NEOPIXELMiscCmds_MAX };
 
                 public  byte MaxNumPixels = 8;
                 public  bool Clear(byte displayLinkedListIndex)
                 {
-                    byte[] data = new byte[] { 0x4, (byte)NEOPIXELMiscCmds.setpixelcolorAll, 0, 0, 0 };
+                    byte[] data = new byte[] { 0x4, (byte)NEOPIXELMiscCmds.setpixelcolAll, 0, 0, 0 };
                     string result = softatalib.SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", displayLinkedListIndex, data);
                     if (!string.IsNullOrEmpty(result))
                         Console.WriteLine(result);
                     return true;
                 }
+
+                public bool Misc_SetPixelColorOne(byte displayLinkedListIndex, byte red, byte green, byte blue, byte pixel)
+                {
+                    byte[] data = new byte[] { 0x5, (byte)NEOPIXELMiscCmds.setpixelcolor, red, green, blue, pixel };
+                    string result = softatalib.SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", displayLinkedListIndex, data);
+                    if (!string.IsNullOrEmpty(result))
+                        Console.WriteLine(result);
+                    return true;
+                }
+
                 public  bool Misc_SetAll(byte displayLinkedListIndex, byte red, byte green, byte blue)
                 {
-                    byte[] data = new byte[] { 0x4, (byte)NEOPIXELMiscCmds.setpixelcolorAll, red, green, blue };
+                    byte[] data = new byte[] { 0x4, (byte)NEOPIXELMiscCmds.setpixelcolAll, red, green, blue };
                     string result = softatalib.SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", displayLinkedListIndex, data);
                     if (!string.IsNullOrEmpty(result))
                         Console.WriteLine(result);
                     return true;
                 }
 
-                public  bool Misc_SetN(byte displayLinkedListIndex, byte red, byte green, byte blue, byte n)
+                public  bool Misc_SetNum(byte displayLinkedListIndex, byte red, byte green, byte blue, byte n)
                 {
-                    byte[] data = new byte[] { 0x5, (byte)NEOPIXELMiscCmds.setN, red, green, blue, n };
+                    byte[] data = new byte[] { 0x5, (byte)NEOPIXELMiscCmds.setNum, red, green, blue, n };
                     string result = softatalib.SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", displayLinkedListIndex, data);
                     if (!string.IsNullOrEmpty(result))
                         Console.WriteLine(result);
                     return true;
                 }
 
-                public  bool Misc_Set(byte displayLinkedListIndex, byte pixel, byte red, byte green, byte blue)
+                public bool Misc_SetPxl(byte displayLinkedListIndex, byte red, byte green, byte blue, byte n)
                 {
-                    byte[] data = new byte[] { 0x5, (byte)NEOPIXELMiscCmds.setpixelcolor, pixel,red, green, blue };
+                    byte[] data = new byte[] { 0x5, (byte)NEOPIXELMiscCmds.setPxl, red, green, blue, n };
                     string result = softatalib.SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", displayLinkedListIndex, data);
                     if (!string.IsNullOrEmpty(result))
                         Console.WriteLine(result);
                     return true;
                 }
 
-                public  bool Misc_SetOdd(byte displayLinkedListIndex, byte red, byte green, byte blue)
+                public  bool Misc_SetOdds(byte displayLinkedListIndex, byte red, byte green, byte blue)
                 {
                     byte[] data = new byte[] { 0x4, (byte)NEOPIXELMiscCmds.setpixelcolorOdds, red, green, blue };
+                    string result = softatalib.SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", displayLinkedListIndex, data);
+                    if (!string.IsNullOrEmpty(result))
+                        Console.WriteLine(result);
+                    return true;
+                }
+ 
+                public  bool Misc_SetEvens(byte displayLinkedListIndex, byte red, byte green, byte blue)
+                {
+                    byte[] data = new byte[] { 0x4, (byte)NEOPIXELMiscCmds.setpixelcolorEvens, red, green, blue };
                     string result = softatalib.SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", displayLinkedListIndex, data);
                     if (!string.IsNullOrEmpty(result))
                         Console.WriteLine(result);
@@ -416,15 +435,6 @@ namespace Softata
                 public bool Misc_SetBrightness(byte displayLinkedListIndex, byte level)
                 {
                     byte[] data = new byte[] { 0x2, (byte)NEOPIXELMiscCmds.setBrightness, level };
-                    string result = softatalib.SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", displayLinkedListIndex, data);
-                    if (!string.IsNullOrEmpty(result))
-                        Console.WriteLine(result);
-                    return true;
-                }
-
-                public  bool Misc_SetEvens(byte displayLinkedListIndex, byte red, byte green, byte blue)
-                {
-                    byte[] data = new byte[] { 0x4, (byte)NEOPIXELMiscCmds.setpixelcolorEvens, red, green, blue };
                     string result = softatalib.SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", displayLinkedListIndex, data);
                     if (!string.IsNullOrEmpty(result))
                         Console.WriteLine(result);
@@ -441,10 +451,10 @@ namespace Softata
                     this.softatalib = parent;
                 }
                 // Misc commands
-                enum LCD1602MiscCmds { home, autoscroll, noautoscroll, blink, noblink, LCD1602MiscCmds_MAX };
+                enum LCD1602MiscCmds { autoscroll, noautoscroll, blink, noblink, LCD1602MiscCmds_MAX };
 
 
-                public  bool Autoscroll(byte displayLinkedListIndex)
+                public  bool AutoscrollOn(byte displayLinkedListIndex)
                 {
                     byte[] data = new byte[] { 0x1, (byte)LCD1602MiscCmds.autoscroll };
                     string result = softatalib.SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", displayLinkedListIndex, data);
@@ -462,7 +472,7 @@ namespace Softata
                     return true;
                 }
 
-                public  bool Blink(byte displayLinkedListIndex)
+                public  bool BlinkOn(byte displayLinkedListIndex)
                 {
                     byte[] data = new byte[] { 0x1, (byte)LCD1602MiscCmds.blink };
                     string result = softatalib.SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", displayLinkedListIndex, data);
@@ -512,7 +522,7 @@ namespace Softata
                     this.softatalib = parent;
                 }
 
-                public  bool Flow(byte displayLinkedListIndex)
+                public  bool FlowOdd(byte displayLinkedListIndex)
                 {
                     byte[] data = new byte[] { 0x1, (byte)((byte)BARGRAPHMiscCmds.flow - (byte)DisplayMiscEnumFirstCmd.BARGRAPHMiscCmds) };
                     string result = softatalib.SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", displayLinkedListIndex, data);
@@ -521,7 +531,7 @@ namespace Softata
                     return true;
                 }
 
-                public bool Flow2(byte displayLinkedListIndex)
+                public bool FlowEven(byte displayLinkedListIndex)
                 {
                     byte[] data = new byte[] { 0x1, (byte)((byte)BARGRAPHMiscCmds.flow2 - (byte)DisplayMiscEnumFirstCmd.BARGRAPHMiscCmds) };
                     string result = softatalib.SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", displayLinkedListIndex, data);
@@ -545,7 +555,7 @@ namespace Softata
                 /// <param name="displayLinkedListIndex"></param>
                 /// <param name="led"></param>
                 /// <returns></returns>
-                public bool setLED(byte displayLinkedListIndex, byte led)
+                public bool set_LED(byte displayLinkedListIndex, byte led)
                 {
                     byte[] data = new byte[] { 0x2, (byte)((byte)BARGRAPHMiscCmds.setLed - (byte)DisplayMiscEnumFirstCmd.BARGRAPHMiscCmds) ,(byte)(led +1) };
                     string result = softatalib.SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", displayLinkedListIndex, data);
@@ -554,7 +564,7 @@ namespace Softata
                     return true;
                 }
 
-                public bool clrLED(byte displayLinkedListIndex, byte led)
+                public bool clr_LED(byte displayLinkedListIndex, byte led)
                 {
                     byte[] data = new byte[] { 0x2, (byte)((byte)BARGRAPHMiscCmds.clrLed - (byte)DisplayMiscEnumFirstCmd.BARGRAPHMiscCmds) , (byte)(led + 1) };
                     string result = softatalib.SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", displayLinkedListIndex, data);
@@ -563,7 +573,7 @@ namespace Softata
                     return true;
                 }
 
-                public bool toggleLED(byte displayLinkedListIndex, byte led)
+                public bool toggle_LED(byte displayLinkedListIndex, byte led)
                 {
                     byte[] data = new byte[] { 0x2, (byte)((byte)BARGRAPHMiscCmds.toggleLed - (byte)DisplayMiscEnumFirstCmd.BARGRAPHMiscCmds) , (byte)(led + 1) };
                     string result = softatalib.SendMessage(Commands.groveDisplay, 0, (byte)GroveDisplayCmds.misc, "OK:", displayLinkedListIndex, data);

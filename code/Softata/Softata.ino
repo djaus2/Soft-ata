@@ -1155,15 +1155,27 @@ void loop() {
                     SoftataDevice_Sensor * softatadevice_Sensor = GetSensorFromList(other);
                     int num = SoftataDevice_Sensor::_GetNumofProperties(other);
                     double values[num];
-                    softatadevice_Sensor->ReadAll(values);
-                    String msgGetAll = "OK:";
-                    for(int i=0;i<num;i++)
+                    Tristate ts = softatadevice_Sensor->ReadAll(values);
+                    if (ts==notImplemented)
                     {
-                      msgGetAll.concat(values[i]);
-                      if(i<(num-1))
-                        msgGetAll.concat(",");
+                      client.print("OK:Sensor.readall Not Implemented");
                     }
-                    client.print(msgGetAll);
+                    else if((ts==_nok) || (ts==_nan))
+                    {
+                      client.print("Fail:Sensor.readall");
+                    }
+                    else
+                    {
+                      String msgGetAll = "OK:";
+                      for(int i=0;i<num;i++)
+                      {
+                        msgGetAll.concat(values[i]);
+                        if(i<(num-1))
+                          msgGetAll.concat(",");
+                      }
+                      Serial.println(msgGetAll);
+                      client.print(msgGetAll);
+                    }
                   }
                   break;
                 case s_readCMD:
@@ -1456,6 +1468,7 @@ void loop() {
                 {
                   String misccmds ="OK:";
                   misccmds.concat(SoftataDevice_Display::_GetListofMiscCmds(_display));
+                  Serial.println(misccmds);
                   client.print(misccmds);        
                 }
                 break;
@@ -1787,6 +1800,7 @@ void loop() {
             break;
           case SOFTATADEVICE_ACTUATOR_CMD: //Grove Actuators
             {
+              Tristate ts;
               SoftataActuator _actuator = (SoftataActuator)other;
               switch (param)
               {
@@ -1797,7 +1811,7 @@ void loop() {
                     client.print(pins);
                   }
                   break;
-                  case A_getCmdsCMD: //get Generic Display Cmds
+                  case A_getCmdsCMD: //get Generic Actuator Cmds
                   {
                     String cmds ="OK:";
                     cmds.concat(SoftataDevice_Actuator::GetListofCmds());
@@ -1812,7 +1826,7 @@ void loop() {
                   }
                   break;
                 case A_setupDefaultCMD: //Setupdefault
-                case A_setupCMD: //Setup(params)
+                case A_setupGeneralCMD: //Setup(params)
                   {
                     Serial.println("Setup act");
                     SoftataDevice_Actuator * softatadevice_Actuator;
@@ -1835,11 +1849,30 @@ void loop() {
                       }
                     else
                     {
-                      byte asettings[1];
+                      byte * asettings; 
+                      byte numBytes = 1;                 
+                      if(otherData==NULL)
+                      {
+                        asettings = new byte[1];//(byte *)malloc(1);
+                        numBytes = 1;
+                      }
+                      else
+                      {
+                        if(otherData[0]>0)
+                        {
+                          Serial.println("Set num_bits to:");
+                          asettings = new byte[2]; //(byte *)malloc(2);
+                          byte num_bits = otherData[1]; 
+                          Serial.println(num_bits);
+                          asettings[1] = num_bits;
+                          numBytes = 2;
+                        }
+                      }
                       Serial_print("Non-Default Actuator Setup Pin: ");
                       Serial_print(pin);
                       asettings[0] = pin;
-                      softatadevice_Actuator = SoftataDevice_Actuator::_Setup(_actuator,asettings,1);
+                      softatadevice_Actuator = SoftataDevice_Actuator::_Setup(_actuator,asettings,numBytes);
+                      delete[]  asettings; // free(asettings);
                       if(softatadevice_Actuator != NULL)
                       {
                         int index = AddActuatorToList(softatadevice_Actuator);
@@ -1854,7 +1887,33 @@ void loop() {
                         client.print("Fail:Actuator.Setup");
                     }
                   }
-                  break;                                       
+                  break;  
+                case a_GetnumbitsCMD:
+                {
+                  int index = other;
+                  SoftataDevice_Actuator * softatadevice_Actuator = GetActuatorFromList(index);
+                  String msg = String("OK:");
+                  msg.concat(softatadevice_Actuator->GetNumBits());
+                  client.print(msg);
+                }  
+                break; 
+                case a_GetInstanceValueRangeCMD:
+                {
+                  int index = other;
+                  SoftataDevice_Actuator * softatadevice_Actuator = GetActuatorFromList(index);
+                  String msg = String("OK:0...");
+                  msg.concat(softatadevice_Actuator->GetInstanceValueRange());
+                  client.print(msg);
+                }  
+                break;  
+                case a_GetActuatorCapabilitiesCMD:
+                {
+                  int index = other;
+                  SoftataDevice_Actuator * softatadevice_Actuator = GetActuatorFromList(index);
+                  String actuatorcapabilitiesStr ="OK:";
+                  actuatorcapabilitiesStr.concat(softatadevice_Actuator->GetActuatorCapabilities());
+                  client.print(actuatorcapabilitiesStr);               
+                }                                
                 case a_writeDoubleValueCMD:
                 {
                   int index = other;
@@ -1866,10 +1925,23 @@ void loop() {
                   else
                   {
                     double value = (double)otherData[1];
-                    if(softatadevice_Actuator->Write(value,index))
-                      client.print("OK:Actuator-WriteDoubleValue");
+                    ts = softatadevice_Actuator->Write(value,index);
+                    if(ts == _ok)
+                    {
+                      client.print("OK:writeDoubleValue");
+                    }
+                    else if (ts==notImplemented)
+                    {
+                      client.print("OK:writeDoubleValue Not Implemented");
+                    }
+                    else if (ts==invalidParams)
+                    {
+                      client.print("OK:writeDoubleValue Invalid parameter/s");
+                    }
                     else
-                      client.print("Fail:Actuator-WriteDoubleValue");
+                    {
+                      client.print("Fail:writeDoubleValue");
+                    }
                   }
                 }
                 break;
@@ -1877,44 +1949,85 @@ void loop() {
                 {
                   int index = other;
                   SoftataDevice_Actuator * softatadevice_Actuator = GetActuatorFromList(index);
-                  if(otherData[0]<1)
+                  if(otherData == NULL)
                   {
-                    client.print("Fail:Actuator-WriteIntValue needs (a value");
+                    client.print("Fail:Actuator-WriteByteValue needs a value. otherData was NULL");
+                  }
+                  else if(otherData[0]<1)
+                  {
+                    client.print("Fail:Actuator-WriteByteValue needs a value. otherData was Empty");
                   }
                   else
                   {
                     byte value = otherData[1];
-                    Serial_print("Actuator: ");
-                    Serial_print(value);
-                    Serial_print('-');
-                    Serial_println(index);
-                    if(softatadevice_Actuator->Write(value,index))
-                      client.print("OK:Actuator-WriteByte");
+                    ts = softatadevice_Actuator->Write(value,index);
+
+                    if(ts == _ok)
+                    {
+                      client.print("OK:writeByteValue");
+                    }
+                    else if (ts==notImplemented)
+                    {
+                      client.print("OK:writeByteValue Not Implemented");
+                    }
+                    else if (ts==invalidParams)
+                    {
+                      client.print("OK:writeByteValue Invalid parameter/s");
+                    }
                     else
-                      client.print("Fail:Actuator-WriteByte");
+                    {
+                      client.print("Fail:writeByteValue");
+                    }
                   }
+                  //Serial.println("Done:writeByteValue");
                 }
                 break; 
                case a_writeWordValueCMD:
                 {
                   int index = other;
                   SoftataDevice_Actuator * softatadevice_Actuator = GetActuatorFromList(index);
-                  if(otherData[0]<1)
+                  if(otherData == NULL)
                   {
-                    client.print("Fail:Actuator-WriteIntValue needs (a value");
+                    client.print("Fail:Actuator-WriteWordValue needs a value. otherData was NULL");
+                  }
+                  else if(otherData[0]<1)
+                  {
+                    client.print("Fail:Actuator-WriteWordValue needs a value. otherData was Empty");
                   }
                   else
                   {
-                    int value = otherData[1]*256+otherData[2];
+                    int value = 0;
+                    if(otherData[0]>0)
+                      value = otherData[1];
+                    if(otherData[0]>1)
+                      value += otherData[2]*256;
+                    if(otherData[0]>2)
+                      value += otherData[3]*256*256;
+                    if(otherData[0]>3)
+                      value += otherData[4]*256*256*256;
+
                     Serial_print("Actuator: ");
                     Serial_print(value);
                     Serial_print('-');
                     Serial_println(index);
 
-                    if(softatadevice_Actuator->Write(value,index,2))
-                      client.print("OK:Actuator-WriteWordValue");
+                    ts = softatadevice_Actuator->Write(value,index,2);
+                    if(ts == _ok)
+                    {
+                      client.print("OK:writeWordValue");
+                    }
+                    else if (ts==notImplemented)
+                    {;
+                      client.print("OK:writeWordValue Not Implemented");
+                    }
+                    else if (ts==invalidParams)
+                    {
+                      client.print("OK:writeWordValue Invalid parameter/s");
+                    }
                     else
-                      client.print("Fail:Actuator-WriteWordValue");
+                    {
+                      client.print("Fail:writeWordValue");
+                    }
                   }
                 }
                 break;                
@@ -1929,7 +2042,7 @@ void loop() {
                   SoftataDevice_Actuator * softatadevice_Actuator = GetActuatorFromList(index);
                   if(otherData[0]<1)
                   {
-                    client.print("Fail:Actuator-WriteIntValue needs a value");
+                    client.print("Fail:Actuator-Set/Clear/Toggle needs a bit no.");
                   }
                   else
                   {
@@ -1948,28 +2061,80 @@ void loop() {
                             bitState = true;
                         Serial_print('-');
                         Serial_print(bitState);
-                        if(softatadevice_Actuator->SetBitState(bitState,bit))
-                          client.print("OK:Actuator-SetBitState");
+                        ts = softatadevice_Actuator->SetBitState(bitState,bit);
+                        if(ts == _ok)
+                        {
+                          client.print("OK:SetBitState");
+                        }
+                        else if (ts==notImplemented)
+                        {
+                          client.print("OK:SetBitState Not Implemented");
+                        }
+                        else if (ts==invalidParams)
+                        {
+                          client.print("OK:SetBitState Invalid parameter/s");
+                        }
                         else
-                          client.print("Fail:Actuator-SetBitState");
+                        {
+                          client.print("Fail:SetBitState");
+                        }
                         break;
                       case a_SetBitCMD:
-                        if(softatadevice_Actuator->SetBit(bit))
-                          client.print("OK:Actuator-SetBit");
+                        ts = softatadevice_Actuator->SetBit(bit);
+                        if(ts == _ok)
+                        {
+                          client.print("OK:SetBit");
+                        }
+                        else if (ts==notImplemented)
+                        {
+                          client.print("OK:SetBit Not Implemented");
+                        }
+                        else if (ts==invalidParams)
+                        {
+                          client.print("OK:SetBit Invalid parameter/s");
+                        }                       
                         else
-                          client.print("Fail:Actuator-SetBit");
+                        {
+                          client.print("Fail:SetBit");
+                        }
                         break;                      
                       case a_ClearBitCMD:
-                          if(softatadevice_Actuator->ClearBit(bit))
-                          client.print("OK:Actuator-ClearBit");
+                        ts = softatadevice_Actuator->ClearBit(bit);
+                        if(ts == _ok)
+                        {
+                          client.print("OK:ClearBit");
+                        }
+                        else if (ts==notImplemented)
+                        {
+                          client.print("OK:ClearBit Not Implemented");
+                        }
+                        else if (ts==invalidParams)
+                        {
+                          client.print("OK:ClearBit Invalid parameter/s");
+                        }
                         else
-                          client.print("Fail:Actuator-ClearBit");
-                        break;                     
+                        {
+                          client.print("Fail:ClearBit");
+                        }  
+                        break;                   
                       case a_ToggleBitCMD:
-                        if(softatadevice_Actuator->ToggleBit(bit))
-                          client.print("OK:Actuator-ToggleBit");
+                        ts = softatadevice_Actuator->ToggleBit(bit);
+                        if(ts == _ok)
+                        {
+                          client.print("OK:ToggleBit");
+                        }
+                        else if (ts==notImplemented)
+                        {
+                          client.print("OK:ToggleBit Not Implemented");
+                        }
+                        else if (ts==invalidParams)
+                        {
+                          client.print("OK:ToggleBit Invalid parameter/s");
+                        }
                         else
-                          client.print("Fail:Actuator-ToggleBit");
+                        {
+                          client.print("Fail:ToggleBit");
+                        }  
                         break;
                     }
                     Serial_println();
