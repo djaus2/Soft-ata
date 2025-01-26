@@ -23,8 +23,9 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
 
+
   <ItemGroup>
-    <ProjectReference Include="..\SofataLib\SofataLib.csproj" />
+    <ProjectReference Include="..\SofataLibMulti2\SoftataLib.csproj" />
   </ItemGroup>
 
   <ItemGroup>

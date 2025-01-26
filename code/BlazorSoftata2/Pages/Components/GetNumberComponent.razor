@@ -1,0 +1,72 @@
+﻿@if (IsVisible)
+{
+        <div >
+            <h3>Softata</h3>
+            <table>
+                <tr><td colspan="2"><b>@ChildContent</b></td></tr>
+                <tr>
+                    <td align="right"><b>@Entity:</b></td>
+                    <td>
+                    <input type="number" min="@Min" max="@Max" @bind="Value" @bind:event="oninput" />
+                    </td>
+                </tr>
+                <tr colspan="2"><td><b><i>Please enter @Entity</i></b></td></tr>
+            </table>
+        </div>
+}
+
+@code {
+
+    [Parameter] public bool IsVisible { get; set; }
+    [Parameter] public RenderFragment ChildContent { get; set; }
+   
+
+    private int value;
+    [Parameter]
+    public int Value
+    {
+        get => value;
+        set
+        {
+            if (value != this.value)
+            {
+                this.value = value;
+                ValueChanged.InvokeAsync(this.value);
+            }
+        }
+    }
+
+    [Parameter] public int Min { get; set; }
+    [Parameter] public int Max { get; set; }
+    [Parameter] public string Entity { get; set; } = "";
+
+    [Parameter] public EventCallback<int> ValueChanged { get; set; }
+
+ 
+    private async Task OnValueChanged(ChangeEventArgs e)
+    {
+        Value = Convert.ToInt32(e.Value);
+        await ValueChanged.InvokeAsync(Value);
+        await InvokeAsync(StateHasChanged);
+    }
+
+    /*
+    private TaskCompletionSource<int> _tcs;
+
+    public async Task<int> ShowAsync()
+    {
+        IsVisible = true;
+        _tcs = new TaskCompletionSource<int>();
+        await InvokeAsync(StateHasChanged); // Ensure the UI is updated to show the dialog
+        return await _tcs.Task;
+    }
+
+    private async void CloseDialog()
+    {
+        IsVisible = false;
+        await IsVisibleChanged.InvokeAsync(IsVisible);
+        await TargetDevicePinChanged.InvokeAsync(TargetValue);
+        _tcs.SetResult(TargetValue);
+        await InvokeAsync(StateHasChanged); // Ensure the UI is updated to reflect the changes
+    }*/
+}

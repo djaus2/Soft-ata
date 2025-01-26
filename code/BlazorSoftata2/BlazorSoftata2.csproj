@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Remove="Pages\Components\MyDialog0.razor" />
+    <Content Remove="Pages\MessageBox..razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Pages\Components\MyDialog0.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="LiquidTechnologies.Blazor.ModalDialog" Version="0.9.7" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="8.0.0" />
+    <ProjectReference Include="..\SofataLibMulti2\SoftataLib.csproj" />
+  </ItemGroup>
+
+</Project>

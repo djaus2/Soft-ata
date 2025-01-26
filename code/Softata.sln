@@ -3,10 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34309.116
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SoftataConsole", "SoftataConsole\SoftataConsole.csproj", "{19A166BA-C737-4E5C-909C-C79BA17C6A73}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SofataLib", "SofataLib\SofataLib.csproj", "{7886C231-9382-4D25-8B95-4F2C53CE37A7}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorSoftata", "BlazorSoftata\BlazorSoftata.csproj", "{F938F9FD-B8B0-47D3-BEE8-5BACF0BCB9DA}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{5C9D7B95-EAC4-4C11-A784-C0B0F706E099}"
@@ -20,12 +16,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SoftataWebAPI", "SoftataWebAPI\SoftataWebAPI.csproj", "{93DBA8B2-9F2C-47F0-9DEE-4B38020570DF}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetStandardSoftata", "NetStandardSoftata\NetStandardSoftata.csproj", "{A4DAD8C8-7A3F-4EB0-9CB7-EF64052F2311}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MeadowLab", "MeadowLab\MeadowLab.csproj", "{2B948638-7F1B-4575-A5B3-D3F25D6A270F}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MeadowLab.WindowsDesktop", "MeadowLab.WindowsDesktop\MeadowLab.WindowsDesktop.csproj", "{E524B9E4-D353-4695-B0E6-7FB2F0847D24}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MiscArduinoSketches", "MiscArduinoSketches", "{60F3D639-033B-434F-B14B-2ABB6089B703}"
 EndProject
@@ -174,11 +164,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BinZip", "BinZip", "{D49768
 		MiscArduinoSketches\BinZip\USBSerialCopyUf2.bat = MiscArduinoSketches\BinZip\USBSerialCopyUf2.bat
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SofataLibMulti", "SofataLibMulti\SofataLibMulti.csproj", "{CA525E5F-AC18-4020-8B1E-AC9398202AC9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SoftataConsole", "SoftataConsole2\SoftataConsole.csproj", "{389068DF-3E8A-43E7-B5B0-DCD3C57AD1C9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SoftataConsole2", "SoftataConsole2\SoftataConsole2.csproj", "{389068DF-3E8A-43E7-B5B0-DCD3C57AD1C9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SoftataLib", "SofataLibMulti2\SoftataLib.csproj", "{B76E91E9-BD83-4313-9D1E-248A164B012E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SofataLibMulti2", "SofataLibMulti2\SofataLibMulti2.csproj", "{B76E91E9-BD83-4313-9D1E-248A164B012E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorSoftata2", "BlazorSoftata2\BlazorSoftata2.csproj", "{B3067976-2472-4761-B982-03E16377EBA6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -186,36 +176,12 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{19A166BA-C737-4E5C-909C-C79BA17C6A73}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{19A166BA-C737-4E5C-909C-C79BA17C6A73}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{19A166BA-C737-4E5C-909C-C79BA17C6A73}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{19A166BA-C737-4E5C-909C-C79BA17C6A73}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7886C231-9382-4D25-8B95-4F2C53CE37A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7886C231-9382-4D25-8B95-4F2C53CE37A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7886C231-9382-4D25-8B95-4F2C53CE37A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F938F9FD-B8B0-47D3-BEE8-5BACF0BCB9DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F938F9FD-B8B0-47D3-BEE8-5BACF0BCB9DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F938F9FD-B8B0-47D3-BEE8-5BACF0BCB9DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{93DBA8B2-9F2C-47F0-9DEE-4B38020570DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{93DBA8B2-9F2C-47F0-9DEE-4B38020570DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{93DBA8B2-9F2C-47F0-9DEE-4B38020570DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A4DAD8C8-7A3F-4EB0-9CB7-EF64052F2311}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A4DAD8C8-7A3F-4EB0-9CB7-EF64052F2311}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A4DAD8C8-7A3F-4EB0-9CB7-EF64052F2311}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A4DAD8C8-7A3F-4EB0-9CB7-EF64052F2311}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2B948638-7F1B-4575-A5B3-D3F25D6A270F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2B948638-7F1B-4575-A5B3-D3F25D6A270F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2B948638-7F1B-4575-A5B3-D3F25D6A270F}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
-		{2B948638-7F1B-4575-A5B3-D3F25D6A270F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2B948638-7F1B-4575-A5B3-D3F25D6A270F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E524B9E4-D353-4695-B0E6-7FB2F0847D24}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E524B9E4-D353-4695-B0E6-7FB2F0847D24}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E524B9E4-D353-4695-B0E6-7FB2F0847D24}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E524B9E4-D353-4695-B0E6-7FB2F0847D24}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CA525E5F-AC18-4020-8B1E-AC9398202AC9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CA525E5F-AC18-4020-8B1E-AC9398202AC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CA525E5F-AC18-4020-8B1E-AC9398202AC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CA525E5F-AC18-4020-8B1E-AC9398202AC9}.Release|Any CPU.Build.0 = Release|Any CPU
 		{389068DF-3E8A-43E7-B5B0-DCD3C57AD1C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{389068DF-3E8A-43E7-B5B0-DCD3C57AD1C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{389068DF-3E8A-43E7-B5B0-DCD3C57AD1C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -224,6 +190,10 @@ Global
 		{B76E91E9-BD83-4313-9D1E-248A164B012E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B76E91E9-BD83-4313-9D1E-248A164B012E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B76E91E9-BD83-4313-9D1E-248A164B012E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B3067976-2472-4761-B982-03E16377EBA6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B3067976-2472-4761-B982-03E16377EBA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B3067976-2472-4761-B982-03E16377EBA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B3067976-2472-4761-B982-03E16377EBA6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

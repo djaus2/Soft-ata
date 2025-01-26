@@ -12,13 +12,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SofataLib\SofataLib.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Blazor.Extensions.Canvas" Version="1.1.1" />
     <PackageReference Include="BlazorPro.Spinkit" Version="1.2.0" />
     <PackageReference Include="Majorsoft.Blazor.Components.Toggle" Version="1.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SofataLibMulti2\SoftataLib.csproj" />
   </ItemGroup>
 
 </Project>

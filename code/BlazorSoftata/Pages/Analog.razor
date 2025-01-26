@@ -148,6 +148,10 @@ else if(AppState.Running)
     byte LEDValue = 0;
     int PotValue { get; set; } = 0;
 
+    private static Softata.SoftataLib _softatalib;
+
+    static Softata.SoftataLib softatalib { get { return _softatalib; } set { _softatalib = value; } }
+
     public class A2DandPWMValues
     {
         public int PotValue { get; set; } = 0;
@@ -235,7 +239,7 @@ else if(AppState.Running)
         Busy = true;
         StateHasChanged();
         await Task.Delay(333);
-        SoftataLib.SendMessageCmd("End");      
+        softatalib.SendMessageCmd("End");
         await Task.Delay(30000);
         Busy = false;
         await Task.Delay(100);
@@ -258,7 +262,7 @@ else if(AppState.Running)
         StateHasChanged();
         await Task.Delay(100);
         ReconnectVisible = false;
-        SoftataLib.Reconnect();
+        softatalib.Reconnect();
         StateHasChanged();
         await Task.Delay(1000);
         Busy = false;
@@ -271,7 +275,7 @@ else if(AppState.Running)
     private  async void Run()
     {
         A2DandPWMValues a2DandPwmValues = new A2DandPWMValues();
-        SoftataLib.Analog.SetAnalogPin(SoftataLib.Analog.AnalogDevice.Potentiometer, AppState.Potentiometer);
+        softatalib.Analog.SetAnalogPin(SoftataLib.Analog.AnalogDevice.Potentiometer, AppState.Potentiometer);
 
         // Note no pin setup needed for analog
         SoftataLib.Digital.SetPinMode(AppState.LED, SoftataLib.PinMode.DigitalOutput);

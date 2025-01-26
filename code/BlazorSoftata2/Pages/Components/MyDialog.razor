@@ -1,0 +1,57 @@
+﻿<PageTitle>MyDialog2</PageTitle>
+
+@if (IsVisible)
+{
+    <div class="dialog-overlay" @onclick="CloseDialog">
+        <div class="dialog" @onclick:stopPropagation="true">
+            <h3>Softata</h3>
+            <table>
+                <tr><td colspan="2"><b>@ChildContent</b></td></tr>
+                <tr>
+                    <td align="right"><b>@Entity:</b></td>
+                    <td>
+                        <input type="number" min="@Min" max="@Max" @bind="TargetValue" />
+                    </td>
+                </tr>
+                <tr colspan="2"><td><b><i>Please select @Entity</i></b></td></tr>
+                <tr colspan="2">
+                    <td align="left">
+                        <button class="close-button primary" @onclick="CloseDialog">Set</button>
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public bool IsVisible { get; set; }
+    [Parameter] public EventCallback<bool> IsVisibleChanged { get; set; }
+    [Parameter] public RenderFragment ChildContent { get; set; }
+    [Parameter] public int TargetValue { get; set; }
+    [Parameter] public EventCallback<int> TargetDevicePinChanged { get; set; }
+
+    [Parameter] public int Min { get; set; }
+    [Parameter] public int Max { get; set; }
+    [Parameter] public string Entity { get; set; } = "";
+
+    private TaskCompletionSource<int> _tcs;
+
+    public async Task<int> ShowAsync()
+    {
+        IsVisible = true;
+        _tcs = new TaskCompletionSource<int>();
+        await InvokeAsync(StateHasChanged); // Ensure the UI is updated to show the dialog
+        return await _tcs.Task;
+    }
+
+    private async void CloseDialog()
+    {
+        IsVisible = false;
+        await IsVisibleChanged.InvokeAsync(IsVisible);
+        await TargetDevicePinChanged.InvokeAsync(TargetValue);
+        _tcs.SetResult(TargetValue);
+        await InvokeAsync(StateHasChanged); // Ensure the UI is updated to reflect the changes
+    }
+}

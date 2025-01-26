@@ -406,7 +406,7 @@ namespace SoftataBasic
                                     quit = true;
 
                                 // Default is bit functions only.
-                                ActuatorCapabilities actuatorcapabilities = ActuatorCapabilities.a_bitonly;
+                                int actuatorcapabilities = (int)ActuatorCapabilities.a_none;
 
                                 if (TargetDeviceType.Item.ToLower() == "actuator")
                                 {
@@ -415,7 +415,7 @@ namespace SoftataBasic
                                
                                     if(int.TryParse(response, out int capabilities))
                                     {
-                                        actuatorcapabilities = (ActuatorCapabilities) capabilities;
+                                        actuatorcapabilities = capabilities;
                                     }
                                 }
 
@@ -510,7 +510,7 @@ namespace SoftataBasic
                                                 {
                                                     // No further info required
                                                 }
-                                                else if (actuatorcapabilities == ActuatorCapabilities.a_both)
+                                                else if (actuatorcapabilities ==  (int)(ActuatorCapabilities.a_bit & ActuatorCapabilities.a_writebyte))
                                                 {
                                                     // Actuators that can write value to manipulate bits
                                                         if (command.ToLower().Contains("Write".ToLower()))
@@ -540,7 +540,7 @@ namespace SoftataBasic
                                                             data = new byte[] { selectedDeviceLoopVars.relay_bit_no };
                                                         }
                                                 }
-                                                else if (actuatorcapabilities == ActuatorCapabilities.a_writeonly)
+                                                else if (actuatorcapabilities == (int)(ActuatorCapabilities.a_writebyte))
                                                 {
                                                     // Actuators that can be byte written to only (No bit manipluations)
                                                     if (command.ToLower().Contains("bit".ToLower()))
@@ -566,7 +566,7 @@ namespace SoftataBasic
                                                         }
                                                     }
                                                 }
-                                                else if(actuatorcapabilities == ActuatorCapabilities.a_bitonly)
+                                                else if(actuatorcapabilities == (int)(ActuatorCapabilities.a_bit))
                                                 {
                                                     // Actuators that can only be bit manipluated
                                                     if (command.ToLower().Contains("bit".ToLower()))
@@ -582,7 +582,7 @@ namespace SoftataBasic
                                                     }
 
                                                 }
-                                                else if (actuatorcapabilities == ActuatorCapabilities.a_singlebit)
+                                                else if (actuatorcapabilities == (int)ActuatorCapabilities.a_none)
                                                 {
                                                     // Nothing to add. Single bit
                                                     // Non single bit commands will return Not Implemented.

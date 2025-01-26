@@ -1,0 +1,101 @@
+﻿<PageTitle>MyDialog</PageTitle>
+
+@if (IsVisible)
+{
+    <div class="dialog-overlay" @onclick="CloseDialog">
+        <div class="dialog" @onclick:stopPropagation="true">
+            <h3>Softata</h3>
+            <table>
+                <tr><td colspan="2"><b>@ChildContent</b></td></tr>
+                <tr><td align="right"><b>Pin:</b></td><td>
+                        <input type="number" min="@Min" max="@Max" @bind="TargetDevicePin" />
+                </td></tr>
+                <tr colspan="2"><td><b><i>Please select @Entity</i></b></td></tr>
+                <tr colspan="2"><td align="left">
+                        <button class="close-button primary" @onclick="CloseDialog">Close</button>
+                </td></tr>
+            </table>
+       
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public bool IsVisible { get; set; }
+    [Parameter] public EventCallback<bool> IsVisibleChanged { get; set; }
+    [Parameter] public RenderFragment ChildContent { get; set; } 
+    [Parameter] public int TargetDevicePin { get; set; }
+    [Parameter] public EventCallback<int> TargetDevicePinChanged {get;  set; }
+    [Parameter] public int Min { get; set; }
+    [Parameter] public int Max { get; set; }
+    [Parameter] public string Entity { get; set; } = "";
+
+    private TaskCompletionSource<int> _tcs;
+
+    public async Task<int> ShowAsync()
+    {
+        IsVisible = true;
+        _tcs = new TaskCompletionSource<int>();
+        await InvokeAsync(StateHasChanged); // Ensure the UI is updated to show the dialog
+        return await _tcs.Task;
+    }
+
+    private async void CloseDialog()
+    {
+        IsVisible = false;
+        await IsVisibleChanged.InvokeAsync(IsVisible);
+        await TargetDevicePinChanged.InvokeAsync(TargetDevicePin);
+        _tcs.SetResult(TargetDevicePin);
+        await InvokeAsync(StateHasChanged); // Ensure the UI is updated to reflect the changes
+    }
+
+}
+
+
+
+<style>
+.dialog-overlay
+{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.dialog
+{
+    background-color: white; /* Set background color */
+    border: 2px solid black;  /* Add border */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    position: relative;
+    width: 450px; /* Set the width to 400px */
+}
+
+.close-button
+{
+    background-color: blue; /* Change this color as needed */
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 1.2em;
+    cursor: pointer;
+}
+
+.primary
+{
+    background-color: blue; /* Change this color as needed */
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+}
+</style>
+

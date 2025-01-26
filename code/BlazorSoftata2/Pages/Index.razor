@@ -1,0 +1,843 @@
+﻿@page "/"
+@using BlazorSoftata2
+@inject BlazorSoftata2.AppState AppState
+@using Microsoft.JSInterop
+@inject IJSRuntime JsRuntime
+@using System.Threading.Tasks
+@using BlazorSoftata2.Components
+@using BlazorSoftata2.Pages.Components
+
+<PageTitle>Softata on Blazor</PageTitle>
+
+<h1>Softata on Blazor</h1>
+
+<h3>Welcome to Softata.</h3>
+
+<hr />
+<div class="links" style="background-color: #F0F0F0">
+<h2>Links</h2>
+<ul>
+    <li><a href="https://github.com/djaus2/Soft-ata">Softata <i>Apps</i></a></li>
+    <ul>
+        <li><a href="https://github.com/djaus2/Soft-ata/tree/master/code/SoftataConsole2">Console App2 <i>(Github)</i></a></li>
+        <li><a href="https://github.com/djaus2/Soft-ata/tree/master/code/BlazorSoftata">Blazor App2 <i>(Not yet available:coming)</i></a></li>
+        <li><a href="https://github.com/djaus2/Soft-ata/tree/master/code/SoftataWebAPI">Blockly App2 <i>Not yet available:coming)</i></a></li>
+        <li><a href="https://github.com/djaus2/Soft-ata/tree/master/code/Softata">SoftataLib V3.1 <i>Not yet available:coming)</i></a></li>
+    </ul>
+    <li><a href="https://github.com/djaus2/SoftataDevices">Softata Devices <i>(Arduino}</i></a></li>
+    <li><a href="https://davidjones.sportronics.com.au/cats/softata/">Softata Blog Posts</a></li>
+</ul>
+</div>
+<hr />
+
+<MyDialog @ref="myDialog" 
+    TargetValue="@DialogVa1"
+    IsVisible="@isDialog2Visible2"
+           Min=@DialogMin
+           Max=@DialogMax
+           Entity=@DialogEntity
+    IsVisibleChanged="@OnDialogVisibilityChanged2" 
+    TargetDevicePinChanged="@OnTargetDevicePinChanged2">
+    <h4>@DialogMsg</h4>
+</MyDialog>
+
+
+@code {
+
+    private bool isDialog2Visible2 { get; set; } = false;
+    private int targetDevicePin;
+    private MyDialog myDialog;
+    private int targetDevicePin2 = -1;
+    string DialogMsg = "Using Non Default GPIO Pin 16-21";
+    int DialogMin = 16;
+    int DialogMax = 21;
+    int DialogVa1 = 0;
+    string DialogEntity = "Pin";
+
+    private async Task ShowDialogFromButton2()
+    {
+        if (myDialog != null)
+        {
+            isDialog2Visible2 = true;
+            await myDialog.ShowAsync();
+            await InvokeAsync(StateHasChanged); // Ensure the UI is updated to show the dialog
+        }
+    }
+
+    public async Task ShowDialogModally2()
+    {
+        if (myDialog != null)
+        {
+
+            targetDevicePin2 = await myDialog.ShowAsync();
+            await InvokeAsync(StateHasChanged); // Ensure the UI is updated to reflect the changes
+        }
+    }
+
+    private Task OnDialogVisibilityChanged2(bool isVisible)
+    {
+        isDialog2Visible2 = isVisible;
+        return InvokeAsync(StateHasChanged);
+    }
+
+    enum DialogMode
+    {
+        Pin,
+        NumBits
+    }
+
+
+    private Task OnTargetDevicePinChanged2(int pin)
+    {
+        DialogVa1= pin;
+        StateHasChanged();
+        return Task.CompletedTask;
+    }
+}
+
+
+<hr />
+ 
+
+ <MyDialogTemp @ref="myDialogTemp"
+    TargetDevicePin=@AppState.TargetDevicePin.Index
+    IsVisible="@isDialogVisible" 
+    Min=@DialogMin
+    Max=@DialogMax
+    Entity=@DialogEntity
+    IsVisibleChanged="@OnDialogVisibilityChanged" 
+    TargetDevicePinChanged="@OnTargetDevicePinChanged">
+    <h3>@DialogMsg</h3>
+</MyDialogTemp>
+
+
+
+@code
+{
+    // Dialog Code
+
+    private bool ShowDialogButton { get; set; } = true;
+    private bool isDialogVisible { get; set; } = false; 
+
+    private MyDialogTemp myDialogTemp; 
+    
+    private async Task ShowDialog()
+    {
+        if (myDialogTemp != null)
+        {
+            DialogVa1 = await myDialogTemp.ShowAsync();
+            
+            await InvokeAsync(StateHasChanged); // Ensure the UI is updated to reflect the changes
+        }
+    }
+
+    private Task OnDialogVisibilityChanged(bool isVisible) 
+    { 
+        isDialogVisible = isVisible; 
+        return InvokeAsync(StateHasChanged);
+    }
+
+    private Task OnTargetDevicePinChanged(int pin) 
+    { AppState.TargetDevicePin.Index = pin; 
+        return Task.CompletedTask; 
+    }
+} 
+
+
+@if (!AppState.Connected)
+{
+
+    <EditForm Model="@inputModel" OnValidSubmit="@HandleValidConnectionSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div>
+            <label for="text">IPAddress:</label>
+            <InputText id="text" @bind-Value="inputModel.IpaddressStr" />
+        </div>
+        <div>
+            <label for="number">Port:</label>
+            <InputNumber id="number" @bind-Value="inputModel.Port" />
+        </div>
+        <button class="btn btn-primary" type="submit">Submit</button>
+    </EditForm>
+}
+else
+{
+    <button class="btn btn-primary" @onclick="Disconnect">Disconnect</button>
+    @if(AppState.DeviceTypes.List.Count > 0)
+    {
+        <h2>Device Type:</h2>
+        <select  @onchange="HandleDeviceTypeSelectionChange">
+        <option value="">Select an item...</option> 
+        @for (int i = 0; i < AppState.DeviceTypes.List.Count; i++)
+        {
+            <option value="@i">@AppState.DeviceTypes.List[i]</option>
+        } 
+        </select>
+        @if (AppState.TargetDeviceType != null)
+        {
+            @if (AppState.TargetDeviceType.Item != "")
+            {
+                <p>Selected Device Type: @AppState.TargetDeviceType.Index. @AppState.TargetDeviceType.Item</p>
+
+                @if (AppState.Devices.List.Count > 0)
+                {
+                    <h2>Device: </h2>
+                    @if (AppState.TargetDevice != null)
+                    {
+                        @if (AppState.TargetDevice.Item == "")
+                        {
+                            <select @onchange="HandleDevicesSelectionChange">
+                                <option value="">Select an item...</option>
+                                @for (int i = 0; i < AppState.Devices.List.Count; i++)
+                                {
+                                    <option value="@i">@AppState.Devices.List[i]</option>
+                                }
+                            </select>
+                        }
+                        else if (AppState.TargetDevice.Item != "")
+                        {
+                            <p>Selected Device: @AppState.TargetDevice.Index. @AppState.TargetDevice.Item</p>
+                            
+                            @if(AppState.Pinouts.List.Count > 0)
+                            {
+                                <h2>Pinouts: </h2>
+                                @if (AppState.TargetDevicePinout != null)
+                                {
+                                    @if (AppState.TargetDevicePinout.Item == "")
+                                    {
+                                        <ul>
+                                        @foreach (var pinout in AppState.Pinouts.List)
+                                        {
+                                            <li>@pinout</li>
+                                        }
+                                        </ul>
+                                        <h4>Connect <i>as per one of the above</i> now and then select connection:</h4>
+                                        <select @onchange="HandlePinoutSelectionChange">
+                                            <option value="">Select an item...</option>
+                                            @foreach (var pinout in AppState.Pinouts.List)
+                                            {
+                                                <option >@pinout</option>
+                                            }
+                                        </select>
+                                    }
+                                    else if(AppState.TargetDevicePinout.Item != "")
+                                    {
+                                        @if (Instantiated)
+                                        {
+                                            <table>
+                                            @if (AppState.TargetDevicePinout.Index == 0)
+                                            {
+                                                <tr><td>Using Default Setup</td></tr>
+                                                @if (AppState.TargetDevicePin.Item != "")
+                                                {
+                                                    <tr><td>@AppState.TargetDevicePin.Item</td></tr>
+                                                }
+                                                                         }
+                                            else
+                                            {
+                                                <tr><td>Using NonDefault Setup</td></tr>
+                                                    @if (AppState.TargetDevicePin.Item != "")
+                                                    {
+                                                        <tr><td> @AppState.TargetDevicePin.Item </td></tr>
+                                                    }                                       
+                                            }
+                                            @if (AppState.TargetDeviceType.Item.ToLower() == "actuator")
+                                            {
+                                                @if (AppState.Num_Bits.Item != "")
+                                                {
+                                                        <tr><td>Actuator Number Bits <i>(0 means ignored):</i>: @AppState.Num_Bits.Index</td></tr>
+                                                }
+                                            }
+                                            </table>
+                                            @if ((AppState.TargetDevicePinout.Index != 0) ||(@AppState.TargetDevicePin.Item == ""))
+                                        {
+                                            <h4>@PinoutStr<br />Instantiated Device. Linked List No: @AppState.linkedListNo</h4>
+                                            @if (AppState.UseGenericCommands.Count > 0)
+                                            {
+                                                <h2>Generic Command: </h2>
+                                                    <select @onchange="HandleCommandSelectionChange">
+                                                    <option value="">Select an item...</option>
+                                                    @foreach (var cmd in  AppState.UseGenericCommands)
+                                                    {
+                                                        <option value="@cmd.Key">@cmd.Key. @cmd.Value</option>
+                                                    }
+                                                </select>
+
+
+                                                @if (AppState.TargetCommand != null)
+                                                {
+                                                    @if (AppState.TargetCommand.Item != "")
+                                                    {
+                                                        <p>Selected Command: @AppState.TargetCommand.Index. @AppState.TargetCommand.Item</p>
+                                                        @switch(@AppState.TargetDeviceType.Item.ToLower())
+                                                        {
+                                                            case "actuator":
+                                                                <h2>Actuator</h2>
+                                                                @if (AppState.Num_Bits.Index>1)
+                                                                {
+                                                                    <GetNumberComponent @ref="getNumberComponent"
+                                                                                        Value="@DialogVa12"
+                                                                                        ValueChanged="@OnGetNumberComponentValueChanged"
+                                                                                        IsVisible="true"
+                                                                                        Min=@DialogMin2
+                                                                                        Max=@DialogMax2
+                                                                                        Entity="@DialogEntity2">
+                                                                        <h4>Get Acuator input value</h4>
+                                                                    </GetNumberComponent>
+                                                                }
+                                                                break;
+                                                            case "display":
+                                                                <h2>Display</h2>
+                                                                break;
+                                                            case "sensor":
+                                                                <h2>Sensor</h2>
+                                                                break;
+                                                            default:
+                                                                <p>Nothing</p>
+                                                                break;
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+
+
+@if (getNumberComponent != null)
+{
+    <p>@DialogVa12</p>
+}
+@code
+{
+
+    public bool ShowInput{ get { return (AppState.UseGenericCommands.Count > 0); }}
+    private GetNumberComponent getNumberComponent;
+    private int DialogVa12 = 90;
+    private int DialogMin2 = 0;
+    private int DialogMax2 = 180;
+    private string DialogEntity2 = "Input Value";
+    private void OnGetNumberComponentValueChanged(int newValue) {
+        DialogVa12 = newValue; }
+}
+
+@code{
+    //[Inject]
+    //private IJSRuntime JSRuntime { get; set; }
+
+
+
+    int selectedpins { get; set; } = 0;
+    int lln = -1;
+    string PinoutStr { get; set; } = "";
+    bool Instantiated { get; set; } = false;
+
+
+    public class MyInputModel
+    {
+        private string ipaddressStr;
+        public string IpaddressStr { 
+            get => ipaddressStr; 
+            set { ipaddressStr = value; } }
+        public int Port { get; set; } 
+    }
+
+    MyInputModel inputModel { get; set; } = new MyInputModel();
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            bool loaded = AppState.Loaded;
+            if (!loaded)
+            {
+                string? _ipaddressStr = SettingsManager.ReadSetting("IpaddressStr");
+
+                if (!string.IsNullOrEmpty(_ipaddressStr))
+                {
+                    inputModel.IpaddressStr = _ipaddressStr;
+                    StateHasChanged();
+                }
+
+                string _port = SettingsManager.ReadSetting("Port");
+                if (!string.IsNullOrEmpty(_port))
+                {
+                    if (uint.TryParse(_port, out uint _portNo))
+                    {
+                        inputModel.Port = (int)_portNo;
+                        StateHasChanged();
+                    }
+
+                }
+            }
+            else
+            {
+                inputModel.IpaddressStr = AppState.IpaddressStr;
+                inputModel.Port = AppState.Port;
+                StateHasChanged();
+            }
+            StateHasChanged();
+        }
+    }
+
+    int selectedIndex { get; set; } = 0;
+
+    private async Task HandleValidConnectionSubmit()
+    {
+        string? _ipaddressStr = SettingsManager.ReadSetting("IpaddressStr");
+        if (!string.IsNullOrEmpty(_ipaddressStr))
+        {
+            if (_ipaddressStr.Count(c => c == '.') == 3)
+            {
+                if (System.Net.IPAddress.TryParse(_ipaddressStr, out System.Net.IPAddress? address))
+                {
+                    if (!string.IsNullOrEmpty(inputModel.IpaddressStr))
+                    {
+                        if (inputModel.IpaddressStr.Count(c => c == '.') == 3)
+                        {
+                            if (System.Net.IPAddress.TryParse(inputModel.IpaddressStr, out System.Net.IPAddress? address2))
+                            {
+                                if (_ipaddressStr != inputModel.IpaddressStr)
+                                {
+                                    SettingsManager.AddUpdateAppSettings("IpaddressStr", inputModel.IpaddressStr);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        else
+        {
+            if (!string.IsNullOrEmpty(inputModel.IpaddressStr))
+            {
+                if (inputModel.IpaddressStr.Count(c => c == '.') == 3)
+                {
+                    if (System.Net.IPAddress.TryParse(inputModel.IpaddressStr, out System.Net.IPAddress? address2))
+                    {
+                        SettingsManager.AddUpdateAppSettings("IpaddressStr", inputModel.IpaddressStr);
+                    }
+                }
+            }
+        }
+
+
+
+
+
+
+        if (AppState.IpaddressStr != inputModel.IpaddressStr)
+        {
+            AppState.IpaddressStr = inputModel.IpaddressStr;
+        }
+
+        string _port = SettingsManager.ReadSetting("Port");
+        if (!string.IsNullOrEmpty(_port))
+        {
+            if(uint.TryParse(_port, out uint _portNo))
+            {
+                if(_portNo != inputModel.Port)
+                {
+                    SettingsManager.AddUpdateAppSettings("Port", inputModel.Port.ToString());
+                }
+            }
+        }
+        else
+        {
+            SettingsManager.AddUpdateAppSettings("Port", inputModel.Port.ToString());
+        }
+        if (AppState.Port != inputModel.Port)
+        {
+            AppState.Port = inputModel.Port;
+        }
+        await Connect();
+        if(string.IsNullOrEmpty(AppState.Devices.CSV))
+        {
+            Begin();
+        }
+
+
+        //AppState.Connected = true;
+    }
+
+    private void HandleDeviceTypeSelectionChange(ChangeEventArgs e)
+    {
+        if (e.Value != null)
+        {
+            string val = e.Value.ToString();
+            if (!string.IsNullOrEmpty(val))
+                if (int.TryParse(val, out int selectedIndex))
+                {
+                    AppState.TargetDeviceType = new Selection(selectedIndex, AppState.DeviceTypes.List[(int)selectedIndex]);
+                    StateHasChanged();
+                    GetDevices();
+                    AppState.TargetDevice = new Selection();
+                    AppState.TargetDevicePinout = new Selection();
+                    AppState.TargetCommand = new Selection();
+                    StateHasChanged();
+                }
+        }
+    }
+
+    private void HandleDevicesSelectionChange(ChangeEventArgs e)
+    {
+        if (e.Value != null)
+        {
+            string val = e.Value.ToString();
+            if (!string.IsNullOrEmpty(val))
+                if (int.TryParse(val, out int selectedIndex))
+                {
+                    AppState.TargetDevice = new Selection(selectedIndex, AppState.Devices.List[(int)selectedIndex]);
+                    GetPinouts();
+                    AppState.TargetDevicePinout = new Selection();
+                    AppState.TargetCommand = new Selection();
+                    StateHasChanged();
+                }
+        }
+    }
+
+    private async Task SelectNonDefaultDevicePin()
+    {
+        this.DialogVa1 = AppState.TargetDevicePin.Index;
+        DialogMin = 16;
+        DialogMax = 21;
+        DialogEntity = "Pin";
+        DialogMsg = "Using Non Default GPIO Pin 16-21";
+
+        await ShowDialogFromButton2();
+        AppState.TargetDevicePin.Item = $"Using GPIO Pin {DialogVa1}";
+        AppState.TargetDevicePin.Index  = DialogVa1;
+        StateHasChanged();
+    }
+
+    private async Task GetActuatorNumBits()
+    {
+        this.DialogVa1 = 4;
+        DialogMin = 0;
+        DialogMax = 8;
+        DialogEntity = "Num Bits";
+        DialogMsg = "Number of Bits: 1-8 (Default 4), 0=Ignored, eg Relay";;
+        await ShowDialogFromButton2();
+        AppState.Num_Bits.Index = DialogVa1;
+        AppState.Num_Bits.Item = $"Number of Bits: {DialogVa1}";
+        StateHasChanged();
+    }
+
+    private async Task HandlePinoutSelectionChange(ChangeEventArgs e)
+    {
+        if (e.Value != null)
+        {
+            string? item = e.Value.ToString();
+            if (!string.IsNullOrEmpty(item))
+            {
+                int selectedIndex = AppState.Pinouts.List.FindIndex(s => s.Contains(item, StringComparison.OrdinalIgnoreCase));
+                if (selectedIndex > -1)
+                {
+                    AppState.TargetDevicePinout = new Selection(selectedIndex, AppState.Pinouts.List[(int)selectedIndex]);
+                    StateHasChanged();
+                    if(selectedIndex>0)
+                    {
+                        await SelectNonDefaultDevicePin();
+                        // @if (ShowDialogButton)
+                        // {
+                        //     <button @onclick="ShowDialog" class="btn btn-primary">ShowDialog</button>
+                        // }
+                    }
+                    if(AppState.TargetDeviceType.Item.ToLower() == "actuator")
+                    {
+                        await GetActuatorNumBits();
+                    }
+                    Instantiate();
+                    AppState.TargetCommand = new Selection();
+                }
+                StateHasChanged();
+            }
+        }
+    }
+
+    private void HandleCommandSelectionChange(ChangeEventArgs e)
+    {
+        if (e.Value != null)
+        {
+            string val = e.Value.ToString();
+            if (!string.IsNullOrEmpty(val))
+                if (int.TryParse(val, out int selectedIndex))
+                {
+                    AppState.TargetCommand = new Selection(selectedIndex, AppState.UseGenericCommands[(int)selectedIndex]);
+                    StateHasChanged();
+                }
+        }
+    }
+
+
+    public void Disconnect()
+    {
+        if (AppState.Connected)
+        {
+            AppState.softataLib.SendMessageCmd("End");
+            AppState.softataLib.Disconnect();
+            Thread.Sleep(500);
+        }
+        AppState.Connected = false;       
+        AppState.softataLib = new Softata.SoftataLib();
+        AppState = new AppState();
+    }
+
+    public void Restart()
+    {
+        if (AppState.Connected)
+        {
+            AppState.softataLib.SendMessageCmd("End");
+            AppState.softataLib.Disconnect();
+            Thread.Sleep(500);
+        }
+        AppState.Connected = false;
+        AppState.softataLib = new Softata.SoftataLib();
+        AppState = new AppState();
+    }
+
+    public async Task Connect()
+    {
+        if (!AppState.Connected)
+        {
+            bool res = AppState.softataLib.Connect(AppState.IpaddressStr, AppState.Port);
+            if (!res)
+            {
+                await ShowAlert($"Failed to connect to {AppState.IpaddressStr}:{AppState.Port}");
+                await ShowAlert("Press [Enter] to try again or [Q] to quit");
+                string? key = Console.ReadLine();
+                if (!string.IsNullOrEmpty(key))
+                {
+                    if (key.ToUpper() == "Q")
+                        AppState.Quit = true;
+                }
+            }
+            else
+            {
+                AppState.Connected = true;
+                await ShowAlert($"Connected to {AppState.IpaddressStr}:{AppState.Port}");
+            }
+
+        }
+    }
+
+    public void Begin()
+    {
+        AppState.softataLib.SendMessageCmd("Begin");
+        Thread.Sleep(100);
+        string Version = AppState.softataLib.SendMessageCmd("Version");
+        System.Diagnostics.Debug.WriteLine($"Softata Version: {Version}");
+        Thread.Sleep(100);
+        string cmdsOffset = AppState.softataLib.SendMessageCmd("Soffset");
+        if (int.TryParse(cmdsOffset, out int _offset))
+        {
+            AppState.softataLib.Offset = _offset; //Should be 0xf0
+            System.Diagnostics.Debug.WriteLine($"CommandsOffset: {_offset}");
+        }
+        Thread.Sleep(100);
+        AppState.DeviceTypes.CSV = AppState.softataLib.SendMessageCmd("Devices");
+        System.Diagnostics.Debug.WriteLine($"{AppState.DeviceTypes.CSV}");
+        StateHasChanged();
+    }
+
+    public void GetDevices()
+    {
+        byte subCmd = 0; //getCmds Always first
+        AppState.GenericCommands.CSV = AppState.softataLib.SendTargetCommand((byte)AppState.TargetDeviceType.Index, 1, subCmd);
+
+
+        //Get commands to be diaplyed in menu
+        AppState.UseGenericCommands = new Dictionary<int, string>();
+        for (int i = 0; i < AppState.GenericCommands.List.Count(); i++)
+        {
+            if (char.IsUpper(AppState.GenericCommands.List[i][0]))
+            {
+
+
+            }
+            else
+            {
+                // Will have leading A_ D_ or S_
+                // OR
+                // leading S__ D__ or S__
+                if (AppState.GenericCommands.List[i].Substring(1, 2) == "__")
+                {
+                    // These commands are called from the device class type
+                    // Using the specific device type ordinal
+                    // Without using an instance
+                    string cmd = AppState.GenericCommands.List[i].Substring(3);
+                    AppState.Stringlist.Add(cmd);
+                    AppState.UseGenericCommands.Add(i, cmd);
+                    // Will have leading A_ D_ or S_
+                    // General Actuator/Display/Sensor class info
+                }
+                else
+                {
+                    //Will have leading a_ d_ or s_
+                    string cmd = AppState.GenericCommands.List[i].Substring(2);
+                    AppState.UseGenericCommands.Add(i, cmd);
+                }
+            }
+        }
+        subCmd = GetGenericCmdIndexfromList("getDevices", AppState.GenericCommands.List);
+        AppState.Devices.CSV = AppState.softataLib.SendTargetCommand((byte)AppState.TargetDeviceType.Index, 0, subCmd);
+        Thread.Sleep(100);
+        StateHasChanged();
+    }
+
+    private void GetPinouts()
+    {
+        byte subCmd = GetGenericCmdIndexfromList("getpins", AppState.GenericCommands.List);
+        AppState.Pinouts.CSV = AppState.softataLib.SendTargetCommand((byte)AppState.TargetDevice.Index, 1, subCmd, (byte)AppState.TargetDevice.Index);
+
+        Thread.Sleep(100);
+    }
+
+    private void Instantiate()
+    {
+        if (AppState.TargetDevicePinout.Index == 0)
+        {
+            if (AppState.TargetDevicePinout.Item.Contains("="))
+            {
+                string[] info = AppState.TargetDevicePinout.Item.Split("=");
+                AppState.TargetDevicePinout.Item = info[0].Trim();
+            }
+            PinoutStr = $"Using Default Setup: {AppState.TargetDevicePinout.Item}";
+            byte subCmd = GetGenericCmdIndexfromList("setupdefault", AppState.GenericCommands.List);
+            string result = AppState.softataLib.SendTargetCommand((byte)AppState.TargetDeviceType.Index, 1, subCmd, (byte)AppState.TargetDevice.Index);
+            AppState.linkedListNo = 0xff;
+            if (byte.TryParse(result, out byte lln))
+            {
+                if (lln != 0xff)
+                    AppState.linkedListNo = lln;
+                else
+                { bool quit = true; }
+
+            }
+
+
+        }
+        else
+        {
+/*            byte pinn = 16;
+            
+
+            AppState.TargetDevicePin.Index = pinn;
+            AppState.TargetDevicePin.Item = $"Pin = {pinn}";
+
+            
+            AppState.Num_Bits.Index = 4;*/
+            //Layout.Info($"Using NonDefault Setup: {TargetPin.Item} Num Bits:{num_bits}");
+
+            byte subCmd = GetGenericCmdIndexfromList("setupgeneral", AppState.GenericCommands.List);
+            byte[] data = new byte[] { (byte)AppState.Num_Bits.Index };
+            string result = AppState.softataLib.SendTargetCommand((byte)AppState.TargetCommand.Index, (byte)AppState.TargetDevicePin.Index, subCmd, (byte)AppState.TargetDevice.Index, 0xff, data);
+            AppState.linkedListNo = 0xff;
+            if (byte.TryParse(result, out byte lln))
+            {
+                if (lln != 0xff)
+                    AppState.linkedListNo = lln;
+                else
+                { bool quit = true; }
+
+            }
+        }
+        int actuatorcapabilities = (int)Softata.Enums.ActuatorCapabilities.a_none;
+
+        if (AppState.TargetDeviceType.Item.ToLower() == "actuator")
+        {
+            byte subCmd = GetGenericCmdIndexfromList("GetActuatorCapabiliti", AppState.GenericCommands.List);
+            string response = AppState.softataLib.SendTargetCommand((byte)AppState.TargetDeviceType.Index, (byte)AppState.TargetDevicePin.Index, (byte)subCmd, (byte)0xff, AppState.linkedListNo);
+
+            if (int.TryParse(response, out int capabilities))
+            {
+                AppState.Actuatorcapabilities = capabilities;
+            }
+        }
+        Thread.Sleep(100);
+        Instantiated = true;
+    }
+
+    private async Task ShowAlert(string msg)
+    {
+        await JsRuntime.InvokeVoidAsync("alert", msg);
+        //await JSRuntime.InvokeVoidAsync(title, msg);
+    }
+
+    private static byte GetGenericCmdIndex(string cmd, string[] GenericCmds)
+    {
+        byte subCmd = 0;
+        for (int i = 0; i < GenericCmds.Length; i++)
+        {
+            if (GenericCmds[i].ToLower().Contains(cmd.ToLower()))
+            {
+                subCmd = (byte)i;
+                break;
+            }
+        }
+        return subCmd;
+    }
+
+    private static byte GetGenericCmdIndexfromList(string cmd, List<string> GenericCmds)
+    {
+        byte subCmd = 0;
+        for (int i = 0; i < GenericCmds.Count(); i++)
+        {
+            if (GenericCmds[i].ToLower().Contains(cmd.ToLower()))
+            {
+                subCmd = (byte)i;
+                break;
+            }
+        }
+        return subCmd;
+    }
+
+    /// <summary>
+    /// Get dictionaly list of similar commands so can be used in a menu
+    /// </summary>
+    /// <param name="cmd"></param>
+    /// <param name="GenericCmds"></param>
+    /// <returns></returns>
+    private static Dictionary<int, string> GetListGenericCmds(string cmd, string[] GenericCmds)
+    {
+        Dictionary<int, string> cmds = new Dictionary<int, string>();
+        for (int i = 0; i < GenericCmds.Length; i++)
+        {
+            if (GenericCmds[i].ToLower().Contains(cmd.ToLower()))
+            {
+                cmds.Add(i, GenericCmds[i]);
+            }
+        }
+        return cmds;
+    }
+
+    private static byte GetuseGenericCmdIndex(string cmd, Dictionary<int, string> useGenericCmds)
+    {
+        byte subCmd = 0;
+        foreach (var genCmd in useGenericCmds)
+        {
+            if (genCmd.Value.ToLower().Contains(cmd.ToLower()))
+            {
+                subCmd = (byte)genCmd.Key;
+                break;
+            }
+        }
+        return subCmd;
+    }
+
+
+
+}
