@@ -1,7 +1,6 @@
 ﻿using ConsoleTextFormat;
 using Softata.Enums;
 using Softata;
-using SoftataBasic;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,11 +9,13 @@ using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Runtime.InteropServices;
 
 
-namespace SoftataLibActionCommands
+
+namespace   Softata.ActionCommands
 {
-    public class SelectedDeviceLoopVars : IDisposable
+    public class SelectedDeviceLoopVars2 : IDisposable
     {
         public Tuple<byte, byte, byte> rgb { get; set; } = new Tuple<byte, byte, byte>(0x40, 0, 0);
         public byte imisc { get; set; } = 0xff;
@@ -35,71 +36,34 @@ namespace SoftataLibActionCommands
 
     }
 
-    public class LayoutSample : ILayout
-    {
-        public void Info(string msg, string msg2 = "")
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Prompt(string msg, string msg2 = "")
-        {
-            throw new NotImplementedException();
-        }
-
-        public int Prompt4IntInRange(int info1, string info2)
-        {
-            throw new NotImplementedException();
-        }
-
-        public int Prompt4IntInRange(int info1, int info2)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool Prompt4Bool()
-        {
-            throw new NotImplementedException();
-        }
-
-        public int Prompt4Num(int info1, int info2, bool info3)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Selection PromptWithCSVList(int index, string miscCmds, bool v1, bool v2)
-        {
-            throw new NotImplementedException();
-        }
-
-    }
 
     public class CommandsPortal
     {
         /////////////////////////////////////////////////////////////////////////////////////////////
         
         // Call this once for the app
-        public void Setup(
-            ILayout layout, 
-            Func<string, Dictionary<int, string>, 
-                byte> getGenericCmdIndex, 
+        public static void Setup(
+            ILLayout llayout,
+            Func<string, string[],byte> getGenericCmdIndex, 
             SoftataLib _softatalib)
         {
-            Layout= layout;
+            LLayout = llayout;
             GetGenericCmdIndex = getGenericCmdIndex;
             softatalib = _softatalib;
         }
-        public static ILayout Layout { get; set; }
-        public static Func<string, Dictionary<int, string>, byte> GetGenericCmdIndex { get; set; }
+
+        public static ILLayout LLayout { get; set; }
+
+        public static Func<string, string[], byte> GetGenericCmdIndex { get; set; }
         public static SoftataLib softatalib { get; set; }
 
-        private SelectedDeviceLoopVars selectedDeviceLoopVars { get; set; }
+        public SelectedDeviceLoopVars2 selectedDeviceLoopVars { get; set; }
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////
 
         // Construct with new device
-        public CommandsPortal(Dictionary<int, string> genericCommands, Dictionary<int, string> _useGenericCommands,
+        public CommandsPortal(string[] genericCommands, Dictionary<int, string> _useGenericCommands,
             Selection targetDeviceType, Selection targetDevice, byte _linkedListNo, int _actuatorcapabilities)
         {
             GenericCommands = genericCommands;
@@ -108,10 +72,10 @@ namespace SoftataLibActionCommands
             TargetDevice = targetDevice;
             linkedListNo = _linkedListNo;
             actuatorcapabilities = _actuatorcapabilities;
-            SelectedDeviceLoopVars selectedDeviceLoopVars = new SelectedDeviceLoopVars();
+            selectedDeviceLoopVars = new SelectedDeviceLoopVars2();
             stringlist = new List<string>();
         }
-        public Dictionary<int, string> GenericCommands { get; set; }
+        public string[] GenericCommands { get; set; }
         public Dictionary<int, string> useGenericCommands { get; set; }
         public Selection TargetDeviceType { get; set; }
         public Selection TargetDevice { get; set; }
@@ -132,7 +96,7 @@ namespace SoftataLibActionCommands
                 bool quit = false;
                 bool back = false;
                 ///////////////////////////////////
-                Layout.Info($"Selected target device command : ", $" {TargetCommand.Item}");
+                LLayout.Info($"Selected target device command : ", $" {TargetCommand.Item}");
                 if (TargetDeviceType.Item.ToLower() == "actuator")
                 {
                     if (!selectedDeviceLoopVars.foundRange) // Only get range once
@@ -161,8 +125,9 @@ namespace SoftataLibActionCommands
                         if (!selectedDeviceLoopVars.foundRange)
                         {
                             // Format XXX:min...max<space>qwwqeqsdsfcfq
-                            subCmd = GetGenericCmdIndex("getValueRange", GenericCommands);
-                            result = softatalib.SendTargetCommand((byte)TargetCommand.Index, 1, subCmd, (byte)TargetDevice.Index);
+                            subCmd = GetGenericCmdIndex("getinstanceValueRange", GenericCommands);//Was getvaluerange=05
+                            // result = softatalib.SendTargetCommand((byte)TargetCommand.Index, 1, subCmd, (byte)TargetDevice.Index);
+                            result = softatalib.SendTargetCommand((byte)TargetDeviceType.Index, 1, subCmd, (byte)TargetDevice.Index);
                             if (result.ToLower().Contains("..."))
                             {
                                 if (result.ToLower().Contains(":"))
@@ -174,24 +139,26 @@ namespace SoftataLibActionCommands
                                 {
                                     int indx = result.IndexOf(' ');
                                     result = result.Substring(0, indx);
-                                    if (result.Contains("..."))
-                                    {
-                                        string[] range = result.Split("...");
-                                        if (range.Length == 2)
-
-                                            if (int.TryParse(range[0], out int val1))
-                                            {
-                                                if (int.TryParse(range[1], out int val2))
-                                                {
-                                                    selectedDeviceLoopVars.actuatorRange = new Tuple<int, int>(val1, val2);
-                                                    selectedDeviceLoopVars.foundRange = true;
-                                                }
-                                            }
-                                    }
                                 }
+                                if (result.Contains("..."))
+                                {
+                                    string[] range = result.Split("...");
+                                    if (range.Length == 2)
+
+                                        if (int.TryParse(range[0], out int val1))
+                                        {
+                                            if (int.TryParse(range[1], out int val2))
+                                            {
+                                                selectedDeviceLoopVars.actuatorRange = new Tuple<int, int>(val1, val2);
+                                                selectedDeviceLoopVars.foundRange = true;
+                                            }
+                                        }
+                                }
+                                
                             }
                         }
                     }
+         
                     if (
                                 (command.ToLower().Contains("getvaluerange".ToLower())) ||
                                 (command.ToLower().Contains("getnumbits".ToLower())) ||
@@ -201,7 +168,7 @@ namespace SoftataLibActionCommands
                     {
                         // No further info required
                     }
-                    else if (actuatorcapabilities == (int)(ActuatorCapabilities.a_bit & ActuatorCapabilities.a_writebyte))
+                    else if (actuatorcapabilities ==(int)(ActuatorCapabilities.a_bit | ActuatorCapabilities.a_writebyte))
                     {
                         // Actuators that can write value to manipulate bits
                         if (command.ToLower().Contains("Write".ToLower()))
@@ -210,24 +177,24 @@ namespace SoftataLibActionCommands
                             {
                                 //Layout.Info("Found range: ", $"{selectedDeviceLoopVars.actuatorRange.Item1}...{selectedDeviceLoopVars.actuatorRange.Item2}");
 
-                                int num = Layout.Prompt4IntInRange(selectedDeviceLoopVars.actuatorRange.Item1, selectedDeviceLoopVars.actuatorRange.Item2);
+                                int num = LLayout.Prompt4IntInRange(selectedDeviceLoopVars.actuatorRange.Item1, selectedDeviceLoopVars.actuatorRange.Item2);
                                 data = new byte[] { (byte)num };
                             }
                             else
                             {
-                                Layout.Info("Actuator write needs a valid range");
+                                LLayout.Info("Actuator write needs a valid range");
                                 return;
                             }
                         }
                         else if (command.ToLower().Contains("SetBitState".ToLower()))
                         {
-                            bool istate = Layout.Prompt4Bool();
-                            selectedDeviceLoopVars.relay_bit_no = (byte)Layout.Prompt4Num(selectedDeviceLoopVars.relay_bit_no + 1, 4, false);
+                            bool istate = LLayout.Prompt4Bool();
+                            selectedDeviceLoopVars.relay_bit_no = (byte)LLayout.Prompt4Num(selectedDeviceLoopVars.relay_bit_no + 1, 4, false);
                             data = new byte[] { selectedDeviceLoopVars.relay_bit_no, istate ? (byte)1 : (byte)0 };
                         }
                         else
                         {
-                            selectedDeviceLoopVars.relay_bit_no = (byte)Layout.Prompt4Num(selectedDeviceLoopVars.relay_bit_no + 1, 4, false);
+                            selectedDeviceLoopVars.relay_bit_no = (byte)LLayout.Prompt4Num(selectedDeviceLoopVars.relay_bit_no + 1, 4, false);
                             data = new byte[] { selectedDeviceLoopVars.relay_bit_no };
                         }
                     }
@@ -237,7 +204,7 @@ namespace SoftataLibActionCommands
                         if (command.ToLower().Contains("bit".ToLower()))
                         {
                             // Not implemented
-                            Layout.Info("Bit commands not implemented for this device.");
+                            LLayout.Info("Bit commands not implemented for this device.");
                             byte dummy = 0;
                             data = new byte[] { dummy };
                         }
@@ -245,14 +212,14 @@ namespace SoftataLibActionCommands
                         {
                             if (selectedDeviceLoopVars.actuatorRange != null)
                             {
-                                Layout.Info("Found range: ", $"{selectedDeviceLoopVars.actuatorRange.Item1}...{selectedDeviceLoopVars.actuatorRange.Item2}");
+                                LLayout.Info("Found range: ", $"{selectedDeviceLoopVars.actuatorRange.Item1}...{selectedDeviceLoopVars.actuatorRange.Item2}");
 
-                                int num = Layout.Prompt4IntInRange(selectedDeviceLoopVars.actuatorRange.Item1, selectedDeviceLoopVars.actuatorRange.Item2);
+                                int num = LLayout.Prompt4IntInRange(selectedDeviceLoopVars.actuatorRange.Item1, selectedDeviceLoopVars.actuatorRange.Item2);
                                 data = new byte[] { (byte)num };
                             }
                             else
                             {
-                                Layout.Info("Actuator write needs a valid range");
+                                LLayout.Info("Actuator write needs a valid range");
                                 return;
                             }
                         }
@@ -262,13 +229,13 @@ namespace SoftataLibActionCommands
                         // Actuators that can only be bit manipluated
                         if (command.ToLower().Contains("bit".ToLower()))
                         {
-                            selectedDeviceLoopVars.relay_bit_no = (byte)Layout.Prompt4Num(selectedDeviceLoopVars.relay_bit_no + 1, 4, false);
+                            selectedDeviceLoopVars.relay_bit_no = (byte)LLayout.Prompt4Num(selectedDeviceLoopVars.relay_bit_no + 1, 4, false);
                             data = new byte[] { selectedDeviceLoopVars.relay_bit_no };
                         }
                         else
                         {
                             // Not implemented
-                            Layout.Info("Write commands not implemented for this device.");
+                            LLayout.Info("Write commands not implemented for this device.");
                             data = new byte[] { (byte)0, (byte)1 };
                         }
 
@@ -325,10 +292,10 @@ namespace SoftataLibActionCommands
                     if (command.ToLower().Contains("cursor"))
                     {
                         //case GroveDisplayCmds.setCursor:
-                        Layout.Info("Enter line 1 or 2");
-                        line = Layout.Prompt4Num(line, 2, false);
-                        Layout.Info("Enter line position  1 to 40");
-                        pos = Layout.Prompt4Num(pos, 40, false);
+                        LLayout.Info("Enter line 1 or 2");
+                        line = LLayout.Prompt4Num(line, 2, false);
+                        LLayout.Info("Enter line position  1 to 40");
+                        pos = LLayout.Prompt4Num(pos, 40, false);
                         data = new byte[] { 0x2, (byte)pos, (byte)line };
                     }
                     if (command.ToLower().Contains("writestring"))
@@ -353,13 +320,13 @@ namespace SoftataLibActionCommands
                         //SoftataLib.Display.Oled096? softataLibDisplayOled096 = null;
                         byte subCmd = GetGenericCmdIndex("misc", GenericCommands);
                         string MiscCmds = softatalib.SendTargetCommand((byte)TargetCommand.Index, 1, subCmd, (byte)TargetDevice.Index);
-                        TargetMiscCmd = Layout.PromptWithCSVList(TargetMiscCmd.Index, MiscCmds, true, true);
+                        TargetMiscCmd = LLayout.PromptWithCSVList(TargetMiscCmd.Index, MiscCmds, true, true);
 
                         int res = TargetMiscCmd.Index;
                         if (res < 0)
                             return;
                         selectedDeviceLoopVars.imisc = (byte)(1 + res);
-                        Layout.Info($"{TargetMiscCmd.Item} chosen");
+                        LLayout.Info($"{TargetMiscCmd.Item} chosen");
                         {
                             bool misc_done = false;
                             Type? type = null;
@@ -380,12 +347,12 @@ namespace SoftataLibActionCommands
                                     obj = softataLibDisplayBargraphDisplay;
                                     if (TargetMiscCmd.Item.ToLower().Contains("_led"))
                                     {
-                                        selectedDeviceLoopVars.misc_led = (byte)Layout.Prompt4Num(selectedDeviceLoopVars.misc_led + 1, 10, false);
+                                        selectedDeviceLoopVars.misc_led = (byte)LLayout.Prompt4Num(selectedDeviceLoopVars.misc_led + 1, 10, false);
                                         parameter = selectedDeviceLoopVars.misc_led;
                                     }
                                     else if (TargetMiscCmd.Item.ToLower().Contains("setlevel"))
                                     {
-                                        selectedDeviceLoopVars.misc_bglevel = (byte)Layout.Prompt4Num(selectedDeviceLoopVars.misc_bglevel + 1, 10, false);
+                                        selectedDeviceLoopVars.misc_bglevel = (byte)LLayout.Prompt4Num(selectedDeviceLoopVars.misc_bglevel + 1, 10, false);
                                         parameter = (byte)(selectedDeviceLoopVars.misc_bglevel + 1);
                                     }
                                     break;
@@ -403,7 +370,7 @@ namespace SoftataLibActionCommands
                                             selectedDeviceLoopVars.rgb = ConColors.SelectRGB();
                                             Console.WriteLine($"({selectedDeviceLoopVars.rgb.Item1},{selectedDeviceLoopVars.rgb.Item2},{selectedDeviceLoopVars.rgb.Item3})");
 
-                                            selectedDeviceLoopVars.misc_led = (byte)Layout.Prompt4Num(selectedDeviceLoopVars.misc_led + 1, 8, false);
+                                            selectedDeviceLoopVars.misc_led = (byte)LLayout.Prompt4Num(selectedDeviceLoopVars.misc_led + 1, 8, false);
                                             paramz = new object[] { linkedListNo, selectedDeviceLoopVars.rgb.Item1, selectedDeviceLoopVars.rgb.Item2, selectedDeviceLoopVars.rgb.Item3, selectedDeviceLoopVars.misc_led };
                                         }
                                         else
@@ -413,7 +380,7 @@ namespace SoftataLibActionCommands
                                     }
                                     else if (TargetMiscCmd.Item.ToLower().Contains("setbrightness"))
                                     {
-                                        selectedDeviceLoopVars.misc_brightness = (byte)Layout.Prompt4Num(selectedDeviceLoopVars.misc_brightness + 1, 9, false);
+                                        selectedDeviceLoopVars.misc_brightness = (byte)LLayout.Prompt4Num(selectedDeviceLoopVars.misc_brightness + 1, 9, false);
 
                                         Tuple<byte, byte, byte> rgbTemp = new Tuple<byte, byte, byte>(0, 0, 0);
 
@@ -429,9 +396,9 @@ namespace SoftataLibActionCommands
                                                                         ||
                                                 (TargetMiscCmd.Item.ToLower().Contains("setpxl")))
                                     {
-                                        Layout.Prompt("Select num 1...9 which maps to 0 ..8", "");
+                                        LLayout.Prompt("Select num 1...9 which maps to 0 ..8", "");
                                         Console.WriteLine();
-                                        selectedDeviceLoopVars.misc_num = (byte)Layout.Prompt4Num(selectedDeviceLoopVars.misc_num + 1, 9, false);
+                                        selectedDeviceLoopVars.misc_num = (byte)LLayout.Prompt4Num(selectedDeviceLoopVars.misc_num + 1, 9, false);
                                         paramz = new object[] { linkedListNo, selectedDeviceLoopVars.rgb.Item1, selectedDeviceLoopVars.rgb.Item2, selectedDeviceLoopVars.rgb.Item3, selectedDeviceLoopVars.misc_num };
                                     }
 
@@ -487,7 +454,7 @@ namespace SoftataLibActionCommands
                     }
                     string response = softatalib.SendTargetCommand((byte)TargetDeviceType.Index, (byte)pinn, (byte)TargetCommand.Index, targetDeviceIndex, linkedListNo, data);
 
-                    Layout.Info(response);
+                    LLayout.Info(response);
 
                     if (TargetDeviceType.Item.ToLower() == "actuator")
                     {

@@ -170,6 +170,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SoftataLib", "SofataLibMult
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorSoftata2", "BlazorSoftata2\BlazorSoftata2.csproj", "{B3067976-2472-4761-B982-03E16377EBA6}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SoftataConsole2", "SoftataConsoleX\SoftataConsole2.csproj", "{C3E03AAB-1C54-4705-9B8C-672514E1124C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -194,6 +196,10 @@ Global
 		{B3067976-2472-4761-B982-03E16377EBA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B3067976-2472-4761-B982-03E16377EBA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B3067976-2472-4761-B982-03E16377EBA6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3E03AAB-1C54-4705-9B8C-672514E1124C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3E03AAB-1C54-4705-9B8C-672514E1124C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3E03AAB-1C54-4705-9B8C-672514E1124C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3E03AAB-1C54-4705-9B8C-672514E1124C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
