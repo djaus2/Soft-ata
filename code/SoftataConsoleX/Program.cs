@@ -88,6 +88,13 @@ namespace SoftataBasic
         {
             
             softatalib = new SoftataLib();
+            Softata.ActionCommands.CommandsPortal.Setup(
+                new LLayout(),
+                GetGenericCmdIndex,
+                softatalib
+            );
+
+
             Console.Clear();
             ShowHeading();
             Console.WriteLine("For details see https://davidjones.sportronics.com.au/cats/softata/");
@@ -147,7 +154,7 @@ namespace SoftataBasic
             Selection TargetDevice = new Selection();
             Selection TargetCommand = new Selection();
 
-            
+
             while (!quit)
             {
                 Selection TargetPin = new Selection();
@@ -416,11 +423,7 @@ namespace SoftataBasic
                                         actuatorcapabilities = capabilities;
                                     }
                                 }
-                                Softata.ActionCommands.CommandsPortal.Setup(
-                                    new LLayout(),
-                                    GetGenericCmdIndex,
-                                    softatalib
-                                    );
+
 
                                 Softata.ActionCommands.CommandsPortal commandsPortal = new Softata.ActionCommands.CommandsPortal
                                 (
