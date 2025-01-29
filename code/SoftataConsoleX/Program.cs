@@ -372,15 +372,18 @@ namespace SoftataBasic
                                         if (TargetDevice.Item.ToLower().Contains("quad"))
                                         {
                                             num_bits = 4;
+                                            int max_bits = 22 - pinn;
+                                            Layout.Info($"Max bits: {max_bits}", "Bits can only use pins 16 to 21");
+                                            num_bits = (byte)Layout.Prompt4IntInRange(1, max_bits, num_bits);
+                                            Layout.Info($"Using NonDefault Setup: {TargetPin.Item} Num Bits:{num_bits}");
+                                            data = new byte[] { num_bits };
                                         }
                                         else if (TargetDevice.Item.ToLower().Contains("sipo"))
                                         {
                                             num_bits = 4;
-                                        }
-
-                                        if (num_bits>1)
-                                        { 
-                                            num_bits = (byte)Layout.Prompt4IntInRange(1,8, num_bits);
+                                            int max_bits = 8;
+                                            Layout.Info($"Max bits: {max_bits}", "");
+                                            num_bits = (byte)Layout.Prompt4IntInRange(1, max_bits, num_bits);
                                             Layout.Info($"Using NonDefault Setup: {TargetPin.Item} Num Bits:{num_bits}");
                                             data = new byte[] { num_bits };
                                         }

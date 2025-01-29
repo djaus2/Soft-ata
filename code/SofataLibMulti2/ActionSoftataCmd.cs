@@ -82,6 +82,8 @@ namespace   Softata.ActionCommands
         public List<string> stringlist { get; set; }
         public byte linkedListNo { get; set; }
         public int actuatorcapabilities { get; set; } 
+        public int Num_Bits { get; set; }
+
         //////////////////////////////////////////////////////////////////////////////////////////
         public void RunGenericMethod(Selection TargetCommand)
         {
@@ -105,6 +107,7 @@ namespace   Softata.ActionCommands
                         result = softatalib.SendTargetCommand((byte)TargetDeviceType.Index, (byte)1, (byte)subCmd, (byte)0xff, linkedListNo, null);
                         if (int.TryParse(result, out int numBits))
                         {
+                            Num_Bits = numBits;
                             if (numBits > 1)
                             {
                                 //selectedDeviceLoopVars.isQuadRelay = true;
@@ -188,13 +191,14 @@ namespace   Softata.ActionCommands
                         }
                         else if (command.ToLower().Contains("SetBitState".ToLower()))
                         {
+                            ////int x = selectedDeviceLoopVars.n
                             bool istate = LLayout.Prompt4Bool();
-                            selectedDeviceLoopVars.relay_bit_no = (byte)LLayout.Prompt4Num(selectedDeviceLoopVars.relay_bit_no + 1, 4, false);
+                            selectedDeviceLoopVars.relay_bit_no = (byte)LLayout.Prompt4Num(selectedDeviceLoopVars.relay_bit_no + 1, Num_Bits, false);
                             data = new byte[] { selectedDeviceLoopVars.relay_bit_no, istate ? (byte)1 : (byte)0 };
                         }
                         else
                         {
-                            selectedDeviceLoopVars.relay_bit_no = (byte)LLayout.Prompt4Num(selectedDeviceLoopVars.relay_bit_no + 1, 4, false);
+                            selectedDeviceLoopVars.relay_bit_no = (byte)LLayout.Prompt4Num(selectedDeviceLoopVars.relay_bit_no + 1, Num_Bits, false);
                             data = new byte[] { selectedDeviceLoopVars.relay_bit_no };
                         }
                     }
@@ -229,7 +233,7 @@ namespace   Softata.ActionCommands
                         // Actuators that can only be bit manipluated
                         if (command.ToLower().Contains("bit".ToLower()))
                         {
-                            selectedDeviceLoopVars.relay_bit_no = (byte)LLayout.Prompt4Num(selectedDeviceLoopVars.relay_bit_no + 1, 4, false);
+                            selectedDeviceLoopVars.relay_bit_no = (byte)LLayout.Prompt4Num(selectedDeviceLoopVars.relay_bit_no + 1, Num_Bits, false);
                             data = new byte[] { selectedDeviceLoopVars.relay_bit_no };
                         }
                         else
