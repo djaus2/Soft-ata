@@ -1,6 +1,8 @@
 # Soft-ata Version 11.400
 
 ## Updates
+- SoftataConsole2 now works for Actuator Sensor and Display using ActionmSoftataCmd in SoftataLib rather than app.
+  - Now for BlazorApp2 to use ActionmSoftataCmd,
 - SoftataConsole2 is the console app to use. Nb Blockly and Blazor apps are yet to be updated for this
   - The big change is to push evrything down into Arduino such that the .NET app can query for meta infor rather than have to know anything.
     - Can query for a list of Device Type classes, then ...
