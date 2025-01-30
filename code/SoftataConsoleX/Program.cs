@@ -432,6 +432,7 @@ namespace SoftataBasic
                                 (
                                     GenericCommands,
                                     useGenericCommands,
+                                    stringlist,
                                     TargetDeviceType,
                                     TargetDevice,
                                     linkedListNo,

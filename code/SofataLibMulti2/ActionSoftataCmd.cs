@@ -63,17 +63,19 @@ namespace   Softata.ActionCommands
         /////////////////////////////////////////////////////////////////////////////////////////////
 
         // Construct with new device
-        public CommandsPortal(string[] genericCommands, Dictionary<int, string> _useGenericCommands,
+        public CommandsPortal(string[] genericCommands, Dictionary<int, string> _useGenericCommands, List<string> _stringList,
             Selection targetDeviceType, Selection targetDevice, byte _linkedListNo, int _actuatorcapabilities)
         {
             GenericCommands = genericCommands;
             useGenericCommands = _useGenericCommands;
+            stringlist = _stringList;
+
             TargetDeviceType = targetDeviceType;
             TargetDevice = targetDevice;
             linkedListNo = _linkedListNo;
             actuatorcapabilities = _actuatorcapabilities;
             selectedDeviceLoopVars = new SelectedDeviceLoopVars2();
-            stringlist = new List<string>();
+            sensorProperties = null;
         }
         public string[] GenericCommands { get; set; }
         public Dictionary<int, string> useGenericCommands { get; set; }
@@ -82,6 +84,8 @@ namespace   Softata.ActionCommands
         public List<string> stringlist { get; set; }
         public byte linkedListNo { get; set; }
         public int actuatorcapabilities { get; set; } 
+
+        public List<string>? sensorProperties { get; set; } 
         public int Num_Bits { get; set; }
 
         //////////////////////////////////////////////////////////////////////////////////////////
@@ -259,20 +263,19 @@ namespace   Softata.ActionCommands
                 }
                 else if (TargetDeviceType.Item.ToLower() == "sensor")
                 {
-                    /*
                         if (sensorProperties == null)
                         {
-                            subCmd = GetGenericCmdIndex("properties", GenericCommands);
-                            result = softatalib.SendTargetCommand(cmdTarget, 1, subCmd, (byte)TargetDevice.Index);
+                            byte subCmd = GetGenericCmdIndex("properties", GenericCommands);
+                            result = softatalib.SendTargetCommand((byte)TargetDeviceType.Index, 1, subCmd, (byte)TargetDevice.Index);
                             sensorProperties = new List<string>(result.Split(","));
                         }
                         if ((command.ToLower().Contains("readall")) || (command.ToLower().Contains("gettelemetry")))
                         {
-                            Layout.Info("Getting: ", result);
+                            Layout.Info("Getting: ", string.Join(",", sensorProperties));
                         }
                         else if (command.ToLower().Contains("read"))
                         {
-                            var seln = Layout.PromptWithCSVList(0, result, true, true);
+                            var seln = Layout.PromptWithCSVList(0, string.Join(",", sensorProperties), true, true);
                             pinn = (byte)seln.Index;
                             if (pinn < 0)
                             {
@@ -284,7 +287,7 @@ namespace   Softata.ActionCommands
                             }
                             Layout.Info("Getting: ", sensorProperties[pinn]);
                         }
-                    */
+                    
                 }
                 else if (TargetDeviceType.Item.ToLower() == "display")
                 {
@@ -322,10 +325,11 @@ namespace   Softata.ActionCommands
                         //SoftataLib.Display.BARGRAPHDisplay softataLibDisplayGBargraphDisplay;
                         SoftataLib.Display.LCD1602Display? softataLibDisplayLCD1602Display = null;
                         //SoftataLib.Display.Oled096? softataLibDisplayOled096 = null;
-                        byte subCmd = GetGenericCmdIndex("misc", GenericCommands);
-                        string MiscCmds = softatalib.SendTargetCommand((byte)TargetCommand.Index, 1, subCmd, (byte)TargetDevice.Index);
+                        byte subCmd = GetGenericCmdIndex("miscgetlist", GenericCommands);
+                        string MiscCmds = softatalib.SendTargetCommand((byte)TargetDeviceType.Index, 1, subCmd, (byte)TargetDevice.Index);
                         TargetMiscCmd = LLayout.PromptWithCSVList(TargetMiscCmd.Index, MiscCmds, true, true);
 
+                       
                         int res = TargetMiscCmd.Index;
                         if (res < 0)
                             return;
