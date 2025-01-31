@@ -1,7 +1,7 @@
 # Soft-ata Version 11.400
 
 ## Updates
-- SoftataConsole2 Added DeivceInput type. Implemented a switch (pins 16 to 21);
+- SoftataConsole2 Added DeviceInput type. Implemented a switch (pins 16 to 21);
 - SoftataConsole2 now works for Actuator Sensor and Display using ActionmSoftataCmd in SoftataLib rather than app.
   - Now for BlazorApp2 to use ActionmSoftataCmd, _Coming_
 - SoftataConsole2 is the console app to use. Nb Blockly and Blazor apps are yet to be updated for this
