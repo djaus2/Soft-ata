@@ -103,7 +103,80 @@ namespace   Softata.ActionCommands
                 bool back = false;
                 ///////////////////////////////////
                 LLayout.Info($"Selected target device command : ", $" {TargetCommand.Item}");
-                if (TargetDeviceType.Item.ToLower() == "actuator")
+                if (TargetDeviceType.Item.ToLower() == "deviceinput")
+                {
+                    if (!selectedDeviceLoopVars.foundRange) // Only get range once
+                    {
+                        byte subCmd = GetGenericCmdIndex("getNumBits", GenericCommands);
+                        result = softatalib.SendTargetCommand((byte)TargetDeviceType.Index, (byte)1, (byte)subCmd, (byte)0xff, linkedListNo, null);
+                        if (int.TryParse(result, out int numBits))
+                        {
+                            Num_Bits = numBits;
+                            if (numBits > 1)
+                            {
+                                //selectedDeviceLoopVars.isQuadRelay = true;
+                                selectedDeviceLoopVars.foundRange = true;
+                                selectedDeviceLoopVars.actuatorRange = new Tuple<int, int>(0, (2 << (numBits - 1)) - 1);
+                            }
+                            else if (numBits == 1)
+                            {
+                                //selectedDeviceLoopVars.isRelay = true;
+                                selectedDeviceLoopVars.foundRange = true;
+                            }
+                            else if (numBits == -1)
+                            {
+                                //selectedDeviceLoopVars.isRelay = false;
+                            }
+                        }
+
+                        if (!selectedDeviceLoopVars.foundRange)
+                        {
+                            // Format XXX:min...max<space>qwwqeqsdsfcfq
+                            subCmd = GetGenericCmdIndex("getinstanceValueRange", GenericCommands);//Was getvaluerange=05
+                            // result = softatalib.SendTargetCommand((byte)TargetCommand.Index, 1, subCmd, (byte)TargetDevice.Index);
+                            result = softatalib.SendTargetCommand((byte)TargetDeviceType.Index, 1, subCmd, (byte)TargetDevice.Index);
+                            if (result.ToLower().Contains("..."))
+                            {
+                                if (result.ToLower().Contains(":"))
+                                {
+                                    int indx = result.IndexOf(':');
+                                    result = result.Substring(indx + 1);
+                                }
+                                if (result.Contains(' '))
+                                {
+                                    int indx = result.IndexOf(' ');
+                                    result = result.Substring(0, indx);
+                                }
+                                if (result.Contains("..."))
+                                {
+                                    string[] range = result.Split("...");
+                                    if (range.Length == 2)
+
+                                        if (int.TryParse(range[0], out int val1))
+                                        {
+                                            if (int.TryParse(range[1], out int val2))
+                                            {
+                                                selectedDeviceLoopVars.actuatorRange = new Tuple<int, int>(val1, val2);
+                                                selectedDeviceLoopVars.foundRange = true;
+                                            }
+                                        }
+                                }
+
+                            }
+                        }
+                    }
+
+                    if (
+                                (command.ToLower().Contains("getvaluerange".ToLower())) ||
+                                (command.ToLower().Contains("getnumbits".ToLower())) ||
+                                (command.ToLower().Contains("getinstancevaluerange".ToLower())) ||
+                                (command.ToLower().Contains("GetInputCapabiliti".ToLower()))
+                        )
+                    {
+                        // No further info required
+                    }
+                }
+                else   if (TargetDeviceType.Item.ToLower() == "actuator")
                 {
                     if (!selectedDeviceLoopVars.foundRange) // Only get range once
                     {
