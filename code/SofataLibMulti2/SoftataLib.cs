@@ -541,6 +541,7 @@ namespace Softata
             int recvd = Client.Receive(data);
 
             string result = Encoding.UTF8.GetString(data).Substring(0, recvd);
+            System.Diagnostics.Debug.WriteLine($"3. Result: {result}");
 
             // Make the check work in both ways.
             if ((!expect.Contains(result)) && (!result.Contains(expect)))
@@ -560,6 +561,7 @@ namespace Softata
         //softatalib.SendTargetCommand((byte)TargetDeviceType.Index,0,(byte)TargetDevice.Index, (byte)TargetCommand.Index , linkedListNo, data);
         public string SendTargetCommand(byte cmdDeviceType,byte pin, byte cmd, byte cmdTargetType = 0xff, byte linkedListIndex=0, byte[]? dataIn = null)
         {
+            System.Diagnostics.Debug.WriteLine($"2. SendTargetCommand(): cmdDeviceType:{cmdDeviceType}, pin:{pin}, cmd:{cmd}, cmdTargetType:{cmdTargetType}, linkedListIndex:{linkedListIndex}");
             //other can be linkedListIndex or cmdTargetType
             // If actual instance use linkedListIndex
             // For others that don't need instance use the display(etc) type.
@@ -577,8 +579,9 @@ namespace Softata
             }
             // public string SendMessageB(byte cmdTargetType, byte pin = 0xff, byte state = 0xff, string expect = "OK:", byte other=0xff, byte[]? Data=null, bool debug=true )
 
-            string result = SendMessageB     ( cmdDeviceType, pin,(byte)cmd, "OK:", other, data);
-            return result;
+            string response = SendMessageB     ( cmdDeviceType, pin,(byte)cmd, "OK:", other, data);
+            System.Diagnostics.Debug.WriteLine($"2. Response: {response}");
+            return response;
         }
 
     }

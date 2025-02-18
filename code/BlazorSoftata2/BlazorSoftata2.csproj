@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="ConsoleTextFormat" Version="1.3.7" />
     <PackageReference Include="LiquidTechnologies.Blazor.ModalDialog" Version="0.9.7" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="8.0.0" />
     <ProjectReference Include="..\SofataLibMulti2\SoftataLib.csproj" />

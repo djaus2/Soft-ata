@@ -6,68 +6,70 @@ using Softata;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.ComponentModel;
+using ConsoleTextFormat;
+using Softata.ActionCommands;
 
 
 namespace BlazorSoftata2
 {
-    public class Selection
-    {
-        public int Index { get; set; }
+    //public class Selection
+    //{
+    //    public int Index { get; set; }
 
-        public int Order { get; set; }
+    //    public int Order { get; set; }
 
-        public string Item { get; set; }
+    //    public string Item { get; set; }
 
-        public Selection? Next { get; set; } = null;
+    //    public Selection? Next { get; set; } = null;
 
 
-        public Selection()
-        {
-            Index = 0;
-            Item = "";
-            Order = 0;
-        }
+    //    public Selection()
+    //    {
+    //        Index = 0;
+    //        Item = "";
+    //        Order = 0;
+    //    }
 
-        public Selection(int index)
-        {
-            Index = index;
-            Item = "";
-            Order = index;
-        }
+    //    public Selection(int index)
+    //    {
+    //        Index = index;
+    //        Item = "";
+    //        Order = index;
+    //    }
 
-        public Selection(int index, string item)
-        {
-            Index = index;
-            Item = item;
-            Order = index;
-        }
+    //    public Selection(int index, string item)
+    //    {
+    //        Index = index;
+    //        Item = item;
+    //        Order = index;
+    //    }
 
-        public Selection(int index, string item, int order)
-        {
-            Index = index;
-            Item = item;
-            Order = order;
-        }
+    //    public Selection(int index, string item, int order)
+    //    {
+    //        Index = index;
+    //        Item = item;
+    //        Order = order;
+    //    }
 
-        public Selection(int index, List<string> items)
-        {
-            Index = index;
-            Item = items[index];
-            Order = index;
-        }
+    //    public Selection(int index, List<string> items)
+    //    {
+    //        Index = index;
+    //        Item = items[index];
+    //        Order = index;
+    //    }
 
-        public Selection(int index, List<string> items, int order)
-        {
-            Index = index;
-            Item = items[index];
-            Order = order;
-        }
+    //    public Selection(int index, List<string> items, int order)
+    //    {
+    //        Index = index;
+    //        Item = items[index];
+    //        Order = order;
+    //    }
 
-        public void Dispose()
-        {
-            if(Next != null) Next.Dispose();
-        }
-    }
+    //    public void Dispose()
+    //    {
+    //        if(Next != null) Next.Dispose();
+    //    }
+    //}
     public class SelectedDeviceLoopVars : IDisposable
     {
         public Tuple<byte, byte, byte> rgb { get; set; } = new Tuple<byte, byte, byte>(0x40, 0, 0);
@@ -77,6 +79,8 @@ namespace BlazorSoftata2
         public byte misc_brightness { get; set; } = 1;
         public byte misc_num { get; set; } = 0;
         public Tuple<int, int>? actuatorRange { get; set; } = null;
+
+        public int Value { get; set; } = 0;
 
         public bool foundRange { get; set; } = false;
         // bool isRelay { get; set; } = false;
@@ -139,7 +143,11 @@ namespace BlazorSoftata2
 
         private bool _loaded = false;
 
-        public int Actuatorcapabilities {get; set;}
+        // See Softata.Enums: ActuatorCapabilities and DeviceCapabilities
+        // This is an or-ing of capabilities. Can have multiple capabilities
+        public int Capabilities { get; set; } //Used by Actuators and DeviceInputs.
+
+        public CommandsPortal CommandsPortal { get; set; }
 
         public bool Loaded
         {
@@ -238,6 +246,13 @@ namespace BlazorSoftata2
 
         public Selection Num_Bits = new Selection(4, "");
 
+        public int StartBit { get; set; } = 0;
+        public int EndBit { get { return Num_Bits.Index - 1; } }
+
+        private int _Max_Num_Bits = 4;
+        public int Max_Num_Bits { get => max_Num_Bits; set { max_Num_Bits = value; Num_Bits.Index = value; Num_Bits.Item = $"Num Bits = {value}"; MaxVal =  (1 << Num_Bits.Index) -1; } }
+
+        public int MaxVal { get => maxVal; set => maxVal = value; }
         /////////////////////////////////////////////////////////
 
         private bool connected = false;
@@ -252,6 +267,8 @@ namespace BlazorSoftata2
         private Selection targetCommand = new Selection();
         private int port = 4242;
         private string ipaddressStr = "192.168.0.12";
+        private int max_Num_Bits = 4;
+        private int maxVal = 0;
 
         /////////////////////////////////////////////////////////
 

@@ -43,7 +43,7 @@ namespace SoftataBasic
         public byte misc_bglevel { get; set; } = 0;
         public byte misc_brightness { get; set; } = 1;
         public byte misc_num { get; set; } = 0;
-        public Tuple<int, int>? actuatorRange { get; set; } = null;
+        public Tuple<int, int>? deviceRange { get; set; } = null;
 
         public bool foundRange { get; set; } = false;
         // bool isRelay { get; set; } = false;
@@ -391,13 +391,21 @@ namespace SoftataBasic
                                         {
                                             Layout.Info($"Using NonDefault Setup: {TargetPin.Item}");
                                         }
+                                        Layout.Info($"Note: When selecting a bit (num): ", $"bits are numbered from 1.");
                                     }
-
 
                                     subCmd = GetGenericCmdIndex("setupgeneral", GenericCommands);                                   
                                     result = softatalib.SendTargetCommand(cmdTarget, (byte)TargetPin.Index, subCmd, (byte)TargetDevice.Index,0xff,data);
 
                                 }
+
+
+                                if ((TargetDeviceType.Item.ToLower() == "actuator")
+                                    || (TargetDeviceType.Item.ToLower() == "deviceinput"))
+                                {
+                                    Layout.Info($"Note: When selecting a bit (num): ", $"bits are numbered from 1.");
+                                }
+
                                 cmdTarget = (byte)TargetDeviceType.Index;
                                 
 
@@ -414,16 +422,27 @@ namespace SoftataBasic
                                     quit = true;
 
                                 // Default is bit functions only.
-                                int actuatorcapabilities = (int)ActuatorCapabilities.a_none;
+                                int capabilities = (int)DeviceInputCapabilities.i_none;
+
 
                                 if (TargetDeviceType.Item.ToLower() == "actuator")
                                 {
-                                    subCmd = GetGenericCmdIndex("GetActuatorCapabiliti", GenericCommands);
+                                    subCmd = GetGenericCmdIndex("GetActuatorCapab", GenericCommands);
                                     string response = softatalib.SendTargetCommand((byte)TargetDeviceType.Index, (byte)pinn, (byte)subCmd, (byte)0xff, linkedListNo);
                                
-                                    if(int.TryParse(response, out int capabilities))
+                                    if(int.TryParse(response, out int _capabilities))
                                     {
-                                        actuatorcapabilities = capabilities;
+                                        capabilities = _capabilities;
+                                    }
+                                }
+                                else if (TargetDeviceType.Item.ToLower() == "deviceinput")
+                                {
+                                    subCmd = GetGenericCmdIndex("GetInputCapab", GenericCommands);
+                                    string response = softatalib.SendTargetCommand((byte)TargetDeviceType.Index, (byte)pinn, (byte)subCmd, (byte)0xff, linkedListNo);
+
+                                    if (int.TryParse(response, out int _capabilities))
+                                    {
+                                        capabilities = _capabilities;
                                     }
                                 }
 
@@ -436,7 +455,7 @@ namespace SoftataBasic
                                     TargetDeviceType,
                                     TargetDevice,
                                     linkedListNo,
-                                    actuatorcapabilities
+                                    capabilities
                                 );
 
                                 using (Softata.ActionCommands.SelectedDeviceLoopVars2 selectedDeviceLoopVars = commandsPortal.selectedDeviceLoopVars)

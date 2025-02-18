@@ -23,7 +23,7 @@ namespace   Softata.ActionCommands
         public byte misc_bglevel { get; set; } = 0;
         public byte misc_brightness { get; set; } = 1;
         public byte misc_num { get; set; } = 0;
-        public Tuple<int, int>? actuatorRange { get; set; } = null;
+        public Tuple<int, int>? deviceDataRange { get; set; } = null;
 
         public bool foundRange { get; set; } = false;
         // bool isRelay { get; set; } = false;
@@ -64,7 +64,7 @@ namespace   Softata.ActionCommands
 
         // Construct with new device
         public CommandsPortal(string[] genericCommands, Dictionary<int, string> _useGenericCommands, List<string> _stringList,
-            Selection targetDeviceType, Selection targetDevice, byte _linkedListNo, int _actuatorcapabilities)
+            Selection targetDeviceType, Selection targetDevice, byte _linkedListNo, int _capabilities)
         {
             GenericCommands = genericCommands;
             useGenericCommands = _useGenericCommands;
@@ -73,7 +73,8 @@ namespace   Softata.ActionCommands
             TargetDeviceType = targetDeviceType;
             TargetDevice = targetDevice;
             linkedListNo = _linkedListNo;
-            actuatorcapabilities = _actuatorcapabilities;
+            capabilities = _capabilities;
+
             selectedDeviceLoopVars = new SelectedDeviceLoopVars2();
             sensorProperties = null;
         }
@@ -83,8 +84,7 @@ namespace   Softata.ActionCommands
         public Selection TargetDevice { get; set; }
         public List<string> stringlist { get; set; }
         public byte linkedListNo { get; set; }
-        public int actuatorcapabilities { get; set; } 
-
+        public int capabilities { get; set; } //Used by both Actuators and DeviceInputs
         public List<string>? sensorProperties { get; set; } 
         public int Num_Bits { get; set; }
 
@@ -116,7 +116,7 @@ namespace   Softata.ActionCommands
                             {
                                 //selectedDeviceLoopVars.isQuadRelay = true;
                                 selectedDeviceLoopVars.foundRange = true;
-                                selectedDeviceLoopVars.actuatorRange = new Tuple<int, int>(0, (2 << (numBits - 1)) - 1);
+                                selectedDeviceLoopVars.deviceDataRange = new Tuple<int, int>(0, (2 << (numBits - 1)) - 1);
                             }
                             else if (numBits == 1)
                             {
@@ -156,7 +156,7 @@ namespace   Softata.ActionCommands
                                         {
                                             if (int.TryParse(range[1], out int val2))
                                             {
-                                                selectedDeviceLoopVars.actuatorRange = new Tuple<int, int>(val1, val2);
+                                                selectedDeviceLoopVars.deviceDataRange = new Tuple<int, int>(val1, val2);
                                                 selectedDeviceLoopVars.foundRange = true;
                                             }
                                         }
@@ -170,10 +170,80 @@ namespace   Softata.ActionCommands
                                 (command.ToLower().Contains("getvaluerange".ToLower())) ||
                                 (command.ToLower().Contains("getnumbits".ToLower())) ||
                                 (command.ToLower().Contains("getinstancevaluerange".ToLower())) ||
-                                (command.ToLower().Contains("GetInputCapabiliti".ToLower()))
+                                (command.ToLower().Contains("GetInputCapab".ToLower()))
                         )
                     {
                         // No further info required
+                    }
+                    else if (                        
+                        (capabilities == (int)(DeviceInputCapabilities.i_bit | DeviceInputCapabilities.i_readbyte)) ||
+                         (capabilities == (int)(DeviceInputCapabilities.i_bit | DeviceInputCapabilities.i_readbyte | DeviceInputCapabilities.i_readword))
+                         )
+
+
+                    {
+                        // DeviceInputs that can read a value or read bits
+                        Console.WriteLine("Mega");
+
+                        if (command.ToLower().Contains("Bit".ToLower()))
+                        {
+                            Console.WriteLine("Poll");
+                            selectedDeviceLoopVars.relay_bit_no = (byte)LLayout.Prompt4Num(selectedDeviceLoopVars.relay_bit_no + 1, Num_Bits, false);
+                            data = new byte[] { selectedDeviceLoopVars.relay_bit_no };
+                        }
+                        else if (command.ToLower().Contains("Read".ToLower()))
+                        {
+                            Console.WriteLine("Read");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Other");
+                            selectedDeviceLoopVars.relay_bit_no = (byte)LLayout.Prompt4Num(selectedDeviceLoopVars.relay_bit_no + 1, Num_Bits, false);
+                            data = new byte[] { selectedDeviceLoopVars.relay_bit_no };
+                        }
+                    }
+                    else if (capabilities == (int)(DeviceInputCapabilities.i_readbyte))
+                    {
+                        // Actuators that can be byte written to only (No bit manipluations)
+                        if (command.ToLower().Contains("bit".ToLower()))
+                        {
+                            // Not implemented
+                            LLayout.Info("Bit commands not implemented for this device.");
+                            byte dummy = 0;
+                            data = new byte[] { dummy };
+                        }
+                        else
+                        {
+
+                        }
+                    }
+                    else if (capabilities == (int)(DeviceInputCapabilities.i_bit))
+                    {
+                        // DeviceInputs that can only be bit read 
+                        if (command.ToLower().Contains("bit".ToLower()))
+                        {
+                            selectedDeviceLoopVars.relay_bit_no = (byte)LLayout.Prompt4Num(selectedDeviceLoopVars.relay_bit_no + 1, Num_Bits, false);
+                            data = new byte[] { selectedDeviceLoopVars.relay_bit_no };
+                        }
+                        else
+                        {
+                            // Not implemented
+                            LLayout.Info("Write commands not implemented for this device.");
+                            data = new byte[] { (byte)0, (byte)1 };
+                        }
+
+                    }
+                    else if (capabilities == (int)DeviceInputCapabilities.i_none)
+                    {
+                        // Nothing to add. Single bit
+                        // Non single bit commands will return Not Implemented.
+                        // Needs a dummy pin/bit number.
+                        byte dummy = 0;
+                        data = new byte[] { dummy };
+                    }
+                    else
+                    {
+                        // ?? 
                     }
                 }
                 else   if (TargetDeviceType.Item.ToLower() == "actuator")
@@ -189,7 +259,7 @@ namespace   Softata.ActionCommands
                             {
                                 //selectedDeviceLoopVars.isQuadRelay = true;
                                 selectedDeviceLoopVars.foundRange = true;
-                                selectedDeviceLoopVars.actuatorRange = new Tuple<int, int>(0, (2 << (numBits - 1)) - 1);
+                                selectedDeviceLoopVars.deviceDataRange = new Tuple<int, int>(0, (2 << (numBits - 1)) - 1);
                             }
                             else if (numBits == 1)
                             {
@@ -229,7 +299,7 @@ namespace   Softata.ActionCommands
                                         {
                                             if (int.TryParse(range[1], out int val2))
                                             {
-                                                selectedDeviceLoopVars.actuatorRange = new Tuple<int, int>(val1, val2);
+                                                selectedDeviceLoopVars.deviceDataRange = new Tuple<int, int>(val1, val2);
                                                 selectedDeviceLoopVars.foundRange = true;
                                             }
                                         }
@@ -248,16 +318,16 @@ namespace   Softata.ActionCommands
                     {
                         // No further info required
                     }
-                    else if (actuatorcapabilities ==(int)(ActuatorCapabilities.a_bit | ActuatorCapabilities.a_writebyte))
+                    else if (capabilities ==(int)(ActuatorCapabilities.a_bit | ActuatorCapabilities.a_writebyte))
                     {
                         // Actuators that can write value to manipulate bits
                         if (command.ToLower().Contains("Write".ToLower()))
                         {
-                            if (selectedDeviceLoopVars.actuatorRange != null)
+                            if (selectedDeviceLoopVars.deviceDataRange != null)
                             {
                                 //Layout.Info("Found range: ", $"{selectedDeviceLoopVars.actuatorRange.Item1}...{selectedDeviceLoopVars.actuatorRange.Item2}");
 
-                                int num = LLayout.Prompt4IntInRange(selectedDeviceLoopVars.actuatorRange.Item1, selectedDeviceLoopVars.actuatorRange.Item2);
+                                int num = LLayout.Prompt4IntInRange(selectedDeviceLoopVars.deviceDataRange.Item1, selectedDeviceLoopVars.deviceDataRange.Item2);
                                 data = new byte[] { (byte)num };
                             }
                             else
@@ -270,16 +340,16 @@ namespace   Softata.ActionCommands
                         {
                             ////int x = selectedDeviceLoopVars.n
                             bool istate = LLayout.Prompt4Bool();
-                            selectedDeviceLoopVars.relay_bit_no = (byte)LLayout.Prompt4Num(selectedDeviceLoopVars.relay_bit_no + 1, Num_Bits, false);
+                            selectedDeviceLoopVars.relay_bit_no = (byte)LLayout.Prompt4Num(selectedDeviceLoopVars.relay_bit_no+1 , Num_Bits, false);
                             data = new byte[] { selectedDeviceLoopVars.relay_bit_no, istate ? (byte)1 : (byte)0 };
                         }
                         else
                         {
-                            selectedDeviceLoopVars.relay_bit_no = (byte)LLayout.Prompt4Num(selectedDeviceLoopVars.relay_bit_no + 1, Num_Bits, false);
+                            selectedDeviceLoopVars.relay_bit_no = (byte)LLayout.Prompt4Num(selectedDeviceLoopVars.relay_bit_no+1 , Num_Bits, false);
                             data = new byte[] { selectedDeviceLoopVars.relay_bit_no };
                         }
                     }
-                    else if (actuatorcapabilities == (int)(ActuatorCapabilities.a_writebyte))
+                    else if (capabilities == (int)(ActuatorCapabilities.a_writebyte))
                     {
                         // Actuators that can be byte written to only (No bit manipluations)
                         if (command.ToLower().Contains("bit".ToLower()))
@@ -291,11 +361,11 @@ namespace   Softata.ActionCommands
                         }
                         else
                         {
-                            if (selectedDeviceLoopVars.actuatorRange != null)
+                            if (selectedDeviceLoopVars.deviceDataRange != null)
                             {
-                                LLayout.Info("Found range: ", $"{selectedDeviceLoopVars.actuatorRange.Item1}...{selectedDeviceLoopVars.actuatorRange.Item2}");
+                                LLayout.Info("Found range: ", $"{selectedDeviceLoopVars.deviceDataRange.Item1}...{selectedDeviceLoopVars.deviceDataRange.Item2}");
 
-                                int num = LLayout.Prompt4IntInRange(selectedDeviceLoopVars.actuatorRange.Item1, selectedDeviceLoopVars.actuatorRange.Item2);
+                                int num = LLayout.Prompt4IntInRange(selectedDeviceLoopVars.deviceDataRange.Item1, selectedDeviceLoopVars.deviceDataRange.Item2);
                                 data = new byte[] { (byte)num };
                             }
                             else
@@ -305,12 +375,12 @@ namespace   Softata.ActionCommands
                             }
                         }
                     }
-                    else if (actuatorcapabilities == (int)(ActuatorCapabilities.a_bit))
+                    else if (capabilities == (int)(ActuatorCapabilities.a_bit))
                     {
                         // Actuators that can only be bit manipluated
                         if (command.ToLower().Contains("bit".ToLower()))
                         {
-                            selectedDeviceLoopVars.relay_bit_no = (byte)LLayout.Prompt4Num(selectedDeviceLoopVars.relay_bit_no + 1, Num_Bits, false);
+                            selectedDeviceLoopVars.relay_bit_no = (byte)LLayout.Prompt4Num(selectedDeviceLoopVars.relay_bit_no+1 , Num_Bits, false);
                             data = new byte[] { selectedDeviceLoopVars.relay_bit_no };
                         }
                         else
@@ -321,13 +391,23 @@ namespace   Softata.ActionCommands
                         }
 
                     }
-                    else if (actuatorcapabilities == (int)ActuatorCapabilities.a_none)
+                    else if (capabilities == (int)ActuatorCapabilities.a_none)
                     {
-                        // Nothing to add. Single bit
-                        // Non single bit commands will return Not Implemented.
-                        // Needs a dummy pin/bit number.
-                        byte dummy = 0;
-                        data = new byte[] { dummy };
+                        if (command.ToLower().Contains("SetBitState".ToLower()))
+                        {
+                            ////int x = selectedDeviceLoopVars.n
+                            bool istate = LLayout.Prompt4Bool();
+                            selectedDeviceLoopVars.relay_bit_no = (byte)LLayout.Prompt4Num(selectedDeviceLoopVars.relay_bit_no + 1, Num_Bits, false);
+                            data = new byte[] { selectedDeviceLoopVars.relay_bit_no, istate ? (byte)1 : (byte)0 };
+                        }
+                        else
+                        {
+                            // Nothing to add. Single bit
+                            // Non single bit commands will return Not Implemented.
+                            // Needs a dummy pin/bit number.
+                            byte dummy = 0;
+                            data = new byte[] { dummy };
+                        }
                     }
                     else
                     {

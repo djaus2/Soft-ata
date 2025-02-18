@@ -1,0 +1,21 @@
+﻿@page "/toggle-div"
+
+<h3>Toggle Div Visibility</h3>
+
+<button @onclick="ToggleDivVisibility">Toggle Div</button>
+
+@if (isDivVisible)
+{
+    <div>
+        This is a toggled div!
+    </div>
+}
+
+@code {
+    private bool isDivVisible = false;
+
+    private void ToggleDivVisibility()
+    {
+        isDivVisible = !isDivVisible;
+    }
+}

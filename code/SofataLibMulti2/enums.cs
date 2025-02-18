@@ -22,7 +22,8 @@ namespace Softata.Enums
     /// Once Actuator is instatniated it is queried using GetActuatorCapabilities()
     /// softatadevice_Actuator->GetActuatorCapabilities()
     /// </summary>
-    public enum ActuatorCapabilities { a_none=0, a_bit = 1 , a_writebyte = 2, a_writeword = 4, a_writedouble = 8 };
+    public enum ActuatorCapabilities { a_none = 1, a_bit = 2 , a_writebyte = 4, a_writeword = 8, a_writedouble = 16 };
+    public enum DeviceInputCapabilities { i_none = 1, i_bit = 2, i_readbyte = 4, i_readword = 8};
 
     public enum AllDisplayMiscCommands : byte 
     {
