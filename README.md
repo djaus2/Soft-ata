@@ -6,6 +6,7 @@
   - Introduces ILLayout that both apps implement, that is used by the C# library.
     - Console app uses the Nuget package
     - Blazor app has class at bottom of Index.razor
+    - LATEST: Changing multiple inputs to one CSV line (ConsoleApp2 doe)
 - SoftataConsole2 Added DeviceInput type. Implemented a switch (pins 16 to 21);
 - SoftataConsole2 now works for Actuator Sensor and Display using ActionmSoftataCmd in SoftataLib rather than app.
   - Now for BlazorApp2 to use ActionmSoftataCmd, _Coming_
