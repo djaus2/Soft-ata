@@ -463,6 +463,7 @@ namespace SoftataBasic
 
                                     while ((!quit) && (!back))
                                     {
+                                        CommandResponse commandResponse = new CommandResponse();
                                         pinn = 0;
                                         TargetCommand = Layout.PromptWithDictionaryList(TargetCommand.Order, useGenericCommands, true, true);
                                         if (TargetCommand.Index < 0)
@@ -475,7 +476,31 @@ namespace SoftataBasic
                                         }
                                         else 
                                         {
-                                            commandsPortal.RunGenericMethod(TargetCommand);
+                                            string response = commandsPortal.RunGenericMethod(TargetCommand);
+                                            if (response == "quit")
+                                            {
+                                                quit = true;
+                                            }
+                                            else if (response == "back")
+                                            {
+                                                back = true;
+                                            }
+                                            else if (response.Trim().ToLower().Contains("Not Implemented".ToLower()))
+                                            {
+                                                useGenericCommands.Remove(TargetCommand.Index);
+                                            }
+                                            
+                                            if(int.TryParse(response, out int qresult))
+            {
+                                                commandResponse.CommandResultInt = qresult;
+                                            }
+                                            else if (double.TryParse(response, out double dbl))
+                                            {
+                                                commandResponse.CommandResultDouble = dbl;
+                                            }
+
+                                            commandResponse.CommandResultString = response;
+                                           
                                         }
                                     }
 
@@ -497,6 +522,22 @@ namespace SoftataBasic
             }
             
             return;
+        }
+
+        public class CommandResponse
+        {
+            public CommandResponse()
+            {
+                CommandResultInt = 0;
+                CommandResultDouble = 0.0;
+                CommandResultString = "";
+
+            }
+            public int CommandResultInt { get; set; }
+
+            public double CommandResultDouble { get; set; }
+
+            public string CommandResultString { get; set; }
         }
 
         private static byte GetGenericCmdIndex(string cmd, string[] GenericCmds)

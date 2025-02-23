@@ -10,6 +10,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices;
+using System.Windows.Markup;
+using System.Security.Cryptography;
 
 
 
@@ -89,7 +91,7 @@ namespace   Softata.ActionCommands
         public int Num_Bits { get; set; }
 
         //////////////////////////////////////////////////////////////////////////////////////////
-        public void RunGenericMethod(Selection TargetCommand)
+        public string RunGenericMethod(Selection TargetCommand)
         {
             using (this.selectedDeviceLoopVars  )
             {
@@ -189,7 +191,8 @@ namespace   Softata.ActionCommands
                         {
                             Console.WriteLine("Poll");
                             selectedDeviceLoopVars.relay_bit_no = (byte)LLayout.Prompt4Num(selectedDeviceLoopVars.relay_bit_no + 1, Num_Bits, false);
-                            data = new byte[] { selectedDeviceLoopVars.relay_bit_no };
+                            byte[] bytes = new byte[] { selectedDeviceLoopVars.relay_bit_no };
+                            data = data.Concat(bytes).ToArray<byte>();
                         }
                         else if (command.ToLower().Contains("Read".ToLower()))
                         {
@@ -199,7 +202,8 @@ namespace   Softata.ActionCommands
                         {
                             Console.WriteLine("Other");
                             selectedDeviceLoopVars.relay_bit_no = (byte)LLayout.Prompt4Num(selectedDeviceLoopVars.relay_bit_no + 1, Num_Bits, false);
-                            data = new byte[] { selectedDeviceLoopVars.relay_bit_no };
+                            byte[] bytes = new byte[] { selectedDeviceLoopVars.relay_bit_no };
+                            data = data.Concat(bytes).ToArray<byte>();
                         }
                     }
                     else if (capabilities == (int)(DeviceInputCapabilities.i_readbyte))
@@ -210,7 +214,8 @@ namespace   Softata.ActionCommands
                             // Not implemented
                             LLayout.Info("Bit commands not implemented for this device.");
                             byte dummy = 0;
-                            data = new byte[] { dummy };
+                            byte[] bytes = new byte[] { dummy };
+                            data = data.Concat(bytes).ToArray<byte>();
                         }
                         else
                         {
@@ -223,13 +228,15 @@ namespace   Softata.ActionCommands
                         if (command.ToLower().Contains("bit".ToLower()))
                         {
                             selectedDeviceLoopVars.relay_bit_no = (byte)LLayout.Prompt4Num(selectedDeviceLoopVars.relay_bit_no + 1, Num_Bits, false);
-                            data = new byte[] { selectedDeviceLoopVars.relay_bit_no };
+                            byte[] bytes = new byte[] { selectedDeviceLoopVars.relay_bit_no };
+                            data = data.Concat(bytes).ToArray<byte>();
                         }
                         else
                         {
                             // Not implemented
                             LLayout.Info("Write commands not implemented for this device.");
-                            data = new byte[] { (byte)0, (byte)1 };
+                            byte[] bytes = new byte[] { (byte)0, (byte)1 };
+                            data = data.Concat(bytes).ToArray<byte>();
                         }
 
                     }
@@ -239,7 +246,8 @@ namespace   Softata.ActionCommands
                         // Non single bit commands will return Not Implemented.
                         // Needs a dummy pin/bit number.
                         byte dummy = 0;
-                        data = new byte[] { dummy };
+                        byte[] bytes = new byte[] { dummy };
+                        data = data.Concat(bytes).ToArray<byte>();
                     }
                     else
                     {
@@ -328,12 +336,13 @@ namespace   Softata.ActionCommands
                                 //Layout.Info("Found range: ", $"{selectedDeviceLoopVars.actuatorRange.Item1}...{selectedDeviceLoopVars.actuatorRange.Item2}");
 
                                 int num = LLayout.Prompt4IntInRange(selectedDeviceLoopVars.deviceDataRange.Item1, selectedDeviceLoopVars.deviceDataRange.Item2);
-                                data = new byte[] { (byte)num };
+                                byte[] bytes  = new byte[] { (byte)num };
+                                data = data.Concat(bytes).ToArray<byte>();
                             }
                             else
                             {
                                 LLayout.Info("Actuator write needs a valid range");
-                                return;
+                                return "Actuator write needs a valid range";
                             }
                         }
                         else if (command.ToLower().Contains("SetBitState".ToLower()))
@@ -341,12 +350,14 @@ namespace   Softata.ActionCommands
                             ////int x = selectedDeviceLoopVars.n
                             bool istate = LLayout.Prompt4Bool();
                             selectedDeviceLoopVars.relay_bit_no = (byte)LLayout.Prompt4Num(selectedDeviceLoopVars.relay_bit_no+1 , Num_Bits, false);
-                            data = new byte[] { selectedDeviceLoopVars.relay_bit_no, istate ? (byte)1 : (byte)0 };
+                            byte[] bytes = new byte[] { selectedDeviceLoopVars.relay_bit_no, istate ? (byte)1 : (byte)0 };
+                            data = data.Concat(bytes).ToArray<byte>();
                         }
                         else
                         {
                             selectedDeviceLoopVars.relay_bit_no = (byte)LLayout.Prompt4Num(selectedDeviceLoopVars.relay_bit_no+1 , Num_Bits, false);
-                            data = new byte[] { selectedDeviceLoopVars.relay_bit_no };
+                            byte[] bytes = new byte[] { selectedDeviceLoopVars.relay_bit_no };
+                            data = data.Concat(bytes).ToArray<byte>();
                         }
                     }
                     else if (capabilities == (int)(ActuatorCapabilities.a_writebyte))
@@ -357,7 +368,8 @@ namespace   Softata.ActionCommands
                             // Not implemented
                             LLayout.Info("Bit commands not implemented for this device.");
                             byte dummy = 0;
-                            data = new byte[] { dummy };
+                            byte[] bytes = new byte[] { dummy };
+                            data = data.Concat(bytes).ToArray<byte>();
                         }
                         else
                         {
@@ -366,12 +378,13 @@ namespace   Softata.ActionCommands
                                 LLayout.Info("Found range: ", $"{selectedDeviceLoopVars.deviceDataRange.Item1}...{selectedDeviceLoopVars.deviceDataRange.Item2}");
 
                                 int num = LLayout.Prompt4IntInRange(selectedDeviceLoopVars.deviceDataRange.Item1, selectedDeviceLoopVars.deviceDataRange.Item2);
-                                data = new byte[] { (byte)num };
+                                byte[] bytes = new byte[] { (byte)num };
+                                data = data.Concat(bytes).ToArray<byte>();
                             }
                             else
                             {
                                 LLayout.Info("Actuator write needs a valid range");
-                                return;
+                                return "Actuator write needs a valid range";
                             }
                         }
                     }
@@ -381,13 +394,15 @@ namespace   Softata.ActionCommands
                         if (command.ToLower().Contains("bit".ToLower()))
                         {
                             selectedDeviceLoopVars.relay_bit_no = (byte)LLayout.Prompt4Num(selectedDeviceLoopVars.relay_bit_no+1 , Num_Bits, false);
-                            data = new byte[] { selectedDeviceLoopVars.relay_bit_no };
+                            byte[] bytes = new byte[] { selectedDeviceLoopVars.relay_bit_no };
+                            data = data.Concat(bytes).ToArray<byte>();
                         }
                         else
                         {
                             // Not implemented
                             LLayout.Info("Write commands not implemented for this device.");
-                            data = new byte[] { (byte)0, (byte)1 };
+                            byte[] bytes = new byte[] { (byte)0, (byte)1 };
+                            data = data.Concat(bytes).ToArray<byte>();
                         }
 
                     }
@@ -398,7 +413,8 @@ namespace   Softata.ActionCommands
                             ////int x = selectedDeviceLoopVars.n
                             bool istate = LLayout.Prompt4Bool();
                             selectedDeviceLoopVars.relay_bit_no = (byte)LLayout.Prompt4Num(selectedDeviceLoopVars.relay_bit_no + 1, Num_Bits, false);
-                            data = new byte[] { selectedDeviceLoopVars.relay_bit_no, istate ? (byte)1 : (byte)0 };
+                            byte[] bytes = new byte[] { selectedDeviceLoopVars.relay_bit_no, istate ? (byte)1 : (byte)0 };
+                            data = data.Concat(bytes).ToArray<byte>();
                         }
                         else
                         {
@@ -406,7 +422,8 @@ namespace   Softata.ActionCommands
                             // Non single bit commands will return Not Implemented.
                             // Needs a dummy pin/bit number.
                             byte dummy = 0;
-                            data = new byte[] { dummy };
+                            byte[] bytes = new byte[] { dummy };
+                            data = data.Concat(bytes).ToArray<byte>();
                         }
                     }
                     else
@@ -436,7 +453,7 @@ namespace   Softata.ActionCommands
                                     quit = true;
                                 else if (pinn == -2)
                                     back = true;
-                                return;
+                                return "";
                             }
                             Layout.Info("Getting: ", sensorProperties[pinn]);
                         }
@@ -449,25 +466,42 @@ namespace   Softata.ActionCommands
                     int pos = 0;
                     string? message = "";
 
-                    if (command.ToLower().Contains("cursor"))
+                    if ((command.ToLower().Contains("cursor")) && (command.ToLower().Contains("writestring")))
                     {
-                        //case GroveDisplayCmds.setCursor:
-                        LLayout.Info("Enter line 1 or 2");
-                        line = LLayout.Prompt4Num(line, 2, false);
-                        LLayout.Info("Enter line position  1 to 40");
-                        pos = LLayout.Prompt4Num(pos, 40, false);
-                        data = new byte[] { 0x2, (byte)pos, (byte)line };
+                        LLayout.Info("Enter a CSV string:Line 0 or 1,line position  0 to 39");
+                        string maxes = "1,39";
+                        List<int> vals = LLayout.Prompt4NumswithMaxesandText(2, maxes, out message, true);
+                        line = vals[0]; //1 or 2
+                        pos = vals[1]; //1 ... 40
+                        byte[] bytes = new byte[] { (byte)pos, (byte)line };
+                        data = data.Concat(bytes).ToArray<byte>();
+                        if (!string.IsNullOrEmpty(message))
+                        {
+                            byte[] bytes2 = Encoding.ASCII.GetBytes(message);
+                            data = data.Concat(bytes2).ToArray<byte>();
+                        }
                     }
-                    if (command.ToLower().Contains("writestring"))
+                    else if (command.ToLower().Contains("cursor"))
                     {
-                        message = Console.ReadLine();
+                        //case GroveDisplayCmds.setC +1ursor:
+                        LLayout.Info("Enter a CSV string:Line 0 or 1,line position  0 to 39");
+                        string maxes = "1,39";
+                        List<int> vals = LLayout.Prompt4NumswithMaxesandText(2,maxes, out message, false);
+                        line = vals[0] ; //1 or 2
+                        pos = vals[1]  ; //1 ... 40
+                        byte[] bytes = new byte[] { (byte)pos, (byte)line };
+                        data = data.Concat(bytes).ToArray<byte>();
+                    }
+                    else if (command.ToLower().Contains("writestring"))
+                    {
+                        message = LLayout.Prompt4String("Enter text to display");
                         if (!string.IsNullOrEmpty(message))
                         {
                             byte[] bytes = Encoding.ASCII.GetBytes(message);
                             data = data.Concat(bytes).ToArray<byte>();
                         }
                     }
-                    if (command.ToLower().Contains("misc"))
+                    else if (command.ToLower().Contains("misc"))
                     {
                         // Misc commands are quite specific to the device (display) so hard to make generic
                         isMiscCMd = true;
@@ -485,7 +519,7 @@ namespace   Softata.ActionCommands
                        
                         int res = TargetMiscCmd.Index;
                         if (res < 0)
-                            return;
+                            return "";
                         selectedDeviceLoopVars.imisc = (byte)(1 + res);
                         LLayout.Info($"{TargetMiscCmd.Item} chosen");
                         {
@@ -626,8 +660,14 @@ namespace   Softata.ActionCommands
                     else if (TargetDeviceType.Item.ToLower() == "sensor")
                     {
                     }
+                    else if (TargetDeviceType.Item.ToLower() == "display")
+                    {
+                    }
+  
+                    return response;
                 }
             }
+            return "";
         }
     }
     

@@ -102,7 +102,7 @@
     private void HandleCommandSelectionKeyDown(KeyboardEventArgs e)
     {
         StateHasChanged();
-        AppState.CommandsPortal.RunGenericMethod(AppState.TargetCommand);
+        string response = AppState.CommandsPortal.RunGenericMethod(AppState.TargetCommand);
     }
 
 }
@@ -280,12 +280,16 @@ else
                                             @if (AppState.UseGenericCommands.Count > 0)
                                             {
                                                 <table>
-                                                <tr>
-                                                    <td colspan="2">
-                                                        <h2>Generic Command: </h2>
+
+                                                   <tr>:
+                                                        <td  align="center">
+                                                                @GetDeviceNameHtmlHeading()
+                                                        </td>                                                   
+                                                    </tr>
+                                                    <tr>
+                                                   <td>
+                                                        <h3>Generic Command: </h3>
                                                     </td>
-                                                </tr>
-                                                <tr>
                                                     <td>
                                                         <select @onchange="HandleCommandSelectionChange" @onkeydown="HandleCommandSelectionKeyDown" >
                                                             <option value="">Select an item...</option>
@@ -306,14 +310,13 @@ else
                                                                 <td>&ensp;</td>
                                                             }
                                                         </tr>
-                                                </table>
+                                                
                                                 @switch (@AppState.TargetDeviceType.Item.ToLower())
                                                 {
                                                     case "actuator":
-                                                        <h2>Actuator</h2>
                                                             <EditForm Model="@deviceinputModel">
 
-                                                                <table>
+                                                                
                                                                     @if ((@AppState.Capabilities & (int)Softata.Enums.ActuatorCapabilities.a_bit) == (int)Softata.Enums.ActuatorCapabilities.a_bit)
                                                                     {
                                                                         <tr>
@@ -357,20 +360,62 @@ else
                                                                             </td>
                                                                         </tr>
                                                                     }
-                                                                </table>
+                                                               
                                                             </EditForm>
                                                         break;
                                                     case "display":
-                                                        <h2>Display</h2>
+                                                           
+                                                                @if (@AppState.DisplayMiscCmds != null)
+                                                                {
+                                                                    <tr>
+                                                                        <td>
+                                                                            <h3>Misc Commands:</h3>
+                                                                        </td>
+                                                                        <td>
+                                                                            <select @bind = "deviceinputModel.lastMiscMenuSelectedIndex">
+                                                                            <option value="">Select Display Misc Cmd...</option>
+                                                                            @for (int i = 0; i < AppState.DisplayMiscCmds.Count; i++)
+                                                                            {
+                                                                                <option value="@i">@AppState.DisplayMiscCmds[i]</option>
+                                                                            }
+                                                                        </select>
+                                                                        </td>
+                                                                        @if (deviceinputModel.lastMiscMenuSelectedIndex > -1)
+                                                                        {
+                                                                            <td>
+                                                                                <button class="btn btn-primary" @onclick="HandleCommandSelection">Repeat</button>
+                                                                            </td>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <td>&nbsp;</td>
+                                                                        }
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>
+                                                                            <label for="numselect2">Enter a numeric parameter <i>(If required)</i>: </label>
+                                                                        </td>
+                                                                        <td>
+                                                                            <InputNumber id="numselect2" @bind-Value="deviceinputModel.value"  />
+                                                                        </td>
+                                                                    </tr>
+                                                                }
+                                                                <tr>
+                                                                    <td>
+                                                                        <label for="stringenter">Enter string for LCD WriteString: </label>
+                                                                    </td>
+                                                                    <td>
+                                                                        <InputText id="stringenter" @bind-Value="deviceinputModel.stringValue" />
+                                                                    </td>
+                                                                </tr>
+                                                           
                                                         break;
                                                     case "sensor":
-                                                        <h2>Sensor</h2>
                                                         break;
                                                     case "deviceinput":
-                                                        <h2>Device Input</h2>
                                                         <EditForm Model="@deviceinputModel">
 
-                                                            <table>
+                                                           
                                                                 @if ((@AppState.Capabilities & (int)Softata.Enums.DeviceInputCapabilities.i_bit) == (int)Softata.Enums.DeviceInputCapabilities.i_bit)
                                                                 {
                                                                     <tr>
@@ -383,14 +428,13 @@ else
                                                                     </tr>
 
                                                                 }
-                                                            </table>
+                                                           
                                                         </EditForm>
                                                         break;
                                                     default:
-                                                        <p>Nothing</p>
                                                         break;
                                                 }
-
+                                                </table>
                                                 @if (AppState.TargetCommand != null)
                                                 {
                                                     @if (AppState.TargetCommand.Item != "")
@@ -459,8 +503,54 @@ else
         }
     }
 }
+<hr />
+@if(@deviceinputModel.commandResultString!= "" )
+{
+    <p><b>Result:</b>&nbsp;@deviceinputModel.commandResultString</p>
+}
+
+
 
 @code{
+
+    Dictionary<string, int> numBitsDict = new Dictionary<string, int>
+    {
+        {"gbargraph",2},
+        {"lcd1602",2 },
+        {"gswitch",2 },
+        {"dht11",3 },
+        {"oled096",4 }
+    };
+    /// <summary>
+    /// Generate uppercase first (or more) char for heading, rest lowercase.
+    /// Nb: Can't include functions etc in HTML so need to use a Markupnameof function liek this.
+    /// Possible improvement: Get the lists above from Softata on device.
+    /// Requires entry dictionary<string,int>
+    /// Where key is the device name in lowercase
+    /// And corresponding number of uppercase chars in the value.
+    /// ToDo: Names ending in number to be all uppercase
+    /// </summary>
+    /// <returns>HTML Markup string</returns>
+    private MarkupString GetDeviceNameHtmlHeading()
+    {
+        string heading = AppState.TargetDevice.Item.ToLower();
+        int numUpper = 1;
+        if (numBitsDict.Keys.Contains(heading))
+        {
+            numUpper = numBitsDict[heading];
+        }
+        if (numUpper < 1)
+            heading = heading.ToUpper();
+        else
+            heading = heading.Substring(0, numUpper).ToUpper() + heading.Substring(numUpper);
+
+
+        string htmlContent = " <font color=\"purple\">";
+        htmlContent += $"<h2>{heading}</h2>";
+        htmlContent += "</font>";
+        return new MarkupString(htmlContent);
+    }
+
     public class DeviceinputModel
     {
         public DeviceinputModel()
@@ -488,6 +578,13 @@ else
         public int startBit { get; set; } = 0;
         public int endBit { get { return numBits-1; } }
         public bool Bool {get; set;}
+        public string stringValue { get; set; } = "";
+        public int csvSelection { get; set; } = 0;
+        public Func<int, string, bool, bool, Selection> SelectFromCSV { get; set; }
+        public int lastMiscMenuSelectedIndex { get; set; } = -1;
+        public int commandResultInt { get; set; } = 0;
+        public double commandResultDouble { get; set; } = 0.0;
+        public string commandResultString { get; set; } = "";
     }
 
     public static DeviceinputModel deviceinputModel { get; set; } = new DeviceinputModel();
@@ -543,6 +640,8 @@ else
         if (firstRender)
         {
             lastMenuSelectedIndex = -1;
+            lastMiscMenuSelectedIndex = -1;
+            deviceinputModel.lastMiscMenuSelectedIndex = lastMiscMenuSelectedIndex;
 
             bool loaded = AppState.Loaded;
             if (!loaded)
@@ -680,8 +779,12 @@ else
                 }
 
             lastMenuSelectedIndex = -1;
+            lastMiscMenuSelectedIndex = -1;
+            deviceinputModel.lastMiscMenuSelectedIndex = lastMiscMenuSelectedIndex;
         }
     }
+
+
 
     private void HandleDevicesSelectionChange(ChangeEventArgs e)
     {
@@ -748,7 +851,7 @@ else
     private void GetDeviceInputNumBits()
     {
 
-        byte subCmd = GetGenericCmdIndexfromList("Getnumbits", AppState.GenericCommands.List);
+        byte subCmd = Softata.SoftataLib.GetGenericCmdIndexfromList("Getnumbits", AppState.GenericCommands.List);
         string numbitsStr = AppState.softataLib.SendTargetCommand((byte)AppState.TargetDeviceType.Index, 1, subCmd, (byte)0xff, AppState.linkedListNo);
         if(int.TryParse(numbitsStr, out int numbits))
         {
@@ -798,24 +901,61 @@ else
     }
 
     #region CMD SELECTION
-    //////////////////////// C M D   S E L E C T I O N //////////////////////////////////////////////
+    //////////////////////// M I S C   C M D   S E L E C T I O N ////////////////////////////////////
+    ///
+    private int lastMiscMenuSelectedIndex { get; set; } = -1;
 
-    private int lastMenuSelectedIndex { get; set; } = -1;
-    private void HandleCommandSelection()
+    private void HandleDisplayMiscCmdSelectionChange(ChangeEventArgs e)
     {
-        HandleCommand(lastMenuSelectedIndex);
+        if (e.Value != null)
+        {
+            string? val = e.Value.ToString();
+            if (!string.IsNullOrEmpty(val))
+                if (int.TryParse(val, out int selectedIndex))
+                {
+                    if (selectedIndex > -1)
+                    {
+                        HandleDisplayMiscCmd(selectedIndex);
+                    }
+                }
+        }
     }
 
-    private void HandleCommand(int selectedIndex)
+    private void HandleDisplayMiscCmd()
+    {
+        int selectedIndex = deviceinputModel.lastMiscMenuSelectedIndex;
+        if (selectedIndex > -1)
+        {
+            HandleDisplayMiscCmd(selectedIndex);
+        }
+    }
+
+    private void HandleDisplayMiscCmd(int selectedIndex)
     {
         if (selectedIndex > -1)
         {
-            AppState.TargetCommand = new Selection(selectedIndex, AppState.UseGenericCommands[(int)selectedIndex]);
+            lastMiscMenuSelectedIndex = selectedIndex;
+            deviceinputModel.lastMiscMenuSelectedIndex = lastMiscMenuSelectedIndex;           
+            AppState.TargetCommand = new Selection(lastMenuSelectedIndex, AppState.GenericCommands.List[(int)lastMenuSelectedIndex]);
             StateHasChanged();
-            AppState.CommandsPortal.RunGenericMethod(AppState.TargetCommand);
-            lastMenuSelectedIndex = selectedIndex;
+            string response = AppState.CommandsPortal.RunGenericMethod(AppState.TargetCommand);
+            if(int.TryParse(response, out int result))
+            {
+                deviceinputModel.commandResultInt = result;
+            }
+            else if (double.TryParse(response, out double dbl))
+            {
+                deviceinputModel.commandResultDouble = dbl;
+            }
+
+            deviceinputModel.commandResultString = response;
+
         }
     }
+
+    //////////////////////// G E N E R I C   C M D   S E L E C T I O N //////////////////////////////
+
+    private int lastMenuSelectedIndex { get; set; } = -1;
 
     private void HandleCommandSelectionChange(ChangeEventArgs e)
     {
@@ -826,12 +966,36 @@ else
             {
                 if (int.TryParse(val, out int selectedIndex))
                 {
-                    HandleCommand(selectedIndex);
+                    if (selectedIndex > -1)
+                    {
+                        HandleCommand(selectedIndex);
+                    }
                 }
             }
         }
     }
-    //////////////////////// C M D   S E L E C T I O N /////////////////////////////////////////////////
+
+    private void HandleCommandSelection()
+    {
+        int selectedIndex = lastMenuSelectedIndex;
+        if (selectedIndex > -1)
+        {
+            HandleCommand(selectedIndex);
+        }
+    }
+
+    private void HandleCommand(int selectedIndex)
+    {
+        if (selectedIndex > -1)
+        {
+            AppState.TargetCommand = new Selection(selectedIndex, AppState.UseGenericCommands[(int)selectedIndex]);
+            StateHasChanged();
+            string response = AppState.CommandsPortal.RunGenericMethod(AppState.TargetCommand);
+            lastMenuSelectedIndex = selectedIndex;
+        }
+    }
+
+    //////////////////////// E N D   C M D   S E L E C T I O N /////////////////////////////////////////////////
     #endregion
 
     public void Disconnect()
@@ -954,7 +1118,7 @@ else
                 }
             }
         }
-        subCmd = GetGenericCmdIndexfromList("getDevices", AppState.GenericCommands.List);
+        subCmd = Softata.SoftataLib.GetGenericCmdIndexfromList("getDevices", AppState.GenericCommands.List);
         AppState.Devices.CSV = AppState.softataLib.SendTargetCommand((byte)AppState.TargetDeviceType.Index, 0, subCmd);
         Thread.Sleep(100);
         StateHasChanged();
@@ -962,7 +1126,7 @@ else
 
     private void GetPinouts()
     {
-        byte subCmd = GetGenericCmdIndexfromList("getpins", AppState.GenericCommands.List);
+        byte subCmd = Softata.SoftataLib.GetGenericCmdIndexfromList("getpins", AppState.GenericCommands.List);
         AppState.Pinouts.CSV = AppState.softataLib.SendTargetCommand((byte)AppState.TargetDeviceType.Index, 1, subCmd, (byte)AppState.TargetDevice.Index);
 
         Thread.Sleep(100);
@@ -978,7 +1142,7 @@ else
                 AppState.TargetDevicePinout.Item = info[0].Trim();
             }
             PinoutStr = $"Using Default Setup: {AppState.TargetDevicePinout.Item}";
-            byte subCmd = GetGenericCmdIndexfromList("setupdefault", AppState.GenericCommands.List);
+            byte subCmd = Softata.SoftataLib.GetGenericCmdIndexfromList("setupdefault", AppState.GenericCommands.List);
             string result = AppState.softataLib.SendTargetCommand((byte)AppState.TargetDeviceType.Index, 1, subCmd, (byte)AppState.TargetDevice.Index);
             AppState.linkedListNo = 0xff;
             if (byte.TryParse(result, out byte lln))
@@ -1006,7 +1170,7 @@ else
         AppState.Num_Bits.Index = 4;*/
             //Layout.Info($"Using NonDefault Setup: {TargetPin.Item} Num Bits:{num_bits}");
 
-            byte subCmd = GetGenericCmdIndexfromList("setupgeneral", AppState.GenericCommands.List);
+            byte subCmd = Softata.SoftataLib.GetGenericCmdIndexfromList("setupgeneral", AppState.GenericCommands.List);
             byte[] data = new byte[] { (byte)AppState.Num_Bits.Index };
             //(byte)AppState.TargetDeviceType.Index
             //string result = AppState.softataLib.SendTargetCommand((byte)AppState.TargetCommand.Index, (byte)AppState.TargetDevicePin.Index, subCmd, (byte)AppState.TargetDevice.Index, 0xff, data);
@@ -1025,14 +1189,14 @@ else
 
         if (AppState.TargetDeviceType.Item.ToLower() == "actuator")
         {
-            byte subCmd = GetGenericCmdIndexfromList("GetActuatorCapab", AppState.GenericCommands.List);
+            byte subCmd = Softata.SoftataLib.GetGenericCmdIndexfromList("GetActuatorCapab", AppState.GenericCommands.List);
             string response = AppState.softataLib.SendTargetCommand((byte)AppState.TargetDeviceType.Index, (byte)AppState.TargetDevicePin.Index, (byte)subCmd, (byte)0xff, AppState.linkedListNo);
 
             if (int.TryParse(response, out int capabilities))
             {
                 AppState.Capabilities = capabilities;
             }
-            subCmd = GetGenericCmdIndexfromList("Getnumbits", AppState.GenericCommands.List);
+            subCmd = Softata.SoftataLib.GetGenericCmdIndexfromList("Getnumbits", AppState.GenericCommands.List);
             response = AppState.softataLib.SendTargetCommand((byte)AppState.TargetDeviceType.Index, (byte)AppState.TargetDevicePin.Index, (byte)subCmd, (byte)0xff, AppState.linkedListNo);
             System.Diagnostics.Debug.WriteLine($"1. Response: {response}");
             if (int.TryParse(response, out int _numBits))
@@ -1040,7 +1204,7 @@ else
                 AppState.Max_Num_Bits = _numBits;  
                 AppState.selectedDeviceLoopVars.actuatorRange = new Tuple<int, int>(0, (int)Math.Pow(2, _numBits) - 1);
             }
-            subCmd = GetGenericCmdIndexfromList("GetInstanceValueRange", AppState.GenericCommands.List);
+            subCmd = Softata.SoftataLib.GetGenericCmdIndexfromList("GetInstanceValueRange", AppState.GenericCommands.List);
             response = AppState.softataLib.SendTargetCommand((byte)AppState.TargetDeviceType.Index, (byte)AppState.TargetDevicePin.Index, (byte)subCmd, (byte)0xff, AppState.linkedListNo);
             if (int.TryParse(response, out int _maxRange))
             {
@@ -1061,11 +1225,16 @@ else
                     }
                 }
             }
+        }
+        else if(AppState.TargetDeviceType.Item.ToLower() == "display")
+        {
+            AppState.DisplayMiscCmds = AppState.softataLib.GetDisplayMiscCmds(AppState.GenericCommands.List, AppState.TargetDevice);
+            // Get Display Misc commands
 
         }
         else if (AppState.TargetDeviceType.Item.ToLower() == "deviceinput")
         {
-            byte subCmd = GetGenericCmdIndexfromList("GetInputCapab", AppState.GenericCommands.List);
+            byte subCmd = Softata.SoftataLib.GetGenericCmdIndexfromList("GetInputCapab", AppState.GenericCommands.List);
             string response = AppState.softataLib.SendTargetCommand((byte)AppState.TargetDeviceType.Index, (byte)AppState.TargetDevicePin.Index, (byte)subCmd, (byte)0xff, AppState.linkedListNo);
 
             if (int.TryParse(response, out int capabilities))
@@ -1109,52 +1278,7 @@ else
         return subCmd;
     }
 
-    private static byte GetGenericCmdIndexfromList(string cmd, List<string> GenericCmds)
-    {
-        byte subCmd = 0;
-        for (int i = 0; i < GenericCmds.Count(); i++)
-        {
-            if (GenericCmds[i].ToLower().Contains(cmd.ToLower()))
-            {
-                subCmd = (byte)i;
-                break;
-            }
-        }
-        return subCmd;
-    }
 
-    /// <summary>
-    /// Get dictionaly list of similar commands so can be used in a menu
-    /// </summary>
-    /// <param name="cmd"></param>
-    /// <param name="GenericCmds"></param>
-    /// <returns></returns>
-    private static Dictionary<int, string> GetListGenericCmds(string cmd, string[] GenericCmds)
-    {
-        Dictionary<int, string> cmds = new Dictionary<int, string>();
-        for (int i = 0; i < GenericCmds.Length; i++)
-        {
-            if (GenericCmds[i].ToLower().Contains(cmd.ToLower()))
-            {
-                cmds.Add(i, GenericCmds[i]);
-            }
-        }
-        return cmds;
-    }
-
-    private static byte GetuseGenericCmdIndex(string cmd, Dictionary<int, string> useGenericCmds)
-    {
-        byte subCmd = 0;
-        foreach (var genCmd in useGenericCmds)
-        {
-            if (genCmd.Value.ToLower().Contains(cmd.ToLower()))
-            {
-                subCmd = (byte)genCmd.Key;
-                break;
-            }
-        }
-        return subCmd;
-    }
 
     public class LLLayout: Softata.ActionCommands.ILLayout
     {
@@ -1163,12 +1287,12 @@ else
         static public Func <int, int, bool, int> GetNum2 { get; set; }
         static public Func <bool> GetBool { get; set; }
         static public Action<string,string> ShowInfo { get; set; }
-        static public  Func<int , string ,bool, bool, Selection> SelectFromCSV  {get; set; }
+        public  Func<int , string ,bool, bool, Selection> SelectFromCSV  {get; set; }
 
 
         public LLLayout()
         {
-            //this.Info("LLLayout");
+            SelectFromCSV = deviceinputModel.SelectFromCSV;
         }
 
         void ILLayout.Info(string msg, string msg2)
@@ -1243,12 +1367,50 @@ else
 
         Selection ILLayout.PromptWithCSVList(int defaultInt, string csvList, bool quit, bool back)
         {
-            if(SelectFromCSV != null)
+            if (SelectFromCSV != null)
                 return SelectFromCSV(defaultInt, csvList, quit, back);
             else
-                throw new NotImplementedException();
+            {
+                string[] removeColon = csvList.Split(":");
+                string[] items = removeColon[1].Split(",");
+                int cmd = deviceinputModel.lastMiscMenuSelectedIndex;
+                return new Selection(cmd, items[cmd]);
+            }
         }
 
+        public string ReadLine()
+        {
+            return deviceinputModel.stringValue;
+        }
+
+        public List<int> Prompt4NumswithMaxes(int numValues, string csvListMaxes, Fmt.Col promptcol, Fmt.Col infocol)
+        {
+            if (numValues == 2)
+                return new List<int> { 1, 1 };
+            else return new List<int> { 10 };
+        }
+
+        public List<int> Prompt4Nums(int numValues, Fmt.Col promptcol, Fmt.Col infocol)
+        {
+            if(numValues == 2)
+                return new List<int> { 1, 1 };
+            else return new List<int> { 10};
+        }
+
+        public string Prompt4String(string prompt, Fmt.Col promptcol, Fmt.Col infocol)
+        {
+            throw new NotImplementedException();
+        }
+
+        List<int> ILLayout.Prompt4NumswithMaxesandText(int numValues, string csvListMaxes, out string textOnEndStr, bool textOnEnd, Fmt.Col promptcol, Fmt.Col infocol)
+        {
+            throw new NotImplementedException();
+        }
+
+        List<int> ILLayout.Prompt4NumsandText(int numValues, out string textOnEndStr, bool textOnEnd, Fmt.Col promptcol, Fmt.Col infocol)
+        {
+            throw new NotImplementedException();
+        }
     }
 
 

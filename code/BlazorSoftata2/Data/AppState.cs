@@ -155,9 +155,11 @@ namespace BlazorSoftata2
             set
             {
                 _loaded = value;
-                NotifyStateChanged();
+                NotifyStateChanged();          
             }
         }
+
+     
 
 
         public int Port { get => port; set { port = value; NotifyStateChanged(); } }
@@ -221,6 +223,8 @@ namespace BlazorSoftata2
         public CSVList Devices = new CSVList();
         public CSVList GenericCommands = new CSVList();
         public CSVList Pinouts = new CSVList();
+
+        public List<string>? DisplayMiscCmds { get; set; } = null;
 
 
 

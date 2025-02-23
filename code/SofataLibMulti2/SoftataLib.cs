@@ -16,6 +16,9 @@ using System.Security.Cryptography;
 using System.Runtime.Serialization;
 using System.Numerics;
 using System.Reflection;
+using ConsoleTextFormat;
+using static Softata.SoftataLib;
+using Softata.Enums;
 
 
 namespace Softata
@@ -31,6 +34,19 @@ namespace Softata
 
         public  int port { get; set; } = 4242;
         public  string ipAddresStr { get; set; } = "192.168.0.12";
+
+        public List<string> GetDisplayMiscCmds(List<string> GenericCommands,  Selection TargetDevice)
+        {
+            byte TargetDeviceTypeIndex = (byte)Softata.Enums.G_DEVICETYPES.Ddisplay;
+            List<string> MiscCmds = new List<string>();
+            byte subCmd = GetGenericCmdIndexfromList("miscGetList", GenericCommands);
+            string _miscCmds = SendTargetCommand(TargetDeviceTypeIndex, 1, subCmd, (byte)TargetDevice.Index);
+            if (!string.IsNullOrEmpty(_miscCmds))
+            {
+                MiscCmds = _miscCmds.Split(":")[^1].Split(",").ToList();
+            }
+            return MiscCmds;
+        }
 
         private  Socket? _client;
 
@@ -582,6 +598,53 @@ namespace Softata
             string response = SendMessageB     ( cmdDeviceType, pin,(byte)cmd, "OK:", other, data);
             System.Diagnostics.Debug.WriteLine($"2. Response: {response}");
             return response;
+        }
+
+        /// <summary>
+        /// Get dictionaly list of similar commands so can be used in a menu
+        /// </summary>
+        /// <param name="cmd"></param>
+        /// <param name="GenericCmds"></param>
+        /// <returns></returns>
+        private static Dictionary<int, string> GetListGenericCmds(string cmd, string[] GenericCmds)
+        {
+            Dictionary<int, string> cmds = new Dictionary<int, string>();
+            for (int i = 0; i < GenericCmds.Length; i++)
+            {
+                if (GenericCmds[i].ToLower().Contains(cmd.ToLower()))
+                {
+                    cmds.Add(i, GenericCmds[i]);
+                }
+            }
+            return cmds;
+        }
+
+        private static byte GetuseGenericCmdIndex(string cmd, Dictionary<int, string> useGenericCmds)
+        {
+            byte subCmd = 0;
+            foreach (var genCmd in useGenericCmds)
+            {
+                if (genCmd.Value.ToLower().Contains(cmd.ToLower()))
+                {
+                    subCmd = (byte)genCmd.Key;
+                    break;
+                }
+            }
+            return subCmd;
+        }
+
+        public static byte GetGenericCmdIndexfromList(string cmd, List<string> GenericCmds)
+        {
+            byte subCmd = 0;
+            for (int i = 0; i < GenericCmds.Count(); i++)
+            {
+                if (GenericCmds[i].ToLower().Contains(cmd.ToLower()))
+                {
+                    subCmd = (byte)i;
+                    break;
+                }
+            }
+            return subCmd;
         }
 
     }
