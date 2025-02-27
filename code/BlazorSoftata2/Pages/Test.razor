@@ -1,0 +1,45 @@
+﻿@page "/test"
+@using BlazorSoftata2.Components
+
+<h3>Toggle Div Visibility</h3>
+
+<button @onclick="ToggleDivVisibility">Toggle Div</button>
+
+@if (isDivVisible)
+{
+    <div>
+        This is a toggled div!
+    </div>
+}
+
+@code {
+    private bool isDivVisible = false;
+
+    private void ToggleDivVisibility()
+    {
+        isDivVisible = !isDivVisible;
+    }
+}
+<hr />
+
+<button class="btn btn-primary" @onclick="ShowModal">Open Modal</button>
+
+<MyModal IsVisible="isModalVisible" Title="My Modal" OnClose="HandleModalClose">
+    <p>This is the content of the modal.</p>
+</MyModal>
+
+@code {
+    private bool isModalVisible;
+
+    private void ShowModal()
+    {
+        isModalVisible = true;
+        StateHasChanged();
+    }
+
+    private void HandleModalClose()
+    {
+        isModalVisible = false;
+        StateHasChanged();
+    }
+}

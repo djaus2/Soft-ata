@@ -48,6 +48,19 @@ namespace Softata
             return MiscCmds;
         }
 
+        public List<string> GetSensorPropertiess(List<string> GenericCommands, Selection TargetDevice)
+        {
+            byte TargetDeviceTypeIndex = (byte)Softata.Enums.G_DEVICETYPES.Dsensor;
+            List<string> SensorProps = new List<string>();
+            byte subCmd = GetGenericCmdIndexfromList("getProperties", GenericCommands);
+            string _sensorproperties = SendTargetCommand(TargetDeviceTypeIndex, 1, subCmd, (byte)TargetDevice.Index);
+            if (!string.IsNullOrEmpty(_sensorproperties))
+            {
+                SensorProps = _sensorproperties.Split(":")[^1].Split(",").ToList();
+            }
+            return SensorProps;
+        }
+
         private  Socket? _client;
 
         private  Socket? client

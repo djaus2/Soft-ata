@@ -11,11 +11,12 @@ namespace SoftataConsole2
 {
     public class LLayout : ILLayout
     {
+        public LLayout() { }
         public string ReadLine()
         {
             return Console.ReadLine();
         }
-        public void Info(string msg, string msg2 = "")
+        public void Info(string msg, string msg2="")
         {
             Layout.Info(msg, msg2);
         }

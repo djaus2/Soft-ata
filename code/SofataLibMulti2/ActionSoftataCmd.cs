@@ -90,6 +90,9 @@ namespace   Softata.ActionCommands
         public List<string>? sensorProperties { get; set; } 
         public int Num_Bits { get; set; }
 
+        public bool isBlazor { get; set; } = false;
+
+
         //////////////////////////////////////////////////////////////////////////////////////////
         public string RunGenericMethod(Selection TargetCommand)
         {
@@ -441,11 +444,11 @@ namespace   Softata.ActionCommands
                         }
                         if ((command.ToLower().Contains("readall")) || (command.ToLower().Contains("gettelemetry")))
                         {
-                            Layout.Info("Getting: ", string.Join(",", sensorProperties));
+                            LLayout.Info("Getting: ", string.Join(",", sensorProperties));
                         }
-                        else if (command.ToLower().Contains("read"))
+                        else if (command.ToLower().Contains("readone"))
                         {
-                            var seln = Layout.PromptWithCSVList(0, string.Join(",", sensorProperties), true, true);
+                            var seln = LLayout.PromptWithCSVList(0, string.Join(",", sensorProperties), true, true);
                             pinn = (byte)seln.Index;
                             if (pinn < 0)
                             {
@@ -455,7 +458,8 @@ namespace   Softata.ActionCommands
                                     back = true;
                                 return "";
                             }
-                            Layout.Info("Getting: ", sensorProperties[pinn]);
+                            if(pinn < (sensorProperties?.Count() ?? 0))
+                                LLayout.Info("Getting: ", sensorProperties[pinn]);
                         }
                     
                 }
@@ -470,7 +474,10 @@ namespace   Softata.ActionCommands
                     {
                         LLayout.Info("Enter a CSV string:Line 0 or 1,line position  0 to 39");
                         string maxes = "1,39";
+                        message = "";
                         List<int> vals = LLayout.Prompt4NumswithMaxesandText(2, maxes, out message, true);
+                        if (message == "_fail_")
+                            return "_fail_";
                         line = vals[0]; //1 or 2
                         pos = vals[1]; //1 ... 40
                         byte[] bytes = new byte[] { (byte)pos, (byte)line };
@@ -486,7 +493,10 @@ namespace   Softata.ActionCommands
                         //case GroveDisplayCmds.setC +1ursor:
                         LLayout.Info("Enter a CSV string:Line 0 or 1,line position  0 to 39");
                         string maxes = "1,39";
+                        message = "";
                         List<int> vals = LLayout.Prompt4NumswithMaxesandText(2,maxes, out message, false);
+                        if (message == "_fail_")
+                            return "_fail_";
                         line = vals[0] ; //1 or 2
                         pos = vals[1]  ; //1 ... 40
                         byte[] bytes = new byte[] { (byte)pos, (byte)line };
@@ -562,8 +572,13 @@ namespace   Softata.ActionCommands
                                         TargetMiscCmd.Item = Regex.Replace(TargetMiscCmd.Item, "setpixelcolor", "", RegexOptions.IgnoreCase);
                                         if (TargetMiscCmd.Item.ToLower() == "one")
                                         {
-                                            selectedDeviceLoopVars.rgb = ConColors.SelectRGB();
-                                            Console.WriteLine($"({selectedDeviceLoopVars.rgb.Item1},{selectedDeviceLoopVars.rgb.Item2},{selectedDeviceLoopVars.rgb.Item3})");
+                                            message = "";
+                                            List<int> colorsList = LLayout.Prompt4NumswithMaxesandText(3,"255,255,255", out message, false);
+                                            if (isBlazor)
+                                                selectedDeviceLoopVars.rgb = new Tuple<byte, byte, byte>((byte)colorsList[0], (byte)colorsList[1], (byte)colorsList[2]);
+                                            else
+                                                selectedDeviceLoopVars.rgb = ConColors.SelectRGB();
+                                            LLayout.Info($"RGB:", $"({selectedDeviceLoopVars.rgb.Item1},{selectedDeviceLoopVars.rgb.Item2},{selectedDeviceLoopVars.rgb.Item3})");
 
                                             selectedDeviceLoopVars.misc_led = (byte)LLayout.Prompt4Num(selectedDeviceLoopVars.misc_led + 1, 8, false);
                                             paramz = new object[] { linkedListNo, selectedDeviceLoopVars.rgb.Item1, selectedDeviceLoopVars.rgb.Item2, selectedDeviceLoopVars.rgb.Item3, selectedDeviceLoopVars.misc_led };
@@ -579,9 +594,11 @@ namespace   Softata.ActionCommands
 
                                         Tuple<byte, byte, byte> rgbTemp = new Tuple<byte, byte, byte>(0, 0, 0);
 
-                                        if (selectedDeviceLoopVars.misc_brightness != 0)
+                                        if (selectedDeviceLoopVars.misc_brightness > 1)
                                         {
-                                            byte levl = (byte)(255 >> (selectedDeviceLoopVars.misc_brightness - 1));
+                                            byte levl = (byte)(255 >> (selectedDeviceLoopVars.misc_brightness - 2));
+                                            if (levl < 1)
+                                                levl = 1;
                                             rgbTemp = new Tuple<byte, byte, byte>((byte)(selectedDeviceLoopVars.rgb.Item1 / levl), (byte)(selectedDeviceLoopVars.rgb.Item2 / levl), (byte)(selectedDeviceLoopVars.rgb.Item3 / levl));
                                         }
                                         softataLibDisplayNeopixel.Misc_SetAll(linkedListNo, rgbTemp.Item1, rgbTemp.Item2, rgbTemp.Item3);
