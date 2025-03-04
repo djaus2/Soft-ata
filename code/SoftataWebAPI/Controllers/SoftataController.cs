@@ -5,12 +5,15 @@ using Softata.Enums;
 using System;
 using System.Net;
 using System.Net.NetworkInformation;
-using static Softata.SoftataLib;
+//using static Softata.SoftataLib;
 using Microsoft.AspNetCore.Http;
 using System.Text.Json;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Xml.Linq;
+using static Softata.SoftataLib;
+using static Softata.SoftataLib.Analog;
+using System.Linq.Expressions;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -21,14 +24,97 @@ namespace SoftataWebAPI.Controllers
     {
         public static void Set<T>(this ISession session, string key, T value)
         {
+            System.Diagnostics.Debug.WriteLine("======SETTING===========");
+            foreach (var k in session.Keys)
+            {
+ 
+                System.Diagnostics.Debug.WriteLine(key);
+            }
             session.SetString(key, JsonSerializer.Serialize(value));
+            System.Diagnostics.Debug.WriteLine("========SET=============");
+            foreach (var k in session.Keys)
+            {
+                System.Diagnostics.Debug.WriteLine(key);
+            }
+            System.Diagnostics.Debug.WriteLine("========END SET=============");
         }
 
         public static T? Get<T>(this ISession session, string key)
         {
+            System.Diagnostics.Debug.WriteLine("========GET=========");
+            foreach (var k in session.Keys)
+            {
+                System.Diagnostics.Debug.WriteLine(key);
+            }
+            System.Diagnostics.Debug.WriteLine("========GOT=========");
             var value = session.GetString(key);
             return value == null ? default : JsonSerializer.Deserialize<T>(value);
         }
+        
+    }
+
+    public class Selection
+    {
+        public int Index { get; set; }
+
+        public int Order { get; set; }
+
+        public string Item { get; set; }
+
+        public Selection()
+        {
+            Index = 0;
+            Item = "";
+            Order = 0;
+        }
+
+        public Selection(int index)
+        {
+            Index = index;
+            Item = "";
+            Order = index;
+        }
+
+        public Selection(int index, string item)
+        {
+            Index = index;
+            Item = item;
+            Order = index;
+        }
+
+        public Selection(int index, string item, int order)
+        {
+            Index = index;
+            Item = item;
+            Order = order;
+        }
+
+        public Selection(int index, List<string> items)
+        {
+            Index = index;
+            Item = items[index];
+            Order = index;
+        }
+
+        public Selection(int index, List<string> items, int order)
+        {
+            Index = index;
+            Item = items[index];
+            Order = order;
+        }
+    }
+
+
+
+    public static class Info
+    {
+        public static Softata.SoftataLib SoftataLib { get; set; } = new Softata.SoftataLib();
+
+        public static Dictionary<int, string> TargetDeviceTypes { get; set; }
+
+        public static Dictionary<int, Dictionary<string, int>> GenericCmds { get; set; }
+
+        public static Dictionary<int,Dictionary<int,string>> TargetDevices { get; set; }
     }
 
     /// <summary>
@@ -39,10 +125,110 @@ namespace SoftataWebAPI.Controllers
     public class SoftataController : ControllerBase
     {
         const int port = 4242;
-        const string ipaddressStr = "192.168.0.12";
+        const string ipaddressStr = "192.168.0.5";
 
+        private SoftataLib GetSoftataLib()
+        {
+            return Info.SoftataLib;
+            SoftataLib? SoftataLib =
+                SessionExtensions.Get<SoftataLib>(HttpContext.Session, "SoftataLib");
+            if (SoftataLib == null)
+            {
+                SoftataLib = new SoftataLib();
+                SessionExtensions.Set(HttpContext.Session, "SoftataLib", SoftataLib);
+            }
+            return SoftataLib;
+        }
 
+        private void GetDeviceTypes()
+        {
+            Info.TargetDeviceTypes = new Dictionary<int, string>();
+            string deviceTypesCSV = Info.SoftataLib.SendMessageCmd("Devices");
+            string[] parts = deviceTypesCSV.Split(":");
+            List<string> devicesTypes = parts[1].Split(",").ToList();
+            var deviceTypelist =
+                    devicesTypes.Select((value, index) => new { value, index })
+                    .ToDictionary(x => x.index, x => x.value);
+            foreach (var item in deviceTypelist)
+            {
+                Info.TargetDeviceTypes.Add(item.Key, item.Value);
+            }
+        }
 
+        private void GetDeviceTypesGenericCommands()
+        {
+            Info.GenericCmds = new Dictionary<int, Dictionary<string, int>>();
+            foreach (var dt in Info.TargetDeviceTypes)
+            {
+                try
+                {
+                    byte subcmd = 0;//getGenericCommands
+                    string cmdsCSV = Info.SoftataLib.SendTargetCommand((byte)(dt.Key), 0, subcmd);
+                    if (cmdsCSV.Contains(":"))
+                    {
+                        string[] parts = cmdsCSV.Split(":");
+                        List<string> cmdsList = parts[1].Split(",").ToList();
+                        var cmdlist =
+                                cmdsList.Select((value, index) => new { value, index })
+                                .ToDictionary(x => x.value, x => x.index);
+                        Info.GenericCmds.Add(dt.Key, cmdlist);
+                        Thread.Sleep(500);
+                    }
+                    else
+                        continue;
+                }
+                catch (Exception ex)
+                {
+                    continue;
+                }
+            }
+        }
+
+        private void GetDeviceTypesDevices()
+        {
+            Info.TargetDevices = new Dictionary<int, Dictionary<int, string>>();
+            Thread.Sleep(200);
+            foreach (var dt in Info.TargetDeviceTypes)
+            {
+                try
+                {
+                    byte subCmd = 1;//getDevices
+                    string DevicesCSV = Info.SoftataLib.SendTargetCommand((byte)(dt.Key), 0, subCmd);
+                    if (DevicesCSV.Contains(":"))
+                    {
+                        string[] parts2 = DevicesCSV.Split(":");
+                        List<string> devices = parts2[1].Split(",").ToList();
+                        var devicelist =
+                                devices.Select((value, index) => new { value, index })
+                                .ToDictionary(x => x.index, x => x.value);
+                        Info.TargetDevices.Add(dt.Key, devicelist);
+                    }
+                    else
+                        continue;
+                }
+                catch (Exception ex)
+                {
+                    continue;
+                }
+            }
+        }
+
+        [Route("AddDevice")]
+        [HttpPost]
+        private IActionResult AddDevice(int cmdTarget, int deviceIndex)
+        {
+            var device = Info.TargetDevices[cmdTarget][deviceIndex];
+            var dictionary = Info.GenericCmds[cmdTarget];
+            var values = dictionary
+                .Where(kvp => kvp.Key.ToLower().Contains("setupdefault"))
+                .Select(kvp => kvp.Value);
+            byte subCmd = (byte)values.FirstOrDefault();
+            string response = Info.SoftataLib.SendTargetCommand((byte)cmdTarget, 1, subCmd, (byte)deviceIndex);
+            return Ok(response);
+            //subCmd = GetGenericCmdIndex("setupdefault", GenericCommands);
+            //result = softatalib.SendTargetCommand(cmdTarget, 1, subCmd, (byte)TargetDevice.Index);
+
+        }
 
 
 
@@ -57,16 +243,33 @@ namespace SoftataWebAPI.Controllers
         [HttpPost]
         public IActionResult Start(string ipAddress = "0.tcp.ngrok.io", int _port = port)
         {
-            bool result = _Connect(ipAddress, _port);
+            //SoftataLib SoftataLib = GetSoftataLib();
+            bool result = _Connect(ipaddressStr, _port);
             if (result)
             {
-                string beginValue = SoftataLib.SendMessageCmd("Begin");
+
+                string beginValue = Info.SoftataLib.SendMessageCmd("Begin");
                 if (beginValue == "Ready")
                 {
                     string OKresult = $"Connected to {ipAddress}:{_port} and Ready";
-                    string value = SoftataLib.SendMessageCmd("Version");
+                    string value = Info.SoftataLib.SendMessageCmd("Version");
                     OKresult += $"\nSoftata Version:{value}";
-                    value = SoftataLib.SendMessageCmd("Devices");
+                    ///////////////////////////////////
+                    string cmdsOffset = Info.SoftataLib.SendMessageCmd("Soffset");
+                    if (int.TryParse(cmdsOffset, out int _offset))
+                    {
+                        Info.SoftataLib.Offset = _offset; //Should be 0xf0
+                        Console.WriteLine($"CommandsOffset: {_offset}");
+                    }
+
+                    GetDeviceTypes();
+
+                    GetDeviceTypesGenericCommands();
+
+                    GetDeviceTypesDevices();
+
+
+                    ///////////////////////////////
                     OKresult += $"\n{value}";
                     var connection = new Tuple<string, int>(ipAddress, _port);
                     HttpContext.Session.Set<Tuple<string, int>>("ConnectionDetails", connection);
@@ -74,7 +277,7 @@ namespace SoftataWebAPI.Controllers
                 }
                 else
                 {
-                    SoftataLib.Disconnect();
+                    Info.SoftataLib.Disconnect();
                     return BadRequest($"Connected to {ipAddress}:{_port} but Begin not ready. Disconnecting");
                 }
             }
@@ -111,7 +314,7 @@ namespace SoftataWebAPI.Controllers
         [HttpPost]
         public IActionResult StartSession()
         {
-            string ipAddress = "192.168.0.12";
+            string ipAddress = "192.168.0.5";
             int port = 4242;
             if (!HttpContext.Session.Keys.Contains("ConnectionDetails"))
             {
@@ -140,9 +343,9 @@ namespace SoftataWebAPI.Controllers
 
         private bool _Connect(string ipAddress, int _port)
         {
-            //if (ValidateIPv4(ipAddress))
-            //{
-            bool result = SoftataLib.Connect(ipAddress, _port);
+            //SoftataLib SoftataLib = GetSoftataLib();
+            bool result = Info.SoftataLib.Connect(ipAddress, _port);
+            //SessionExtensions.Set(HttpContext.Session, "SoftataLib", SoftataLib);
             if (result)
             {
                 return true;
@@ -161,8 +364,9 @@ namespace SoftataWebAPI.Controllers
         // POST api/<SoftataController>
         [Route("Connect")]
         [HttpPost]
-        public IActionResult Connect(string ipAddress = "192.168.0.12", int _port = port)
+        public IActionResult Connect(string ipAddress = "192.168.0.5", int _port = port)
         {
+            //SoftataLib SoftataLib = GetSoftataLib();
             if (_Connect(ipAddress, _port))
             {
                 return Ok($"Connected to {ipAddress}:{_port}");
@@ -221,11 +425,12 @@ namespace SoftataWebAPI.Controllers
         [HttpGet("{cmd}")]
         public string Get(string cmd)
         {
+            //SoftataLib SoftataLib = GetSoftataLib();
             // This is a "fix". The browser is looking for a favicon.ico file
             // There isn't one
             if (!Commands.Contains(cmd))
                 return "";
-            string value = SoftataLib.SendMessageCmd(cmd);
+            string value = Info.SoftataLib.SendMessageCmd(cmd);
             return value;
         }
 
@@ -269,7 +474,8 @@ namespace SoftataWebAPI.Controllers
         [HttpPost]
         public IActionResult SetPicoShieldMode(RPiPicoMode mode = RPiPicoMode.groveShield)
         {
-            bool result = SoftataLib.SetPicoShieldMode(mode);
+            SoftataLib SoftataLib = GetSoftataLib();
+            bool result = Info.SoftataLib.SetPicoShieldMode(mode);
             return Ok($"Set Pico Mode {mode}");
         }
 
@@ -290,7 +496,8 @@ namespace SoftataWebAPI.Controllers
         [HttpPost]
         public IActionResult SendMessage(int msgOrDeviceType, byte pin = 0xff,int state = 0xff  , string expect="OK:", int other = 0xff, byte[]? Data = null)
         {
-            string result = SoftataLib.SendMessage((Commands)msgOrDeviceType, (byte)pin, (byte)state, expect, (byte)other ,Data);
+            //SoftataLib SoftataLib = GetSoftataLib();
+            string result = Info.SoftataLib.SendMessage((Commands)msgOrDeviceType, (byte)pin, (byte)state, expect, (byte)other ,Data);
             if(result != "Reset")
             {
                 return Ok(result);

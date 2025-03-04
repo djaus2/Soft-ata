@@ -22,8 +22,8 @@ namespace SoftataWebAPI.Controllers
         [Route("Get")]
         [HttpGet]
         public IEnumerable<string> Get()
-        { 
-            string[] Sensors = SoftataLib.Sensor.GetSensors();
+        {
+            string[] Sensors = new string[0]; // SoftataLib.Sensor.GetSensors();
             return Sensors;
         }
 
@@ -37,7 +37,7 @@ namespace SoftataWebAPI.Controllers
         [HttpGet]  //Get pins for display
         public string GetPins(int isensor=0)
         {
-            string value = SoftataLib.Sensor.GetPins((byte)isensor);
+            string value = "";// SoftataLib.Sensor.GetPins((byte)isensor);
             return value;
         }
 
@@ -52,7 +52,7 @@ namespace SoftataWebAPI.Controllers
         [HttpGet]  //Get properties for sensor
         public IEnumerable<string> GetProperties(int isensor=0)
         {
-            string[] properties = SoftataLib.Sensor.GetProperties((byte)isensor);
+            string[] properties = new string[0]; //SoftataLib.Sensor.GetProperties((byte)isensor);
             return properties;
         }
 
@@ -67,7 +67,7 @@ namespace SoftataWebAPI.Controllers
         [HttpPost] // Default setup for sensor
         public IActionResult SetupDefault(int isensor=0)
         {
-            int sensorListIndex = SoftataLib.Sensor.SetupDefault((byte)isensor);
+            int sensorListIndex = 0;// SoftataLib.Sensor.SetupDefault((byte)isensor);
             if (sensorListIndex == -1)
             {
                 return BadRequest("Sensor not found");
@@ -80,7 +80,7 @@ namespace SoftataWebAPI.Controllers
         [HttpPost] // Default setup for sensor
         public IActionResult SetupDefaultfromList(SensorDevice isensor = 0)
         {
-            int sensorListIndex = SoftataLib.Sensor.SetupDefault((byte)isensor);
+            int sensorListIndex = 0;// SoftataLib.Sensor.SetupDefault((byte)isensor);
             if (sensorListIndex == -1)
             {
                 return BadRequest("Sensor not found");
@@ -101,7 +101,7 @@ namespace SoftataWebAPI.Controllers
         [HttpPost] // Setup for sensor
         public IActionResult Setup(byte isensor, byte pin, List<byte> settings = null)
         {
-            int sensorListIndex = SoftataLib.Sensor.Setup((byte)isensor, (byte)pin, settings);
+            int sensorListIndex = 0;// SoftataLib.Sensor.Setup((byte)isensor, (byte)pin, settings);
             if (sensorListIndex == -1)
             {
                 return BadRequest("Sensor not found");
@@ -118,7 +118,7 @@ namespace SoftataWebAPI.Controllers
         [HttpGet]  //Get properties for sensor
         public IEnumerable<double> ReadAll(int sensorListIndex=0)
         {
-            double[]? values = SoftataLib.Sensor.ReadAll((byte)sensorListIndex);
+            double[]? values = new double[0];// //SoftataLib.Sensor.ReadAll((byte)sensorListIndex);
             if (values != null)
                 return (double[])values;
             else
@@ -135,14 +135,14 @@ namespace SoftataWebAPI.Controllers
         [HttpGet]  //Get properties for sensor
         public double Read(int sensorListIndex, int property)
         {
-            double? value = SoftataLib.Sensor.Read((byte)sensorListIndex, (byte)property);
+            double? value = 0.0;//SoftataLib.Sensor.Read((byte)sensorListIndex, (byte)property);
             if (value != null)
                 return (double)value;
             else
                 return (double)137137;
         }
 
-        /// <summary>
+        /// <summary> 
         /// Read all properties of sensor as a json string
         /// </summary>
         /// <param name="sensorListIndex">Sensor instance index</param>
@@ -151,7 +151,7 @@ namespace SoftataWebAPI.Controllers
         [HttpGet]
         public string ReadTelemetry(int sensorListIndex=0)
         {
-            string json = SoftataLib.Sensor.GetTelemetry((byte)sensorListIndex);
+            string json = "";// SoftataLib.Sensor.GetTelemetry((byte)sensorListIndex);
             return json;
         }
     }

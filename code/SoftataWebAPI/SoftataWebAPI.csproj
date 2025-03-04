@@ -9,6 +9,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Controllers\SoftataActuatorController.cs" />
+    <Compile Remove="Controllers\SoftataCTrainController.cs" />
+    <Compile Remove="Controllers\SoftataDisplayController.cs" />
+    <Compile Remove="Controllers\SoftataGPIOADController.cs" />
+    <Compile Remove="Controllers\SoftataGroveController.cs" />
+    <Compile Remove="Controllers\SoftataMiscController.cs" />
+    <Compile Remove="Controllers\SoftataSensorontroller.cs" />
+    <Compile Remove="Controllers\SoftataTelemetryController .cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Remove="wwwroot\sketch\IoT_Softata.ino.uf2" />
   </ItemGroup>
 
@@ -16,10 +27,25 @@
     <None Remove="SoftataWebAPI.xml" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="Controllers\SoftataActuatorController.cs" />
+    <None Include="Controllers\SoftataCTrainController.cs" />
+    <None Include="Controllers\SoftataDisplayController.cs" />
+    <None Include="Controllers\SoftataGPIOADController.cs" />
+    <None Include="Controllers\SoftataGroveController.cs" />
+    <None Include="Controllers\SoftataMiscController.cs" />
+    <None Include="Controllers\SoftataSensorontroller.cs" />
+    <None Include="Controllers\SoftataTelemetryController .cs" />
+  </ItemGroup>
+
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.17" />
-    <PackageReference Include="NetCore2Blockly" Version="8.2024.503.745" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.0-preview.1.25081.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="NetCore2Blockly" Version="9.2024.1206.813" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
 

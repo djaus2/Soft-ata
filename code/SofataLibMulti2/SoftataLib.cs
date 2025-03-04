@@ -25,8 +25,13 @@ namespace Softata
 {
     public partial class SoftataLib
     {
+        public SoftataLib()
+        {
+
+        }
+
         //Ref: https://datasheets.raspberrypi.com/pico/Pico-R3-A4-Pinout.pdf
-        public const int PinMax = 28;
+        public const int PinMax = 28; //
 
         public const byte nullData = 0xfe;
 
@@ -46,6 +51,20 @@ namespace Softata
                 MiscCmds = _miscCmds.Split(":")[^1].Split(",").ToList();
             }
             return MiscCmds;
+        }
+
+        public static byte GetGenericCmdIndex(string cmd, string[] GenericCmds)
+        {
+            byte subCmd = 0;
+            for (int i = 0; i < GenericCmds.Length; i++)
+            {
+                if (GenericCmds[i].ToLower().Contains(cmd.ToLower()))
+                {
+                    subCmd = (byte)i;
+                    break;
+                }
+            }
+            return subCmd;
         }
 
         public List<string> GetSensorPropertiess(List<string> GenericCommands, Selection TargetDevice)
@@ -225,11 +244,6 @@ namespace Softata
 
 
 
-         public SoftataLib()
-        {
-
-        }
-
         // Add commands here that use param = 0xff
         // For others 0xff is not sent
         private  List<Commands> WritingCmds = new List<Commands> { Commands.pwmWrite, Commands.serialWriteChar };
@@ -357,7 +371,7 @@ namespace Softata
             return "";
         }
 
-        /*
+        
         // State
         private object Aval2 { get; set; } = "";
         private Guid key { get; set; } = Guid.NewGuid();
@@ -409,7 +423,7 @@ namespace Softata
             }
             return false;
         }
-        */
+        
 
         public string SendMessage(Commands MsgType, byte pin = 0xff, byte state = 0xff, string expect = "OK", byte other = 0xff, byte[]? Data = null, bool debug = true)
         {

@@ -23,6 +23,42 @@ namespace SoftataWebAPI.Controllers
     [ApiController]
     public class SoftataState : ControllerBase
     {
+        [Route("State/AddDevice")]
+        [HttpPost]
+        private IActionResult AddDevice(int cmdTarget, int deviceIndex)
+        {
+            var device = Info.TargetDevices[cmdTarget][deviceIndex];
+            var dictionary = Info.GenericCmds[cmdTarget];
+            var values = dictionary
+                .Where(kvp => kvp.Key.ToLower().Contains("setupdefault"))
+                .Select(kvp => kvp.Value);
+            byte subCmd = (byte)values.FirstOrDefault();
+            string response = Info.SoftataLib.SendTargetCommand((byte)cmdTarget, 1, subCmd, (byte)deviceIndex);
+            return Ok(response);
+            //subCmd = GetGenericCmdIndex("setupdefault", GenericCommands);
+            //result = softatalib.SendTargetCommand(cmdTarget, 1, subCmd, (byte)TargetDevice.Index);
+
+        }
+
+        /// <summary>
+        /// Set state of SoftataLib.Aval
+        /// </summary>
+        /// <param name="cmdTarget">Device Type</param>
+        /// <param name="deviceIndex">Device</param>
+        /// <returns>Ok</returns>
+        [Route("State/Add")]
+        [HttpPost]
+        public IActionResult Add(int cmdTarget, int deviceIndex)
+        {
+            var device = Info.TargetDevices[cmdTarget][deviceIndex];
+            var dictionary = Info.GenericCmds[cmdTarget];
+            var values = dictionary
+                .Where(kvp => kvp.Key.ToLower().Contains("setupdefault"))
+                .Select(kvp => kvp.Value);
+            byte subCmd = (byte)values.FirstOrDefault();
+            string response = Info.SoftataLib.SendTargetCommand((byte)cmdTarget, 1, subCmd, (byte)deviceIndex);
+            return Ok(response);
+        }
 
         /// <summary>
         /// Get state of SoftataLib.Aval
@@ -33,7 +69,7 @@ namespace SoftataWebAPI.Controllers
         [HttpGet]
         public object GetAValue(string key)
         {
-            var lib = SoftataLib.GetSoftataLib(key);
+            var lib = Info.SoftataLib.GetSoftataLib(key);
             if (lib != null)
                 return lib.GetAvalue();
             else
@@ -50,7 +86,7 @@ namespace SoftataWebAPI.Controllers
         [HttpPost]
         public IActionResult SetAvalue(string key, object aval)
         {
-            var lib = SoftataLib.GetSoftataLib(key);
+            var lib = Info.SoftataLib.GetSoftataLib(key);
             if (lib != null)
             {
                 lib.SetAvalue(aval);
@@ -71,7 +107,7 @@ namespace SoftataWebAPI.Controllers
         [HttpPost]
         public IActionResult UpdateAvalue(string key, object aval)
         {
-            var lib = SoftataLib.GetSoftataLib(key);
+            var lib = Info.SoftataLib.GetSoftataLib(key);
             if (lib != null)
             {
                 lib.SetAvalue(aval);
@@ -89,12 +125,12 @@ namespace SoftataWebAPI.Controllers
         [HttpGet]
         public string NewLib()
         {
-            string guid = SoftataLib.NewSoftataLib();
+            string guid = Info.SoftataLib.NewSoftataLib();
             return guid;
         }
 
         /// <summary>
-        /// Deelete existing SoftataLib instance
+        /// Delete existing SoftataLib instance
         /// </summary>
         /// <param name="key"></param>
         /// <returns>Index of instance</returns>
@@ -102,10 +138,10 @@ namespace SoftataWebAPI.Controllers
         [HttpDelete]
         public IActionResult DeleteState(string key)
         {
-            var lib = SoftataLib.GetSoftataLib(key);
+            var lib = Info.SoftataLib.GetSoftataLib(key);
             if (lib != null)
             {
-                if (SoftataLib.Delete(key))
+                if (Info.SoftataLib.Delete(key))
                 {
                     return Ok();
                 }
@@ -125,7 +161,7 @@ namespace SoftataWebAPI.Controllers
         [HttpDelete]
         public void ClearAll()
         {
-            SoftataLib.ClearAll();
+            Info.SoftataLib.ClearAll();
         }
         //////////////////////////////////////////////////////////
         //Using Session for state example
