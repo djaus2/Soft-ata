@@ -5,7 +5,7 @@
 namespace SoftataInfo2DB.Migrations
 {
     /// <inheritdoc />
-    public partial class ICollectionsinDType3 : Migration
+    public partial class second : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

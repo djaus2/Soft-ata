@@ -139,7 +139,7 @@ namespace BlazorSoftata2
     {
         public event Action? OnChange;
 
-        private SoftataLib _softataLib;
+        private Softata.SoftataLib _softataLib;
 
         private bool _loaded = false;
 
@@ -166,7 +166,7 @@ namespace BlazorSoftata2
 
         public string IpaddressStr { get => ipaddressStr; set { ipaddressStr = value; NotifyStateChanged(); } }
 
-        public SoftataLib softataLib
+        public Softata.SoftataLib softataLib
         {
             get => _softataLib;
             set
@@ -179,7 +179,7 @@ namespace BlazorSoftata2
 
         public AppState()
         {
-            softataLib = new SoftataLib();
+            softataLib = new Softata.SoftataLib();
             DeviceTypes.OnChange += NotifyStateChanged;
             Devices.OnChange += NotifyStateChanged;
             GenericCommands.OnChange += NotifyStateChanged;

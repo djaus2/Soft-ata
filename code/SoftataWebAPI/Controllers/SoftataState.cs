@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing.Constraints;
 using Softata;
+using Softata.ActionCommands;
 using Softata.Enums;
 using System;
 using System.Net;
@@ -14,6 +15,9 @@ using static Softata.SoftataLib.Analog;
 
 namespace SoftataWebAPI.Controllers
 {
+
+
+
     /// <summary>
     /// An API controller for SoftataLib that
     /// allows you to get and set the state.
@@ -23,43 +27,6 @@ namespace SoftataWebAPI.Controllers
     [ApiController]
     public class SoftataState : ControllerBase
     {
-        [Route("State/AddDevice")]
-        [HttpPost]
-        private IActionResult AddDevice(int cmdTarget, int deviceIndex)
-        {
-            var device = Info.TargetDevices[cmdTarget][deviceIndex];
-            var dictionary = Info.GenericCmds[cmdTarget];
-            var values = dictionary
-                .Where(kvp => kvp.Key.ToLower().Contains("setupdefault"))
-                .Select(kvp => kvp.Value);
-            byte subCmd = (byte)values.FirstOrDefault();
-            string response = Info.SoftataLib.SendTargetCommand((byte)cmdTarget, 1, subCmd, (byte)deviceIndex);
-            return Ok(response);
-            //subCmd = GetGenericCmdIndex("setupdefault", GenericCommands);
-            //result = softatalib.SendTargetCommand(cmdTarget, 1, subCmd, (byte)TargetDevice.Index);
-
-        }
-
-        /// <summary>
-        /// Set state of SoftataLib.Aval
-        /// </summary>
-        /// <param name="cmdTarget">Device Type</param>
-        /// <param name="deviceIndex">Device</param>
-        /// <returns>Ok</returns>
-        [Route("State/Add")]
-        [HttpPost]
-        public IActionResult Add(int cmdTarget, int deviceIndex)
-        {
-            var device = Info.TargetDevices[cmdTarget][deviceIndex];
-            var dictionary = Info.GenericCmds[cmdTarget];
-            var values = dictionary
-                .Where(kvp => kvp.Key.ToLower().Contains("setupdefault"))
-                .Select(kvp => kvp.Value);
-            byte subCmd = (byte)values.FirstOrDefault();
-            string response = Info.SoftataLib.SendTargetCommand((byte)cmdTarget, 1, subCmd, (byte)deviceIndex);
-            return Ok(response);
-        }
-
         /// <summary>
         /// Get state of SoftataLib.Aval
         /// </summary>

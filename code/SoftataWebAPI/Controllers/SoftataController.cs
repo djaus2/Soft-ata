@@ -14,6 +14,7 @@ using System.Xml.Linq;
 using static Softata.SoftataLib;
 using static Softata.SoftataLib.Analog;
 using System.Linq.Expressions;
+using SoftataWebAPI.Data.Db;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -110,10 +111,12 @@ namespace SoftataWebAPI.Controllers
     {
         public static Softata.SoftataLib SoftataLib { get; set; } = new Softata.SoftataLib();
 
+        //public static Softata.SoftataLib.CommandsPortal commandsPortal {get;set;}
+
         public static Dictionary<int, string> TargetDeviceTypes { get; set; }
 
         public static Dictionary<int, Dictionary<string, int>> GenericCmds { get; set; }
-
+        public static Dictionary<int, Dictionary<string, int>> UseGenericCmds { get; set; }
         public static Dictionary<int,Dictionary<int,string>> TargetDevices { get; set; }
     }
 
@@ -122,14 +125,18 @@ namespace SoftataWebAPI.Controllers
     /// </summary>
     [Route("/")]
     [ApiController]
-    public class SoftataController : ControllerBase
+    public class SoftataController(SoftataContext context) : ControllerBase
     {
         const int port = 4242;
         const string ipaddressStr = "192.168.0.5";
 
-        private SoftataLib GetSoftataLib()
+        SoftataContext _context;
+
+
+        private Softata.SoftataLib GetSoftataLib()
         {
             return Info.SoftataLib;
+            /*
             SoftataLib? SoftataLib =
                 SessionExtensions.Get<SoftataLib>(HttpContext.Session, "SoftataLib");
             if (SoftataLib == null)
@@ -137,81 +144,10 @@ namespace SoftataWebAPI.Controllers
                 SoftataLib = new SoftataLib();
                 SessionExtensions.Set(HttpContext.Session, "SoftataLib", SoftataLib);
             }
-            return SoftataLib;
+            return SoftataLib;*/
         }
 
-        private void GetDeviceTypes()
-        {
-            Info.TargetDeviceTypes = new Dictionary<int, string>();
-            string deviceTypesCSV = Info.SoftataLib.SendMessageCmd("Devices");
-            string[] parts = deviceTypesCSV.Split(":");
-            List<string> devicesTypes = parts[1].Split(",").ToList();
-            var deviceTypelist =
-                    devicesTypes.Select((value, index) => new { value, index })
-                    .ToDictionary(x => x.index, x => x.value);
-            foreach (var item in deviceTypelist)
-            {
-                Info.TargetDeviceTypes.Add(item.Key, item.Value);
-            }
-        }
 
-        private void GetDeviceTypesGenericCommands()
-        {
-            Info.GenericCmds = new Dictionary<int, Dictionary<string, int>>();
-            foreach (var dt in Info.TargetDeviceTypes)
-            {
-                try
-                {
-                    byte subcmd = 0;//getGenericCommands
-                    string cmdsCSV = Info.SoftataLib.SendTargetCommand((byte)(dt.Key), 0, subcmd);
-                    if (cmdsCSV.Contains(":"))
-                    {
-                        string[] parts = cmdsCSV.Split(":");
-                        List<string> cmdsList = parts[1].Split(",").ToList();
-                        var cmdlist =
-                                cmdsList.Select((value, index) => new { value, index })
-                                .ToDictionary(x => x.value, x => x.index);
-                        Info.GenericCmds.Add(dt.Key, cmdlist);
-                        Thread.Sleep(500);
-                    }
-                    else
-                        continue;
-                }
-                catch (Exception ex)
-                {
-                    continue;
-                }
-            }
-        }
-
-        private void GetDeviceTypesDevices()
-        {
-            Info.TargetDevices = new Dictionary<int, Dictionary<int, string>>();
-            Thread.Sleep(200);
-            foreach (var dt in Info.TargetDeviceTypes)
-            {
-                try
-                {
-                    byte subCmd = 1;//getDevices
-                    string DevicesCSV = Info.SoftataLib.SendTargetCommand((byte)(dt.Key), 0, subCmd);
-                    if (DevicesCSV.Contains(":"))
-                    {
-                        string[] parts2 = DevicesCSV.Split(":");
-                        List<string> devices = parts2[1].Split(",").ToList();
-                        var devicelist =
-                                devices.Select((value, index) => new { value, index })
-                                .ToDictionary(x => x.index, x => x.value);
-                        Info.TargetDevices.Add(dt.Key, devicelist);
-                    }
-                    else
-                        continue;
-                }
-                catch (Exception ex)
-                {
-                    continue;
-                }
-            }
-        }
 
         [Route("AddDevice")]
         [HttpPost]
@@ -261,13 +197,6 @@ namespace SoftataWebAPI.Controllers
                         Info.SoftataLib.Offset = _offset; //Should be 0xf0
                         Console.WriteLine($"CommandsOffset: {_offset}");
                     }
-
-                    GetDeviceTypes();
-
-                    GetDeviceTypesGenericCommands();
-
-                    GetDeviceTypesDevices();
-
 
                     ///////////////////////////////
                     OKresult += $"\n{value}";
@@ -434,6 +363,7 @@ namespace SoftataWebAPI.Controllers
             return value;
         }
 
+
         private static bool ValidateIPv4(string ipString)
         {
             // 15 is the max length of an IP address (xxx.xxx.xxx.xxx)
@@ -474,7 +404,7 @@ namespace SoftataWebAPI.Controllers
         [HttpPost]
         public IActionResult SetPicoShieldMode(RPiPicoMode mode = RPiPicoMode.groveShield)
         {
-            SoftataLib SoftataLib = GetSoftataLib();
+            Softata.SoftataLib SoftataLib = GetSoftataLib();
             bool result = Info.SoftataLib.SetPicoShieldMode(mode);
             return Ok($"Set Pico Mode {mode}");
         }

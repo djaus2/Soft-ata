@@ -1,6 +1,8 @@
 
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using NetCore2BlocklyNew;
+using SoftataWebAPI.Controllers;
 using System.Reflection;
 using System.Text.Json.Serialization;
 
@@ -19,6 +21,15 @@ namespace SoftataWebAPI
             builder.Services.AddEndpointsApiExplorer();
 
             builder.Services.AddDistributedMemoryCache();
+            builder.Services.AddDbContext<SoftataWebAPI.Data.Db.SoftataContext>(options =>
+            {
+                options.UseSqlite(
+                    builder.Configuration.GetConnectionString("DefaultConnection"));
+            });
+
+            Console.WriteLine($"Config Directory: {builder.Configuration.GetConnectionString("DefaultConnection")}");
+
+            Console.WriteLine($"Current Directory: {Environment.CurrentDirectory}");
 
             builder.Services.AddSession(options =>
             {
@@ -26,6 +37,9 @@ namespace SoftataWebAPI
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
             });
+
+            // Register the SharedService
+            builder.Services.AddScoped<ISoftataGenCmds, SharedService>();
 
             //Swagger Documentation Section
             var info = new OpenApiInfo()

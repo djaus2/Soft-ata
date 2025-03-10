@@ -9,9 +9,9 @@ using SoftataInfo2DB;
 
 namespace SoftataInfo2DB.Migrations
 {
-    [DbContext(typeof(Program.DictionaryContext))]
-    [Migration("20250304034157_ICollections-inDType-3")]
-    partial class ICollectionsinDType3
+    [DbContext(typeof(SoftataContext))]
+    [Migration("20250304060437_first")]
+    partial class first
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -19,7 +19,7 @@ namespace SoftataInfo2DB.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.2");
 
-            modelBuilder.Entity("SoftataInfo2DB.Program+DType", b =>
+            modelBuilder.Entity("SoftataInfo2DB.DType", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -37,7 +37,7 @@ namespace SoftataInfo2DB.Migrations
                     b.ToTable("dTypes");
                 });
 
-            modelBuilder.Entity("SoftataInfo2DB.Program+Device", b =>
+            modelBuilder.Entity("SoftataInfo2DB.Device", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -60,26 +60,7 @@ namespace SoftataInfo2DB.Migrations
                     b.ToTable("Devices");
                 });
 
-            modelBuilder.Entity("SoftataInfo2DB.Program+DictionaryEntry", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Key")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Value")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("DictionaryEntries");
-                });
-
-            modelBuilder.Entity("SoftataInfo2DB.Program+GenericCommand", b =>
+            modelBuilder.Entity("SoftataInfo2DB.GenericCommand", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -102,9 +83,9 @@ namespace SoftataInfo2DB.Migrations
                     b.ToTable("GenericCommands");
                 });
 
-            modelBuilder.Entity("SoftataInfo2DB.Program+Device", b =>
+            modelBuilder.Entity("SoftataInfo2DB.Device", b =>
                 {
-                    b.HasOne("SoftataInfo2DB.Program+DType", "DType")
+                    b.HasOne("SoftataInfo2DB.DType", "DType")
                         .WithMany("Devices")
                         .HasForeignKey("DtypeId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -113,9 +94,9 @@ namespace SoftataInfo2DB.Migrations
                     b.Navigation("DType");
                 });
 
-            modelBuilder.Entity("SoftataInfo2DB.Program+GenericCommand", b =>
+            modelBuilder.Entity("SoftataInfo2DB.GenericCommand", b =>
                 {
-                    b.HasOne("SoftataInfo2DB.Program+DType", "DType")
+                    b.HasOne("SoftataInfo2DB.DType", "DType")
                         .WithMany("Commands")
                         .HasForeignKey("DtypeId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -124,7 +105,7 @@ namespace SoftataInfo2DB.Migrations
                     b.Navigation("DType");
                 });
 
-            modelBuilder.Entity("SoftataInfo2DB.Program+DType", b =>
+            modelBuilder.Entity("SoftataInfo2DB.DType", b =>
                 {
                     b.Navigation("Commands");
 

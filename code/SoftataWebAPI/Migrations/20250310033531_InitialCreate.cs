@@ -2,28 +2,14 @@
 
 #nullable disable
 
-namespace SoftataInfo2DB.Migrations
+namespace SoftataWebAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class MyFirstMigration : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
-                name: "DictionaryEntries",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Key = table.Column<string>(type: "TEXT", nullable: false),
-                    Value = table.Column<string>(type: "TEXT", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_DictionaryEntries", x => x.Id);
-                });
-
             migrationBuilder.CreateTable(
                 name: "dTypes",
                 columns: table => new
@@ -45,8 +31,8 @@ namespace SoftataInfo2DB.Migrations
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     SoftataId = table.Column<int>(type: "INTEGER", nullable: false),
-                    DtypeId = table.Column<int>(type: "INTEGER", nullable: false),
-                    Name = table.Column<string>(type: "TEXT", nullable: false)
+                    Name = table.Column<string>(type: "TEXT", nullable: false),
+                    DtypeId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -66,8 +52,8 @@ namespace SoftataInfo2DB.Migrations
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     SoftataId = table.Column<int>(type: "INTEGER", nullable: false),
-                    DtypeId = table.Column<int>(type: "INTEGER", nullable: false),
-                    Name = table.Column<string>(type: "TEXT", nullable: false)
+                    Name = table.Column<string>(type: "TEXT", nullable: false),
+                    DtypeId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -96,9 +82,6 @@ namespace SoftataInfo2DB.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Devices");
-
-            migrationBuilder.DropTable(
-                name: "DictionaryEntries");
 
             migrationBuilder.DropTable(
                 name: "GenericCommands");

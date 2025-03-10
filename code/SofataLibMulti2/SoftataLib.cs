@@ -628,7 +628,7 @@ namespace Softata
         }
 
         /// <summary>
-        /// Get dictionaly list of similar commands so can be used in a menu
+        /// Get dictionary list of similar commands so can be used in a menu
         /// </summary>
         /// <param name="cmd"></param>
         /// <param name="GenericCmds"></param>

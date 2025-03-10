@@ -87,7 +87,7 @@ namespace SoftataBasic
         static void Main(string[] args)
         {
             
-            softatalib = new SoftataLib();
+            softatalib = new Softata.SoftataLib();
             Softata.ActionCommands.CommandsPortal.Setup(
                 new LLayout(),
                 GetGenericCmdIndex,
