@@ -1,7 +1,8 @@
 # Soft-ata Version 12.00
 
 ## Updates
-- Blcokly has been updaed for new Database
+- Figured out a way to run 2 or more Blocklies in separate Browser tabs in Producer Consumer mode using sesssion.
+- Blockly has been updaed for new Database
   - DeviceTypes,Device and Commands loaded from sqlite Database
      - Data that was previous read from RPi Pico W
   - Database can be updated
