@@ -12,6 +12,12 @@
         "blocks":  "object_create;text;"
     },
     {
+        "id":  "RemoteCall",
+        "description":  "Remote call from one browser tab to another",
+        "categories":  "api;list",
+        "blocks":  "object_create;text;"
+    },
+    {
         "id":  "BME280-Sensor-I2C0",
         "description":  "Grove BME280 Sensor Example using I2C0",
         "categories":  "api;list",

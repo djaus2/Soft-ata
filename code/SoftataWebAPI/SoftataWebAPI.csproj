@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Controllers\HomeController.cs" />
     <Compile Remove="Controllers\SoftataActuatorController.cs" />
     <Compile Remove="Controllers\SoftataCTrainController.cs" />
     <Compile Remove="Controllers\SoftataDisplayController.cs" />
@@ -17,6 +18,7 @@
     <Compile Remove="Controllers\SoftataMiscController.cs" />
     <Compile Remove="Controllers\SoftataSensorontroller.cs" />
     <Compile Remove="Controllers\SoftataTelemetryController .cs" />
+    <Compile Remove="Data\INewsService.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -43,6 +45,7 @@
     <None Include="Controllers\SoftataMiscController.cs" />
     <None Include="Controllers\SoftataSensorontroller.cs" />
     <None Include="Controllers\SoftataTelemetryController .cs" />
+    <None Include="Data\INewsService.cs" />
   </ItemGroup>
 
 
@@ -104,6 +107,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Update="wwwroot\BlocklyAutomation\assets\showUsage\demoBlocks\Pot-LED-Pins-26-18.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\BlocklyAutomation\assets\showUsage\demoBlocks\RemoteCall .txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Update="wwwroot\BlocklyAutomation\assets\showUsage\demoBlocks\Servo-Pin-16.txt">

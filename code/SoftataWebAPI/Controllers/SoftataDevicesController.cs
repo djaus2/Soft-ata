@@ -14,6 +14,7 @@ using System.Xml.Linq;
 using static Softata.SoftataLib;
 using static Softata.SoftataLib.Analog;
 using System.Linq.Expressions;
+using SoftataWebAPI.Data;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 

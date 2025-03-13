@@ -399,3 +399,6 @@ FodyWeavers.xsd
 /code/Softata/src/.vscode/settings.json
 /code/Softata/build/rp2040.rp2040.rpipicow/Softata.ino.map
 /code/Softata (2).zip
+/code/SoftataWebAPI/Controllers/ViewStringModel.cs
+/code/SoftataWebAPI/Controllers/HomeController.cs
+/code/SoftataWebAPI/Data/INewsService.cs

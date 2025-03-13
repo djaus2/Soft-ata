@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Routing.Constraints;
 using Softata;
 using Softata.ActionCommands;
 using Softata.Enums;
+using SoftataWebAPI.Data;
 using System;
 using System.Net;
 using System.Net.NetworkInformation;
@@ -155,6 +156,56 @@ namespace SoftataWebAPI.Controllers
             var age = HttpContext.Session.GetInt32(SessionKeyAge).ToString();
             return from x in new[] { name, age } select x;
         }
+
+
+
+
+
+
+        /// <summary>
+        /// Clear interprocess Queue
+        /// </summary>
+        /// <returns>Index of instance</returns>
+        [Route("ClearQ")]
+        [HttpDelete]
+        public void ClearQ()
+        {
+            Info.ClearQ();
+        }
+
+        /// <summary>
+        /// Add value to Q
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="aval"></param>
+        /// <returns>Ok</returns>
+        [Route("SetQ")]
+        [HttpPost]
+        public IActionResult SetQ(string key, int aval)
+        {
+            //if(Info.NameValueQ.TryDequeue(out KeyValuePair<string, int> kvp);
+            Info.NameValueQ.Enqueue(new KeyValuePair<string, int>(key, aval));
+            return Ok($"Q:{key}:{aval} Length: {Info.NameValueQ.Count()}");
+        }
+
+        /// <summary>
+        /// GetNext value from Q
+        /// </summary>
+        /// <returns>Set of Session values</returns>
+        // GET: api/<SoftataController>
+        [Route("DeeQ")]
+        [HttpGet]
+        public int DeeQ()
+        {
+            if(Info.NameValueQ.TryDequeue(out KeyValuePair<string, int> kvp))
+            {
+                return kvp.Value;
+            }
+            else
+                return -1;
+        }
+
+
 
 
 

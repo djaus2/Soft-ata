@@ -16,7 +16,6 @@ using static Softata.SoftataLib.Analog;
 using System.Linq.Expressions;
 using SoftataWebAPI.Data.Db;
 using SoftataWebAPI.Data;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -24,12 +23,12 @@ namespace SoftataWebAPI.Controllers
 {
 
     /// <summary>
-    /// The Base Controller
-    /// Loads Info data from the Database
+    /// The Alt Base Controller
+    /// Loads Info data from Softata Sketch
     /// </summary>
-    [Route("/")]
+    [Route("/Ard")]
     [ApiController]
-    public class SoftataController(SoftataContext context, ISoftataGenCmds sharedService) : ControllerBase
+    public class SoftataArdController(SoftataContext context, ISoftataGenCmds sharedService) : ControllerBase
     {
         const int port = 4242;
         const string ipaddressStr = "192.168.0.5";
@@ -67,10 +66,10 @@ namespace SoftataWebAPI.Controllers
         }
 
         /// <summary>
-        /// Connect to the Pico W Server and send the Begin, Version and Devices information commands<br/>
-        /// Get app data,namely device types,devices,commands from Database
+        /// Connect to the Pico W Server and send the Begin, Version and Devices commands
+        /// Get app data, device types,devices,commands from Pico W Service
         /// </summary>
-        /// <param name="ipAddress"></param>
+        /// <param name="ipAddress"></param> 
         /// <param name="_port"></param>
         /// <returns>IActionResult(Ok or BadRequest)</returns>
         // POST api/<SoftataController>
@@ -96,8 +95,8 @@ namespace SoftataWebAPI.Controllers
                         Info.SoftataLib.Offset = _offset; //Should be 0xf0
                         Console.WriteLine($"CommandsOffset: {_offset}");
                     }
-
-                    sharedService.ReadSoftataDataDb(context);
+                    
+                    sharedService.SoftataGetDatafrmPico();
 
                     OKresult += $"\n{value}";
                     var connection = new Tuple<string, int>(ipAddress, _port);
@@ -126,7 +125,7 @@ namespace SoftataWebAPI.Controllers
         /// <returns>IActionResult(Ok or BadRequest)</returns>
         [Route("NgrokStart")]
         [HttpPost]
-        public IActionResult NgrokStartDb(int ngrokIndex = 0, int _port = port)
+        public IActionResult NgrokStart(int ngrokIndex = 0, int _port = port)
         {
             string ipAddress = $"{ngrokIndex}.tcp.ngrok.io";
             return Start(ipAddress, _port);
@@ -138,9 +137,9 @@ namespace SoftataWebAPI.Controllers
         /// </summary>
         /// <returns>IActionResult(Ok or BadRequest)</returns>
         // POST api/<SoftataController>
-        [Route("StartSessionD")]
+        [Route("StartSession")]
         [HttpPost]
-        public IActionResult StartSession()
+        public IActionResult StartSessionArd()
         {
             string ipAddress = "192.168.0.5";
             int port = 4242;
@@ -234,37 +233,6 @@ namespace SoftataWebAPI.Controllers
             return $"{value}";
         }
 
-        /// <summary>
-        /// Convert int to string
-        /// </summary>
-        /// <returns>value as string</returns>
-        // GET: api/<SoftataController>
-        [Route("GetMenuStrfrmCSV")]
-        [HttpGet]
-        public string GetMenuStrfrmCSV(string  csv)
-        {
-            string[] items = csv.Split(":");
-            string value = "";
-            if (items.Count() >1)
-            {
-                value = items[0] + '\n';
-                string[] items2 = items[1].Split(",");
-                for (int i = 0; i < items2.Count(); i++)
-                {
-                    value += $"{i+1} {items2[i]}\n";
-                }
-            }
-            else
-            {
-                for (int i = 0; i < items.Count(); i++)
-                {
-                    value += $"{i + 1} {items[i]}\n";
-                }
-            }
-
-            return $"{value}";
-        }
-
 
 
         List<string> Commands = new List<string> { "Begin", "End", "Devices", "Reset", "Version", "Null" };
@@ -286,7 +254,11 @@ namespace SoftataWebAPI.Controllers
             return value;
         }
 
-
+        /// <summary>
+        /// Validate an IPAddress
+        /// </summary>
+        /// <param name="ipString">The IpAddress string</param>
+        /// <returns></returns>
         private static bool ValidateIPv4(string ipString)
         {
             // 15 is the max length of an IP address (xxx.xxx.xxx.xxx)

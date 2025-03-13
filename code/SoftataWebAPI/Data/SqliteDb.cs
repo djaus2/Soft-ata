@@ -1,31 +1,41 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SoftataWebAPI.Controllers;
+using System.Xml.Linq;
 
 namespace SoftataWebAPI.Data.Db
 {
-    public class Database
+    public class SqliteDb
     {
         /// <summary>
-        /// Start needs to called first
+        /// Clear the Database
         /// </summary>
+        /// <param name="context"></param>
+        public static void ClearDb(SoftataContext context)
+        {
+
+            List<string> Tables = new List<string> { "Devices", "GenericCommands", "dTypes" };
+
+            foreach (var TableName in Tables)
+            { 
+                context.Database.ExecuteSqlRaw($"DELETE FROM {TableName}");
+                context.SaveChanges();
+            }
+
+            foreach (var TableName in Tables)
+            {
+                context.Database.ExecuteSqlRaw($"DELETE FROM sqlite_sequence WHERE name = '{TableName}'");
+                context.SaveChanges();
+            }
+        }
+
+        /// <summary>
+        /// Create the database and populate it with the dictionaries in Info
+        /// Info data needs to be read from Pico W - Softata sketch first </summary>
         /// <param name="context">SoftataContext</param>
         public static void CreateDb(SoftataContext context)
         {
-
-
             context.Database.EnsureCreated();
-
-            context.Database.ExecuteSqlRaw("DELETE FROM Devices");
-            context.SaveChanges();
-
-
-            context.Database.ExecuteSqlRaw("DELETE FROM GenericCommands");
-            context.SaveChanges();
-
-
-            context.Database.ExecuteSqlRaw("DELETE FROM dTypes");
-            context.SaveChanges();
-
+            ClearDb(context);
 
             List<DType> DTypes = new List<DType>();
             foreach (var kvp in Info.TargetDeviceTypes)
@@ -84,7 +94,7 @@ namespace SoftataWebAPI.Data.Db
         }
 
         /// <summary>
-        /// Read the db
+        /// Read the Database and populate the dictionaries in Info
         /// </summary>
         /// <param name="context">SoftataContext</param>
         public static void ReadDb(SoftataContext context)

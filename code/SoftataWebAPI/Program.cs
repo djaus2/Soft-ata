@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using NetCore2BlocklyNew;
 using SoftataWebAPI.Controllers;
+using SoftataWebAPI.Data;
 using System.Reflection;
 using System.Text.Json.Serialization;
 
@@ -40,6 +41,7 @@ namespace SoftataWebAPI
 
             // Register the SharedService
             builder.Services.AddScoped<ISoftataGenCmds, SharedService>();
+            //builder.Services.AddScoped<INewsService,NewsService>(); A work in progress
 
             //Swagger Documentation Section
             var info = new OpenApiInfo()

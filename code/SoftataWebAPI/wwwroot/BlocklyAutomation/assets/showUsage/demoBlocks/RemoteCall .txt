@@ -1,0 +1,226 @@
+<xml xmlns="https://developers.google.com/blockly/xml">
+  <variables>
+    <variable id="~+=_UfvNGur]CL4*K8-S">runMain</variable>
+    <variable id="hU:Lo3wXk^1HFUt%kca:">key</variable>
+    <variable id="X/EtqI2O^=%JHOWuxT8S">num</variable>
+  </variables>
+  <block type="variables_set" x="161" y="80">
+    <field name="VAR" id="~+=_UfvNGur]CL4*K8-S">runMain</field>
+    <value name="VALUE">
+      <block type="logic_boolean">
+        <field name="BOOL">TRUE</field>
+      </block>
+    </value>
+    <next>
+      <block type="controls_ifelse">
+        <value name="IF0">
+          <block type="variables_get">
+            <field name="VAR" id="~+=_UfvNGur]CL4*K8-S">runMain</field>
+          </block>
+        </value>
+        <statement name="DO0">
+          <block type="comment">
+            <field name="NAME"></field>
+            <value name="TEXT">
+              <shadow type="text">
+                <field name="TEXT">Put here comments</field>
+              </shadow>
+              <block type="text">
+                <field name="TEXT">Main</field>
+              </block>
+            </value>
+            <next>
+              <block type="comment">
+                <field name="NAME"></field>
+                <value name="TEXT">
+                  <shadow type="text">
+                    <field name="TEXT">Put here comments</field>
+                  </shadow>
+                  <block type="text">
+                    <field name="TEXT">Run this in one browser tab</field>
+                  </block>
+                </value>
+                <next>
+                  <block type="variables_set">
+                    <field name="VAR" id="hU:Lo3wXk^1HFUt%kca:">key</field>
+                    <value name="VALUE">
+                      <block type="text">
+                        <field name="TEXT">KEY</field>
+                      </block>
+                    </value>
+                    <next>
+                      <block type="variables_set">
+                        <field name="VAR" id="X/EtqI2O^=%JHOWuxT8S">num</field>
+                        <value name="VALUE">
+                          <block type="math_number">
+                            <field name="NUM">5000</field>
+                          </block>
+                        </value>
+                        <next>
+                          <block type="controls_whileUntil">
+                            <field name="MODE">WHILE</field>
+                            <value name="BOOL">
+                              <block type="logic_boolean">
+                                <field name="BOOL">TRUE</field>
+                              </block>
+                            </value>
+                            <statement name="DO">
+                              <block type="variables_set">
+                                <field name="VAR" id="X/EtqI2O^=%JHOWuxT8S">num</field>
+                                <value name="VALUE">
+                                  <block type="get__Session_PopNum">
+                                    <value name="val_key">
+                                      <block type="variables_get">
+                                        <field name="VAR" id="hU:Lo3wXk^1HFUt%kca:">key</field>
+                                      </block>
+                                    </value>
+                                  </block>
+                                </value>
+                                <next>
+                                  <block type="controls_if">
+                                    <value name="IF0">
+                                      <block type="logic_compare">
+                                        <field name="OP">LT</field>
+                                        <value name="A">
+                                          <block type="variables_get">
+                                            <field name="VAR" id="X/EtqI2O^=%JHOWuxT8S">num</field>
+                                          </block>
+                                        </value>
+                                        <value name="B">
+                                          <block type="math_number">
+                                            <field name="NUM">1000</field>
+                                          </block>
+                                        </value>
+                                      </block>
+                                    </value>
+                                    <statement name="DO0">
+                                      <block type="controls_flow_statements">
+                                        <field name="FLOW">BREAK</field>
+                                      </block>
+                                    </statement>
+                                    <next>
+                                      <block type="wait_seconds">
+                                        <field name="SECONDS">1</field>
+                                      </block>
+                                    </next>
+                                  </block>
+                                </next>
+                              </block>
+                            </statement>
+                            <next>
+                              <block type="text_print">
+                                <value name="TEXT">
+                                  <block type="variables_get">
+                                    <field name="VAR" id="X/EtqI2O^=%JHOWuxT8S">num</field>
+                                  </block>
+                                </value>
+                              </block>
+                            </next>
+                          </block>
+                        </next>
+                      </block>
+                    </next>
+                  </block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </statement>
+        <statement name="ELSE">
+          <block type="comment">
+            <field name="NAME"></field>
+            <value name="TEXT">
+              <shadow type="text">
+                <field name="TEXT">Put here comments</field>
+              </shadow>
+              <block type="text">
+                <field name="TEXT">Secondary</field>
+              </block>
+            </value>
+            <next>
+              <block type="comment">
+                <field name="NAME"></field>
+                <value name="TEXT">
+                  <shadow type="text">
+                    <field name="TEXT">Put here comments</field>
+                  </shadow>
+                  <block type="text">
+                    <field name="TEXT">Then run this in another tab</field>
+                  </block>
+                </value>
+                <next>
+                  <block type="comment">
+                    <field name="NAME"></field>
+                    <value name="TEXT">
+                      <shadow type="text">
+                        <field name="TEXT">Put here comments</field>
+                      </shadow>
+                      <block type="text">
+                        <field name="TEXT">Or set KEY value n Swagger</field>
+                      </block>
+                    </value>
+                    <next>
+                      <block type="comment">
+                        <field name="NAME"></field>
+                        <value name="TEXT">
+                          <shadow type="text">
+                            <field name="TEXT">Put here comments</field>
+                          </shadow>
+                          <block type="text">
+                            <field name="TEXT">      /Session/SetNum</field>
+                          </block>
+                        </value>
+                        <next>
+                          <block type="controls_if">
+                            <value name="IF0">
+                              <block type="logic_negate">
+                                <value name="BOOL">
+                                  <block type="variables_get">
+                                    <field name="VAR" id="~+=_UfvNGur]CL4*K8-S">runMain</field>
+                                  </block>
+                                </value>
+                              </block>
+                            </value>
+                            <statement name="DO0">
+                              <block type="variables_set">
+                                <field name="VAR" id="hU:Lo3wXk^1HFUt%kca:">key</field>
+                                <value name="VALUE">
+                                  <block type="text">
+                                    <field name="TEXT">KEY</field>
+                                  </block>
+                                </value>
+                                <next>
+                                  <block type="text_print">
+                                    <value name="TEXT">
+                                      <block type="post__Session_SetNum">
+                                        <value name="val_key">
+                                          <block type="variables_get">
+                                            <field name="VAR" id="hU:Lo3wXk^1HFUt%kca:">key</field>
+                                          </block>
+                                        </value>
+                                        <value name="val_aval">
+                                          <block type="math_number">
+                                            <field name="NUM">127</field>
+                                          </block>
+                                        </value>
+                                      </block>
+                                    </value>
+                                  </block>
+                                </next>
+                              </block>
+                            </statement>
+                          </block>
+                        </next>
+                      </block>
+                    </next>
+                  </block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </statement>
+      </block>
+    </next>
+  </block>
+  <block type="logic_negate" x="151" y="349"></block>
+</xml>
