@@ -1,6 +1,11 @@
-# Soft-ata Version 11.400
+# Soft-ata Version 12.00
 
 ## Updates
+- Blcokly has been updaed for new Database
+  - DeviceTypes,Device and Commands loaded from sqlite Database
+     - Data that was previous read from RPi Pico W
+  - Database can be updated
+  - Blocks are now Generic .. eg Instantiate a device by selecting iits device type then device etc.
 - BlazorSoftata2 nearly complete
   - Meant to mimic SoftataConsole2
   - Introduces ILLayout that both apps implement, that is used by the C# library.
