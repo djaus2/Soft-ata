@@ -11,12 +11,6 @@
   <ItemGroup>
     <Compile Remove="Controllers\HomeController.cs" />
     <Compile Remove="Controllers\SoftataActuatorController.cs" />
-    <Compile Remove="Controllers\SoftataCTrainController.cs" />
-    <Compile Remove="Controllers\SoftataDisplayController.cs" />
-    <Compile Remove="Controllers\SoftataGPIOADController.cs" />
-    <Compile Remove="Controllers\SoftataGroveController.cs" />
-    <Compile Remove="Controllers\SoftataMiscController.cs" />
-    <Compile Remove="Controllers\SoftataSensorontroller.cs" />
     <Compile Remove="Controllers\SoftataTelemetryController .cs" />
     <Compile Remove="Data\INewsService.cs" />
   </ItemGroup>
@@ -38,12 +32,6 @@
 
   <ItemGroup>
     <None Include="Controllers\SoftataActuatorController.cs" />
-    <None Include="Controllers\SoftataCTrainController.cs" />
-    <None Include="Controllers\SoftataDisplayController.cs" />
-    <None Include="Controllers\SoftataGPIOADController.cs" />
-    <None Include="Controllers\SoftataGroveController.cs" />
-    <None Include="Controllers\SoftataMiscController.cs" />
-    <None Include="Controllers\SoftataSensorontroller.cs" />
     <None Include="Controllers\SoftataTelemetryController .cs" />
     <None Include="Data\INewsService.cs" />
   </ItemGroup>
@@ -66,8 +54,7 @@
 
 
   <ItemGroup>
-    <ProjectReference Include="..\SofataLibMulti2Sessioned\SoftataLibSessioned.csproj" />
-    <ProjectReference Include="..\SofataLibMulti2Sessioned\SoftataLibSessioned4Blockly.csproj" />
+    <ProjectReference Include="..\SofataLibSessioned4Blockly\SoftataLibSessioned4Blockly.csproj" />
   </ItemGroup>
 
   <ItemGroup>

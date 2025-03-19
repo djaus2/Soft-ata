@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34309.116
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorSoftata", "BlazorSoftata\BlazorSoftata.csproj", "{F938F9FD-B8B0-47D3-BEE8-5BACF0BCB9DA}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{5C9D7B95-EAC4-4C11-A784-C0B0F706E099}"
 	ProjectSection(SolutionItems) = preProject
 		README.md = README.md
@@ -39,26 +37,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Softata", "Softata", "{4E76
 		Softata\SoftataCore2.h = Softata\SoftataCore2.h
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{55DCE197-4F20-4629-B62E-9C2AF07307CF}"
-	ProjectSection(SolutionItems) = preProject
-		Softata\src\adrafruit_neopixel.cpp = Softata\src\adrafruit_neopixel.cpp
-		Softata\src\grove.h = Softata\src\grove.h
-		Softata\src\grove_actuator.h = Softata\src\grove_actuator.h
-		Softata\src\grove_bargraph.cpp = Softata\src\grove_bargraph.cpp
-		Softata\src\grove_bme280.cpp = Softata\src\grove_bme280.cpp
-		Softata\src\grove_dht11.cpp = Softata\src\grove_dht11.cpp
-		Softata\src\grove_displays.cpp = Softata\src\grove_displays.cpp
-		Softata\src\grove_displays.h = Softata\src\grove_displays.h
-		Softata\src\grove_environsensors.h = Softata\src\grove_environsensors.h
-		Softata\src\grove_sensor.h = Softata\src\grove_sensor.h
-		Softata\src\grove_sensor_template.cpp.txt = Softata\src\grove_sensor_template.cpp.txt
-		Softata\src\grove_urange.cpp = Softata\src\grove_urange.cpp
-		Softata\src\ic_74hc595_shiftRegister.cpp = Softata\src\ic_74hc595_shiftRegister.cpp
-		Softata\src\ic_74hc595_shiftRegister.h = Softata\src\ic_74hc595_shiftRegister.h
-		Softata\src\servo.cpp = Softata\src\servo.cpp
-		Softata\src\SIPO_74HC595.cpp = Softata\src\SIPO_74HC595.cpp
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SoftataOTA", "SoftataOTA", "{1D47515E-81D0-4D41-98F8-8F9DEA6EB53F}"
 	ProjectSection(SolutionItems) = preProject
 		SoftataOTA\devicesLists.h = SoftataOTA\devicesLists.h
@@ -85,46 +63,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SoftataOptSerial", "Softata
 		SoftataOptSerial\Softata.h = SoftataOptSerial\Softata.h
 		SoftataOptSerial\SoftataCore2.h = SoftataOptSerial\SoftataCore2.h
 		SoftataOptSerial\SoftataOptSerial.ino = SoftataOptSerial\SoftataOptSerial.ino
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{A5ED25A0-96F4-4DCA-A6B8-1FE8761632B9}"
-	ProjectSection(SolutionItems) = preProject
-		SoftataOTA\src\adrafruit_neopixel.cpp = SoftataOTA\src\adrafruit_neopixel.cpp
-		SoftataOTA\src\grove.h = SoftataOTA\src\grove.h
-		SoftataOTA\src\grove_actuator.h = SoftataOTA\src\grove_actuator.h
-		SoftataOTA\src\grove_bargraph.cpp = SoftataOTA\src\grove_bargraph.cpp
-		SoftataOTA\src\grove_bme280.cpp = SoftataOTA\src\grove_bme280.cpp
-		SoftataOTA\src\grove_dht11.cpp = SoftataOTA\src\grove_dht11.cpp
-		SoftataOTA\src\grove_displays.cpp = SoftataOTA\src\grove_displays.cpp
-		SoftataOTA\src\grove_displays.h = SoftataOTA\src\grove_displays.h
-		SoftataOTA\src\grove_environsensors.h = SoftataOTA\src\grove_environsensors.h
-		SoftataOTA\src\grove_sensor.h = SoftataOTA\src\grove_sensor.h
-		SoftataOTA\src\grove_sensor_template.cpp.txt = SoftataOTA\src\grove_sensor_template.cpp.txt
-		SoftataOTA\src\grove_urange.cpp = SoftataOTA\src\grove_urange.cpp
-		SoftataOTA\src\ic_74hc595_shiftRegister.cpp = SoftataOTA\src\ic_74hc595_shiftRegister.cpp
-		SoftataOTA\src\ic_74hc595_shiftRegister.h = SoftataOTA\src\ic_74hc595_shiftRegister.h
-		SoftataOTA\src\servo.cpp = SoftataOTA\src\servo.cpp
-		SoftataOTA\src\SIPO_74HC595.cpp = SoftataOTA\src\SIPO_74HC595.cpp
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{0CBAE3E8-9D71-4596-A698-54102CCABC56}"
-	ProjectSection(SolutionItems) = preProject
-		SoftataOptSerial\src\adrafruit_neopixel.cpp = SoftataOptSerial\src\adrafruit_neopixel.cpp
-		SoftataOptSerial\src\grove.h = SoftataOptSerial\src\grove.h
-		SoftataOptSerial\src\grove_actuator.h = SoftataOptSerial\src\grove_actuator.h
-		SoftataOptSerial\src\grove_bargraph.cpp = SoftataOptSerial\src\grove_bargraph.cpp
-		SoftataOptSerial\src\grove_bme280.cpp = SoftataOptSerial\src\grove_bme280.cpp
-		SoftataOptSerial\src\grove_dht11.cpp = SoftataOptSerial\src\grove_dht11.cpp
-		SoftataOptSerial\src\grove_displays.cpp = SoftataOptSerial\src\grove_displays.cpp
-		SoftataOptSerial\src\grove_displays.h = SoftataOptSerial\src\grove_displays.h
-		SoftataOptSerial\src\grove_environsensors.h = SoftataOptSerial\src\grove_environsensors.h
-		SoftataOptSerial\src\grove_sensor.h = SoftataOptSerial\src\grove_sensor.h
-		SoftataOptSerial\src\grove_sensor_template.cpp.txt = SoftataOptSerial\src\grove_sensor_template.cpp.txt
-		SoftataOptSerial\src\grove_urange.cpp = SoftataOptSerial\src\grove_urange.cpp
-		SoftataOptSerial\src\ic_74hc595_shiftRegister.cpp = SoftataOptSerial\src\ic_74hc595_shiftRegister.cpp
-		SoftataOptSerial\src\ic_74hc595_shiftRegister.h = SoftataOptSerial\src\ic_74hc595_shiftRegister.h
-		SoftataOptSerial\src\servo.cpp = SoftataOptSerial\src\servo.cpp
-		SoftataOptSerial\src\SIPO_74HC595.cpp = SoftataOptSerial\src\SIPO_74HC595.cpp
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "eepromwifi", "eepromwifi", "{8482F3A4-F77A-42A9-A9A2-D2DD82DEA428}"
@@ -164,17 +102,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BinZip", "BinZip", "{D49768
 		MiscArduinoSketches\BinZip\USBSerialCopyUf2.bat = MiscArduinoSketches\BinZip\USBSerialCopyUf2.bat
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SoftataConsole", "SoftataConsole2\SoftataConsole.csproj", "{389068DF-3E8A-43E7-B5B0-DCD3C57AD1C9}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SoftataLib", "SofataLibMulti2\SoftataLib.csproj", "{B76E91E9-BD83-4313-9D1E-248A164B012E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SoftataLib", "SofataLib\SoftataLib.csproj", "{B76E91E9-BD83-4313-9D1E-248A164B012E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorSoftata2", "BlazorSoftata2\BlazorSoftata2.csproj", "{B3067976-2472-4761-B982-03E16377EBA6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SoftataConsole2", "SoftataConsoleX\SoftataConsole2.csproj", "{C3E03AAB-1C54-4705-9B8C-672514E1124C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SoftataConsole2", "SoftataConsole2\SoftataConsole2.csproj", "{C3E03AAB-1C54-4705-9B8C-672514E1124C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SoftataInfo2DB", "SoftataInfo2DB\SoftataInfo2DB.csproj", "{E5509D89-85B2-4FF2-A989-E4FF84A8689A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoftataLibSessioned4Blockly", "SofataLibMulti2Sessioned\SoftataLibSessioned4Blockly.csproj", "{230AB829-F311-EC3A-6292-106A592E095B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoftataLibSessioned4Blockly", "SofataLibSessioned4Blockly\SoftataLibSessioned4Blockly.csproj", "{54E73DCB-EB7F-D989-2267-04ABB7F9544B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -182,16 +118,9 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{F938F9FD-B8B0-47D3-BEE8-5BACF0BCB9DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F938F9FD-B8B0-47D3-BEE8-5BACF0BCB9DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F938F9FD-B8B0-47D3-BEE8-5BACF0BCB9DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{93DBA8B2-9F2C-47F0-9DEE-4B38020570DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{93DBA8B2-9F2C-47F0-9DEE-4B38020570DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{93DBA8B2-9F2C-47F0-9DEE-4B38020570DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{389068DF-3E8A-43E7-B5B0-DCD3C57AD1C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{389068DF-3E8A-43E7-B5B0-DCD3C57AD1C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{389068DF-3E8A-43E7-B5B0-DCD3C57AD1C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{389068DF-3E8A-43E7-B5B0-DCD3C57AD1C9}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B76E91E9-BD83-4313-9D1E-248A164B012E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B76E91E9-BD83-4313-9D1E-248A164B012E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B76E91E9-BD83-4313-9D1E-248A164B012E}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -208,10 +137,10 @@ Global
 		{E5509D89-85B2-4FF2-A989-E4FF84A8689A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E5509D89-85B2-4FF2-A989-E4FF84A8689A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E5509D89-85B2-4FF2-A989-E4FF84A8689A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{230AB829-F311-EC3A-6292-106A592E095B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{230AB829-F311-EC3A-6292-106A592E095B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{230AB829-F311-EC3A-6292-106A592E095B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{230AB829-F311-EC3A-6292-106A592E095B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{54E73DCB-EB7F-D989-2267-04ABB7F9544B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{54E73DCB-EB7F-D989-2267-04ABB7F9544B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{54E73DCB-EB7F-D989-2267-04ABB7F9544B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{54E73DCB-EB7F-D989-2267-04ABB7F9544B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -220,11 +149,8 @@ Global
 		{60F3D639-033B-434F-B14B-2ABB6089B703} = {5C9D7B95-EAC4-4C11-A784-C0B0F706E099}
 		{4F9B17D9-D813-440F-B032-16F666BA5574} = {60F3D639-033B-434F-B14B-2ABB6089B703}
 		{4E76E241-63D8-4B79-B328-EC08E1335297} = {60B26E93-BC37-48E6-8021-B6306EBF18F2}
-		{55DCE197-4F20-4629-B62E-9C2AF07307CF} = {4E76E241-63D8-4B79-B328-EC08E1335297}
 		{1D47515E-81D0-4D41-98F8-8F9DEA6EB53F} = {60B26E93-BC37-48E6-8021-B6306EBF18F2}
 		{E63711C8-F627-4EA4-85E2-B618F227483B} = {60B26E93-BC37-48E6-8021-B6306EBF18F2}
-		{A5ED25A0-96F4-4DCA-A6B8-1FE8761632B9} = {1D47515E-81D0-4D41-98F8-8F9DEA6EB53F}
-		{0CBAE3E8-9D71-4596-A698-54102CCABC56} = {E63711C8-F627-4EA4-85E2-B618F227483B}
 		{8482F3A4-F77A-42A9-A9A2-D2DD82DEA428} = {60F3D639-033B-434F-B14B-2ABB6089B703}
 		{A4372086-1DD4-4B05-956A-92ACE2709F9E} = {60F3D639-033B-434F-B14B-2ABB6089B703}
 		{D16761E9-C116-4CF3-BDBB-653C91E18539} = {60F3D639-033B-434F-B14B-2ABB6089B703}

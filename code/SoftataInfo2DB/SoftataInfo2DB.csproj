@@ -17,8 +17,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SofataLibMulti2\SoftataLib.csproj" />
-    <ProjectReference Include="..\SoftataConsoleX\SoftataConsole2.csproj" />
+    <ProjectReference Include="..\SofataLib\SoftataLib.csproj" />
+    <ProjectReference Include="..\SoftataConsole2\SoftataConsole2.csproj" />
   </ItemGroup>
 
 </Project>
