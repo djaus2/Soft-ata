@@ -3,8 +3,8 @@
 ## Updates
 = Major cleanup and restoration of Arduino Sketch [/code/Softata](/code/Softata) to repsotory
   - The SoftataLib for Blaozr or Console are same but the Blockly one is different becuase of Session issues.
-    - Blaozr or Console use [/code/SoftataLib](/Code/SoftataLib)
-    - Blockly (SoftataWebAPI) uses [/code/SoftataLibSessioned4Blockly](/Code/SoftataLibSessioned4Blockly)
+    - Blaozr or Console use [/code/SofataLib](/code/SofataLib)
+    - Blockly (SoftataWebAPI) uses [/code/SoftataLibSessioned4Blockly](/code/SoftataLibSessioned4Blockly)
       - Main differnce is that calls to Softata for Blockly (from ASP.Net Controllers) require the Client as a parameter that has to be reconnected to using connection details (IPAddress and Port) from Session each time. Can't put the Client into the session as I found out.
   - Still 2 Do:
     - Add Displays/Misc o Blockly
