@@ -5,18 +5,21 @@ using Softata.Enums;
 using System;
 using System.Net;
 using System.Net.NetworkInformation;
-//using static Softata.SoftataLib;
+//using static Softata.softatalib;
 using Microsoft.AspNetCore.Http;
 using System.Text.Json;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Xml.Linq;
 using static Softata.SoftataLib;
-using static Softata.SoftataLib.Analog;
+//using static Softata.softatalib.Analog;
 using System.Linq.Expressions;
 using SoftataWebAPI.Data.Db;
 using SoftataWebAPI.Data;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.Net.Sockets;
+
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -29,24 +32,13 @@ namespace SoftataWebAPI.Controllers
     /// </summary>
     [Route("/")]
     [ApiController]
-    public class SoftataController(SoftataContext context, ISoftataGenCmds sharedService) : ControllerBase
+    //public class SoftataController(SoftataDbContext softataContext, ISoftataGenCmds sharedService) : ControllerBase
+    public class SoftataController: SoftataControllerCls
     {
         const int port = 4242;
-        const string ipaddressStr = "192.168.0.5";
-
-
-        private Softata.SoftataLib GetSoftataLib()
+        public SoftataController(SoftataDbContext softataContext, ISoftataGenCmds sharedService)
+            : base(softataContext, sharedService)
         {
-            return Info.SoftataLib;
-            /*
-            SoftataLib? SoftataLib =
-                SessionExtensions.Get<SoftataLib>(HttpContext.Session, "SoftataLib");
-            if (SoftataLib == null)
-            {
-                SoftataLib = new SoftataLib();
-                SessionExtensions.Set(HttpContext.Session, "SoftataLib", SoftataLib);
-            }
-            return SoftataLib;*/
         }
 
         [Route("AddDevice")]
@@ -59,7 +51,7 @@ namespace SoftataWebAPI.Controllers
                 .Where(kvp => kvp.Key.ToLower().Contains("setupdefault"))
                 .Select(kvp => kvp.Value);
             byte subCmd = (byte)values.FirstOrDefault();
-            string response = Info.SoftataLib.SendTargetCommand((byte)cmdTarget, 1, subCmd, (byte)deviceIndex);
+            string response = softatalib.SendTargetCommand((byte)cmdTarget,Client, 1, subCmd, (byte)deviceIndex);
             return Ok(response);
             //subCmd = GetGenericCmdIndex("setupdefault", GenericCommands);
             //result = softatalib.SendTargetCommand(cmdTarget, 1, subCmd, (byte)TargetDevice.Index);
@@ -78,35 +70,35 @@ namespace SoftataWebAPI.Controllers
         [HttpPost]
         public IActionResult Start(string ipAddress = "0.tcp.ngrok.io", int _port = port)
         {
-            //SoftataLib SoftataLib = GetSoftataLib();
-            bool result = _Connect(ipaddressStr, _port);
-            if (result)
+            //softatalib softatalib = Getsoftatalib();
+            _client= _Connect(ipAddress, _port);
+            if (_client!=null)
             {
-
-                string beginValue = Info.SoftataLib.SendMessageCmd("Begin");
+                string keepAlive = Get("KeepAlive");
+                string beginValue = Get("Begin");
                 if (beginValue == "Ready")
                 {
                     string OKresult = $"Connected to {ipAddress}:{_port} and Ready";
-                    string value = Info.SoftataLib.SendMessageCmd("Version");
+                    string value = Get("Version");
                     OKresult += $"\nSoftata Version:{value}";
                     ///////////////////////////////////
-                    string cmdsOffset = Info.SoftataLib.SendMessageCmd("Soffset");
+                    string cmdsOffset = Get("Soffset");
                     if (int.TryParse(cmdsOffset, out int _offset))
                     {
-                        Info.SoftataLib.Offset = _offset; //Should be 0xf0
+                        softatalib.Offset = _offset; //Should be 0xf0
+                        HttpContext.Session.Set<int?>("OFFSET",_offset);
                         Console.WriteLine($"CommandsOffset: {_offset}");
                     }
 
-                    sharedService.ReadSoftataDataDb(context);
+                    sharedService.ReadSoftataDataDb(softataContext);
 
+                    string ack = Get("Ack");
                     OKresult += $"\n{value}";
-                    var connection = new Tuple<string, int>(ipAddress, _port);
-                    HttpContext.Session.Set<Tuple<string, int>>("ConnectionDetails", connection);
                     return Ok(OKresult);
                 }
                 else
                 {
-                    Info.SoftataLib.Disconnect();
+                    softatalib.Disconnect();
                     return BadRequest($"Connected to {ipAddress}:{_port} but Begin not ready. Disconnecting");
                 }
             }
@@ -126,7 +118,7 @@ namespace SoftataWebAPI.Controllers
         /// <returns>IActionResult(Ok or BadRequest)</returns>
         [Route("NgrokStart")]
         [HttpPost]
-        public IActionResult NgrokStartDb(int ngrokIndex = 0, int _port = port)
+        public IActionResult NgrokStart(int ngrokIndex = 0, int _port = port)
         {
             string ipAddress = $"{ngrokIndex}.tcp.ngrok.io";
             return Start(ipAddress, _port);
@@ -138,7 +130,7 @@ namespace SoftataWebAPI.Controllers
         /// </summary>
         /// <returns>IActionResult(Ok or BadRequest)</returns>
         // POST api/<SoftataController>
-        [Route("StartSessionD")]
+        [Route("StartSession")]
         [HttpPost]
         public IActionResult StartSession()
         {
@@ -169,18 +161,6 @@ namespace SoftataWebAPI.Controllers
             return BadRequest("No or invalid Connection Details");
         }
 
-        private bool _Connect(string ipAddress, int _port)
-        {
-            //SoftataLib SoftataLib = GetSoftataLib();
-            bool result = Info.SoftataLib.Connect(ipAddress, _port);
-            //SessionExtensions.Set(HttpContext.Session, "SoftataLib", SoftataLib);
-            if (result)
-            {
-                return true;
-            }
-            else
-                return false;
-        }
 
         /// <summary>
         /// Connect to the Pico W Server (only). No Begin command is sent.
@@ -193,8 +173,8 @@ namespace SoftataWebAPI.Controllers
         [HttpPost]
         public IActionResult Connect(string ipAddress = "192.168.0.5", int _port = port)
         {
-            //SoftataLib SoftataLib = GetSoftataLib();
-            if (_Connect(ipAddress, _port))
+            //softatalib softatalib = Getsoftatalib();
+            if (_Connect(ipAddress, _port)!=null)
             {
                 return Ok($"Connected to {ipAddress}:{_port}");
             }
@@ -267,7 +247,7 @@ namespace SoftataWebAPI.Controllers
 
 
 
-        List<string> Commands = new List<string> { "Begin", "End", "Devices", "Reset", "Version", "Null" };
+        List<string> Commands = new List<string> { "Begin", "End", "Devices", "Reset", "Version", "Null" , "Soffset" , "KeepAlive", "Ack", "TSessioned", "UnSessioned"};
 
         /// <summary>
         /// Send a simple command to the server
@@ -277,16 +257,22 @@ namespace SoftataWebAPI.Controllers
         [HttpGet("{cmd}")]
         public string Get(string cmd)
         {
-            //SoftataLib SoftataLib = GetSoftataLib();
+            //softatalib softatalib = Getsoftatalib();
             // This is a "fix". The browser is looking for a favicon.ico file
             // There isn't one
+            if(cmd == "favicon.ico")
+                return "";
             if (!Commands.Contains(cmd))
                 return "";
-            string value = Info.SoftataLib.SendMessageCmd(cmd);
+            string value = softatalib.SendMessageCmd(cmd,Client);
             return value;
         }
 
-
+        /// <summary>
+        /// Validate an IPAddress
+        /// </summary>
+        /// <param name="ipString">The IpAddress string</param>
+        /// <returns></returns>
         private static bool ValidateIPv4(string ipString)
         {
             // 15 is the max length of an IP address (xxx.xxx.xxx.xxx)
@@ -327,8 +313,7 @@ namespace SoftataWebAPI.Controllers
         [HttpPost]
         public IActionResult SetPicoShieldMode(RPiPicoMode mode = RPiPicoMode.groveShield)
         {
-            Softata.SoftataLib SoftataLib = GetSoftataLib();
-            bool result = Info.SoftataLib.SetPicoShieldMode(mode);
+            bool result = softatalib.SetPicoShieldMode(mode);
             return Ok($"Set Pico Mode {mode}");
         }
 
@@ -349,8 +334,8 @@ namespace SoftataWebAPI.Controllers
         [HttpPost]
         public IActionResult SendMessage(int msgOrDeviceType, byte pin = 0xff,int state = 0xff  , string expect="OK:", int other = 0xff, byte[]? Data = null)
         {
-            //SoftataLib SoftataLib = GetSoftataLib();
-            string result = Info.SoftataLib.SendMessage((Commands)msgOrDeviceType, (byte)pin, (byte)state, expect, (byte)other ,Data);
+            
+            string result = softatalib.SendMessage(Offset + ((Commands)msgOrDeviceType), Client, (byte)pin, (byte)state, expect, (byte)other ,Data);
             if(result != "Reset")
             {
                 return Ok(result);

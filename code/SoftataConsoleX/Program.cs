@@ -221,8 +221,8 @@ namespace SoftataBasic
 
                     if (!connected)
                     {
-                        bool res = softatalib.Connect(IpAddress, Port);
-                        if (!res)
+                        bool result = softatalib.Connect(IpAddress, Port);
+                        if (!result)
                         {
                             Console.WriteLine($"Failed to connect to {IpAddress}:{Port}");
                             Console.WriteLine("Press [Enter] to try again or [Q] to quit");

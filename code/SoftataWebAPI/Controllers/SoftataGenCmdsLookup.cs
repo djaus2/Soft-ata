@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Text;
 using SoftataWebAPI.Data;
+using SoftataWebAPI.Data.Db;
 
 namespace SoftataWebAPI.Controllers
 {
@@ -11,9 +12,12 @@ namespace SoftataWebAPI.Controllers
     /// </summary>
     [Route("/Softata/Lu")]
     [ApiController]
-    public class SoftataGenCmdsLookup(ISoftataGenCmds sharedService) : ControllerBase
+    public class SoftataGenCmdsLookup : SoftataControllerCls
     {
-        private readonly ISoftataGenCmds _sharedService = sharedService;
+        public SoftataGenCmdsLookup(SoftataDbContext softataContext, ISoftataGenCmds sharedService)
+            : base(softataContext, sharedService)
+        {
+        }
 
         /// <summary>
         /// Look up the Generic Command Index

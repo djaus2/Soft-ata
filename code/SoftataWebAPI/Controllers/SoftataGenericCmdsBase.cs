@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SoftataWebAPI.Data;
 using SoftataWebAPI.Data.Db;
+using System.Net.Sockets;
 using System.Text;
 
 namespace SoftataWebAPI.Controllers 
@@ -12,12 +13,16 @@ namespace SoftataWebAPI.Controllers
     /// </summary>
     [Route("/Softata/Indx")]
     [ApiController]
-    public class SoftataGenericCmdsBase(ISoftataGenCmds sharedService) : ControllerBase
+    public class SoftataGenericCmdsBase: SoftataControllerCls
     {
-        /// <summary>
-        /// Service for SoftataGenericCmds that shares ActionDeviceCmdwithByteArrayParams service to other controllers
-        /// </summary>
-        private readonly ISoftataGenCmds _sharedService = sharedService;
+
+        const int port = 4242;
+
+
+        public SoftataGenericCmdsBase(SoftataDbContext softataContext, ISoftataGenCmds sharedService)
+         : base(softataContext, sharedService)
+        {
+        }
 
 
         /// <summary>
@@ -34,7 +39,7 @@ namespace SoftataWebAPI.Controllers
         {
             var dictionary = Info.GenericCmds[ideviceType];
             byte subCmd =  (byte)cmd;
-            string response = Info.SoftataLib.SendTargetCommand((byte)ideviceType, 1, subCmd);
+            string response = softatalib.SendTargetCommand((byte)ideviceType, Client, 1, subCmd);
             return Ok(response);
         }
 
@@ -51,7 +56,7 @@ namespace SoftataWebAPI.Controllers
         [HttpPost]
         public IActionResult ActionDeviceCmdNoParams(int ideviceType, int linkedListNo, int subCmd)
         {
-            string result = _sharedService.ActionDeviceCmdwithByteArrayParams(ideviceType, linkedListNo, subCmd);
+            string result = sharedService.ActionDeviceCmdwithByteArrayParams(ideviceType, HttpContext, Client, linkedListNo, subCmd);
             return Ok(result);
         }
 
@@ -69,7 +74,7 @@ namespace SoftataWebAPI.Controllers
         [HttpPost]
         public IActionResult ActionDeviceCmdwithByteParam(int ideviceType, int linkedListNo, int subCmd, byte param)
         {
-            string result = _sharedService.ActionDeviceCmdwithByteArrayParams(ideviceType, linkedListNo, subCmd, new byte[] {param});
+            string result = sharedService.ActionDeviceCmdwithByteArrayParams(ideviceType, HttpContext, Client, linkedListNo, subCmd, new byte[] {param});
             return Ok(result);
         }
 
@@ -96,7 +101,7 @@ namespace SoftataWebAPI.Controllers
             }
             else
                 bytes = txtbytes;
-            string result = _sharedService.ActionDeviceCmdwithByteArrayParams(ideviceType, linkedListNo, subCmd, bytes);
+            string result = sharedService.ActionDeviceCmdwithByteArrayParams(ideviceType, HttpContext, Client, linkedListNo, subCmd, bytes);
             return Ok(result);
         }
 
@@ -114,7 +119,7 @@ namespace SoftataWebAPI.Controllers
         public IActionResult ActionDeviceCmdwithCSVListofParams(int ideviceType, int linkedListNo, int subCmd, string csv)
         {
             byte[] bytes = string.IsNullOrWhiteSpace(csv) ? new byte[0] : csv.Split(',').Select(byte.Parse).ToArray();
-            string result = _sharedService.ActionDeviceCmdwithByteArrayParams(ideviceType, linkedListNo, subCmd, bytes);
+            string result = sharedService.ActionDeviceCmdwithByteArrayParams(ideviceType, HttpContext, Client, linkedListNo, subCmd, bytes);
             return Ok(result);
         }
 
@@ -131,7 +136,7 @@ namespace SoftataWebAPI.Controllers
         [HttpPost]
         public IActionResult ActionDeviceCmdwithByteArrayParams(int ideviceType, int linkedListNo, int subCmd, [FromQuery]byte[]? paramz=null)
         {
-            string response = _sharedService.ActionDeviceCmdwithByteArrayParams( ideviceType, linkedListNo, subCmd,  paramz);
+            string response = sharedService.ActionDeviceCmdwithByteArrayParams( ideviceType, HttpContext, Client, linkedListNo, subCmd,  paramz);
             return Ok(response);
         }
     }

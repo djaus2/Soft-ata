@@ -8,7 +8,7 @@ using SoftataWebAPI.Data.Db;
 
 namespace SoftataWebAPI.Migrations
 {
-    [DbContext(typeof(SoftataContext))]
+    [DbContext(typeof(SoftataDbContext))]
     partial class SoftataContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

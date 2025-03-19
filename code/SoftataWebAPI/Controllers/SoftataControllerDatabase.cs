@@ -12,10 +12,11 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Xml.Linq;
 using static Softata.SoftataLib;
-using static Softata.SoftataLib.Analog;
+//using static Softata.SoftataLib.Analog;
 using System.Linq.Expressions;
 using SoftataWebAPI.Data.Db;
 using SoftataWebAPI.Data;
+using System.Net.Sockets;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -28,13 +29,18 @@ namespace SoftataWebAPI.Controllers
     /// </summary>
     [Route("/Database")]
     [ApiController]
-    public class SoftataDatabaseController(SoftataContext context, ISoftataGenCmds sharedService) : ControllerBase
+    public class SoftataDatabaseController : SoftataControllerCls
     {
+        public SoftataDatabaseController(SoftataDbContext softataContext, ISoftataGenCmds sharedService)
+            : base(softataContext, sharedService)
+        {
+        }
+
         [Route("SoftataClearDb")]
         [HttpGet]
         public IActionResult SoftataClearDb(int pin)
         {
-            if (sharedService.SoftataClearDb(context, pin))
+            if (sharedService.SoftataClearDb(softataContext, pin))
                 return Ok("SoftataClearDb");
             else
                 return BadRequest("Failed-ClearSoftataDb");
@@ -43,7 +49,7 @@ namespace SoftataWebAPI.Controllers
         /// <summary>
         /// Clears the database tables
         /// Reads data from Pico: SoftataGetDatafrmPico()
-        /// Saves data to database
+        /// Saves data to databa
         /// </summary>
         /// <param name="pin"></param>
         /// <returns></returns>
@@ -51,7 +57,8 @@ namespace SoftataWebAPI.Controllers
         [HttpGet]
         public IActionResult SoftataCreateDb(int pin)
         {
-            if(sharedService.SoftataCreateDb(context, pin))
+            sharedService.SoftataGetDatafrmPico(HttpContext, Client);
+            if (sharedService.SoftataCreateDb(softataContext, pin, HttpContext))
                 return Ok("GotSoftataData");
             else
                 return BadRequest("Failed-GotSoftataData");
@@ -62,7 +69,7 @@ namespace SoftataWebAPI.Controllers
         [HttpGet]
         public IActionResult SoftataReadDb()
         {
-            if(sharedService.ReadSoftataDataDb(context))
+            if(sharedService.ReadSoftataDataDb(softataContext))
                 return Ok("SoftataReadDb");
             else
                 return BadRequest("Failed-SoftataReadDb");

@@ -10,7 +10,7 @@ namespace SoftataWebAPI.Data.Db
         /// Clear the Database
         /// </summary>
         /// <param name="context"></param>
-        public static void ClearDb(SoftataContext context)
+        public static void ClearDb(SoftataDbContext context)
         {
 
             List<string> Tables = new List<string> { "Devices", "GenericCommands", "dTypes" };
@@ -32,7 +32,7 @@ namespace SoftataWebAPI.Data.Db
         /// Create the database and populate it with the dictionaries in Info
         /// Info data needs to be read from Pico W - Softata sketch first </summary>
         /// <param name="context">SoftataContext</param>
-        public static void CreateDb(SoftataContext context)
+        public static void CreateDb(SoftataDbContext context)
         {
             context.Database.EnsureCreated();
             ClearDb(context);
@@ -97,7 +97,7 @@ namespace SoftataWebAPI.Data.Db
         /// Read the Database and populate the dictionaries in Info
         /// </summary>
         /// <param name="context">SoftataContext</param>
-        public static void ReadDb(SoftataContext context)
+        public static void ReadDb(SoftataDbContext context)
         {
             Info.TargetDeviceTypes = new Dictionary<int, string>();
             Info.TargetDevices = new Dictionary<int, Dictionary<int, string>>();

@@ -1,5 +1,7 @@
-﻿using SoftataWebAPI.Controllers;
+﻿using Softata;
+using SoftataWebAPI.Controllers;
 using SoftataWebAPI.Data.Db;
+using System.Net.Sockets;
 
 namespace SoftataWebAPI.Data
 {
@@ -17,21 +19,31 @@ namespace SoftataWebAPI.Data
         /// <param name="subCmd">Index of the generic command with the device type subset</param>
         /// <param name="paramz">Nullable array of byte parameters</param>
         /// <returns>Reposnse from RPi Pico w</returns>
-        string ActionDeviceCmdwithByteArrayParams(int ideviceType, int linkedListNo, int subCmd, byte[]? paramz = null);
+        string ActionDeviceCmdwithByteArrayParams(int ideviceType, HttpContext HttpContext, Socket? client, int linkedListNo, int subCmd, byte[]? paramz = null);
+
 
         //////////////////////////////////////////////
 
-        void GetDeviceTypesfrmPico();
-        void GetDeviceTypesGenericCommandsfrmPico();
-        void GetDeviceTypesDevicesfrmPico();
+        void GetDeviceTypesfrmPico(HttpContext HttpContext, Socket? Client);
+        void GetDeviceTypesGenericCommandsfrmPico(HttpContext HttpContext, Socket? Client);
+        void GetDeviceTypesDevicesfrmPico(HttpContext HttpContext, Socket? Client);
         /////////////////////////////
-        void SoftataGetDatafrmPico();
+        void SoftataGetDatafrmPico(HttpContext HttpContext,Socket? Client);
 
         //////////////////////////////////////////////
 
-        bool SoftataClearDb(SoftataContext context, int pin);
-        bool SoftataCreateDb(SoftataContext context, int pin);
-        bool ReadSoftataDataDb(SoftataContext context);
+        bool SoftataClearDb(SoftataDbContext context, int pin);
+        bool SoftataCreateDb(SoftataDbContext context, int pin, HttpContext HttpContext);
+        bool ReadSoftataDataDb(SoftataDbContext context);
+
+        Softata.SoftataLib GetSoftata(HttpContext HttpContext);
+        //bool UpdateSoftata(HttpContext HttpContext, Softata.SoftataLib softatlib);
+
+        bool SetClient(HttpContext HttpContext, Socket client);
+
+        void RemoveClient(HttpContext HttpContext);
+
+        Socket? GetClient(HttpContext HttpContext);
 
     }
 
@@ -43,6 +55,39 @@ namespace SoftataWebAPI.Data
     /// </summary>
     public class SharedService : ISoftataGenCmds
     {
+
+        public Softata.SoftataLib GetSoftata(HttpContext HttpContext)
+        {
+
+            Softata.SoftataLib? softatlib = HttpContext.Session.Get<Softata.SoftataLib>("SOFT");
+            if (softatlib == null)
+            {
+                softatlib = new Softata.SoftataLib();
+                HttpContext.Session.Set<object>("SOFT", softatlib);
+            }
+            return softatlib;
+        }
+
+        public bool SetClient(HttpContext HttpContext, Socket client)
+        {
+            if (client == null)
+                return false;
+            HttpContext.Session.Set<Socket>("CLIENT", client);
+            return true;
+        }
+
+        public Socket? GetClient(HttpContext HttpContext)
+        {
+            return HttpContext.Session.Get<Socket>("CLIENT");
+        }
+
+        public void RemoveClient(HttpContext HttpContext)
+        {
+            if(HttpContext.Session.Get<Socket>("CLIENT") != null)
+                HttpContext.Session.Remove("CLIENT");
+        }
+
+        public Softata.SoftataLib softatalib { get; set; }
         /// <summary>
         /// All the generic commands are sent to the device using this method
         /// </summary>
@@ -51,16 +96,18 @@ namespace SoftataWebAPI.Data
         /// <param name="subCmd">Index of the generic command with the device type subset</param>
         /// <param name="paramz">Nullable array of byte parameters</param>
         /// <returns>Reposnse from RPi Pico w</returns>
-        public string ActionDeviceCmdwithByteArrayParams(int ideviceType, int linkedListNo, int subCmd, byte[]? paramz = null)
+        public string ActionDeviceCmdwithByteArrayParams(int ideviceType, HttpContext HttpContext, Socket? client, int linkedListNo, int subCmd, byte[]? paramz = null)
         {
-            string response = Info.SoftataLib.SendTargetCommand((byte)ideviceType, 1, (byte)subCmd, (byte)0xff, (byte)linkedListNo, paramz);
+            softatalib = GetSoftata(HttpContext);
+            string response = softatalib.SendTargetCommand((byte)ideviceType, client, 1, (byte)subCmd, (byte)0xff, (byte)linkedListNo, paramz);
             return response;
         }
 
-        public void GetDeviceTypesfrmPico()
+        public void GetDeviceTypesfrmPico(HttpContext HttpContext, Socket? Client)
         {
+            softatalib = GetSoftata(HttpContext);
             Info.TargetDeviceTypes = new Dictionary<int, string>();
-            string deviceTypesCSV = Info.SoftataLib.SendMessageCmd("Devices");
+            string deviceTypesCSV = softatalib.SendMessageCmd("Devices", Client);
             string[] parts = deviceTypesCSV.Split(":");
             List<string> devicesTypes = parts[1].Split(",").ToList();
             var deviceTypelist =
@@ -72,15 +119,16 @@ namespace SoftataWebAPI.Data
             }
         }
 
-        public void GetDeviceTypesGenericCommandsfrmPico()
+        public void GetDeviceTypesGenericCommandsfrmPico(HttpContext HttpContext, Socket? Client)
         {
+            softatalib = GetSoftata(HttpContext);
             Info.GenericCmds = new Dictionary<int, Dictionary<string, int>>();
             foreach (var dt in Info.TargetDeviceTypes)
             {
                 try
                 {
                     byte subcmd = 0;//getGenericCommands
-                    string cmdsCSV = Info.SoftataLib.SendTargetCommand((byte)(dt.Key), 0, subcmd);
+                    string cmdsCSV = softatalib.SendTargetCommand((byte)(dt.Key), Client,0, subcmd);
                     if (cmdsCSV.Contains(":"))
                     {
                         string[] parts = cmdsCSV.Split(":");
@@ -101,8 +149,9 @@ namespace SoftataWebAPI.Data
             }
         }
 
-        public void GetDeviceTypesDevicesfrmPico()
+        public void GetDeviceTypesDevicesfrmPico(HttpContext HttpContext, Socket? Client)
         {
+            softatalib = GetSoftata(HttpContext);
             Info.TargetDevices = new Dictionary<int, Dictionary<int, string>>();
             Thread.Sleep(200);
             foreach (var dt in Info.TargetDeviceTypes)
@@ -110,7 +159,7 @@ namespace SoftataWebAPI.Data
                 try
                 {
                     byte subCmd = 1;//getDevices
-                    string DevicesCSV = Info.SoftataLib.SendTargetCommand((byte)(dt.Key), 0, subCmd);
+                    string DevicesCSV = softatalib.SendTargetCommand((byte)(dt.Key), Client, 0, subCmd);
                     if (DevicesCSV.Contains(":"))
                     {
                         string[] parts2 = DevicesCSV.Split(":");
@@ -130,14 +179,14 @@ namespace SoftataWebAPI.Data
             }
         }
 
-        public void SoftataGetDatafrmPico()
+        public void SoftataGetDatafrmPico(HttpContext HttpContext, Socket? Client)
         {
-            GetDeviceTypesfrmPico();
-            GetDeviceTypesDevicesfrmPico();
-            GetDeviceTypesGenericCommandsfrmPico();
+            GetDeviceTypesfrmPico(HttpContext, Client);
+            GetDeviceTypesDevicesfrmPico(HttpContext, Client);
+            GetDeviceTypesGenericCommandsfrmPico( HttpContext, Client);
         }
 
-        public bool SoftataClearDb(SoftataContext context, int pin)
+        public bool SoftataClearDb(SoftataDbContext context, int pin)
         {
             try
             {
@@ -155,11 +204,19 @@ namespace SoftataWebAPI.Data
             }
         }
 
-        public bool SoftataCreateDb(SoftataContext context, int pin)
+        /// <summary>
+        /// Create the database and populate it with the dictionaries in Info
+        /// Requires SoftataGetDatafrmPico(HttpContext,Client0 to have been called first
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="pin" ></param>
+        /// <param name="HttpContext"></param>
+        /// <returns></returns>
+        public bool SoftataCreateDb(SoftataDbContext context, int pin, HttpContext HttpContext)
         {
             try
             {
-                SoftataGetDatafrmPico();
+                ///SoftataGetDatafrmPico(HttpContext,Client); //For simplicity assume has been done
                 if (pin == 1370)
                 {
                     var ctx = context;
@@ -174,7 +231,7 @@ namespace SoftataWebAPI.Data
             }
         }
 
-        public bool ReadSoftataDataDb(SoftataContext context)
+        public bool ReadSoftataDataDb(SoftataDbContext context)
         {
             try
             {
@@ -187,5 +244,6 @@ namespace SoftataWebAPI.Data
                 return false;
             }
         }
+
     }
 }

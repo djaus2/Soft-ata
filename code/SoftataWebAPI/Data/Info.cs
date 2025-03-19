@@ -1,6 +1,7 @@
 ﻿using System.Collections.Specialized;
 using System;
 using System.Collections.Generic;
+using System.Reflection.Metadata.Ecma335;
 
 namespace SoftataWebAPI.Data
 {
@@ -13,7 +14,7 @@ namespace SoftataWebAPI.Data
     /// </summary>
     public static class Info
     {
-        public static Softata.SoftataLib SoftataLib { get; set; } = new Softata.SoftataLib();
+        //public static Softata.SoftataLib SoftataLib { get; set; } = new Softata.SoftataLib();
 
         //public static Softata.SoftataLib.CommandsPortal commandsPortal {get;set;}
 
@@ -22,6 +23,8 @@ namespace SoftataWebAPI.Data
         public static Dictionary<int, Dictionary<string, int>> GenericCmds { get; set; }
         public static Dictionary<int, Dictionary<string, int>> UseGenericCmds { get; set; }
         public static Dictionary<int, Dictionary<int, string>> TargetDevices { get; set; }
+
+        //public static Softata.SoftataLib SoftataLib { get => GetSoftatLib(); }
 
 
         public static Queue<KeyValuePair<string, int>> NameValueQ { get; set; } = new Queue<KeyValuePair<string, int>>();

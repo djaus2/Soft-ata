@@ -22,7 +22,7 @@ namespace SoftataWebAPI
             builder.Services.AddEndpointsApiExplorer();
 
             builder.Services.AddDistributedMemoryCache();
-            builder.Services.AddDbContext<SoftataWebAPI.Data.Db.SoftataContext>(options =>
+            builder.Services.AddDbContext<SoftataWebAPI.Data.Db.SoftataDbContext>(options =>
             {
                 options.UseSqlite(
                     builder.Configuration.GetConnectionString("DefaultConnection"));

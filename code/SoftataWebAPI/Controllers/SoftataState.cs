@@ -10,14 +10,12 @@ using System;
 using System.Net;
 using System.Net.NetworkInformation;
 using static Softata.SoftataLib;
-using static Softata.SoftataLib.Analog;
+//using static Softata.SoftataLib.Analog;
 
 
 
 namespace SoftataWebAPI.Controllers
 {
-
-
 
     /// <summary>
     /// An API controller for SoftataLib that
@@ -26,8 +24,16 @@ namespace SoftataWebAPI.Controllers
     /// </summary>
     [Route("/")]
     [ApiController]
-    public class SoftataState : ControllerBase
+    public class SoftataState(ISoftataGenCmds sharedService) : ControllerBase
     {
+        private Softata.SoftataLib softatalib
+        {
+            get
+            {
+                return sharedService.GetSoftata(HttpContext);
+            }
+        }
+
         /// <summary>
         /// Get state of SoftataLib.Aval
         /// </summary>
@@ -37,7 +43,7 @@ namespace SoftataWebAPI.Controllers
         [HttpGet]
         public object GetAValue(string key)
         {
-            var lib = Info.SoftataLib.GetSoftataLib(key);
+            var lib = softatalib.GetSoftataLib(key);
             if (lib != null)
                 return lib.GetAvalue();
             else
@@ -54,7 +60,7 @@ namespace SoftataWebAPI.Controllers
         [HttpPost]
         public IActionResult SetAvalue(string key, object aval)
         {
-            var lib = Info.SoftataLib.GetSoftataLib(key);
+            var lib = softatalib.GetSoftataLib(key);
             if (lib != null)
             {
                 lib.SetAvalue(aval);
@@ -75,7 +81,7 @@ namespace SoftataWebAPI.Controllers
         [HttpPost]
         public IActionResult UpdateAvalue(string key, object aval)
         {
-            var lib = Info.SoftataLib.GetSoftataLib(key);
+            var lib = softatalib.GetSoftataLib(key);
             if (lib != null)
             {
                 lib.SetAvalue(aval);
@@ -93,7 +99,7 @@ namespace SoftataWebAPI.Controllers
         [HttpGet]
         public string NewLib()
         {
-            string guid = Info.SoftataLib.NewSoftataLib();
+            string guid = softatalib.NewSoftataLib();
             return guid;
         }
 
@@ -106,10 +112,10 @@ namespace SoftataWebAPI.Controllers
         [HttpDelete]
         public IActionResult DeleteState(string key)
         {
-            var lib = Info.SoftataLib.GetSoftataLib(key);
+            var lib = softatalib.GetSoftataLib(key);
             if (lib != null)
             {
-                if (Info.SoftataLib.Delete(key))
+                if (softatalib.Delete(key))
                 {
                     return Ok();
                 }
@@ -122,14 +128,14 @@ namespace SoftataWebAPI.Controllers
         }
 
         /// <summary>
-        /// Create new SoftataLib instance
+        /// Clear SoftataLib instance
         /// </summary>
         /// <returns>Index of instance</returns>
         [Route("ClearAll")]
         [HttpDelete]
         public void ClearAll()
         {
-            Info.SoftataLib.ClearAll();
+            softatalib.ClearAll();
         }
         //////////////////////////////////////////////////////////
         //Using Session for state example

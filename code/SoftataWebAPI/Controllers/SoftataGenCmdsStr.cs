@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Text;
 using SoftataWebAPI.Data;
+using System.Net.Sockets;
+using SoftataWebAPI.Data.Db;
 
 namespace SoftataWebAPI.Controllers
 {
@@ -11,9 +13,16 @@ namespace SoftataWebAPI.Controllers
     /// </summary>
     [Route("/Softata/Str")]
     [ApiController]
-    public class SoftataGenCmdsStr(ISoftataGenCmds sharedService) : ControllerBase
+    public class SoftataGenCmdsStr : SoftataControllerCls
     {
-        private readonly ISoftataGenCmds _sharedService = sharedService;
+
+        const int port = 4242;
+
+        public SoftataGenCmdsStr(SoftataDbContext softataContext, ISoftataGenCmds sharedService)
+         : base(softataContext, sharedService)
+        {
+        }
+
 
         /// <summary>
         /// Look up the Generic Command Index
@@ -40,7 +49,7 @@ namespace SoftataWebAPI.Controllers
         /// <returns>Instance index of device type Linked List Id</returns>
         [Route("SetupDeviceDefault")]
         [HttpPost]
-        public IActionResult SetupDeviceDefault(Device device)
+        public IActionResult SetupDeviceDefault(Data.Device device)
         {
             System.Range Range = new Range(0,7);
 
@@ -49,7 +58,7 @@ namespace SoftataWebAPI.Controllers
             var dictionary = Info.GenericCmds[(int)devType];
             string cmd = "setupdefault";
             byte subCmd = LookUpGenericCmd(devType, cmd);
-            string response = Info.SoftataLib.SendTargetCommand((byte)devType, 1, subCmd, dev);
+            string response = softatalib.SendTargetCommand((byte)(Offset + ((byte)devType)), Client,1, subCmd, dev);
             return Ok(response);
         }
 
@@ -64,13 +73,13 @@ namespace SoftataWebAPI.Controllers
         [HttpPost]
         public IActionResult SetupDeviceDefaultLookup(Device2Lookup device2Lookup)
         {
-            Device device = device2Lookup.Device;
+            Data.Device device = device2Lookup.Device;
             DeviceType devType = device.DeviceType;
             var dev = (byte)device.DeviceId;
             var dictionary = Info.GenericCmds[(int)devType];
             string cmd = "setupdefault";
             byte subCmd = LookUpGenericCmd(devType, cmd);
-            string response = Info.SoftataLib.SendTargetCommand((byte)devType, 1, subCmd, dev);
+            string response = softatalib.SendTargetCommand((byte)(Offset + ((byte)devType)), Client, 1, subCmd, dev);
             return Ok(response);
         }
 
@@ -86,7 +95,7 @@ namespace SoftataWebAPI.Controllers
         {
             byte subCmd = command2Lookup.CmdId;
             int devType = (byte)command2Lookup.DeviceTypeId;
-            string response = Info.SoftataLib.SendTargetCommand((byte)devType, 1, subCmd);
+            string response = softatalib.SendTargetCommand((byte)(Offset + ((byte)devType)), Client,1, subCmd);
             return Ok(response);
         }
 
@@ -102,11 +111,9 @@ namespace SoftataWebAPI.Controllers
         public IActionResult ActionDeviceCmdNoParams(DeviceInstance deviceInstance, string cmd)
         {
             byte subCmd = LookUpGenericCmd(deviceInstance.DeviceType, cmd);
-            string result =  _sharedService.ActionDeviceCmdwithByteArrayParams((int)deviceInstance.DeviceType, deviceInstance.ListLinkId, subCmd);
+            string result =  sharedService.ActionDeviceCmdwithByteArrayParams(Offset + (int)deviceInstance.DeviceType, HttpContext, Client, deviceInstance.ListLinkId, subCmd);
             return Ok(result);
         }
-
-        
 
         /// <summary>
         /// Action a Generic Command on a Device instance
@@ -121,7 +128,7 @@ namespace SoftataWebAPI.Controllers
         public IActionResult ActionDeviceCmdwithByteParam(DeviceInstance deviceInstance, string cmd, byte param)
         {
             byte subCmd = LookUpGenericCmd(deviceInstance.DeviceType, cmd);
-            string result = _sharedService.ActionDeviceCmdwithByteArrayParams((int)deviceInstance.DeviceType, deviceInstance.ListLinkId, subCmd, new byte[] {param});
+            string result = sharedService.ActionDeviceCmdwithByteArrayParams(Offset + (int)deviceInstance.DeviceType, HttpContext, Client, deviceInstance.ListLinkId, subCmd, new byte[] {param});
             return Ok(result);
         }
 
@@ -149,7 +156,7 @@ namespace SoftataWebAPI.Controllers
             }
             else
                 bytes = txtbytes;
-            string result = _sharedService.ActionDeviceCmdwithByteArrayParams((int)deviceInstance.DeviceType, deviceInstance.ListLinkId, subCmd, bytes);
+            string result = sharedService.ActionDeviceCmdwithByteArrayParams(Offset + (int)deviceInstance.DeviceType, HttpContext, Client, deviceInstance.ListLinkId, subCmd, bytes);
             return Ok(result);
         }
 
@@ -168,7 +175,7 @@ namespace SoftataWebAPI.Controllers
         {
             byte subCmd = LookUpGenericCmd(deviceInstance.DeviceType, cmd);
             byte[] bytes = string.IsNullOrWhiteSpace(csv) ? new byte[0] : csv.Split(',').Select(byte.Parse).ToArray();
-            string result = _sharedService.ActionDeviceCmdwithByteArrayParams((int)deviceInstance.DeviceType, deviceInstance.ListLinkId, subCmd, bytes);
+            string result = sharedService.ActionDeviceCmdwithByteArrayParams(Offset + (int)deviceInstance.DeviceType, HttpContext, Client, deviceInstance.ListLinkId, subCmd, bytes);
             return Ok(result);
         }
         /*
@@ -193,7 +200,7 @@ namespace SoftataWebAPI.Controllers
         public IActionResult ActionDeviceCmdwithByteArrayParams([FromBody] DeviceInstance deviceInstance, string cmd, [FromQuery] byte[] paramz)
         {
             byte subCmd = LookUpGenericCmd(deviceInstance.DeviceType, cmd);
-            string result = _sharedService.ActionDeviceCmdwithByteArrayParams((int)deviceInstance.DeviceType, deviceInstance.ListLinkId, subCmd, paramz);
+            string result = sharedService.ActionDeviceCmdwithByteArrayParams(Offset + (int)deviceInstance.DeviceType, HttpContext, Client, deviceInstance.ListLinkId, subCmd, paramz);
             return Ok(result);
         }
         

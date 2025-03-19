@@ -9,7 +9,7 @@ using SoftataWebAPI.Data.Db;
 
 namespace SoftataWebAPI.Migrations
 {
-    [DbContext(typeof(SoftataContext))]
+    [DbContext(typeof(SoftataDbContext))]
     [Migration("20250310033531_InitialCreate")]
     partial class InitialCreate
     {

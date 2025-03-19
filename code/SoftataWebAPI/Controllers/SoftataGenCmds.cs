@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Text;
 using SoftataWebAPI.Data;
+using System.Net.Sockets;
+using SoftataWebAPI.Data.Db;
 
 namespace SoftataWebAPI.Controllers 
 {
@@ -12,9 +14,15 @@ namespace SoftataWebAPI.Controllers
     /// </summary>
     [Route("/SoftataGenCmds")]
     [ApiController]
-    public class SoftataGenCmds(ISoftataGenCmds sharedService) : ControllerBase
+    public class SoftataGenCmds: SoftataControllerCls
     {
-        private readonly ISoftataGenCmds _sharedService = sharedService;
+        const int port = 4242;
+
+        public SoftataGenCmds(SoftataDbContext softataContext, ISoftataGenCmds sharedService)
+            : base(softataContext, sharedService)
+        {
+        }
+
 
 
         /// <summary>
@@ -31,7 +39,7 @@ namespace SoftataWebAPI.Controllers
         {
             var dictionary = Info.GenericCmds[(byte)deviceType];
             byte subCmd =  (byte)cmd;
-            string response = Info.SoftataLib.SendTargetCommand((byte)deviceType, 1, subCmd);
+            string response = softatalib.SendTargetCommand((byte)deviceType,Client, 1, subCmd);
             return Ok(response);
         }
 
@@ -47,7 +55,7 @@ namespace SoftataWebAPI.Controllers
         [HttpPost]
         public IActionResult ActionDeviceCmdNoParams(DeviceInstance deviceInstance, int subCmd)
         {
-            string result = _sharedService.ActionDeviceCmdwithByteArrayParams((int)deviceInstance.DeviceType, deviceInstance.ListLinkId, subCmd);
+            string result = sharedService.ActionDeviceCmdwithByteArrayParams(Offset + (int)deviceInstance.DeviceType,HttpContext,Client, deviceInstance.ListLinkId, subCmd);
             return Ok(result);
         }
 
@@ -64,7 +72,7 @@ namespace SoftataWebAPI.Controllers
         [HttpPost]
         public IActionResult ActionDeviceCmdwithByteParam(DeviceInstance deviceInstance, int subCmd, byte param)
         {
-            string result = _sharedService.ActionDeviceCmdwithByteArrayParams((int)deviceInstance.DeviceType, deviceInstance.ListLinkId, subCmd);
+            string result = sharedService.ActionDeviceCmdwithByteArrayParams(Offset + (int)deviceInstance.DeviceType, HttpContext, Client, deviceInstance.ListLinkId, subCmd);
             return Ok(result);
         }
 
@@ -90,7 +98,7 @@ namespace SoftataWebAPI.Controllers
             }
             else
                 bytes = txtbytes;
-            string result = _sharedService.ActionDeviceCmdwithByteArrayParams((int)deviceInstance.DeviceType, deviceInstance.ListLinkId, subCmd, bytes);
+            string result = sharedService.ActionDeviceCmdwithByteArrayParams(Offset + (int)deviceInstance.DeviceType, HttpContext, Client, deviceInstance.ListLinkId, subCmd, bytes);
             return Ok(result);
         }
     
@@ -108,7 +116,7 @@ namespace SoftataWebAPI.Controllers
         public IActionResult ActionDeviceCmdwithCSVListofParams(DeviceInstance deviceInstance, int subCmd, string csv)
         {
             byte[] bytes = string.IsNullOrWhiteSpace(csv) ? new byte[0] : csv.Split(',').Select(byte.Parse).ToArray();
-            string result = _sharedService.ActionDeviceCmdwithByteArrayParams((int)deviceInstance.DeviceType, deviceInstance.ListLinkId, subCmd, bytes);
+            string result = sharedService.ActionDeviceCmdwithByteArrayParams(Offset + (int)deviceInstance.DeviceType, HttpContext, Client, deviceInstance.ListLinkId, subCmd, bytes);
             return Ok(result);
         }
 
@@ -124,7 +132,7 @@ namespace SoftataWebAPI.Controllers
         [HttpPost]
         public IActionResult ActionDeviceCmdwithByteArrayParams([FromBody]DeviceInstance deviceInstance, int subCmd, [FromQuery]byte[]? paramz=null)
         {
-            string result = _sharedService.ActionDeviceCmdwithByteArrayParams((int)deviceInstance.DeviceType, deviceInstance.ListLinkId, subCmd, paramz);
+            string result = sharedService.ActionDeviceCmdwithByteArrayParams(Offset + (int)deviceInstance.DeviceType, HttpContext, Client, deviceInstance.ListLinkId, subCmd, paramz);
             return Ok(result);
         }
     }

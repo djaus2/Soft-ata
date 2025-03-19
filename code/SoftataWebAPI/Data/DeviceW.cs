@@ -32,7 +32,7 @@ namespace SoftataWebAPI.Data
     {
         internal bool Kontains(string a, string b)
         {
-            return a.Contains(b) || b.Contains(a);
+            return a.ToLower().Contains(b.ToLower()) || b.ToLower().Contains(a.ToLower());
         }
         public string Name { get; set; }
 
