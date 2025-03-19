@@ -1,7 +1,7 @@
 # Soft-ata Version 12.00
 
 ## Updates
-= Major cleanup and restoration of Arduino Sketch [/code/Softata](/code/Softata) to repsotory
+= Major cleanup and restoration of Arduino Sketch [/code/Softata](/code/Softata) to repository
   - The SoftataLib for Blaozr or Console are same but the Blockly one is different becuase of Session issues.
     - Blaozr or Console use [/code/SofataLib](/code/SofataLib)
     - Blockly (SoftataWebAPI) uses [/code/SofataLibSessioned4Blockly](/code/SofataLibSessioned4Blockly)
