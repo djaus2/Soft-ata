@@ -12,7 +12,9 @@
 - Figured out a way to run 2 or more Blocklies in separate Browser tabs in Producer Consumer mode using sesssion.
 - Blockly has been updaed for new Database
   - DeviceTypes,Device and Commands loaded from sqlite Database
-     - Data that was previous read from RPi Pico W
+     - Data that was previous read from RPi Pico W, this still can be done with an option.  See /Ard  blocks
+       - /SoftataController Startup block queries the sqlite database
+       - /Ard/SoftataController Startup block queries the Pico W Sketch
   - Database can be updated
   - Blocks are now Generic .. eg Instantiate a device by selecting iits device type then device etc.
 - BlazorSoftata2 nearly complete
