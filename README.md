@@ -1,10 +1,20 @@
 # Soft-ata Version 12.00
 
 ## Updates
+= Major cleanup and restoration of Arduino Sketch [/code/Softata](/code/Softata) to repository
+  - The SoftataLib for Blaozr or Console are same but the Blockly one is different becuase of Session issues.
+    - Blaozr or Console use [/code/SofataLib](/code/SofataLib)
+    - Blockly (SoftataWebAPI) uses [/code/SofataLibSessioned4Blockly](/code/SofataLibSessioned4Blockly)
+      - Main differnce is that calls to Softata for Blockly (from ASP.Net Controllers) require the Client as a parameter that has to be reconnected to using connection details (IPAddress and Port) from Session each time. Can't put the Client into the session as I found out.
+  - Still 2 Do:
+    - Add Displays/Misc o Blockly
+    - Restore Telemetry to Blockly
 - Figured out a way to run 2 or more Blocklies in separate Browser tabs in Producer Consumer mode using sesssion.
 - Blockly has been updaed for new Database
   - DeviceTypes,Device and Commands loaded from sqlite Database
-     - Data that was previous read from RPi Pico W
+     - Data that was previous read from RPi Pico W, this still can be done with an option.  See /Ard  blocks
+       - /SoftataController Startup block queries the sqlite database
+       - /Ard/SoftataController Startup block queries the Pico W Sketch
   - Database can be updated
   - Blocks are now Generic .. eg Instantiate a device by selecting iits device type then device etc.
 - BlazorSoftata2 nearly complete
