@@ -21,6 +21,8 @@ namespace SoftataWebAPI.Data
         /// <returns>Reposnse from RPi Pico w</returns>
         string ActionDeviceCmdwithByteArrayParams(int ideviceType, HttpContext HttpContext, Socket? client, int linkedListNo, int subCmd, byte[]? paramz = null);
 
+        string ActionDeviceCmdwithByteParam(int ideviceType, HttpContext HttpContext, Socket? client, int linkedListNo, int subCmd, byte param);
+
 
         //////////////////////////////////////////////
 
@@ -37,6 +39,7 @@ namespace SoftataWebAPI.Data
         bool ReadSoftataDataDb(SoftataDbContext context);
 
         Softata.SoftataLib GetSoftata(HttpContext HttpContext);
+        Softata.SoftataLib.Sensor GetSensor(HttpContext HttpContext, int index);
         //bool UpdateSoftata(HttpContext HttpContext, Softata.SoftataLib softatlib);
 
         bool SetClient(HttpContext HttpContext, Socket client);
@@ -67,6 +70,27 @@ namespace SoftataWebAPI.Data
             }
             return softatlib;
         }
+
+        /// <summary>
+        /// Get sensor via Session
+        /// </summary>
+        /// <param name="HttpContext"></param>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public Softata.SoftataLib.Sensor GetSensor(HttpContext HttpContext,int index)
+        {
+            string sensorKey = "SENSOR_" + index.ToString();
+            Softata.SoftataLib.Sensor? softatlib = HttpContext.Session.Get<Softata.SoftataLib.Sensor>(sensorKey);
+            if (softatlib == null)
+            {
+                softatlib = new Softata.SoftataLib.Sensor(GetSoftata(HttpContext));
+                HttpContext.Session.Set<object>(sensorKey, softatlib);
+            }
+            return softatlib;
+        }
+
+       
+
 
         public bool SetClient(HttpContext HttpContext, Socket client)
         {
@@ -100,6 +124,13 @@ namespace SoftataWebAPI.Data
         {
             softatalib = GetSoftata(HttpContext);
             string response = softatalib.SendTargetCommand((byte)ideviceType, client, 1, (byte)subCmd, (byte)0xff, (byte)linkedListNo, paramz);
+            return response;
+        }
+
+        public string ActionDeviceCmdwithByteParam(int ideviceType, HttpContext HttpContext, Socket? client, int linkedListNo, int subCmd, byte param)
+        {
+            softatalib = GetSoftata(HttpContext);
+            string response = softatalib.SendTargetCommand((byte)ideviceType, client, param, (byte)subCmd, (byte)0xff, (byte)linkedListNo, null);
             return response;
         }
 

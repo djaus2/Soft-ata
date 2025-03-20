@@ -124,6 +124,7 @@ namespace Softata.Enums
         groveSensor = 0xF0,
         groveDisplay = 0xF1,
         groveActuator = 0xF2,
+        groveInput = 0xF5,
         Undefined = 0xFF,
         
     }

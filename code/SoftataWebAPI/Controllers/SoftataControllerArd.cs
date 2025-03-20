@@ -332,7 +332,6 @@ namespace SoftataWebAPI.Controllers
         [HttpPost]
         public IActionResult SendMessage(int msgOrDeviceType, byte pin = 0xff,int state = 0xff  , string expect="OK:", int other = 0xff, byte[]? Data = null)
         {
-            
             string result = softatalib.SendMessage(Offset + ((Commands)msgOrDeviceType), Client, (byte)pin, (byte)state, expect, (byte)other ,Data);
             if(result != "Reset")
             {

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Softata.Enums;
 using SoftataWebAPI.Data;
 using SoftataWebAPI.Data.Db;
 using System.Net.Sockets;
@@ -87,6 +88,8 @@ namespace SoftataWebAPI.Controllers
 
             }
         }
+
+
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         #endregion

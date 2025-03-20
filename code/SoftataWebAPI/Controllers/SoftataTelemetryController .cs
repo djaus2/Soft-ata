@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Softata;
+using SoftataWebAPI.Data.Db;
+using SoftataWebAPI.Data;
 using System.Diagnostics;
+using System.Net.Sockets;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -11,18 +14,36 @@ namespace SoftataWebAPI.Controllers
     /// </summary>
     [Route("/Telemetry")]
     [ApiController]
-    public class SoftataTelemetryController : ControllerBase
+    public class SoftataTelemetryController : SoftataControllerCls
     {
+        public SoftataTelemetryController(SoftataDbContext softataContext, ISoftataGenCmds sharedService)
+    : base(softataContext, sharedService)
+        {
+        }
+
+        protected Softata.SoftataLib.Sensor sensor
+        {
+            get
+            {
+                return sharedService.GetSensor(HttpContext,0);
+            }
+        }
+
         /// <summary>
         /// One read of all properties of sensor as a json string
         /// </summary>
         /// <param name="sensorListIndex">Sensor instance index</param>
+        /// <param name="client"></param>
         /// <returns>Values as json string</returns>
         [Route("SingleReadTelemetry")]
         [HttpGet] // Nb: Same as ReadTelemetry() in SoftataSensorController
         public string SingleReadTelemetry(int sensorListIndex)
         {
-            string json = SoftataLib.Sensor.GetTelemetry((byte)sensorListIndex);
+            if (Client == null)
+            {
+                return "BadRequest:  Client socket cannot be null. Must be connected";
+            }
+            string json = sensor.GetTelemetry((byte)sensorListIndex, Client);
             return json;
         }
 
@@ -31,12 +52,17 @@ namespace SoftataWebAPI.Controllers
         /// </summary>
         /// <param name="sensorListIndex">Sensor instance index</param>
         /// <param name="period">Period in seconds</param>
+        /// <param name="client"></param>
         /// <returns>Ok or Fail</returns>
         [Route("StartSendingTelemetryBT")]
         [HttpPost]
         public IActionResult StartSendingTelemetryBT(int sensorListIndex, int period)
         {
-            string result = SoftataLib.Sensor.StartSendingTelemetryBT((byte)sensorListIndex, (byte)period);
+            if (Client == null)
+            {
+                return BadRequest("Client socket cannot be null. Must be connected");
+            }
+            string result = sensor.StartSendingTelemetryBT((byte)sensorListIndex, Client, (byte)period);
             return Ok($"{sensorListIndex}");
         }
 
@@ -45,12 +71,17 @@ namespace SoftataWebAPI.Controllers
         /// </summary>
         /// <param name="sensorListIndex">Sensor instance index</param>
         /// <param name="period">Period in seconds</param>
+        /// <param name="client"></param>
         /// <returns>Ok or Fail</returns>
         [Route("StartSendingTelemetryToIoTHub")]
         [HttpPost] // Default setup for sensor
         public IActionResult StartSendingTelemetryToIoTHub(int sensorListIndex, int period)
         {
-            string result = SoftataLib.Sensor.StartSendingTelemetryToIoTHub((byte)sensorListIndex, (byte)period);
+            if (Client == null)
+            {
+                return BadRequest("Client socket cannot be null. Must be connected");
+            }
+            string result = sensor.StartSendingTelemetryToIoTHub((byte)sensorListIndex, Client, (byte)period);
             return Ok($"{sensorListIndex}");
         }
 
@@ -61,9 +92,13 @@ namespace SoftataWebAPI.Controllers
         /// <returns>Ok or Fail</returns>
         [Route("PauseSendingTelemetry")]
         [HttpPost]
-        public IActionResult PauseSendingTelemetry(int sensorListIndex=0)
+        public IActionResult PauseSendingTelemetry(int sensorListIndex)
         {
-            string result = SoftataLib.Sensor.PauseSendTelemetry((byte)sensorListIndex);
+            if (Client == null)
+            {
+                return BadRequest("Client socket cannot be null. Must be connected");
+            }
+            string result = this.sensor.PauseSendTelemetry((byte)sensorListIndex, Client);
             return Ok($"{sensorListIndex}");
         }
 
@@ -74,9 +109,13 @@ namespace SoftataWebAPI.Controllers
         /// <returns>Ok or Fail</returns>
         [Route("ContinueSendingTelemetry")]
         [HttpPost]
-        public IActionResult ContinueSendingTelemetry(int sensorListIndex=0)
+        public IActionResult ContinueSendingTelemetry(int sensorListIndex)
         {
-            string result = SoftataLib.Sensor.ContinueSendTelemetry((byte)sensorListIndex);
+            if (Client == null)
+            {
+                return BadRequest("Client socket cannot be null. Must be connected");
+            }
+            string result = this.sensor.ContinueSendTelemetry((byte)sensorListIndex, Client);
             return Ok($"{sensorListIndex}");
         }
 
@@ -87,9 +126,13 @@ namespace SoftataWebAPI.Controllers
         /// <returns>Ok or Fail</returns>
         [Route("StopSendingTelemetry")]
         [HttpPost]
-        public IActionResult StopSendingTelemetryBT(int sensorListIndex=0)
+        public IActionResult StopSendingTelemetryBT(int sensorListIndex)
         {
-            string result = SoftataLib.Sensor.StopSendingTelemetry((byte)sensorListIndex);
+            if (Client == null)
+            {
+                return BadRequest("Client socket cannot be null. Must be connected");
+            }
+            string result = sensor.StopSendingTelemetry((byte)sensorListIndex, Client);
             return Ok($"{sensorListIndex}");
         }
 

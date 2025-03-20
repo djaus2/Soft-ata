@@ -128,7 +128,7 @@ namespace SoftataWebAPI.Controllers
         public IActionResult ActionDeviceCmdwithByteParam(DeviceInstance deviceInstance, string cmd, byte param)
         {
             byte subCmd = LookUpGenericCmd(deviceInstance.DeviceType, cmd);
-            string result = sharedService.ActionDeviceCmdwithByteArrayParams(Offset + (int)deviceInstance.DeviceType, HttpContext, Client, deviceInstance.ListLinkId, subCmd, new byte[] {param});
+            string result = sharedService.ActionDeviceCmdwithByteParam(Offset + (int)deviceInstance.DeviceType, HttpContext, Client, deviceInstance.ListLinkId, subCmd, param);
             return Ok(result);
         }
 

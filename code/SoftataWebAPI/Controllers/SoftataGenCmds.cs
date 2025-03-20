@@ -72,7 +72,7 @@ namespace SoftataWebAPI.Controllers
         [HttpPost]
         public IActionResult ActionDeviceCmdwithByteParam(DeviceInstance deviceInstance, int subCmd, byte param)
         {
-            string result = sharedService.ActionDeviceCmdwithByteArrayParams(Offset + (int)deviceInstance.DeviceType, HttpContext, Client, deviceInstance.ListLinkId, subCmd);
+            string result = sharedService.ActionDeviceCmdwithByteParam(Offset + (int)deviceInstance.DeviceType, HttpContext, Client, deviceInstance.ListLinkId, subCmd, param);
             return Ok(result);
         }
 

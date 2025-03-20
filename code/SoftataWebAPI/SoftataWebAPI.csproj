@@ -11,7 +11,6 @@
   <ItemGroup>
     <Compile Remove="Controllers\HomeController.cs" />
     <Compile Remove="Controllers\SoftataActuatorController.cs" />
-    <Compile Remove="Controllers\SoftataTelemetryController .cs" />
     <Compile Remove="Data\INewsService.cs" />
   </ItemGroup>
 
@@ -32,7 +31,6 @@
 
   <ItemGroup>
     <None Include="Controllers\SoftataActuatorController.cs" />
-    <None Include="Controllers\SoftataTelemetryController .cs" />
     <None Include="Data\INewsService.cs" />
   </ItemGroup>
 

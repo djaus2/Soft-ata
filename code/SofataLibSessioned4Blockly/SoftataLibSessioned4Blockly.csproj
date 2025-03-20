@@ -12,7 +12,6 @@
     <Compile Remove="Analog .cs" />
     <Compile Remove="Digital.cs" />
     <Compile Remove="Displays.cs" />
-    <Compile Remove="Sensor.cs" />
     <Compile Remove="Serial.cs" />
     <Compile Remove="SofataDeviceInterface.cs" />
   </ItemGroup>
@@ -23,7 +22,6 @@
     <None Include="Analog .cs" />
     <None Include="Digital.cs" />
     <None Include="Displays.cs" />
-    <None Include="Sensor.cs" />
     <None Include="Serial.cs" />
     <None Include="SofataDeviceInterface.cs" />
   </ItemGroup>
