@@ -1,6 +1,9 @@
 # Soft-ata Version 12.00
 
 ## Updates
+- Restored Telemetry to SoftataWebAPI (yet to be tested)
+- Also fix for Actuator 1 byte cmds, eg Servo sends byte via pin param
+  - Single byte commands can use pin or as single byte array param.
 = Major cleanup and restoration of Arduino Sketch [/code/Softata](/code/Softata) to repository
   - The SoftataLib for Blaozr or Console are same but the Blockly one is different becuase of Session issues.
     - Blaozr or Console use [/code/SofataLib](/code/SofataLib)
