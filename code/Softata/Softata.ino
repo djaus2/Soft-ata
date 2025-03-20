@@ -2010,87 +2010,87 @@ void loop() {
                 break;
               case a_writeByteValueCMD:
                 {
+                  // Nb: Can submit byte as pin
                   int index = other;
                   SoftataDevice_Actuator * softatadevice_Actuator = GetActuatorFromList(index);
+                  byte value  = pin;
                   if(otherData == NULL)
                   {
-                    client.print("Fail:Actuator-WriteByteValue needs a value. otherData was NULL");
+                    // Use pin
                   }
                   else if(otherData[0]<1)
                   {
-                    client.print("Fail:Actuator-WriteByteValue needs a value. otherData was Empty");
+                    // Use pin
                   }
                   else
                   {
                     byte value = otherData[1];
-                    ts = softatadevice_Actuator->Write(value,index);
-
-                    if(ts == _ok)
-                    {
-                      client.print("OK:writeByteValue");
-                    }
-                    else if (ts==notImplemented)
-                    {
-                      client.print("OK:writeByteValue Not Implemented");
-                    }
-                    else if (ts==invalidParams)
-                    {
-                      client.print("OK:writeByteValue Invalid parameter/s");
-                    }
-                    else
-                    {
-                      client.print("Fail:writeByteValue");
-                    }
                   }
-                  //Serial.println("Done:writeByteValue");
+                  ts = softatadevice_Actuator->Write(value,index);
+
+                  if(ts == _ok)
+                  {
+                    client.print("OK:writeByteValue");
+                  }
+                  else if (ts==notImplemented)
+                  {
+                    client.print("OK:writeByteValue Not Implemented");
+                  }
+                  else if (ts==invalidParams)
+                  {
+                    client.print("OK:writeByteValue Invalid parameter/s");
+                  }
+                  else
+                  {
+                    client.print("Fail:writeByteValue");
+                  }
+                  
                 }
                 break; 
                case a_writeWordValueCMD:
                 {
                   int index = other;
                   SoftataDevice_Actuator * softatadevice_Actuator = GetActuatorFromList(index);
+                  // Can submit as one byte as pin
+                  int value = pin;
                   if(otherData == NULL)
                   {
-                    client.print("Fail:Actuator-WriteWordValue needs a value. otherData was NULL");
+                    //client.print("Fail:Actuator-WriteWordValue needs a value. otherData was NULL");
                   }
                   else if(otherData[0]<1)
                   {
-                    client.print("Fail:Actuator-WriteWordValue needs a value. otherData was Empty");
+                    //client.print("Fail:Actuator-WriteWordValue needs a value. otherData was Empty");
+                  }
+                  if(otherData[0]>0)
+                    value = otherData[1];
+                  if(otherData[0]>1)
+                    value += otherData[2]*256;
+                  if(otherData[0]>2)
+                    value += otherData[3]*256*256;
+                  if(otherData[0]>3)
+                    value += otherData[4]*256*256*256;
+
+                  Serial_print("Actuator: ");
+                  Serial_print(value);
+                  Serial_print('-');
+                  Serial_println(index);
+
+                  ts = softatadevice_Actuator->Write(value,index,2);
+                  if(ts == _ok)
+                  {
+                    client.print("OK:writeWordValue");
+                  }
+                  else if (ts==notImplemented)
+                  {;
+                    client.print("OK:writeWordValue Not Implemented");
+                  }
+                  else if (ts==invalidParams)
+                  {
+                    client.print("OK:writeWordValue Invalid parameter/s");
                   }
                   else
                   {
-                    int value = 0;
-                    if(otherData[0]>0)
-                      value = otherData[1];
-                    if(otherData[0]>1)
-                      value += otherData[2]*256;
-                    if(otherData[0]>2)
-                      value += otherData[3]*256*256;
-                    if(otherData[0]>3)
-                      value += otherData[4]*256*256*256;
-
-                    Serial_print("Actuator: ");
-                    Serial_print(value);
-                    Serial_print('-');
-                    Serial_println(index);
-
-                    ts = softatadevice_Actuator->Write(value,index,2);
-                    if(ts == _ok)
-                    {
-                      client.print("OK:writeWordValue");
-                    }
-                    else if (ts==notImplemented)
-                    {;
-                      client.print("OK:writeWordValue Not Implemented");
-                    }
-                    else if (ts==invalidParams)
-                    {
-                      client.print("OK:writeWordValue Invalid parameter/s");
-                    }
-                    else
-                    {
-                      client.print("Fail:writeWordValue");
-                    }
+                    client.print("Fail:writeWordValue");
                   }
                 }
                 break;                
