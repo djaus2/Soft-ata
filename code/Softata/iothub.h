@@ -473,17 +473,25 @@ void receivedCallback(char* topic, byte* payload, unsigned int length)
   String hostStr;
   String device_idStr;
 
-static void initializeClients()
+static void initializeClients(ConnectMode connectMode )
 {
   /////////////////////////////////////////////////////////////////
   // Need these to persist client internal data beyond this call
   // Hence declarations in Global space, above.
   /////////////////////////////////////////////////////////////////
-  hostStr = FlashStorage::GetIOT_CONFIG_IOTHUB_FQDN(); //.c_str(); Also works with using .c_str() here
-  device_idStr = FlashStorage::GetDeviceName(); //.c_str();
+  if (connectMode != from_eeprom)
+  {
+    hostStr = IOT_CONFIG_HUBNAME;
+    device_idStr= IOT_CONFIG_DEVICE_ID;
+  }
+  else{
+    hostStr = FlashStorage::GetIOT_CONFIG_IOTHUB_FQDN(); //.c_str(); Also works with using .c_str() here
+    device_idStr = FlashStorage::GetDeviceName(); //.c_str();
+  }
   // Now get const char * from that as Globals
   tempHost = hostStr.c_str();
   tempDevice_id = device_idStr.c_str();
+  
   /////////////////////////////////////////////////////////////////
   // Nb If assigned directly from .c_str() to host etc:
   /*
@@ -539,7 +547,7 @@ static void initializeClients()
  */
 static uint32_t getSecondsSinceEpoch() { return (uint32_t)time(NULL); }
 
-static int generateSasToken(char* sas_token, size_t size)
+static int generateSasToken(ConnectMode connectMode, char* sas_token, size_t size)
 {
   az_span signature_span = az_span_create((uint8_t*)signature, sizeofarray(signature));
   az_span out_signature_span;
@@ -555,14 +563,38 @@ static int generateSasToken(char* sas_token, size_t size)
     Serial_println("Failed getting SAS signature");
     return 1;
   }
-
-  const char * device_key_ConstCharStar = FlashStorage::GetDeviceConnectionString().c_str();
+  //////////////// Read device_key from header or flash  /////////////////////////////////////////////////////////
+  //const char * device_key_ConstCharStar = FlashStorage::GetDeviceConnectionString().c_str();
+  // Base64-decode device key
+  int base64_decoded_device_key_length;
   Serial_print("device_key: ");
-  Serial_println(device_key_ConstCharStar);
+  if (connectMode !=from_eeprom)
+  {
+    const char * device_key_ConstCharStar2 = DEFAULT_DEVICECONNECTIONSTRING;
+    Serial.println(device_key_ConstCharStar2);
+    // Base64-decode device key
+    base64_decoded_device_key_length
+    = base64_decode_chars(device_key_ConstCharStar2, strlen(device_key_ConstCharStar2), base64_decoded_device_key);
 
+  }
+  else
+  {
+    String devconstr = FlashStorage::GetDeviceConnectionString();
+    Serial.println(devconstr);
+    const char * device_key_ConstCharStar = devconstr.c_str();
+    Serial.println(device_key_ConstCharStar);
+    // Base64-decode device key
+    base64_decoded_device_key_length
+    = base64_decode_chars(device_key_ConstCharStar, strlen(device_key_ConstCharStar), base64_decoded_device_key);
+  }
+  
+
+/*
   // Base64-decode device key
   int base64_decoded_device_key_length
-      = base64_decode_chars(device_key_ConstCharStar, strlen(device_key_ConstCharStar), base64_decoded_device_key);
+      = base64_decode_chars(device_key_ConstCharStar2, strlen(device_key_ConstCharStar2), base64_decoded_device_key);
+*/
+   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   if (base64_decoded_device_key_length == 0)
   {
@@ -661,17 +693,17 @@ static int connectToAzureIoTHub()
 }
 
 
-static void establishConnection()
+static void establishConnection(ConnectMode connectMode)
 {
     initializeTime();
     printCurrentTime();
-    initializeClients();
+    initializeClients(connectMode);
  
 
   // The SAS token is valid for 1 hour by default in this sample.
   // After one hour the sample must be restarted, or the client won't be able
   // to connect/stay connected to the Azure IoT Hub.
-  if (generateSasToken(sas_token, sizeofarray(sas_token)) != 0)
+  if (generateSasToken(connectMode, sas_token, sizeofarray(sas_token)) != 0)
   {
     Serial_println("Failed generating MQTT password");
   }
@@ -717,7 +749,9 @@ static void sendTelemetry(String jsonStr)
     Serial_println(" -- OK: Publshed Telemetry");
   else
     Serial_println(" -- NOK: Publish Telemetry");
-
+  Serial_println("Published.");
+  //// MQTT loop must be called to process Device-to-Cloud and Cloud-to-Device.
+  mqtt_client.loop();
 }
 
 #endif

@@ -11,7 +11,7 @@
 enum SyncedCommands : byte {pauseTelemetryorBT=0,continueTelemetryorBT=1,stopTelemetryorBT=2,svrConnected=10, initialSynch=137, stopCore2=200};
 #define SynchMultiplier 1000
 
-#define APP_VERSION "11.400"  //Nb: As SoftataLib is updated, this is incremented even if no changes to Arduino code.
+#define APP_VERSION "12.100"  //Nb: As SoftataLib is updated, this is incremented even if no changes to Arduino code.
 
 //#define RPI_PICO_DEFAULT
 #define GROVE_RPI_PICO_SHIELD
@@ -19,7 +19,9 @@ enum SyncedCommands : byte {pauseTelemetryorBT=0,continueTelemetryorBT=1,stopTel
 // Azure IoT
 // Uncomment following if using Azure IoT Hub
 // For Bluetooth do not define USINGIOTHUB
-// #define USINGIOTHUB
+#define USINGIOTHUB
+
+enum ConnectMode: byte {wifi_is_set, from_eeprom, is_defined, wifiset, serial_prompt, bt_prompt };
 
 #include "serial_macros.h"
 #include "Connect2WiFi.h"

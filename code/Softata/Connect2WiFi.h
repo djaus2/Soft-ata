@@ -8,7 +8,7 @@
 #define DEFAULT_SSID STASSID
 #define DEFAULT_PASSWORD STAPSK
 #define DEFAULT_DEVICENAME IOT_CONFIG_DEVICE_ID
-#define DEFAULT_HUBNAME IOT_CONFIG_HUBNAME
+#define DEFAULT_HUBNAME IOT_NAME
 #define DEFAULT_BT_NAME  "SoftataOTA 00:00:00:00:00:00"
 #define DEFAULT_DEVICECONNECTIONSTRING IOT_CONFIG_DEVICE_KEY
 #define DEFAULT_GUID "00000000-0000-0000-0000-000000000000"
@@ -27,7 +27,7 @@ enum StoredVals: byte {sv_SSID, sv_Password, sv_hubname, sv_hostname , sv_device
 #define KEY  "1370"
 #define KEYLENGTH 4
 
-enum ConnectMode: byte {wifi_is_set, from_eeprom, is_defined, wifiset, serial_prompt, bt_prompt };
+
 
 
 namespace FlashStorage{

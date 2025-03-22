@@ -137,6 +137,7 @@ struct CallbackInfo InbuiltLED;
 
 int LEDListIndex = -1;
 
+ConnectMode connectModeSC = WIFI_CONNECT_MODE;
 
 void setup1() {
   numSensors=0;
@@ -183,11 +184,13 @@ void setup1() {
 
 
   // Wait for other Setup to finish
+  // For IoT Hub get ConnectMode ie whether to use flash or header.
   uint32_t sync2 = rp2040.fifo.pop();
+  connectModeSC = (ConnectMode)sync2;
 
   if(doingIoTHub)
   {
-    establishConnection();
+    establishConnection(connectModeSC);
   }
   Serial_println();
   Serial_println("\t\t==== 2nd Core Ready ====");
@@ -219,6 +222,8 @@ Synched commands from Core1 to Core2
   - Cmd passed 2
 
 */
+
+
 void loop1() 
 {
   if (rp2040.fifo.available())
@@ -325,7 +330,7 @@ void loop1()
         {
           if (!mqtt_client.connected())
           {
-            establishConnection();
+            establishConnection(connectModeSC);
           }
           // Send Telemetry to IoT Hub
           sendTelemetry(res);

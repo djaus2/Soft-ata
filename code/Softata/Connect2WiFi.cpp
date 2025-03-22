@@ -45,6 +45,7 @@ namespace FlashStorage{
 
   String GetDeviceConnectionString()
   {
+    Serial_println(IoTHubDeviceConnectionString);
     return IoTHubDeviceConnectionString;
   }
 
@@ -510,25 +511,40 @@ namespace FlashStorage{
     if(!bSERIAL_DEBUG)
       return false;
 
-    //Get SSID     
-    Serial_print("Enter SSID: ");
+    //Get SSID 
+    if(Ssid.length()==0)
+      Ssid = DEFAULT_SSID;
+    Serial_print("Enter SSID. Default[");
+    Serial_print(Ssid);
+    Serial_print("]: ");
     while (Serial.available() == 0) {}
-    Ssid = Serial.readString();
-    Ssid.trim();
+    String val = Serial.readString();
+    val.trim();
+    if (val.length()!=0)
+      Ssid = val;
     Serial_println();
 
     //Get Password
-    Serial_print("Enter Password: ");
+    if(Passwd.length()==0)
+      Passwd = DEFAULT_PASSWORD;  
+    Serial_print("Enter Password. Default[");
+    Serial_print(Passwd);
+    Serial_print("]: ");
     while (Serial.available() == 0) {}
-    Passwd = Serial.readString();
-    Passwd.trim();
+    val = Serial.readString();
+    val.trim();
+    if (val.length()!=0)
+      Passwd = val;
     Serial_println();
 
     //Get DeviceName
-    Serial_print("Enter DeviceName. Default ");
+    if(DeviceName.length()==0)
+      DeviceName = DEFAULT_DEVICENAME;
+    Serial_print("Enter DeviceName. Default[");
     Serial_print(DeviceName);
+    Serial_print("]: ");
     while (Serial.available() == 0) {}
-    String val = Serial.readString();
+    val = Serial.readString();
     val.trim();
     if (val.length()!=0)
       DeviceName=val;
@@ -536,8 +552,11 @@ namespace FlashStorage{
 
     //Get Hubname
 #ifdef USINGIOTHUB
-    Serial_print("Enter IoT Hubname. Default ");
+    if(Hubname.length()==0)
+      Hubname = DEFAULT_HUBNAME;
+    Serial_print("Enter IoT Hubname. Default[");
     Serial_print(Hubname);
+    Serial_print("]: ");
     while (Serial.available() == 0) {}
     val = Serial.readString();
     val.trim();
@@ -547,18 +566,22 @@ namespace FlashStorage{
 
     
     // Get IoT Hub Device Connection String
-    Serial_print("Enter IoT Hub Device Connection String. Default: ");
+    if(IoTHubDeviceConnectionString.length()==0)
+      IoTHubDeviceConnectionString = DEFAULT_DEVICECONNECTIONSTRING; 
+    Serial_print("Enter IoT Hub Device Connection String. Default[");
     Serial_print(IoTHubDeviceConnectionString);
+    Serial_print("]: ");
     while (Serial.available() == 0) {}
     val = Serial.readString();
     val.trim();
     if (val.length()!=0)
       IoTHubDeviceConnectionString=val;
     Serial_println();
-    Serial_println(IoTHubDeviceConnectionString);
  #endif
 
     // Get GUID
+    if(Guid.length()==0)
+      Guid = DEFAULT_GUID;
     Serial_print("Enter Guid. Default: ");
     Serial_print(Guid);
     while (Serial.available() == 0) {}
@@ -567,9 +590,8 @@ namespace FlashStorage{
     if (val.length()!=0)
       Guid=val;
     Serial_println();
-    Serial_println(Guid);
 
-    Serial_println("Got data");
+    Serial_println("==== Got EEPROM data to store ====");
     return true;
   }
 

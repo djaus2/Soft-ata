@@ -3,7 +3,7 @@
 
 #define MENU_DELAY 250
 #define WIFI_CONNECT_TIMEOUT_SEC 15
-#define DEFAULT_MENU_TIMEOUT_SEC 2
+#define DEFAULT_MENU_TIMEOUT_SEC 15
 
 enum menu3State {trueButSkipMenus,ttrue,tfalse};
 

@@ -18,14 +18,15 @@
 #define IOT_CONFIG_WIFI_SSID STASSID
 #define IOT_CONFIG_WIFI_PASSWORD STAPSK
 
-#define IOT_NAME "<hubname>"
-#define IOT_CONFIG_DEVICE_ID  "<devicename>"
-#define IOT_CONFIG_DEVICE_KEY  "<device connection key>"
+#define IOT_NAME "Blobklhy3" // "Blockly2" //"<hubname>"
+#define IOT_CONFIG_DEVICE_ID "BloxDev" //  "Blockly2_Dev" // "<devicename>"
+#define IOT_CONFIG_DEVICE_KEY "scEAgzvavFG21rMypJzkjQzft3W/YyoiidZMVHbED9M=" // "2zqnxw3HLl7ZiuwaPT+96q6KBoSEbgRgdAIoTJMMHzg=" 
+// "<device connection key>"
 
 ///////////////////////////////////////////////////////////////
 
 #define IOT_PATH ".azure-devices.net"
-#define IOT_CONFIG_HUBNAME "Blockly2.azure-devices.net" 
+#define IOT_CONFIG_HUBNAME "Blobklhy3.azure-devices.net" 
 #define IOT_CONFIG_HUB_NAME IOT_NAME  IOT_PATH
 
 

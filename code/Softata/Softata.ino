@@ -125,6 +125,8 @@ void flash(int id, int num, int period)
 
 bool OTAing=false;
 
+ConnectMode connectMode = WIFI_CONNECT_MODE;
+
 void ArduinoOTAsetup() {
   #ifdef USE_TICKER
   TickerInit();
@@ -145,7 +147,7 @@ void ArduinoOTAsetup() {
   //From: Connect2WiFi.h:
   //enum ConnectMode: byte {wifi_is_set, from_eeprom, is_defined, wifiset, serial_prompt, bt_prompt };
 
-  ConnectMode connectMode = WIFI_CONNECT_MODE;
+  
   if((useSerialDebug) &&(!skipMenus))
   {
     Serial_println("WIFI");
@@ -418,7 +420,7 @@ void setup()
   
   bool first = false;
   // Just to be safe don't simultaneously setup server and client
-  uint32_t val = initialSynch;
+  uint32_t val = (uint32_t)connectMode;
  
   Serial_print("Initial Core1-Core2 Synch value:");
   Serial_println(val);
@@ -433,6 +435,7 @@ void setup()
   {
     Serial_println("\t\t==== Core1-Core2 Setup Sync Fail ====");
   }
+
   flash(10, 8, ULTRA_SHORTPULSE);
   #ifdef ENABLE_WATCHDOG
     watchdog_enable(WATCHDOG_SECS * 1000, false);
