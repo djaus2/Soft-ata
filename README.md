@@ -1,7 +1,13 @@
-# Soft-ata Version 12.00
+# Soft-ata Version 12.100
 
 ## Updates
-- Restored Telemetry to SoftataWebAPI (yet to be tested)
+- Restored Telemetry to SoftataWebAPI **Works!** Can't selevct a sensor (simplest is simulator), configure for IoTHub abd Devices and start send telemetry and stop.
+  - Can set and use confoig data in EEPROM  Start OPtions Y, 2, Y   will bring you to entering;
+    - SSID
+    - PWD
+    - Pico name/Hub name
+    - Hub Device name
+    - Device Connection string
 - Also fix for Actuator 1 byte cmds, eg Servo sends byte via pin param
   - Single byte commands can use pin or as single byte array param.
 - Major cleanup and restoration of Arduino Sketch [/code/Softata](/code/Softata) to repository
