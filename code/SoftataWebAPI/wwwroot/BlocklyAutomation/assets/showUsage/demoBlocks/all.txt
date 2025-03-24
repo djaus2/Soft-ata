@@ -23,6 +23,12 @@
         "categories":  "api;list",
         "blocks":  "object_create;text;"
     },
+        {
+        "id":  "telemetrycmds",
+        "description":  " Send telemetry from sensor to IoT Hub",
+        "categories":  "api;list",
+        "blocks":  "object_create;text;"
+    },
     {
         "id":  "ASimpleCustomFunction",
         "description":  " Simple Custom Function",
@@ -31,7 +37,7 @@
     },
     {
         "id":  "Lookup-Device-Cmds",
-        "description":  " Lookup device and comands and run them",
+        "description":  " Lookup device and commands and run them",
         "categories":  "api;list",
         "blocks":  "object_create;text;"
     }
