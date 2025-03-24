@@ -1,6 +1,7 @@
 # Soft-ata Version 12.100
 
 ## Updates
+- Added another Blockly example that demos looking up devices and commands. Simple!
 - New Blockly samples, removed old ones
   - 2 Samples that function same as Blazor2, 2 alternative Starts
     - One gets meta info from Database, other queries Pico.
