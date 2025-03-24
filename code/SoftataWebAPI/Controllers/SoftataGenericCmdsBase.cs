@@ -4,6 +4,7 @@ using SoftataWebAPI.Data;
 using SoftataWebAPI.Data.Db;
 using System.Net.Sockets;
 using System.Text;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SoftataWebAPI.Controllers 
 {
@@ -35,11 +36,30 @@ namespace SoftataWebAPI.Controllers
         /// <returns></returns>
         [Route("DeviceTypeGenCmd")]
         [HttpPost]
-        public IActionResult ActionDeviceTypeIndexedGenericCmd(int ideviceType, int cmd)
+        public IActionResult ActionDeviceTypeIndexedGenericCmdNoParams(int ideviceType, int cmd)
         {
             var dictionary = Info.GenericCmds[ideviceType];
             byte subCmd =  (byte)cmd;
             string response = softatalib.SendTargetCommand((byte)ideviceType, Client, 1, subCmd);
+            return Ok(response);
+        }
+
+        /// <summary>
+        /// Action a Generic Command on a Device Type, 
+        /// ... without specifying the actual device
+        /// ... nor having an instance of the device type.
+        /// </summary>
+        /// <param name="ideviceType">Index of Device Type</param>
+        /// <param name="cmd">Generic Command index</param>
+        /// <param name="param">Byte parameter</param>
+        /// <returns></returns>
+        [Route("DeviceTypeGenCmdwithByteParam")]
+        [HttpPost]
+        public IActionResult ActionDeviceTypeIndexedGenericCmdByteParam(int ideviceType, int cmd, int param)
+        {
+            var dictionary = Info.GenericCmds[ideviceType];
+            byte subCmd = (byte)cmd;
+            string response = softatalib.SendTargetCommand((byte)ideviceType, Client, 1, subCmd,(byte)param);
             return Ok(response);
         }
 
@@ -56,6 +76,7 @@ namespace SoftataWebAPI.Controllers
         [HttpPost]
         public IActionResult ActionDeviceCmdNoParams(int ideviceType, int linkedListNo, int subCmd)
         {
+
             string result = sharedService.ActionDeviceCmdwithByteArrayParams(ideviceType, HttpContext, Client, linkedListNo, subCmd);
             return Ok(result);
         }
@@ -74,6 +95,7 @@ namespace SoftataWebAPI.Controllers
         [HttpPost]
         public IActionResult ActionDeviceCmdwithByteParam(int ideviceType, int linkedListNo, int subCmd, byte param)
         {
+
             string result = sharedService.ActionDeviceCmdwithByteParam(ideviceType, HttpContext, Client, linkedListNo, subCmd, param);
             return Ok(result);
         }
@@ -93,7 +115,45 @@ namespace SoftataWebAPI.Controllers
         [HttpPost]
         public IActionResult ActionDeviceCmdwithTextandCSVParams(int ideviceType, int linkedListNo, int subCmd, string txt, string csv)
         {
+
             byte[] txtbytes = Encoding.ASCII.GetBytes(txt);
+            byte[] bytes = string.IsNullOrWhiteSpace(csv) ? new byte[0] : csv.Split(',').Select(byte.Parse).ToArray();
+            if (bytes.Length != 0)
+            {
+                bytes = bytes.Concat(txtbytes).ToArray();
+            }
+            else
+                bytes = txtbytes;
+            string result = sharedService.ActionDeviceCmdwithByteArrayParams(ideviceType, HttpContext, Client, linkedListNo, subCmd, bytes);
+            return Ok(result);
+        }
+
+        [Route("DevCmdwithParamsUniversal")]
+        [HttpPost]
+        public IActionResult ActionDeviceCmdwithwithParams(int ideviceType, int linkedListNo, int subCmd, string txt, string csv)
+        {
+            csv = csv.Replace("'", "");
+            txt = txt.Replace("'", "");
+            csv = csv.Trim();
+            txt = txt.Trim();
+            if ((string.IsNullOrEmpty(csv))&&(string.IsNullOrEmpty(txt)))
+            {
+                return ActionDeviceCmdNoParams(ideviceType, linkedListNo, subCmd);
+            }
+            string[] paramz = csv.Split(',');
+            if (paramz.Length == 1)
+            {
+                if (int.TryParse(csv, out int param))
+                {
+                    return ActionDeviceCmdwithByteParam(ideviceType, linkedListNo, subCmd, (byte)param);
+                }
+            }
+            byte[] txtbytes = new byte[0];
+            if (!string.IsNullOrEmpty(txt))
+            {
+                txtbytes = Encoding.ASCII.GetBytes(txt);
+            }
+            ;
             byte[] bytes = string.IsNullOrWhiteSpace(csv) ? new byte[0] : csv.Split(',').Select(byte.Parse).ToArray();
             if (bytes.Length != 0)
             {
@@ -118,6 +178,7 @@ namespace SoftataWebAPI.Controllers
         [HttpPost]
         public IActionResult ActionDeviceCmdwithCSVListofParams(int ideviceType, int linkedListNo, int subCmd, string csv)
         {
+
             byte[] bytes = string.IsNullOrWhiteSpace(csv) ? new byte[0] : csv.Split(',').Select(byte.Parse).ToArray();
             string result = sharedService.ActionDeviceCmdwithByteArrayParams(ideviceType, HttpContext, Client, linkedListNo, subCmd, bytes);
             return Ok(result);
@@ -136,6 +197,7 @@ namespace SoftataWebAPI.Controllers
         [HttpPost]
         public IActionResult ActionDeviceCmdwithByteArrayParams(int ideviceType, int linkedListNo, int subCmd, [FromQuery]byte[]? paramz=null)
         {
+
             string response = sharedService.ActionDeviceCmdwithByteArrayParams( ideviceType, HttpContext, Client, linkedListNo, subCmd,  paramz);
             return Ok(response);
         }

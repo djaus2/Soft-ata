@@ -20,27 +20,6 @@ namespace SoftataWebAPI.Controllers
             this.sharedService = sharedService;
         }
 
-        private int? _offset = null;
-
-        protected int Offset
-        {
-            get
-            {
-                if (_offset == null)
-                {
-                    var __offset = HttpContext.Session.Get<int?>("OFFSET");
-                    if (__offset != null)
-                    {
-                        _offset = (int)__offset;
-                    }
-                }
-                return (_offset != null) ? (int)_offset : 0;
-            }
-            set
-            {
-                _offset = value;
-            }
-        }
 
         protected Softata.SoftataLib softatalib
         {

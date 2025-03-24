@@ -43,6 +43,26 @@ namespace SoftataWebAPI.Controllers
             return Ok(response);
         }
 
+        /// <summary>
+        /// Action a Generic Command on a Device Type, 
+        /// ... without specifying the actual device
+        /// ... nor having an instance of the device type.
+        /// ... but with a byte parameter (eg 3 for default setup)
+        /// </summary>
+        /// <param name="deviceType">Index of Device Type</param>
+        /// <param name="cmd">Generic Command index</param>
+        /// <param name="param">Byte parameter</param>
+        /// <returns></returns>
+        [Route("ActionDeviceTypeGenericCmdNoParamswithByte")]
+        [HttpPost]
+        public IActionResult ActionDeviceTypedGenericCmdwithByte(DeviceType deviceType, int cmd, int param)
+        {
+            var dictionary = Info.GenericCmds[(byte)deviceType];
+            byte subCmd = (byte)cmd;
+            string response = softatalib.SendTargetCommand((byte)deviceType, Client, (byte)param, subCmd);
+            return Ok(response);
+        }
+
 
         /// <summary>
         /// Action a Generic Command on a Device instance
@@ -55,7 +75,7 @@ namespace SoftataWebAPI.Controllers
         [HttpPost]
         public IActionResult ActionDeviceCmdNoParams(DeviceInstance deviceInstance, int subCmd)
         {
-            string result = sharedService.ActionDeviceCmdwithByteArrayParams(Offset + (int)deviceInstance.DeviceType,HttpContext,Client, deviceInstance.ListLinkId, subCmd);
+            string result = sharedService.ActionDeviceCmdwithByteArrayParams( (int)deviceInstance.DeviceType,HttpContext,Client, deviceInstance.ListLinkId, subCmd);
             return Ok(result);
         }
 
@@ -72,7 +92,7 @@ namespace SoftataWebAPI.Controllers
         [HttpPost]
         public IActionResult ActionDeviceCmdwithByteParam(DeviceInstance deviceInstance, int subCmd, byte param)
         {
-            string result = sharedService.ActionDeviceCmdwithByteParam(Offset + (int)deviceInstance.DeviceType, HttpContext, Client, deviceInstance.ListLinkId, subCmd, param);
+            string result = sharedService.ActionDeviceCmdwithByteParam( (int)deviceInstance.DeviceType, HttpContext, Client, deviceInstance.ListLinkId, subCmd, param);
             return Ok(result);
         }
 
@@ -98,7 +118,7 @@ namespace SoftataWebAPI.Controllers
             }
             else
                 bytes = txtbytes;
-            string result = sharedService.ActionDeviceCmdwithByteArrayParams(Offset + (int)deviceInstance.DeviceType, HttpContext, Client, deviceInstance.ListLinkId, subCmd, bytes);
+            string result = sharedService.ActionDeviceCmdwithByteArrayParams( (int)deviceInstance.DeviceType, HttpContext, Client, deviceInstance.ListLinkId, subCmd, bytes);
             return Ok(result);
         }
     
@@ -116,7 +136,7 @@ namespace SoftataWebAPI.Controllers
         public IActionResult ActionDeviceCmdwithCSVListofParams(DeviceInstance deviceInstance, int subCmd, string csv)
         {
             byte[] bytes = string.IsNullOrWhiteSpace(csv) ? new byte[0] : csv.Split(',').Select(byte.Parse).ToArray();
-            string result = sharedService.ActionDeviceCmdwithByteArrayParams(Offset + (int)deviceInstance.DeviceType, HttpContext, Client, deviceInstance.ListLinkId, subCmd, bytes);
+            string result = sharedService.ActionDeviceCmdwithByteArrayParams( (int)deviceInstance.DeviceType, HttpContext, Client, deviceInstance.ListLinkId, subCmd, bytes);
             return Ok(result);
         }
 
@@ -132,7 +152,7 @@ namespace SoftataWebAPI.Controllers
         [HttpPost]
         public IActionResult ActionDeviceCmdwithByteArrayParams([FromBody]DeviceInstance deviceInstance, int subCmd, [FromQuery]byte[]? paramz=null)
         {
-            string result = sharedService.ActionDeviceCmdwithByteArrayParams(Offset + (int)deviceInstance.DeviceType, HttpContext, Client, deviceInstance.ListLinkId, subCmd, paramz);
+            string result = sharedService.ActionDeviceCmdwithByteArrayParams( (int)deviceInstance.DeviceType, HttpContext, Client, deviceInstance.ListLinkId, subCmd, paramz);
             return Ok(result);
         }
     }

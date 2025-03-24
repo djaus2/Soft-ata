@@ -85,8 +85,8 @@ namespace SoftataWebAPI.Controllers
                     string cmdsOffset = Get("Soffset");
                     if (int.TryParse(cmdsOffset, out int _offset))
                     {
-                        softatalib.Offset = _offset; //Should be 0xf0
-                        HttpContext.Session.Set<int?>("OFFSET",_offset);
+                        if (Softata.SoftataLib.Offset == 0)
+                            Softata.SoftataLib.Offset = _offset; //Should be 0xf0
                         Console.WriteLine($"CommandsOffset: {_offset}");
                     }
 
@@ -334,7 +334,7 @@ namespace SoftataWebAPI.Controllers
         [HttpPost]
         public IActionResult SendMessage(int msgOrDeviceType, byte pin = 0xff,int state = 0xff  , string expect="OK:", int other = 0xff, byte[]? Data = null)
         {
-            softatalib.Offset = Offset;
+            
             string result = softatalib.SendMessage(((Commands)msgOrDeviceType), Client, (byte)pin, (byte)state, expect, (byte)other, Data);
             if (result != "Reset")
             {

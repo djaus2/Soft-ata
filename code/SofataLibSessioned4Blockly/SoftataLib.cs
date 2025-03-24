@@ -35,7 +35,7 @@ namespace Softata
 
         public const byte nullData = 0xfe;
 
-        public int Offset { get; set; } = 0; //Should be 0xf0;
+        public static int Offset { get; set; } = 0; //Should be 0xf0;
 
         public  int port { get; set; } = 4242;
         public  string ipAddresStr { get; set; } = "192.168.0.12";

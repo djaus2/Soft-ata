@@ -1,91 +1,31 @@
 ﻿[
     {
-        "id":  "StartBlocks",
-        "description":  " Softata Start Example",
+        "id":  "AMStartBlocks",
+        "description":  "  Short Softata Start Example - Get Meta from Database",
+        "categories":  "api;list",
+        "blocks":  "object_create;text;"
+    },
+        {
+        "id":  "AMStartBlocksArd",
+        "description":  "  Short Softata Start Example - Get Meta from Pico",
+        "categories":  "api;list",
+        "blocks":  "object_create;text;"
+    },
+        {
+        "id":  "BlazorSimShort",
+        "description":  "  Similar to Blazor2 - Short Version",
+        "categories":  "api;list",
+        "blocks":  "object_create;text;"
+    },
+        {
+        "id":  "BlazorSimLong",
+        "description":  "  Similar to Blazor2 -- Long Version",
         "categories":  "api;list",
         "blocks":  "object_create;text;"
     },
     {
         "id":  "ASimpleCustomFunction",
-        "description":  " A Simple Custom Function",
-        "categories":  "api;list",
-        "blocks":  "object_create;text;"
-    },
-    {
-        "id":  "RemoteCall",
-        "description":  "Remote call from one browser tab to another",
-        "categories":  "api;list",
-        "blocks":  "object_create;text;"
-    },
-    {
-        "id":  "BME280-Sensor-I2C0",
-        "description":  "Grove BME280 Sensor Example using I2C0",
-        "categories":  "api;list",
-        "blocks":  "object_create;text;"
-    },
-    {
-        "id":  "BME280-IoTHub-Telemetry-I2C0",
-        "description":  "Grove BME280 IoT Hub Telemetry I2C0",
-        "categories":  "api;list",
-        "blocks":  "object_create;text;"
-    },
-    {
-        "id":  "BME280-Bluetooth-Telemetry-I2C0",
-        "description":  "Grove BME280 Bluetooth Telemetry I2C0",
-        "categories":  "api;list",
-        "blocks":  "object_create;text;"
-    },
-    {
-        "id":  "DHT11-Sensor-pin-16",
-        "description":  "Grove DHT11 Sensor Example using pin 16",
-        "categories":  "api;list",
-        "blocks":  "object_create;text;"
-    },
-        {
-        "id":  "Neopixel8-Display-pin-16",
-        "description":  "Neopixel8 Display Example using pin 16",
-        "categories":  "api;list",
-        "blocks":  "object_create;text;"
-    },
-        {
-        "id":  "OLED096-Display-I2C0",
-        "description":  "Grove OLED096 Display using I2C0",
-        "categories":  "api;list",
-        "blocks":  "object_create;text;"
-    },
-        {
-        "id":  "Pot-LED-Pins-26-18",
-        "description":  "Pototentiometer-LED Example using pins 26 and 18 respectively",
-        "categories":  "api;list",
-        "blocks":  "object_create;text;"
-    },
-        {
-        "id":  "Servo-Pin-16",
-        "description":  "Servo Example using pinn16",
-        "categories":  "api;list",
-        "blocks":  "object_create;text;"
-    },
-        {
-        "id":  "Switch-LED-Pins-16-18",
-        "description":  "Switch-LED Example using pins 16 and 18 respectively",
-        "categories":  "api;list",
-        "blocks":  "object_create;text;"
-    },
-        {
-        "id":  "Test-ADC-Pot-Pin-26",
-        "description":  "Test ADC-Potentiometer Example using pin26",
-        "categories":  "api;list",
-        "blocks":  "object_create;text;"
-    },
-        {
-        "id":  "Test-PWM-LED-Pin-18",
-        "description":  "Test PWM-LED Example using pin 18",
-        "categories":  "api;list",
-        "blocks":  "object_create;text;"
-    },
-        {
-        "id":  "Urange-Sensor-pin-16",
-        "description":  "Grove Ultrasonic Range Sensor Example using pin 16",
+        "description":  "  Simple Custom Function",
         "categories":  "api;list",
         "blocks":  "object_create;text;"
     }

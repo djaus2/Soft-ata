@@ -11,6 +11,7 @@
   <ItemGroup>
     <Compile Remove="Controllers\HomeController.cs" />
     <Compile Remove="Controllers\SoftataActuatorController.cs" />
+    <Compile Remove="Controllers\SoftataTelemetryController .cs" />
     <Compile Remove="Data\INewsService.cs" />
   </ItemGroup>
 
@@ -31,6 +32,7 @@
 
   <ItemGroup>
     <None Include="Controllers\SoftataActuatorController.cs" />
+    <None Include="Controllers\SoftataTelemetryController .cs" />
     <None Include="Data\INewsService.cs" />
   </ItemGroup>
 
@@ -68,6 +70,9 @@
     <Content Update="wwwroot\BlocklyAutomation\assets\showUsage\demoBlocks\all.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Update="wwwroot\BlocklyAutomation\assets\showUsage\demoBlocks\AMStartBlocksArd.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Update="wwwroot\BlocklyAutomation\assets\showUsage\demoBlocks\BME280-Bluetooth-Telemetry-IC20.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -101,7 +106,7 @@
     <Content Update="wwwroot\BlocklyAutomation\assets\showUsage\demoBlocks\Servo-Pin-16.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Update="wwwroot\BlocklyAutomation\assets\showUsage\demoBlocks\StartBlocks.txt">
+    <Content Update="wwwroot\BlocklyAutomation\assets\showUsage\demoBlocks\AMStartBlocks.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Update="wwwroot\BlocklyAutomation\assets\showUsage\demoBlocks\Switch-LED-Pins-16-18.txt">

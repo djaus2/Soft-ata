@@ -1,0 +1,60 @@
+<xml xmlns="https://developers.google.com/blockly/xml">
+  <variables>
+    <variable id="6^i1.T1m+$uvn6@f%U*R">ipAddress</variable>
+    <variable id="T3@@;m27h#=;%]S}6B$|">port</variable>
+  </variables>
+  <block type="variables_set" x="110" y="129">
+    <field name="VAR" id="6^i1.T1m+$uvn6@f%U*R">ipAddress</field>
+    <value name="VALUE">
+      <block type="text">
+        <field name="TEXT">please enter ipAddress</field>
+      </block>
+    </value>
+    <next>
+      <block type="variables_set">
+        <field name="VAR" id="T3@@;m27h#=;%]S}6B$|">port</field>
+        <value name="VALUE">
+          <block type="math_number">
+            <field name="NUM">4242</field>
+          </block>
+        </value>
+        <next>
+          <block type="text_print">
+            <value name="TEXT">
+              <block type="post__Ard_Start">
+                <value name="val_ipAddress">
+                  <block type="variables_get">
+                    <field name="VAR" id="6^i1.T1m+$uvn6@f%U*R">ipAddress</field>
+                  </block>
+                </value>
+                <value name="val__port">
+                  <block type="variables_get">
+                    <field name="VAR" id="T3@@;m27h#=;%]S}6B$|">port</field>
+                  </block>
+                </value>
+              </block>
+            </value>
+            <next>
+              <block type="wait_seconds">
+                <field name="SECONDS">10</field>
+                <next>
+                  <block type="text_print">
+                    <value name="TEXT">
+                      <block type="get__Ard___cmd">
+                        <value name="val_cmd">
+                          <block type="text">
+                            <field name="TEXT">End</field>
+                          </block>
+                        </value>
+                      </block>
+                    </value>
+                  </block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </next>
+      </block>
+    </next>
+  </block>
+</xml>

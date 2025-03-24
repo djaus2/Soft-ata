@@ -83,8 +83,8 @@ namespace SoftataWebAPI.Controllers
                     string cmdsOffset = Get("Soffset");
                     if (int.TryParse(cmdsOffset, out int _offset))
                     {
-                        softatalib.Offset = _offset; //Should be 0xf0
-                        HttpContext.Session.Set<int?>("OFFSET",_offset);
+                        if(Softata.SoftataLib.Offset==0)
+                            Softata.SoftataLib.Offset = _offset; //Should be 0xf0
                         Console.WriteLine($"CommandsOffset: {_offset}");
                     }
 

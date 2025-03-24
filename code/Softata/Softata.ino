@@ -1138,7 +1138,7 @@ void loop() {
               // s_setupDefaultCMD, s_setupCMD, s_readallCMD, s_readCMD, s_getSensorsCMD=255 
               //};
               SoftataSensor _sensor = (SoftataSensor)other;
-              Serial.print("Sensor: ");Serial.println(_sensor);
+              Serial.print("Sensor/LLN: ");Serial.println(_sensor);
               Serial.print("Sensor CMD: "); Serial.println(param);
               switch (param)
               {
