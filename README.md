@@ -1,6 +1,11 @@
 # Soft-ata Version 12.100
 
 ## Updates
+- New Blockly samples, removed old ones
+  - 2 Samples that function same as Blazor2, 2 alternative Starts
+    - One gets meta info from Database, other queries Pico.
+  - Some new CategoriesLoaded samples
+    - 2 x Menu functions (one withQuit) and Function to prompt for input and return single quoted string.
 - Restored Telemetry to SoftataWebAPI **Works!** Can't selevct a sensor (simplest is simulator), configure for IoTHub abd Devices and start send telemetry and stop.
   - Can set and use confoig data in EEPROM  Start Options: Y, 2, Y   will bring you to entering;
     - SSID
