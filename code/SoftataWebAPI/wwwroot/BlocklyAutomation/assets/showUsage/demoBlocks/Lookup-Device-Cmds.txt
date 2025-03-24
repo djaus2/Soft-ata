@@ -1,0 +1,229 @@
+<xml xmlns="https://developers.google.com/blockly/xml">
+  <variables>
+    <variable id="6^i1.T1m+$uvn6@f%U*R">ipAddress</variable>
+    <variable id="T3@@;m27h#=;%]S}6B$|">port</variable>
+    <variable id="==eeP;j]X(n_u,DH}4sd">device</variable>
+  </variables>
+  <block type="comment" x="70" y="-3217">
+    <field name="NAME"></field>
+    <value name="TEXT">
+      <shadow type="text">
+        <field name="TEXT">Put here comments</field>
+      </shadow>
+      <block type="text">
+        <field name="TEXT">***********************************</field>
+      </block>
+    </value>
+    <next>
+      <block type="comment">
+        <field name="NAME"></field>
+        <value name="TEXT">
+          <shadow type="text">
+            <field name="TEXT">Put here comments</field>
+          </shadow>
+          <block type="text">
+            <field name="TEXT">Look up device and commands</field>
+          </block>
+        </value>
+        <next>
+          <block type="comment">
+            <field name="NAME"></field>
+            <value name="TEXT">
+              <shadow type="text">
+                <field name="TEXT">Put here comments</field>
+              </shadow>
+              <block type="text">
+                <field name="TEXT">***********************************</field>
+              </block>
+            </value>
+            <next>
+              <block type="comment">
+                <field name="NAME"></field>
+                <value name="TEXT">
+                  <shadow type="text">
+                    <field name="TEXT">Put here comments</field>
+                  </shadow>
+                  <block type="text">
+                    <field name="TEXT"></field>
+                  </block>
+                </value>
+                <next>
+                  <block type="comment">
+                    <field name="NAME"></field>
+                    <value name="TEXT">
+                      <shadow type="text">
+                        <field name="TEXT">Put here comments</field>
+                      </shadow>
+                      <block type="text">
+                        <field name="TEXT">Begin</field>
+                      </block>
+                    </value>
+                    <next>
+                      <block type="variables_set">
+                        <field name="VAR" id="6^i1.T1m+$uvn6@f%U*R">ipAddress</field>
+                        <value name="VALUE">
+                          <block type="text">
+                            <field name="TEXT">192.168.0.5</field>
+                          </block>
+                        </value>
+                        <next>
+                          <block type="variables_set">
+                            <field name="VAR" id="T3@@;m27h#=;%]S}6B$|">port</field>
+                            <value name="VALUE">
+                              <block type="math_number">
+                                <field name="NUM">4242</field>
+                              </block>
+                            </value>
+                            <next>
+                              <block type="text_print">
+                                <value name="TEXT">
+                                  <block type="post__Start">
+                                    <value name="val_ipAddress">
+                                      <block type="variables_get">
+                                        <field name="VAR" id="6^i1.T1m+$uvn6@f%U*R">ipAddress</field>
+                                      </block>
+                                    </value>
+                                    <value name="val__port">
+                                      <block type="variables_get">
+                                        <field name="VAR" id="T3@@;m27h#=;%]S}6B$|">port</field>
+                                      </block>
+                                    </value>
+                                  </block>
+                                </value>
+                                <next>
+                                  <block type="wait_seconds">
+                                    <field name="SECONDS">1</field>
+                                    <next>
+                                      <block type="comment">
+                                        <field name="NAME"></field>
+                                        <value name="TEXT">
+                                          <shadow type="text">
+                                            <field name="TEXT">Put here comments</field>
+                                          </shadow>
+                                          <block type="text">
+                                            <field name="TEXT">Select device</field>
+                                          </block>
+                                        </value>
+                                        <next>
+                                          <block type="variables_set">
+                                            <field name="VAR" id="==eeP;j]X(n_u,DH}4sd">device</field>
+                                            <value name="VALUE">
+                                              <block type="post__Softata_Str_SetupDevDefaultLookup">
+                                                <value name="val_values">
+                                                  <block type="Device2Lookup">
+                                                    <value name="val_name">
+                                                      <block type="text">
+                                                        <field name="TEXT">Simulator</field>
+                                                      </block>
+                                                    </value>
+                                                  </block>
+                                                </value>
+                                              </block>
+                                            </value>
+                                            <next>
+                                              <block type="comment">
+                                                <field name="NAME"></field>
+                                                <value name="TEXT">
+                                                  <shadow type="text">
+                                                    <field name="TEXT">Put here comments</field>
+                                                  </shadow>
+                                                  <block type="text">
+                                                    <field name="TEXT">Run device command: No parameters</field>
+                                                  </block>
+                                                </value>
+                                                <next>
+                                                  <block type="text_print">
+                                                    <value name="TEXT">
+                                                      <block type="post__Softata_Str_ActionDeviceCmdNoParams">
+                                                        <value name="val_cmd">
+                                                          <block type="text">
+                                                            <field name="TEXT">gettelemetry</field>
+                                                          </block>
+                                                        </value>
+                                                        <value name="val_values">
+                                                          <block type="DeviceInstance">
+                                                            <value name="val_deviceType">
+                                                              <block type="DeviceType">
+                                                                <field name="val_DeviceType">0</field>
+                                                              </block>
+                                                            </value>
+                                                            <value name="val_listLinkId">
+                                                              <block type="variables_get">
+                                                                <field name="VAR" id="==eeP;j]X(n_u,DH}4sd">device</field>
+                                                              </block>
+                                                            </value>
+                                                          </block>
+                                                        </value>
+                                                      </block>
+                                                    </value>
+                                                    <next>
+                                                      <block type="comment">
+                                                        <field name="NAME"></field>
+                                                        <value name="TEXT">
+                                                          <shadow type="text">
+                                                            <field name="TEXT">Put here comments</field>
+                                                          </shadow>
+                                                          <block type="text">
+                                                            <field name="TEXT">Run device command: One parameter</field>
+                                                          </block>
+                                                        </value>
+                                                        <next>
+                                                          <block type="text_print">
+                                                            <value name="TEXT">
+                                                              <block type="post__Softata_Str_ActionDeviceCmdwithByteParam">
+                                                                <value name="val_cmd">
+                                                                  <block type="text">
+                                                                    <field name="TEXT">readone</field>
+                                                                  </block>
+                                                                </value>
+                                                                <value name="val_param">
+                                                                  <block type="math_number">
+                                                                    <field name="NUM">0</field>
+                                                                  </block>
+                                                                </value>
+                                                                <value name="val_values">
+                                                                  <block type="DeviceInstance">
+                                                                    <value name="val_deviceType">
+                                                                      <block type="DeviceType">
+                                                                        <field name="val_DeviceType">0</field>
+                                                                      </block>
+                                                                    </value>
+                                                                    <value name="val_listLinkId">
+                                                                      <block type="variables_get">
+                                                                        <field name="VAR" id="==eeP;j]X(n_u,DH}4sd">device</field>
+                                                                      </block>
+                                                                    </value>
+                                                                  </block>
+                                                                </value>
+                                                              </block>
+                                                            </value>
+                                                          </block>
+                                                        </next>
+                                                      </block>
+                                                    </next>
+                                                  </block>
+                                                </next>
+                                              </block>
+                                            </next>
+                                          </block>
+                                        </next>
+                                      </block>
+                                    </next>
+                                  </block>
+                                </next>
+                              </block>
+                            </next>
+                          </block>
+                        </next>
+                      </block>
+                    </next>
+                  </block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </next>
+      </block>
+    </next>
+  </block>
+</xml>

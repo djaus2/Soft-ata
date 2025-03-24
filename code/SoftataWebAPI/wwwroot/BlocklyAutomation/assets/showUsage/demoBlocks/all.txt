@@ -25,7 +25,13 @@
     },
     {
         "id":  "ASimpleCustomFunction",
-        "description":  "  Simple Custom Function",
+        "description":  " Simple Custom Function",
+        "categories":  "api;list",
+        "blocks":  "object_create;text;"
+    },
+    {
+        "id":  "Lookup-Device-Cmds",
+        "description":  " Lookup device and comands and run them",
         "categories":  "api;list",
         "blocks":  "object_create;text;"
     }
