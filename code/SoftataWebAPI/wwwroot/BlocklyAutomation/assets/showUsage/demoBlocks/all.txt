@@ -25,7 +25,13 @@
     },
         {
         "id":  "telemetrycmds",
-        "description":  " Send telemetry from sensor to IoT Hub",
+        "description":  " Send telemetry  from sensor to IoT Hub",
+        "categories":  "api;list",
+        "blocks":  "object_create;text;"
+    },
+    {
+        "id":  "SimplerTelemetry",
+        "description":  " Send telemetry but cmd selection in block method",
         "categories":  "api;list",
         "blocks":  "object_create;text;"
     },

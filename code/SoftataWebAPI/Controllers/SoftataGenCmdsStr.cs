@@ -103,6 +103,52 @@ namespace SoftataWebAPI.Controllers
         /// Action a Generic Command on a Device instance
         /// With no parameters
         /// </summary>
+        /// <param name="deviceInstance">Instantiated device (device type and linked list index)</param>
+        /// <param name="csv"></param>
+        /// <param name="index"></param>
+        /// <returns>Ok(Command result)</returns>
+        [Route("ActionDeviceCmdindexfrmCSVlistNoParams")]
+        [HttpPost]
+        public IActionResult ActionDeviceCmdindexfrmCSVlistNoParam(DeviceInstance deviceInstance,  string csv )
+        {
+            string[] temps = csv.Split(':');// The csv string has colon sep at start for list heading for menu.
+            if(temps.Length<3)
+            {
+                return BadRequest("No list heading/index");
+            }
+            if (!int.TryParse(temps[0], out int index))
+            {
+                return BadRequest("No index");
+            }
+            else
+            {
+                if (index < 0)
+                {
+                    return Ok("Quit");
+                }
+                else
+                {
+                    string[] cmds = temps[2].Split(',');
+                    if (index >= cmds.Length)
+                    {
+                        return BadRequest("Index out of range");
+                    }
+                    else
+                    {
+                        byte subCmd = LookUpGenericCmd(deviceInstance.DeviceType, cmds[index]);
+                        string result = sharedService.ActionDeviceCmdwithByteArrayParams((int)deviceInstance.DeviceType, HttpContext, Client, deviceInstance.ListLinkId, subCmd);
+                        return Ok(result);
+                    }
+                }
+            }
+        }
+
+
+
+        /// <summary>
+        /// Action a Generic Command on a Device instance
+        /// With no parameters
+        /// </summary>
         /// <param name="deviceInstance">Instatiated device linked list index</param>
         /// <param name="cmd">Command as string, or part thereof</param>
         /// <returns>Ok(Command result)</returns>

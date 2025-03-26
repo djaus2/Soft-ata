@@ -1,0 +1,505 @@
+<xml xmlns="https://developers.google.com/blockly/xml">
+  <variables>
+    <variable id="Nog,_nCz[7K1o_JdH;Jc">MenuCSV</variable>
+    <variable id="tC9qc[0PKk*?COQ=~yqy">menu</variable>
+    <variable id="tbnp8S0$-qfTAbuM3kxZ">Menz</variable>
+    <variable id="zOu7c}abh$Pu}a-HB|dJ">list</variable>
+    <variable id="`HA%:#o/VcvrsQgRiH|=">numItems</variable>
+    <variable id="7{X@bxzH`LQ:,~Im96Gy">menulist</variable>
+    <variable id="6^i1.T1m+$uvn6@f%U*R">ipAddress</variable>
+    <variable id="T3@@;m27h#=;%]S}6B$|">port</variable>
+    <variable id="==eeP;j]X(n_u,DH}4sd">device</variable>
+    <variable id="z#TknvlXlTsRs+_LWrri">menu2</variable>
+    <variable id="Un%Yh2C^{G}vaS|k+9z0">menulist2</variable>
+    <variable id="i}ZbY7cT`WJ0!q7k[-yw">menulist3</variable>
+  </variables>
+  <block type="procedures_defreturn" inline="true" collapsed="true" x="52" y="-3429">
+    <mutation>
+      <arg name="MenuCSV" varid="Nog,_nCz[7K1o_JdH;Jc"></arg>
+    </mutation>
+    <field name="NAME">Menu</field>
+    <comment pinned="false" h="80" w="160">Display a popup menu using CSV list with heading at start with colon separator.
+Appends Quit as last option
+     
+    
+    
+    
+    
+    
+    
+    </comment>
+    <statement name="STACK">
+      <block type="comment">
+        <field name="NAME"></field>
+        <value name="TEXT">
+          <shadow type="text">
+            <field name="TEXT">Put here comments</field>
+          </shadow>
+          <block type="text">
+            <field name="TEXT">Appends Quit as last option</field>
+          </block>
+        </value>
+        <next>
+          <block type="variables_set">
+            <field name="VAR" id="tbnp8S0$-qfTAbuM3kxZ">Menz</field>
+            <value name="VALUE">
+              <block type="text_join">
+                <mutation items="2"></mutation>
+                <value name="ADD0">
+                  <block type="variables_get">
+                    <field name="VAR" id="Nog,_nCz[7K1o_JdH;Jc">MenuCSV</field>
+                  </block>
+                </value>
+                <value name="ADD1">
+                  <block type="text">
+                    <field name="TEXT">,Quit</field>
+                  </block>
+                </value>
+              </block>
+            </value>
+            <next>
+              <block type="variables_set">
+                <field name="VAR" id="zOu7c}abh$Pu}a-HB|dJ">list</field>
+                <value name="VALUE">
+                  <block type="lists_split">
+                    <mutation mode="SPLIT"></mutation>
+                    <field name="MODE">SPLIT</field>
+                    <value name="INPUT">
+                      <block type="variables_get">
+                        <field name="VAR" id="tbnp8S0$-qfTAbuM3kxZ">Menz</field>
+                      </block>
+                    </value>
+                    <value name="DELIM">
+                      <shadow type="text">
+                        <field name="TEXT">,</field>
+                      </shadow>
+                      <block type="text">
+                        <field name="TEXT">,</field>
+                      </block>
+                    </value>
+                  </block>
+                </value>
+                <next>
+                  <block type="variables_set">
+                    <field name="VAR" id="`HA%:#o/VcvrsQgRiH|=">numItems</field>
+                    <value name="VALUE">
+                      <block type="lists_length">
+                        <value name="VALUE">
+                          <block type="variables_get">
+                            <field name="VAR" id="zOu7c}abh$Pu}a-HB|dJ">list</field>
+                          </block>
+                        </value>
+                      </block>
+                    </value>
+                    <next>
+                      <block type="variables_set">
+                        <field name="VAR" id="7{X@bxzH`LQ:,~Im96Gy">menulist</field>
+                        <value name="VALUE">
+                          <block type="get__GetMenuStrfrmCSV">
+                            <value name="val_csv">
+                              <block type="variables_get">
+                                <field name="VAR" id="tbnp8S0$-qfTAbuM3kxZ">Menz</field>
+                              </block>
+                            </value>
+                          </block>
+                        </value>
+                        <next>
+                          <block type="variables_set">
+                            <field name="VAR" id="tC9qc[0PKk*?COQ=~yqy">menu</field>
+                            <value name="VALUE">
+                              <block type="math_number">
+                                <field name="NUM">0</field>
+                              </block>
+                            </value>
+                            <next>
+                              <block type="controls_whileUntil">
+                                <field name="MODE">WHILE</field>
+                                <value name="BOOL">
+                                  <block type="logic_operation">
+                                    <field name="OP">OR</field>
+                                    <value name="A">
+                                      <block type="logic_compare">
+                                        <field name="OP">LT</field>
+                                        <value name="A">
+                                          <block type="variables_get">
+                                            <field name="VAR" id="tC9qc[0PKk*?COQ=~yqy">menu</field>
+                                          </block>
+                                        </value>
+                                        <value name="B">
+                                          <block type="math_number">
+                                            <field name="NUM">1</field>
+                                          </block>
+                                        </value>
+                                      </block>
+                                    </value>
+                                    <value name="B">
+                                      <block type="logic_compare">
+                                        <field name="OP">GT</field>
+                                        <value name="A">
+                                          <block type="variables_get">
+                                            <field name="VAR" id="tC9qc[0PKk*?COQ=~yqy">menu</field>
+                                          </block>
+                                        </value>
+                                        <value name="B">
+                                          <block type="variables_get">
+                                            <field name="VAR" id="`HA%:#o/VcvrsQgRiH|=">numItems</field>
+                                          </block>
+                                        </value>
+                                      </block>
+                                    </value>
+                                  </block>
+                                </value>
+                                <statement name="DO">
+                                  <block type="variables_set">
+                                    <field name="VAR" id="tC9qc[0PKk*?COQ=~yqy">menu</field>
+                                    <value name="VALUE">
+                                      <block type="text_prompt_ext">
+                                        <mutation type="NUMBER"></mutation>
+                                        <field name="TYPE">NUMBER</field>
+                                        <value name="TEXT">
+                                          <shadow type="text">
+                                            <field name="TEXT">abc</field>
+                                          </shadow>
+                                          <block type="variables_get">
+                                            <field name="VAR" id="7{X@bxzH`LQ:,~Im96Gy">menulist</field>
+                                          </block>
+                                        </value>
+                                      </block>
+                                    </value>
+                                  </block>
+                                </statement>
+                                <next>
+                                  <block type="controls_if">
+                                    <value name="IF0">
+                                      <block type="logic_compare">
+                                        <field name="OP">EQ</field>
+                                        <value name="A">
+                                          <block type="variables_get">
+                                            <field name="VAR" id="tC9qc[0PKk*?COQ=~yqy">menu</field>
+                                          </block>
+                                        </value>
+                                        <value name="B">
+                                          <block type="variables_get">
+                                            <field name="VAR" id="`HA%:#o/VcvrsQgRiH|=">numItems</field>
+                                          </block>
+                                        </value>
+                                      </block>
+                                    </value>
+                                    <statement name="DO0">
+                                      <block type="variables_set">
+                                        <field name="VAR" id="tC9qc[0PKk*?COQ=~yqy">menu</field>
+                                        <value name="VALUE">
+                                          <block type="math_number">
+                                            <field name="NUM">-1</field>
+                                          </block>
+                                        </value>
+                                      </block>
+                                    </statement>
+                                  </block>
+                                </next>
+                              </block>
+                            </next>
+                          </block>
+                        </next>
+                      </block>
+                    </next>
+                  </block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </next>
+      </block>
+    </statement>
+    <value name="RETURN">
+      <block type="variables_get">
+        <field name="VAR" id="tC9qc[0PKk*?COQ=~yqy">menu</field>
+      </block>
+    </value>
+  </block>
+  <block type="comment" x="51" y="-3389">
+    <field name="NAME"></field>
+    <value name="TEXT">
+      <shadow type="text">
+        <field name="TEXT">Put here comments</field>
+      </shadow>
+      <block type="text">
+        <field name="TEXT">***********************************</field>
+      </block>
+    </value>
+    <next>
+      <block type="comment">
+        <field name="NAME"></field>
+        <value name="TEXT">
+          <shadow type="text">
+            <field name="TEXT">Put here comments</field>
+          </shadow>
+          <block type="text">
+            <field name="TEXT">Action Telmetry with Sensor</field>
+          </block>
+        </value>
+        <next>
+          <block type="comment">
+            <field name="NAME"></field>
+            <value name="TEXT">
+              <shadow type="text">
+                <field name="TEXT">Put here comments</field>
+              </shadow>
+              <block type="text">
+                <field name="TEXT">***********************************</field>
+              </block>
+            </value>
+            <next>
+              <block type="comment">
+                <field name="NAME"></field>
+                <value name="TEXT">
+                  <shadow type="text">
+                    <field name="TEXT">Put here comments</field>
+                  </shadow>
+                  <block type="text">
+                    <field name="TEXT"></field>
+                  </block>
+                </value>
+                <next>
+                  <block type="comment">
+                    <field name="NAME"></field>
+                    <value name="TEXT">
+                      <shadow type="text">
+                        <field name="TEXT">Put here comments</field>
+                      </shadow>
+                      <block type="text">
+                        <field name="TEXT">Begin</field>
+                      </block>
+                    </value>
+                    <next>
+                      <block type="variables_set">
+                        <field name="VAR" id="6^i1.T1m+$uvn6@f%U*R">ipAddress</field>
+                        <value name="VALUE">
+                          <block type="text">
+                            <field name="TEXT">192.168.0.5</field>
+                          </block>
+                        </value>
+                        <next>
+                          <block type="variables_set">
+                            <field name="VAR" id="T3@@;m27h#=;%]S}6B$|">port</field>
+                            <value name="VALUE">
+                              <block type="math_number">
+                                <field name="NUM">4242</field>
+                              </block>
+                            </value>
+                            <next>
+                              <block type="text_print">
+                                <value name="TEXT">
+                                  <block type="post__Start">
+                                    <value name="val_ipAddress">
+                                      <block type="variables_get">
+                                        <field name="VAR" id="6^i1.T1m+$uvn6@f%U*R">ipAddress</field>
+                                      </block>
+                                    </value>
+                                    <value name="val__port">
+                                      <block type="variables_get">
+                                        <field name="VAR" id="T3@@;m27h#=;%]S}6B$|">port</field>
+                                      </block>
+                                    </value>
+                                  </block>
+                                </value>
+                                <next>
+                                  <block type="wait_seconds">
+                                    <field name="SECONDS">1</field>
+                                    <next>
+                                      <block type="comment">
+                                        <field name="NAME"></field>
+                                        <value name="TEXT">
+                                          <shadow type="text">
+                                            <field name="TEXT">Put here comments</field>
+                                          </shadow>
+                                          <block type="text">
+                                            <field name="TEXT">Select device</field>
+                                          </block>
+                                        </value>
+                                        <next>
+                                          <block type="variables_set">
+                                            <field name="VAR" id="==eeP;j]X(n_u,DH}4sd">device</field>
+                                            <value name="VALUE">
+                                              <block type="post__Softata_Str_SetupDevDefaultLookup">
+                                                <value name="val_values">
+                                                  <block type="Device2Lookup">
+                                                    <value name="val_name">
+                                                      <block type="text">
+                                                        <field name="TEXT">Simulator</field>
+                                                      </block>
+                                                    </value>
+                                                  </block>
+                                                </value>
+                                              </block>
+                                            </value>
+                                            <next>
+                                              <block type="comment">
+                                                <field name="NAME"></field>
+                                                <value name="TEXT">
+                                                  <shadow type="text">
+                                                    <field name="TEXT">Put here comments</field>
+                                                  </shadow>
+                                                  <block type="text">
+                                                    <field name="TEXT">Get action</field>
+                                                  </block>
+                                                </value>
+                                                <next>
+                                                  <block type="variables_set">
+                                                    <field name="VAR" id="z#TknvlXlTsRs+_LWrri">menu2</field>
+                                                    <value name="VALUE">
+                                                      <block type="math_number">
+                                                        <field name="NUM">0</field>
+                                                      </block>
+                                                    </value>
+                                                    <next>
+                                                      <block type="variables_set">
+                                                        <field name="VAR" id="Un%Yh2C^{G}vaS|k+9z0">menulist2</field>
+                                                        <value name="VALUE">
+                                                          <block type="text">
+                                                            <field name="TEXT">Telemetry Commands:gettelemetry,sendTelemetryToIoTHub,pause_sendTelemetry,continue_sendTelemetry,stop_sendTelemetry</field>
+                                                          </block>
+                                                        </value>
+                                                        <next>
+                                                          <block type="controls_whileUntil">
+                                                            <field name="MODE">WHILE</field>
+                                                            <value name="BOOL">
+                                                              <block type="logic_compare">
+                                                                <field name="OP">GT</field>
+                                                                <value name="A">
+                                                                  <block type="variables_get">
+                                                                    <field name="VAR" id="z#TknvlXlTsRs+_LWrri">menu2</field>
+                                                                  </block>
+                                                                </value>
+                                                                <value name="B">
+                                                                  <block type="math_number">
+                                                                    <field name="NUM">-1</field>
+                                                                  </block>
+                                                                </value>
+                                                              </block>
+                                                            </value>
+                                                            <statement name="DO">
+                                                              <block type="variables_set">
+                                                                <field name="VAR" id="z#TknvlXlTsRs+_LWrri">menu2</field>
+                                                                <value name="VALUE">
+                                                                  <block type="procedures_callreturn">
+                                                                    <mutation name="Menu">
+                                                                      <arg name="MenuCSV"></arg>
+                                                                    </mutation>
+                                                                    <value name="ARG0">
+                                                                      <block type="variables_get">
+                                                                        <field name="VAR" id="Un%Yh2C^{G}vaS|k+9z0">menulist2</field>
+                                                                      </block>
+                                                                    </value>
+                                                                  </block>
+                                                                </value>
+                                                                <next>
+                                                                  <block type="unaryOperator">
+                                                                    <field name="OPERATOR">--</field>
+                                                                    <value name="VAR">
+                                                                      <block type="variables_get">
+                                                                        <field name="VAR" id="z#TknvlXlTsRs+_LWrri">menu2</field>
+                                                                      </block>
+                                                                    </value>
+                                                                    <next>
+                                                                      <block type="comment">
+                                                                        <field name="NAME"></field>
+                                                                        <value name="TEXT">
+                                                                          <shadow type="text">
+                                                                            <field name="TEXT">Put here comments</field>
+                                                                          </shadow>
+                                                                          <block type="text">
+                                                                            <field name="TEXT">Prepend menu selection to list with colon</field>
+                                                                          </block>
+                                                                        </value>
+                                                                        <next>
+                                                                          <block type="variables_set">
+                                                                            <field name="VAR" id="i}ZbY7cT`WJ0!q7k[-yw">menulist3</field>
+                                                                            <value name="VALUE">
+                                                                              <block type="text_join">
+                                                                                <mutation items="3"></mutation>
+                                                                                <value name="ADD0">
+                                                                                  <block type="variables_get">
+                                                                                    <field name="VAR" id="z#TknvlXlTsRs+_LWrri">menu2</field>
+                                                                                  </block>
+                                                                                </value>
+                                                                                <value name="ADD1">
+                                                                                  <block type="text_multiline">
+                                                                                    <field name="TEXT">:</field>
+                                                                                  </block>
+                                                                                </value>
+                                                                                <value name="ADD2">
+                                                                                  <block type="variables_get">
+                                                                                    <field name="VAR" id="Un%Yh2C^{G}vaS|k+9z0">menulist2</field>
+                                                                                  </block>
+                                                                                </value>
+                                                                              </block>
+                                                                            </value>
+                                                                            <next>
+                                                                              <block type="text_print">
+                                                                                <value name="TEXT">
+                                                                                  <block type="post__Softata_Str_ActionDeviceCmdindexfrmCSVlistNoParams">
+                                                                                    <value name="val_csv">
+                                                                                      <block type="variables_get">
+                                                                                        <field name="VAR" id="i}ZbY7cT`WJ0!q7k[-yw">menulist3</field>
+                                                                                      </block>
+                                                                                    </value>
+                                                                                    <value name="val_values">
+                                                                                      <block type="Device">
+                                                                                        <value name="val_deviceType">
+                                                                                          <block type="DeviceType">
+                                                                                            <field name="val_DeviceType">0</field>
+                                                                                          </block>
+                                                                                        </value>
+                                                                                        <value name="val_deviceId">
+                                                                                          <block type="variables_get">
+                                                                                            <field name="VAR" id="==eeP;j]X(n_u,DH}4sd">device</field>
+                                                                                          </block>
+                                                                                        </value>
+                                                                                      </block>
+                                                                                    </value>
+                                                                                  </block>
+                                                                                </value>
+                                                                              </block>
+                                                                            </next>
+                                                                          </block>
+                                                                        </next>
+                                                                      </block>
+                                                                    </next>
+                                                                  </block>
+                                                                </next>
+                                                              </block>
+                                                            </statement>
+                                                          </block>
+                                                        </next>
+                                                      </block>
+                                                    </next>
+                                                  </block>
+                                                </next>
+                                              </block>
+                                            </next>
+                                          </block>
+                                        </next>
+                                      </block>
+                                    </next>
+                                  </block>
+                                </next>
+                              </block>
+                            </next>
+                          </block>
+                        </next>
+                      </block>
+                    </next>
+                  </block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </next>
+      </block>
+    </next>
+  </block>
+  <block type="math_number" x="8" y="8">
+    <field name="NUM">0</field>
+  </block>
+</xml>
