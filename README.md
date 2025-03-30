@@ -1,5 +1,8 @@
 # Soft-ata Version 12.210
 
+## Blog Posts
+Have just published a number of relevant blog posts [davidjones.sportronics.com.au](http://davidjones.sportronics.com.au)
+
 ## Updates
 - Added another Telemetry example, same functionality
   - Multiple embeddded if-then-else, like switch-case now implemented in a one block controller method.
