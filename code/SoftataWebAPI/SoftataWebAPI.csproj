@@ -16,10 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Remove="wwwroot\sketch\IoT_Softata.ino.uf2" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Remove="Data\dictionary.db" />
     <None Remove="SoftataWebAPI.xml" />
   </ItemGroup>
@@ -55,12 +51,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SofataLibSessioned4Blockly\SoftataLibSessioned4Blockly.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Resource Include="wwwroot\sketch\IoT_Softata.ino.uf2">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
   </ItemGroup>
 
   <ItemGroup>
