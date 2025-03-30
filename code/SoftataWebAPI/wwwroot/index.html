@@ -52,6 +52,8 @@
                     The orchestration can be used to control the RPi Pico W's GPIO pins, ADC, I2C, SPI, UART, PWM, etc.
                     The hardware conetxt is a Grove Shield with a number of implemented devices.
                     The ASP.NET Core API can be exercised via Swagger or a Blockly style app.
+                    The Blockly app can be run on Azure or locally.
+                    The orchestration can include streaming telemetry from a sensor to an Azure IoT Hub,
                 </i>
             </td>
         </tr>
@@ -62,7 +64,7 @@
 
 
     <details>
-        <summary><b>Install the Softata RPi Pico W Sketch</b></summary>
+        <summary><b>Install the Softata RPi Pico W Sketch binary</b></summary>
         <ul>
             <li>
                 <ul>
@@ -72,9 +74,16 @@
                         <ul>
                             <li><i><b>Comment: </b>The non-IoT version starts quicker, so use that if not using Azure IoT Telemetry</i></li>
                             <li><i>If using Bluetooth Telemetry use non-IoT version</i></li>
+                            <li> If using the IoT Hub version you need to create one and choose [Y] at first menu.</li>
+                            <ul>
+                                <li>Note there is a simulated sensor so you get going quickly</li>
+                            </ul>
+                            </li>
                         </ul>
                     </li>
                 </ul>
+        </li>
+            <li>
                 <ul>
                     <li>Extract Softata.ino.uf2 to the desktop </li>
                     <li> Press and hold the BOOTSEL button on the Pico down while plugging it into your computer</li>

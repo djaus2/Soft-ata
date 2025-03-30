@@ -11,16 +11,17 @@
 
 //WiFi
 #ifndef STASSID
-#define STASSID "OPTUS_EE3AEDM"
-#define STAPSK "funds92755eh"
+#define STASSID "<Insert>"
+#define STAPSK "<insert>"
 #endif
 
 #define IOT_CONFIG_WIFI_SSID STASSID
 #define IOT_CONFIG_WIFI_PASSWORD STAPSK
 
-#define IOT_NAME "Blobklhy3" // "Blockly2" //"<hubname>"
-#define IOT_CONFIG_DEVICE_ID "BloxDev" //  "Blockly2_Dev" // "<devicename>"
-#define IOT_CONFIG_DEVICE_KEY "scEAgzvavFG21rMypJzkjQzft3W/YyoiidZMVHbED9M=" // "2zqnxw3HLl7ZiuwaPT+96q6KBoSEbgRgdAIoTJMMHzg=" 
+// See //#define USINGIOTHUB in Softata.h
+#define IOT_NAME "<Insert if using IOT Hub>" 
+#define IOT_CONFIG_DEVICE_ID "<Insert if using IOT Hub>" 
+#define IOT_CONFIG_DEVICE_KEY "<Insert if using IOT Hub>" 
 // "<device connection key>"
 
 ///////////////////////////////////////////////////////////////

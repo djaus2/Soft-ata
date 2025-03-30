@@ -19,7 +19,7 @@ enum SyncedCommands : byte {pauseTelemetryorBT=0,continueTelemetryorBT=1,stopTel
 // Azure IoT
 // Uncomment following if using Azure IoT Hub
 // For Bluetooth do not define USINGIOTHUB
-#define USINGIOTHUB
+//#define USINGIOTHUB
 
 enum ConnectMode: byte {wifi_is_set, from_eeprom, is_defined, wifiset, serial_prompt, bt_prompt };
 
