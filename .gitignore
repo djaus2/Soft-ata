@@ -420,3 +420,7 @@ FodyWeavers.xsd
 /code/SoftataWebAPI/wwwroot/sketch/IoT_Softata.ino.zip
 /code/SoftataWebAPI/wwwroot/sketch/IoT_Softata.uf2
 /code/SoftataWebAPI/wwwroot/sketch/IoT_Softata.zip
+/code/Softata/build/temp/IoT_Softata.uf2
+/code/Softata/build/temp/IoT_Softata.zip
+/code/Softata/build/temp/NoIoT_Softata.ino.uf2
+/code/Softata/build/temp/NoIoT_Softata.ino.zip
