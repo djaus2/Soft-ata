@@ -68,7 +68,7 @@ namespace SoftataWebAPI.Data
 
                 if (result == null)
                 {
-                    //Default device. other can be used to indicte not found
+                    //Default device. other can be used to indicate not found
                     var dev = new Device
                     {
                         DeviceId = 0,

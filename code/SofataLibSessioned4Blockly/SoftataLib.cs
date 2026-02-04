@@ -1,24 +1,24 @@
-﻿using Microsoft.VisualBasic;
-using System.Collections.Concurrent;
-using System.Data.Common;
-
-using System;
-using System.Text;
-using System.Net;
-using System.Net.Sockets;
-using System.IO;
-using System.Threading;
-using System.Net.NetworkInformation;
+﻿using ConsoleTextFormat;
+using Microsoft.VisualBasic;
 using Softata.Enums;
+using Softata.Enums;
+using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Data.Common;
+using System.IO;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Runtime.Serialization;
+using System.Net;
+using System.Net.Http;
+using System.Net.NetworkInformation;
+using System.Net.Sockets;
 using System.Numerics;
 using System.Reflection;
-using ConsoleTextFormat;
+using System.Runtime.Serialization;
+using System.Security.Cryptography;
+using System.Text;
+using System.Threading;
 using static Softata.SoftataLib;
-using Softata.Enums;
 
 
 namespace Softata
@@ -28,6 +28,11 @@ namespace Softata
         public SoftataLib()
         {
 
+        }
+
+        ~SoftataLib()
+        {
+            //Disconnect();           
         }
 
         //Ref: https://datasheets.raspberrypi.com/pico/Pico-R3-A4-Pinout.pdf
@@ -80,7 +85,9 @@ namespace Softata
             return SensorProps;
         }
 
-        private  Socket? _client;
+
+
+        private Socket? _client;
 
         private  Socket? client
         {
@@ -129,9 +136,17 @@ namespace Softata
                 {
                     if (Client.Connected)
                     {
-                        Client.Close();
+                        try
+                        {
+                            Client.Shutdown(SocketShutdown.Both);
+                        }
+                        finally
+                        {
+                            Client.Close();
+                        }
                     }
                     Client.Dispose();
+                    Client = null;
                 }
             }
             catch (Exception ex) { }
@@ -307,15 +322,13 @@ namespace Softata
         }
         public  string SendMessageCmd(string cmd, Socket? _client = null)
         {
-            //Passed from Session with Bolckly
-            if(_client != null)
+            if (_client == null)
+                throw new Exception("SendMessageCmd: Client is null");
+            //Passed from Session with Blockly
+            else 
                 Client = _client;
 
-            if (Client == null)
-
-                throw new Exception("SendMessageCmd: Client is null");
-
-            else if (!Client.Connected)
+            if (!Client.Connected)
                 throw new Exception("SendMessageCmd: Not connected");
 
             string result = "";
@@ -323,6 +336,19 @@ namespace Softata
 
             // Construct command and parameters as list of bytes
             List<byte> sendmsg = new List<byte> { 1, (byte)cmd[0] };
+            int endTimeout = 15;//15s default
+            // Can append EndTimeout to End as a csv string
+            if (cmd.Contains("End"))
+            {
+                if (cmd.Contains(','))
+                {
+                    if (int.TryParse(cmd.Split(',')[1], out int t))
+                    {
+                        endTimeout = t*1000;
+                    }
+                }
+                cmd = "End";
+            }
 
             byte[] sendBytes = sendmsg.ToArray<byte>();
             Console.WriteLine($"Sending {sendBytes.Length} data bytes");
@@ -332,7 +358,24 @@ namespace Softata
             Console.WriteLine($"Sent {sent} bytes");
 
             //Wait for response
-            while (Client.Available == 0) ;
+            if (cmd != "End")
+            {
+                while (Client.Available == 0) ;
+            }
+            //Wait for response(15s timeout)
+            else
+            if (!WaitForData(Client, endTimeout))
+            {
+                System.Diagnostics.Debug.WriteLine($"Timed out waiting for data from cmd: {cmd} (15s)");
+                if (cmd == "End")
+                {
+                    System.Diagnostics.Debug.WriteLine("Lib:Got End");
+                    return "End";
+                }
+                throw new TimeoutException("Timed out waiting for data (15s)");
+            }
+
+
             byte[] data = new byte[100];
             int recvd = Client.Receive(data);
 
@@ -341,6 +384,9 @@ namespace Softata
 
             switch (cmd)
             {
+                case "KeepAlive":
+                    return result;
+                    break;
                 case "Ack":
                     Client.Disconnect(true);
                     Client.Close();
@@ -360,10 +406,7 @@ namespace Softata
                     break;
                 case "End":
                     Thread.Sleep(2000);
-                    Client.Shutdown(SocketShutdown.Both);
-                    Client.Close();
-                    Client.Dispose();
-                    Client = null;
+                    return "End";
                     break;
                 case "WDTTimeOut":
                     Thread.Sleep(20000);
@@ -374,11 +417,30 @@ namespace Softata
                     break;
                 case "Reset":
                     break;
+                default:
+                    Client.Disconnect(true);
+                    Client.Close();
+                    break;
             }
             return "";
         }
 
-        
+        private bool WaitForData(Socket client, int v)
+        {
+            try
+            {
+                // Socket.Poll accepts microseconds.
+                bool polled = client.Poll(v * 1000, SelectMode.SelectRead);
+                // Poll may return true when the connection is closed; ensure there's actual data.
+                return polled && client.Available > 0;
+            }
+            catch (SocketException)
+            {
+                return false;
+            }
+        }
+
+
         // State
         private object Aval2 { get; set; } = "";
         private Guid key { get; set; } = Guid.NewGuid();

@@ -39,6 +39,7 @@ namespace SoftataWebAPI.Data
         bool ReadSoftataDataDb(SoftataDbContext context);
 
         Softata.SoftataLib GetSoftata(HttpContext HttpContext);
+        void SetSoftata(HttpContext HttpContext, Softata.SoftataLib softataLib);
         Softata.SoftataLib.Sensor GetSensor(HttpContext HttpContext, int index);
         //bool UpdateSoftata(HttpContext HttpContext, Softata.SoftataLib softatlib);
 
@@ -69,6 +70,16 @@ namespace SoftataWebAPI.Data
                 HttpContext.Session.Set<object>("SOFT", softatlib);
             }
             return softatlib;
+        }
+        public void SetSoftata(HttpContext HttpContext, Softata.SoftataLib softataLib)
+        {
+
+            Softata.SoftataLib? softatlib = HttpContext.Session.Get<Softata.SoftataLib>("SOFT");
+            if (softatlib == null)
+            {
+                softatlib = null;
+                HttpContext.Session.Set<object>("SOFT", softatlib);
+            }
         }
 
         /// <summary>

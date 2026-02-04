@@ -19,3 +19,4 @@ $val | add-member -Name "blocks" -value $str -MemberType NoteProperty -Force
 }
 
 $content | ConvertTo-Json | Out-File "All.txt" -Encoding utf8
+cd ..

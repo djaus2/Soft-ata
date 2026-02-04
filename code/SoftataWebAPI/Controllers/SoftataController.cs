@@ -74,6 +74,10 @@ namespace SoftataWebAPI.Controllers
             _client= _Connect(ipAddress, _port);
             if (_client!=null)
             {
+                
+                Tuple<string, int> connectionDetails = new Tuple<string, int>(ipAddress, _port);
+                HttpContext.Session.Set<Tuple<string, int>>("ConnectionDetails",connectionDetails);
+
                 string keepAlive = Get("KeepAlive");
                 string beginValue = Get("Begin");
                 if (beginValue == "Ready")
@@ -263,8 +267,26 @@ namespace SoftataWebAPI.Controllers
             if(cmd == "favicon.ico")
                 return "";
             if (!Commands.Contains(cmd))
-                return "";
+            {
+                // Can append EndTimeout to End as a csv string
+                if (!cmd.Contains("End"))
+                    return "";
+            }
+            if(Client==null)
+            {
+                return "NoClient";
+            }
+            if(Client.RemoteEndPoint == null)
+            {
+                return "No Client RemoteEndPoint";
+            }
+            System.Diagnostics.Debug.WriteLine($"Cmd:{cmd} Client:{Client.RemoteEndPoint.ToString()}");
             string value = softatalib.SendMessageCmd(cmd,Client);
+            if(value=="End")
+            {
+                System.Diagnostics.Debug.WriteLine("Controller:Got End");
+                //softatalib.SoftataLibs.Remove( );
+            }
             return value;
         }
 

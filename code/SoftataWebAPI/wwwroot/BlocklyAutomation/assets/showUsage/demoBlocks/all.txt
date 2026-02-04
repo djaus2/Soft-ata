@@ -1,50 +1,68 @@
 ﻿[
     {
+        "id":  "AATemplate",
+        "description":  "  A Template: Start, Run and Unload infrastructure. Insert work in function",
+        "categories":  "api;list",
+        "blocks":  "comment;text;math_number;logic_boolean;wait_seconds;controls_if;text_print;post__Start;controls_ifelse;logic_negate;procedures_callreturn;get____cmd;procedures_defreturn"
+    },
+    {
+        "id":  "AATemplateSimplified",
+        "description":  "  As per Template but has less comments: Use this as starting point for new app.",
+        "categories":  "api;list",
+        "blocks":  "comment;text;math_number;logic_boolean;wait_seconds;controls_if;text_print;post__Start;controls_ifelse;logic_negate;procedures_callreturn;get____cmd;procedures_defreturn"
+    },
+    {
+        "id":  "AATemplateSimulatedSensor",
+        "description":  "  As per Template but has Work function",
+        "categories":  "api;list",
+        "blocks":  "comment;text;math_number;logic_boolean;wait_seconds;controls_if;text_print;post__Start;controls_ifelse;logic_negate;procedures_callreturn;get____cmd;procedures_defreturn;post__Softata_Str_SetupDevDefaultLookup;Device2Lookup;controls_repeat_ext;post__Softata_Str_ActionDeviceCmdNoParams;DeviceInstance;DeviceType;post__Softata_Str_ActionDeviceCmdwithByteParam"
+    },
+    {
         "id":  "AMStartBlocks",
         "description":  "  Short Softata Start Example - Get Meta from Database",
         "categories":  "api;list",
-        "blocks":  "object_create;text;"
+        "blocks":  "text;math_number;text_print;post__Start;wait_seconds;get____cmd"
     },
-        {
+    {
         "id":  "AMStartBlocksArd",
         "description":  "  Short Softata Start Example - Get Meta from Pico",
         "categories":  "api;list",
-        "blocks":  "object_create;text;"
+        "blocks":  "text;math_number;text_print;post__Ard_Start;wait_seconds;get__Ard___cmd"
     },
-        {
+    {
         "id":  "BlazorSimShort",
         "description":  "  Similar to Blazor2 - Short Version",
         "categories":  "api;list",
-        "blocks":  "object_create;text;"
+        "blocks":  "procedures_defreturn;comment;text;text_join;lists_split;lists_length;get__GetMenuStrfrmCSV;math_number;controls_whileUntil;logic_operation;logic_compare;text_prompt_ext;controls_if;text_print;post__Start;wait_seconds;get____cmd;procedures_callreturn;unaryOperator;post__Softata_Indx_DeviceTypeGenCmd;post__Softata_Indx_DeviceTypeGenCmdwithByteParam;logic_boolean;controls_flow_statements;post__Softata_Indx_DevCmdwithParamsUniversal"
     },
-        {
+    {
         "id":  "BlazorSimLong",
         "description":  "  Similar to Blazor2 -- Long Version",
         "categories":  "api;list",
-        "blocks":  "object_create;text;"
+        "blocks":  "procedures_defreturn;comment;text;text_join;lists_split;lists_length;get__GetMenuStrfrmCSV;math_number;controls_whileUntil;logic_operation;logic_compare;text_prompt_ext;controls_if;logic_boolean;text_print;post__Start;wait_seconds;get____cmd;procedures_callreturn;unaryOperator;post__Softata_Indx_DeviceTypeGenCmd;post__Softata_Indx_DeviceTypeGenCmdwithByteParam;controls_flow_statements;controls_ifelse;text_isEmpty;post__Softata_Indx_DeviceGenCmdNoParams;post__Softata_Indx_DevGenCmdByteParam;post__Softata_Indx_DevCmdCSVParams;post__Softata_Indx_DevCmdwithParamsUniversal"
     },
-        {
+    {
         "id":  "telemetrycmds",
         "description":  " Send telemetry  from sensor to IoT Hub",
         "categories":  "api;list",
-        "blocks":  "object_create;text;"
+        "blocks":  "procedures_defreturn;comment;text;text_join;lists_split;lists_length;get__GetMenuStrfrmCSV;math_number;controls_whileUntil;logic_operation;logic_compare;text_prompt_ext;controls_if;text_print;post__Start;wait_seconds;post__Softata_Str_SetupDevDefaultLookup;Device2Lookup;procedures_callreturn;controls_ifelse;post__Softata_Str_ActionDeviceCmdNoParams;DeviceInstance;DeviceType;controls_flow_statements"
     },
     {
         "id":  "SimplerTelemetry",
         "description":  " Send telemetry but cmd selection in block method",
         "categories":  "api;list",
-        "blocks":  "object_create;text;"
+        "blocks":  "procedures_defreturn;comment;text;text_join;lists_split;lists_length;get__GetMenuStrfrmCSV;math_number;controls_whileUntil;logic_operation;logic_compare;text_prompt_ext;controls_if;text_print;post__Start;wait_seconds;post__Softata_Str_SetupDevDefaultLookup;Device2Lookup;procedures_callreturn;unaryOperator;text_multiline;post__Softata_Str_ActionDeviceCmdindexfrmCSVlistNoParams;Device;DeviceType"
     },
     {
         "id":  "ASimpleCustomFunction",
         "description":  " Simple Custom Function",
         "categories":  "api;list",
-        "blocks":  "object_create;text;"
+        "blocks":  "comment;text;controls_repeat_ext;wait_seconds"
     },
     {
         "id":  "Lookup-Device-Cmds",
         "description":  " Lookup device and commands and run them",
         "categories":  "api;list",
-        "blocks":  "object_create;text;"
+        "blocks":  "comment;text;math_number;text_print;post__Start;wait_seconds;post__Softata_Str_SetupDevDefaultLookup;Device2Lookup;post__Softata_Str_ActionDeviceCmdNoParams;DeviceInstance;DeviceType;post__Softata_Str_ActionDeviceCmdwithByteParam"
     }
 ]
