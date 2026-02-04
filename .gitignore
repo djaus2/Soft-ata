@@ -424,3 +424,5 @@ FodyWeavers.xsd
 /code/Softata/build/temp/IoT_Softata.zip
 /code/Softata/build/temp/NoIoT_Softata.ino.uf2
 /code/Softata/build/temp/NoIoT_Softata.ino.zip
+/code/SoftataWebAPI/dictionary.db-shm
+/code/SoftataWebAPI/dictionary.db-wal
